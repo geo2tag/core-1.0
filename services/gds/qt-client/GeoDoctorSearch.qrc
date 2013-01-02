@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/SliderStyleSheet.qss</file>
+        <file>data/event64.png</file>
+        <file>data/siren.wav</file>
+        <file>data/position32.png</file>
+        <file>data/sos128.png</file>
+    </qresource>
+</RCC>

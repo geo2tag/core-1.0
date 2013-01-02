@@ -1,0 +1,39 @@
+#!/bin/bash
+
+channel="test_channel_$RANDOM";
+result_dir="./results_r_`date +'%d_%m_%Y_%H_%M_%S'`/";
+
+if [[ "$#" == "6" ]]
+then
+	login="$1";
+	password="$2";
+	server_name="$3"
+	steps_count=$4;
+	step_size=$5;
+	read_requests_count=$6;
+else
+	login="Mark";
+	password="test";
+	server_name="localhost"
+	steps_count=10000;
+	step_size=1000;
+	read_requests_count=500;
+fi
+
+response_login=`curl -d "{\"login\":\"$login\",\"password\":\"$password\"}"  http://$server_name:81/service/login`;
+auth_token=`echo $response_login | grep -Po '"\w+"' | grep -v "auth_token" | grep -v "errno" | grep -o '[^"]*'`;
+echo "$auth_token"
+
+mkdir "$result_dir"
+
+curl -d "{\"auth_token\":\"$auth_token\", \"name\":\"$channel\", \"description\":\"\", \"url\":\"\", \"activeRadius\":30}"  http://$server_name:81/service/addChannel 2>/dev/null
+curl -d "{\"auth_token\":\"$auth_token\", \"channel\":\"$channel\"}" http://$server_name:81/service/subscribe 2>/dev/null
+sleep 10s
+for (( i=0;  i<=steps_count; i++ )) ;
+do
+	echo "$i iteration"
+	cool_num=`printf "%08d" $i`;
+	./profiler $read_requests_count loadTags $auth_token 2>"$result_dir/$cool_num"
+	./profiler $step_size writeTag $auth_token $channel 2>/dev/null 1>/dev/null
+
+done

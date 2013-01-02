@@ -1,0 +1,11 @@
+#!/bin/bash
+mkdir -p /etc/xdg/osll
+chmod 777 /etc/xdg/osll
+
+services=`ls /etc/init.d/{lighttpd,postgresql} 2>/dev/null | wc -l`
+if [ "$services" == "2" ]
+then
+	/etc/init.d/lighttpd stop
+	/etc/init.d/postgresql restart
+	/etc/init.d/lighttpd start
+fi

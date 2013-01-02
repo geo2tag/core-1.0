@@ -1,0 +1,152 @@
+#!/usr/bin/make -f
+# debian/rules for cadaver
+#
+# Written by Pavel Zubarev <zps@osll.spb.ru>.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+#VERSION := $(shell echo '$(DEBVERS)' | sed -e 's/^[[:digit:]]*://' -e 's/[~-].*//')
+version = `head -n 1 debian/changelog | grep -o '[.0-9]\{2,\}'` 
+lastCommit = `git log --pretty=format:'%h' -n 1`
+buildNum = `git log --pretty=format:'' | wc -l`
+CFLAGS = -Wall -g
+
+BUILDDIR = ./debian/build/
+
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O3
+endif
+
+build: build-stamp
+
+build-stamp:
+	echo $(version)
+	dh_testdir
+	dh_clean
+	cp -r ./src $(BUILDDIR)
+	cp -r ./data $(BUILDDIR)
+	cp -r ./scripts $(BUILDDIR)
+	cp -r ./debian/config.pri $(BUILDDIR)
+#Check what architecture we are use. If it is i386, we need to build all for i386, else build all armel code
+	if [ "$(DEB_BUILD_ARCH)" != "armel" ];  \
+	then \
+		echo $$PWD ; \
+		echo "i386 architecture selection"; \
+		cd $(BUILDDIR); \
+		qmake "CONFIG +=linux" -after *.pro; \
+		if  $(MAKE); \
+		then echo "Build normal"; \
+		else exit 1; \
+		fi; \
+		cd ../../; \
+	else \
+		qmake "CONFIG +=maemo" -after *.pro; \
+		if  $(MAKE); \
+		then echo "Build normal"; \
+		else exit 1; \
+		fi; \
+	fi;
+#	cd $(CURDIR)/src/webside/; \
+#	ant war; \
+#	cd ../../; \
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	rm -rf $(BUILDDIR)
+	dh_clean
+
+unittest:
+	./tst/unit/platform.sh
+	
+
+install: build unittest
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	$(MAKE) -C $(BUILDDIR) INSTALL_ROOT=$(CURDIR)/debian/tmp install; 
+	sed -i "s/geo2tag_build.*$$/geo2tag_build=$(lastCommit)-$(buildNum)/" $(CURDIR)/debian/tmp/opt/geo2tag/geo2tag.conf
+	sed -i "s/geo2tag_version.*$$/geo2tag_version=$(version)/" $(CURDIR)/debian/tmp/opt/geo2tag/geo2tag.conf
+
+#	install -d $(CURDIR)/debian/tmp/etc/event.d; 
+#	install -d $(CURDIR)/debian/tmp/etc/logrotate.d; 
+#	install -d $(CURDIR)/debian/tmp/usr/share/applications/hildon; 
+#	install -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/48x48/apps; 
+#	if [ "$(DEB_BUILD_ARCH)" = "armel" ] ; then \
+		echo "armel arch instalation"; \
+	else \
+		install -d $(CURDIR)/debian/tmp/opt/geo2tag; 
+		install -d $(CURDIR)/debian/tmp/var/www; 
+#		install -d $(CURDIR)/debian/tmp/etc/lighttpd/conf-enabled; \
+		cp $(BUILDDIR)/service/wikigps-service.conf $(CURDIR)/debian/tmp/etc/lighttpd/conf-enabled; \
+		cp $(BUILDDIR)/service/pg_hba.conf $(CURDIR)/debian/tmp/opt/geo2tag; \
+		cp $(BUILDDIR)/service/fcgi_server $(CURDIR)/debian/tmp/opt/geo2tag; 
+		cp scripts/base.sql $(CURDIR)/debian/tmp/opt/geo2tag; 
+#		cp scripts/odbc.ini $(CURDIR)/debian/tmp/opt/geo2tag; \
+		cp scripts/odbcinst.ini $(CURDIR)/debian/tmp/opt/geo2tag; 
+		cp $(CURDIR)/stuff/geo2tag-webside.conf $(CURDIR)/debian/tmp/opt/geo2tag;
+		cp $(CURDIR)/stuff/geo2tag.war $(CURDIR)/debian/tmp/opt/geo2tag; 
+		cp $(CURDIR)/stuff/apache-tomcat-7.0.27.zip $(CURDIR)/debian/tmp/opt/geo2tag; 
+#	fi;
+#	cp $(BUILDDIR)tracker/wikigpsTracker $(CURDIR)/debian/tmp/etc/event.d; 
+#	cp $(BUILDDIR)tracker/wikigpsTracker-logrotate $(CURDIR)/debian/tmp/etc/logrotate.d; 
+#	cp $(BUILDDIR)data/wikigps.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/48x48/apps/wikigpsTracker-ui.png; 
+#	cp $(BUILDDIR)data/tracker.desktop $(CURDIR)/debian/tmp/usr/share/applications/hildon/tracker.desktop
+
+	dh_install -s
+	
+
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-indep
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+#	dh_installdocs
+#	dh_installexamples
+#	dh_installmenu
+	dh_installdebconf	
+#	dh_installlogrotate	
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_python
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+#	dh_installman
+	dh_link
+	dh_strip
+	dh_compress 
+	dh_fixperms
+#	dh_perl
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build install
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch: build install
+	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
+
+binary: binary-indep binary-arch
+.PHONY: build clean install binary-indep binary-arch binary
+

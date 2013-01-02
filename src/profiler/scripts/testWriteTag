@@ -1,0 +1,41 @@
+#!/bin/bash
+
+channel="test_channel_$RANDOM";
+date_=`date +'%d_%m_%Y_%H_%M_%S'`;
+result_dir="./results_w_$date_/";
+
+if [[ "$#" == "6" ]]
+then
+	login="$1";
+	password="$2";
+	server_name="$3"
+	steps_count=$4;
+	step_size=$5;
+	tag_to_be_written=$6;
+else
+	login="Mark";
+	password="test";
+	server_name="localhost"
+	steps_count=10000;
+	step_size=1000;
+	tag_to_be_written=50;
+fi
+
+response_login=`curl -d "{\"login\":\"$login\",\"password\":\"$password\"}"  http://$server_name:81/service/login`;
+auth_token=`echo $response_login | grep -Po '"\w+"' | grep -v "auth_token" | grep -v "errno" | grep -o '[^"]*'`;
+
+mkdir "$result_dir"
+touch "$date_"
+curl -d "{\"auth_token\":\"$auth_token\", \"name\":\"$channel\", \"description\":\"\", \"url\":\"\", \"activeRadius\":30}"  http://$server_name:81/service/addChannel 2>/dev/null
+
+curl -d "{\"auth_token\":\"$auth_token\", \"channel\":\"$channel\"}" http://$server_name:81/service/subscribe 2>/dev/null
+sleep 10s
+
+for (( i=0;  i<=steps_count; i++ )) ;
+do
+	file_name=`printf "%05d" $i`;
+	date_s=`date +'%d_%m_%Y_%H:%M:%S'`
+	./profiler $tag_to_be_written writeTag $auth_token $channel 2>"$result_dir/$file_name"
+	./profiler $step writeTag $auth_token $channel 2>"$date_"
+	echo "$i iteration"
+done

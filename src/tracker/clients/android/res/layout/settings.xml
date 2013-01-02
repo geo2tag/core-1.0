@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/*
+ * Copyright 2010-2012  Vasily Romanikhin  bac1ca89@gmail.com
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * 3. The name of the author may not be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * The advertising clause requiring mention in adverts must never be included.
+ * PROJ: OSLL/geo2tag
+ */
+-->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  
+    <ScrollView 
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="0.5"
+    	>
+        
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			>
+	        <TextView 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:text="@string/login" 
+	        	android:singleLine="true"/>
+			<EditText
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_login"
+				android:singleLine="true"/>
+	    
+	        <TextView 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:text="@string/password"        	
+	        	android:singleLine="true"
+	        	/>
+			<EditText
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_password"
+				android:password="true"
+				android:singleLine="true"/>
+				
+	        <TextView 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:text="@string/channel"        	
+	        	android:singleLine="true"/>
+			<EditText
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_channel"
+				android:singleLine="true"/>
+
+	        <TextView 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:text="@string/server_address"        	
+	        	android:singleLine="true"/>
+			<EditText
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_server_address"
+				android:singleLine="true"/>
+
+	        <TextView 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:text="@string/time_request"        	
+	        	android:singleLine="true"/>
+			<Button
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/button_settings_tick"/>
+				
+			<CheckBox
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/checkbox_tick"
+				android:text="@string/checkbox_show_tick_toast"/>
+			<CheckBox
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/checkbox_hide"
+				android:text="@string/checkbox_hide_on_start"/>
+		</LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="bottom">
+     	<Button android:id="@+id/button_cancel"
+		    android:layout_width="fill_parent" 
+		    android:layout_height="wrap_content" 
+			android:layout_weight="0.5"
+		    android:text="@string/btnCancel"
+		/>
+	   	<Button android:id="@+id/button_ok"
+		    android:layout_width="fill_parent" 
+		    android:layout_height="wrap_content" 
+			android:layout_weight="0.5"
+		    android:text="@string/btnOk"
+		/>
+    </LinearLayout>
+</LinearLayout>
