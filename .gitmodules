@@ -1,0 +1,3 @@
+[submodule "automation"]
+	path = automation
+	url = git@github.com:geo2tag/automation.git
