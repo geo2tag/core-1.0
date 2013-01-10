@@ -1,0 +1,4 @@
+Geo2tag LBS Platform - high performance geo-tagging middleware
+
+(c) FRUCT, OSLL 2010-2013
+
