@@ -1,22 +1,40 @@
-geo2tag-core (0.21-devel) precise; urgency=low
+geo2tag-core (0.21-bugfix.autobuild2) precise; urgency=low
 
-  * asdkfja;sldj 
   * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
-    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:34:21
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:56:58
     MSK 2013
 
- -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:34:22 +0400
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:56:58 +0400
 
-geo2tag-core (0.21-develmark1234) precise; urgency=low
+geo2tag-core (0.21-bugfix.autobuild1) precise; urgency=low
 
-  *kdfghlsajdfha
-  * 
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:56:47
+    MSK 2013
 
- -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 01:42:34 +0400
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:56:47 +0400
 
-geo2tag-core (0.21) UNRELEASED; urgency=low
+geo2tag-core (0.21-bugfix) precise; urgency=low
 
-  [ Kirill Krinkin ]
-  * Debianization 
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:55:23
+    MSK 2013
 
- -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 00:54:09 +0400
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:55:23 +0400
+
+geo2tag-core (0.21autobuild1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:55:13
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:55:13 +0400
+
+geo2tag-core (0.21) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Fri Jan 11 02:54:42
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Fri, 11 Jan 2013 02:54:42 +0400
+
