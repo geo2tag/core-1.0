@@ -1,0 +1,4 @@
+libcommon 1 geo2tag-core
+libwikigpsJson 1 geo2tag-core
+libmaps 1 geo2tag-core
+libwikigpsHttp 1 geo2tag-core

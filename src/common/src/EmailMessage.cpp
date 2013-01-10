@@ -36,6 +36,7 @@
  * ---------------------------------------------------------------- */
 
 #include <syslog.h>
+#include <QDebug>
 #include "EmailMessage.h"
 #include "defines.h"
 #include "SettingsStorage.h"
@@ -85,7 +86,10 @@ QString EmailMessage::getSubject() const
 void EmailMessage::send() const
 {
   QString command = QString("echo \"%1\" | mail -s '%2' %3 &").arg(m_body).arg(m_subject).arg(m_email);
-  system(command.toStdString().c_str());
+  if( -1 == system(command.toStdString().c_str()))
+	{
+		qDebug() << "system is failed for : " << command;
+	}
 }
 
 

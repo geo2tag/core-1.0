@@ -86,7 +86,7 @@ qlonglong QueryExecutor::nextKey(const QString &sequence) const
 {
   QSqlQuery query(m_database);
   query.exec("select nextval('"+sequence+"') as seq;");
-  qlonglong id;
+  qlonglong id=-1;
   if ( query.next() )
     id = query.value(0).toLongLong();
   return id;
