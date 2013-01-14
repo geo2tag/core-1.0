@@ -1,3 +1,75 @@
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1.thinkpad-9.1.thinkpad-10.1.thinkpad-11.1.thinkpad-12.1.thinkpad-13.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:22:30
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:22:31 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1.thinkpad-9.1.thinkpad-10.1.thinkpad-11.1.thinkpad-12.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:17:44
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:17:44 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1.thinkpad-9.1.thinkpad-10.1.thinkpad-11.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:16:06
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:16:06 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1.thinkpad-9.1.thinkpad-10.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:14:52
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:14:52 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1.thinkpad-9.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:14:38
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:14:38 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1.thinkpad-8.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:09:16
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:09:17 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1.thinkpad-7.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:08:55
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:08:55 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1.thinkpad-6.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:05:07
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:05:07 +0400
+
+geo2tag-core (0.21-bugfix.thinkpad-5.1) precise; urgency=low
+
+  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
+    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 00:02:36
+    MSK 2013
+
+ -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 00:02:36 +0400
+
 geo2tag-core (0.21-bugfix) precise; urgency=low
 
   * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct

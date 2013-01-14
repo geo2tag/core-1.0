@@ -5,6 +5,7 @@
 #  (c) FRUCT, OSLL 2010-2013
 #=============================================================================
 
+export MAKEFLAGS+="-j5"
 
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
