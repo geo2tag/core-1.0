@@ -105,9 +105,9 @@ void EmailMessage::sendAsRegistrationLetter(const QString& info)
   body.append(info);
   m_subject = subject;
   m_body = body;
-  syslog(LOG_INFO, "Email: %s", m_email.toStdString().c_str());
-  syslog(LOG_INFO, "Subject: %s", m_subject.toStdString().c_str());
-  syslog(LOG_INFO, "Body: %s", m_body.toStdString().c_str());
+  qDebug() <<  "Email: " << m_email.toStdString().c_str();
+  qDebug() <<  "Subject: %s" << m_subject.toStdString().c_str();
+  qDebug() <<  "Body: %s" << m_body.toStdString().c_str();
   send();
 }
 
@@ -120,8 +120,8 @@ void EmailMessage::sendAsRestorePwdMessage(const QString& pwd)
     + " " + pwd;
   m_subject = subject;
   m_body = body;
-  syslog(LOG_INFO, "Email: %s", m_email.toStdString().c_str());
-  syslog(LOG_INFO, "Subject: %s", m_subject.toStdString().c_str());
-  syslog(LOG_INFO, "Body: %s", m_body.toStdString().c_str());
+  qDebug() <<  "Email: " <<  m_email.toStdString().c_str();
+  qDebug() <<  "Subject:" << m_subject.toStdString().c_str();
+  qDebug() <<  "Body: " << m_body.toStdString().c_str();
   send();
 }

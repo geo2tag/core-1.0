@@ -32,7 +32,7 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include <syslog.h>
+#include "servicelogger.h"
 #include <QDebug>
 #include <QSettings>
 #include "UpdateThread.h"
@@ -106,18 +106,18 @@ QSharedPointer<Sessions> UpdateThread::getSessionsContainer() const
 void UpdateThread::incrementTransactionCount(int i)
 {
   m_transactionCount+=i;
-  syslog(LOG_INFO, "Number of write requests: logged = %lld",m_transactionCount);
+  qDebug() <<  "Number of write requests: logged " << m_transactionCount;
 }
 
 
 bool UpdateThread::compareTransactionNumber(qlonglong factCount)
 {
   bool result;
-  syslog(LOG_INFO, "Checking number of write requests: logged = %lld, fact = %lld", m_transactionCount, factCount);
+  qDebug() << "Checking number of write requests: logged/fact" << m_transactionCount <<"/" << factCount;
   // If m_transactionCount < transactionCount then need sync
   SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
   qlonglong transactionDiff =  storage.getValue("General_Settings/transaction_diff", QVariant(DEFAULT_TRANSACTION_DIFF_TO_SYNC)).toLongLong();
-  syslog(LOG_INFO, "Diff from config = %lld, fact = %lld", transactionDiff, factCount - m_transactionCount);
+  qDebug() << "Diff from config/fact" << transactionDiff<<"/"<< factCount - m_transactionCount;
   result = (factCount - m_transactionCount >= transactionDiff);
   if (result) m_transactionCount = factCount;
 
@@ -135,11 +135,11 @@ void UpdateThread::run()
     {
       PerformanceCounter counter("db_update");
 
-      syslog(LOG_INFO, "trying to connect to database..., file: %s, line: %d", __FILE__, __LINE__);
+      qDebug() << "trying to connect to database...,";
       bool result = m_queryExecutor->connect();
       if(!result)
       {
-        syslog(LOG_INFO, "connection error %s", m_queryExecutor->lastError().text().toStdString().c_str());
+        qCritical() << "connection error " << m_queryExecutor->lastError().text();
         QThread::msleep(1000);
         continue;
       }
@@ -168,7 +168,7 @@ void UpdateThread::run()
       m_queryExecutor->loadSessions(sessionsContainer);
 
       lockWriting();
-      syslog(LOG_INFO,"Containers locked for db_update");
+      qDebug() << "Containers locked for db_update";
 
       m_usersContainer->merge(usersContainer);
       m_tagsContainer->merge(tagsContainer);
@@ -177,20 +177,20 @@ void UpdateThread::run()
 
       m_queryExecutor->updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_sessionsContainer);
 
-      syslog(LOG_INFO, "tags added. trying to unlock");
+      qDebug() <<  "tags added. trying to unlock";
       unlockWriting();
 
       if (oldTagsContainerSize != m_tagsContainer->size())
       {
-        syslog(LOG_INFO,"lock: filling m_dataChannelsMap ");
+        qDebug() << "lock: filling m_dataChannelsMap ";
         for(int i=0; i<m_tagsContainer->size(); i++)
         {
           if(!m_dataChannelsMap->contains(m_tagsContainer->at(i)->getChannel(), m_tagsContainer->at(i)))
           {
             QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
             QSharedPointer<Channel> channel = tag->getChannel();
-            syslog(LOG_INFO, "adding %d from %d tag %s to channel %s", i, m_tagsContainer->size(),
-              tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz").toStdString().c_str(), channel->getName().toStdString().c_str());
+
+            qDebug() << "adding " << i << " from "<< m_tagsContainer->size() <<" to channel " << channel->getName();
             lockWriting();
             m_dataChannelsMap->insert(channel, tag);
             unlockWriting();
@@ -198,10 +198,10 @@ void UpdateThread::run()
         }
         Q_EMIT newTagInsertionComplete(m_tagsContainer->size()-oldTagsContainerSize);
       }
-      syslog(LOG_INFO, "current users' size = %d",m_usersContainer->size());
-      syslog(LOG_INFO, "current tags' size = %d",m_tagsContainer->size());
-      syslog(LOG_INFO,  "current channels' size = %d", m_channelsContainer->size());
-      syslog(LOG_INFO,  "current sessions' size = %d", m_sessionsContainer->size());
+      qDebug() <<  "current users' size = %d"     << m_usersContainer->size();
+      qDebug() <<  "current tags' size = %d"      << m_tagsContainer->size();
+      qDebug() <<  "current channels' size = %d"  << m_channelsContainer->size();
+      qDebug() <<  "current sessions' size = %d"  << m_sessionsContainer->size();
 
       m_queryExecutor->disconnect();
       qDebug() << "sync completed!!!";

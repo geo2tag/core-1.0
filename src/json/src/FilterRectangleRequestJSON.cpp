@@ -54,6 +54,8 @@
 #include "serializer.h"
 #endif
 
+#include <QDebug>
+
 FilterRectangleRequestJSON::FilterRectangleRequestJSON(QObject *parent) : FilterRequestJSON(parent)
 {
 }
@@ -97,7 +99,7 @@ bool FilterRectangleRequestJSON::parseJson(const QByteArray&data)
   lon2 = lonData["longitude2"].toDouble(&ok);
   if (!ok) return false;
 
-  syslog(LOG_INFO, "rect %f ,%f ,%f ,%f ", lat1, lat2, lon2, lon2);
+  qDebug() <<  "rect "<< lat1 <<","<< lat2<<","<< lon2<<","<< lon2;
 
   FShapeRectangle * shape = new FShapeRectangle(lat1, lon1, lat2, lon2);
   setShape(QSharedPointer<FShape>(shape));

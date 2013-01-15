@@ -52,6 +52,7 @@
 
 #include <QVariant>
 #include <QVariantMap>
+#include <QDebug>
 
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
@@ -64,7 +65,7 @@
 SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
   #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
-  syslog(LOG_INFO,"SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()");
+  qDebug() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
   #endif
 }
 
