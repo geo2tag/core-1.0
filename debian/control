@@ -5,7 +5,7 @@ Maintainer: Kirill Krinkin <geo2tag-maintainer@fruct.org>
 Standards-Version: 3.9.3.0
 
 Package: geo2tag-core
-Architecture: amd64 i386 all
+Architecture: amd64 i386
 Section: database
 Priority: optional
 Depends: ${shlibs:Depends}, libxml2 (>=2.6), libqt4-core ,libqt4-network ,libqt4-gui, libqt4-sql-psql
