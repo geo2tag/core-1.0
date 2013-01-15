@@ -1,11 +1,3 @@
-geo2tag-core (0.21-bugfix.thinkpad-39.1) precise; urgency=low
-
-  * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
-    18 16:39:21 UTC 2012 i686 i686 i386 GNU/Linux at Tue Jan 15 10:37:40
-    MSK 2013
-
- -- Kirill Krinkin <kirill.krinkin@gmail.com>  Tue, 15 Jan 2013 10:37:40 +0400
-
 geo2tag-core (0.21-bugfix) precise; urgency=low
 
   * Built on Linux thinkpad 3.2.0-33-generic-pae #52-Ubuntu SMP Thu Oct
