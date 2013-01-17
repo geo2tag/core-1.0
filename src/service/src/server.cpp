@@ -153,16 +153,22 @@ void Server::run()
         qDebug() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
       break;
     }
+
     QString queryString;
     QByteArray queryBody, response;
     extractIncomingData(m_cgi,queryString,queryBody);
+
     qDebug() <<  QString("query: %1").arg(queryString);
-    response = process( queryBody);
+
+    response = process(queryBody);
+
     int written = FCGX_PutStr(response.data(), response.size(), m_cgi.out);
+
     if(written != response.size())
     {
       qDebug() << "some data was loast during writing to the pipe";
     }
+
     FCGX_Finish_r(&m_cgi);
   }
 }

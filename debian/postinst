@@ -5,6 +5,8 @@ touch /var/log/geo2tag.log
 chmod a+rw /var/log/geo2tag.log
 
 
+/usr/sbin/adduser --quiet --system geo2tag
+
 create_db_user() {
 
 	sudo -u postgres createuser -s geo2tag
