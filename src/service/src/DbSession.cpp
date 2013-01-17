@@ -165,10 +165,12 @@ DbObjectsCollection::DbObjectsCollection():
 
     //GT-817 Now is only QPSQL base is supported
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
-    database.setHostName("localhost");
-    database.setDatabaseName("geo2tag");
-    database.setUserName("geo2tag");
-    database.setPassword("geo2tag");
+    database.setHostName(SettingsStorage::getValue("General_Settings/database_host").toString());
+    database.setDatabaseName(SettingsStorage::getValue("General_Settings/database_name").toString());
+    database.setUserName(SettingsStorage::getValue("General_Settings/database_user").toString());
+    database.setPassword(SettingsStorage::getValue("General_Settings/database_password").toString());
+
+    qDebug() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
 
     m_updateThread = new UpdateThread(
                 m_tagsContainer,
