@@ -118,9 +118,7 @@ QString Server::extractRESTQuery()
 
 QByteArray Server::process( const QByteArray &data)
 {
-  //  QMap<QString, QString> queryParameters = parseQuery(query);
   common::DbObjectsCollection &dboc = common::DbObjectsCollection::getInstance();
-  //  QByteArray result = dboc.process(queryParameters.value("query"), data);
   QByteArray result = dboc.process(extractRESTQuery(), data);
   return result;
 }

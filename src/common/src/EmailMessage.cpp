@@ -95,9 +95,9 @@ void EmailMessage::send() const
 
 void EmailMessage::sendAsRegistrationLetter(const QString& info)
 {
-  QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
-  QString subject = SettingsStorage::getValue("Mail_Settings/subject", QVariant(DEFAULT_REGISTRATION_EMAIL_SUBJECT)).toString();
-  QString body = SettingsStorage::getValue("Mail_Settings/body", QVariant(DEFAULT_REGISTRATION_EMAIL_BODY)).toString();
+  QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
+  QString subject = SettingsStorage::getValue("mail/subject", QVariant(DEFAULT_REGISTRATION_EMAIL_SUBJECT)).toString();
+  QString body = SettingsStorage::getValue("mail/body", QVariant(DEFAULT_REGISTRATION_EMAIL_BODY)).toString();
 
   body.append(" To confirm registration, please, go to this link: ");
   body.append(serverUrl.toStdString().c_str());
@@ -114,8 +114,8 @@ void EmailMessage::sendAsRegistrationLetter(const QString& info)
 
 void EmailMessage::sendAsRestorePwdMessage(const QString& pwd)
 {
-  QString subject = SettingsStorage::getValue("Mail_Settings/restore_pwd_subject", QVariant(DEFAULT_RESTORE_PASSWORD_SUBJECT)).toString();
-  QString body = SettingsStorage::getValue("Mail_Settings/restore_pwd_body", QVariant(DEFAULT_RESTORE_PASSWORD_BODY)).toString()
+  QString subject = SettingsStorage::getValue("mail/restore_pwd_subject", QVariant(DEFAULT_RESTORE_PASSWORD_SUBJECT)).toString();
+  QString body = SettingsStorage::getValue("mail/restore_pwd_body", QVariant(DEFAULT_RESTORE_PASSWORD_BODY)).toString()
     + " " + pwd;
 
   m_subject = subject;

@@ -93,7 +93,7 @@ namespace Test
         m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(m_database, "QueryExecutor")));
         m_database.open();
 
-        m_updateInterval = SettingsStorage::getValue("General_Settings/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
+        m_updateInterval = SettingsStorage::getValue("general/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
 
       }
 

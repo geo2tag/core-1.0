@@ -5,7 +5,7 @@
 
 QString getServerUrl()
 {
-    QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
+    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
 
     return serverUrl;
 }
@@ -20,7 +20,7 @@ void setServerUrl(QString serverUrl)
 
 int getServerPort()
 {
-    int serverPort = SettingsStorage::getValue("General_Settings/server_port", QVariant(DEFAULT_PORT)).toInt();
+    int serverPort = SettingsStorage::getValue("general/server_port", QVariant(DEFAULT_PORT)).toInt();
 
     return serverPort;
 }

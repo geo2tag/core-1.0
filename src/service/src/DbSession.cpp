@@ -167,15 +167,15 @@ DbObjectsCollection::DbObjectsCollection():
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
 
     QVariant defaultName("COULD_NOT_READ_CONFIG");
-    QString host=SettingsStorage::getValue("database/host",defaultName);
-    QString name=SettingsStorage::getValue("database/name",defaultName);
-    QString user=SettingsStorage::getValue("database/user",defaultName);
-    QString pass=SettingsStorage::getValue("database/password",defaultName);
+    QString host=SettingsStorage::getValue("database/host",defaultName).toString();
+    QString name=SettingsStorage::getValue("database/name",defaultName).toString();
+    QString user=SettingsStorage::getValue("database/user",defaultName).toString();
+    QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
 
     database.setHostName(host);
     database.setDatabaseName(name);
     database.setUserName(user);
-    database.setPassword(password);
+    database.setPassword(pass);
 
     qDebug() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
 
