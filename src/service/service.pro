@@ -78,3 +78,6 @@ QMAKE_LFLAGS += -L../lib -L/usr/lib/
 
 QT -= gui
 QT += sql
+
+OTHER_FILES += \
+    ../../scripts/base.sql
