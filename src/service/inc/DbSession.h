@@ -83,6 +83,9 @@ namespace common
 
     DbObjectsCollection();
 
+    // initializes db by default sql script
+    void autoInitdatabase();
+
     const QString getPasswordHash(const QString & login, const QString & pasword) const;
     const QString getPasswordHash(const QSharedPointer<User>& user)  const;
 
