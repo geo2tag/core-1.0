@@ -163,6 +163,7 @@ DbObjectsCollection::DbObjectsCollection():
     //  Here also should be something like
     //  m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
+    //GT-817 Now is only QPSQL base is supported
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
     database.setHostName("localhost");
     database.setDatabaseName("geo2tag");
@@ -254,8 +255,7 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
 bool DbObjectsCollection::checkPasswordQuality(const QString& password) const
 {
     // If check is not enabled in config - all passwords are good
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    bool checkEnabled = storage.getValue("Security_Settings/password_quality_check", QVariant(DEFAULT_PASSWORD_QUALITY_CHECK)).toBool();
+    bool checkEnabled = SettingsStorage::getValue("Security_Settings/password_quality_check", QVariant(DEFAULT_PASSWORD_QUALITY_CHECK)).toBool();
     if (!checkEnabled) return true;
 
     if ( password.size() < MINIMAL_PASSWORD_LENGTH )
@@ -270,7 +270,6 @@ bool DbObjectsCollection::checkPasswordQuality(const QString& password) const
         return false;
 
     return true;
-
 }
 
 const QString DbObjectsCollection::getPasswordHash(const QSharedPointer<User>& user) const
@@ -423,8 +422,8 @@ QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
     }
 
     response.setErrno(SUCCESS);
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    QString serverUrl = storage.getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
+
+    QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
     response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
     answer.append(response.getJson());
     qDebug() << "answer: " <<  answer.data();
@@ -1216,8 +1215,7 @@ QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
     VersionResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    QString version = storage.getValue("General_Settings/geo2tag_version").toString();
+    QString version = SettingsStorage::getValue("General_Settings/geo2tag_version").toString();
 
     response.setErrno(SUCCESS);
     response.setVersion(version);
@@ -1231,8 +1229,7 @@ QByteArray DbObjectsCollection::processBuildQuery(const QByteArray&)
     BuildResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    QString version = storage.getValue("General_Settings/geo2tag_build").toString();
+    QString version = SettingsStorage::getValue("General_Settings/geo2tag_build").toString();
 
     response.setErrno(SUCCESS);
     response.setVersion(version);
@@ -1361,8 +1358,7 @@ QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& da
         return answer;
     }
 
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    int passwLength = storage.getValue("Security_Settings/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
+    int passwLength = SettingsStorage::getValue("Security_Settings/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
     QString password = generateNewPassword(realUser).left(passwLength);
     QString hash = getPasswordHash(realUser->getLogin(), password);
     qDebug() << realUser->getPassword();

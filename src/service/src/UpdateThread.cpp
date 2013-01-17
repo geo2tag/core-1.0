@@ -115,8 +115,7 @@ bool UpdateThread::compareTransactionNumber(qlonglong factCount)
   bool result;
   qDebug() << "Checking number of write requests: logged/fact" << m_transactionCount <<"/" << factCount;
   // If m_transactionCount < transactionCount then need sync
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-  qlonglong transactionDiff =  storage.getValue("General_Settings/transaction_diff", QVariant(DEFAULT_TRANSACTION_DIFF_TO_SYNC)).toLongLong();
+  qlonglong transactionDiff =  SettingsStorage::getValue("General_Settings/transaction_diff", QVariant(DEFAULT_TRANSACTION_DIFF_TO_SYNC)).toLongLong();
   qDebug() << "Diff from config/fact" << transactionDiff<<"/"<< factCount - m_transactionCount;
   result = (factCount - m_transactionCount >= transactionDiff);
   if (result) m_transactionCount = factCount;
@@ -130,8 +129,7 @@ void UpdateThread::run()
 
   for(;;)
   {
-    SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-    qlonglong interval = storage.getValue("General_Settings/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
+    qlonglong interval = SettingsStorage::getValue("General_Settings/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
     {
       PerformanceCounter counter("db_update");
 

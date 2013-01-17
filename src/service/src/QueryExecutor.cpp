@@ -665,8 +665,7 @@ void QueryExecutor::checkTmpUsers()
   // Deleting old signups
   QString strQuery;
 
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-  QString timelife = storage.getValue("Registration_Settings/tmp_user_timelife", QVariant(DEFAULT_TMP_USER_TIMELIFE)).toString();
+  QString timelife = SettingsStorage::getValue("Registration_Settings/tmp_user_timelife", QVariant(DEFAULT_TMP_USER_TIMELIFE)).toString();
 
   strQuery.append("select id from signups where (now() - datetime) >= INTERVAL '");
   strQuery.append(timelife);
@@ -697,8 +696,7 @@ void QueryExecutor::checkTmpUsers()
 void QueryExecutor::checkSessions(UpdateThread* thread)
 {
   qDebug() << "checkSessions query is running now...";
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-  int timelife = storage.getValue("General_Settings/session_timelife", QVariant(DEFAULT_SESSION_TIMELIFE)).toInt();
+  int timelife = SettingsStorage::getValue("General_Settings/session_timelife", QVariant(DEFAULT_SESSION_TIMELIFE)).toInt();
   for (int i = 0; i < thread->getSessionsContainer()->size(); i++)
   {
     QDateTime currentTime = QDateTime::currentDateTime().toUTC();

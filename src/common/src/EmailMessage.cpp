@@ -95,10 +95,10 @@ void EmailMessage::send() const
 
 void EmailMessage::sendAsRegistrationLetter(const QString& info)
 {
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-  QString serverUrl = storage.getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
-  QString subject = storage.getValue("Mail_Settings/subject", QVariant(DEFAULT_REGISTRATION_EMAIL_SUBJECT)).toString();
-  QString body = storage.getValue("Mail_Settings/body", QVariant(DEFAULT_REGISTRATION_EMAIL_BODY)).toString();
+  QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
+  QString subject = SettingsStorage::getValue("Mail_Settings/subject", QVariant(DEFAULT_REGISTRATION_EMAIL_SUBJECT)).toString();
+  QString body = SettingsStorage::getValue("Mail_Settings/body", QVariant(DEFAULT_REGISTRATION_EMAIL_BODY)).toString();
+
   body.append(" To confirm registration, please, go to this link: ");
   body.append(serverUrl.toStdString().c_str());
   body.append("service/confirmRegistration-");
@@ -114,13 +114,13 @@ void EmailMessage::sendAsRegistrationLetter(const QString& info)
 
 void EmailMessage::sendAsRestorePwdMessage(const QString& pwd)
 {
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
-  QString subject = storage.getValue("Mail_Settings/restore_pwd_subject", QVariant(DEFAULT_RESTORE_PASSWORD_SUBJECT)).toString();
-  QString body = storage.getValue("Mail_Settings/restore_pwd_body", QVariant(DEFAULT_RESTORE_PASSWORD_BODY)).toString()
+  QString subject = SettingsStorage::getValue("Mail_Settings/restore_pwd_subject", QVariant(DEFAULT_RESTORE_PASSWORD_SUBJECT)).toString();
+  QString body = SettingsStorage::getValue("Mail_Settings/restore_pwd_body", QVariant(DEFAULT_RESTORE_PASSWORD_BODY)).toString()
     + " " + pwd;
+
   m_subject = subject;
   m_body = body;
-  qDebug() <<  "Email: " <<  m_email.toStdString().c_str();
+    qDebug() <<  "Email: " <<  m_email.toStdString().c_str();
   qDebug() <<  "Subject:" << m_subject.toStdString().c_str();
   qDebug() <<  "Body: " << m_body.toStdString().c_str();
   send();

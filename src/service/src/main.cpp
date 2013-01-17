@@ -40,11 +40,14 @@
 #include "UserInternal.h"
 #include "ChannelInternal.h"
 #include "servicelogger.h"
+#include "SettingsStorage.h"
 
 int main(int argc, char ** argv)
 {
   QCoreApplication app(argc,argv);
+
   Log::init();
+  SettingsStorage::init();
 
   common::DbObjectsCollection::getInstance();
 

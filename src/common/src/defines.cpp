@@ -5,33 +5,29 @@
 
 QString getServerUrl()
 {
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
+    QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
 
-  QString serverUrl = storage.getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
-
-  return serverUrl;
+    return serverUrl;
 }
 
 
 void setServerUrl(QString serverUrl)
 {
-  QSettings settings(QSettings::SystemScope,"osll","libs");
-  settings.setValue("server_url",serverUrl);
+    QSettings settings(QSettings::SystemScope,"osll","libs");
+    settings.setValue("server_url",serverUrl);
 }
 
 
 int getServerPort()
 {
-  SettingsStorage storage(SETTINGS_STORAGE_FILENAME);
+    int serverPort = SettingsStorage::getValue("General_Settings/server_port", QVariant(DEFAULT_PORT)).toInt();
 
-  int serverPort = storage.getValue("General_Settings/server_port", QVariant(DEFAULT_PORT)).toInt();
-
-  return serverPort;
+    return serverPort;
 }
 
 
 void setServerPort(int port)
 {
-  QSettings settings(QSettings::SystemScope,"osll","libs");
-  settings.setValue("server_port",port);
+    QSettings settings(QSettings::SystemScope,"osll","libs");
+    settings.setValue("server_port",port);
 }

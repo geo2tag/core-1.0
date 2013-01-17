@@ -41,38 +41,48 @@
 #include <QVariant>
 #include <QSettings>
 
-SettingsStorage::SettingsStorage(const QString &filename)
-: m_filename(filename)
+static const char* SETTINGS_STORAGE_FILENAME="/opt/geo2tag/geo2tag.conf";
+SettingsStorage* SettingsStorage::s_settings = NULL;
+
+SettingsStorage::SettingsStorage(const QString filename)
+    : m_filename(filename)
 {
 }
 
-
-QString SettingsStorage::getFileName()
+void SettingsStorage::init()
 {
-  return m_filename;
+    s_settings = new SettingsStorage(SETTINGS_STORAGE_FILENAME);
 }
 
+
+QString SettingsStorage::getFileName() const
+{
+    return m_filename;
+}
 
 void SettingsStorage::setFileName(const QString &filename)
 {
-  m_filename = filename;
+    m_filename = filename;
 }
-
 
 void SettingsStorage::setValue(const QString &key, const QVariant &value, const QString &group)
 {
-  QSettings settings(m_filename, QSettings::IniFormat);
-  settings.beginGroup(group);
-  settings.setValue(key, value);
-  settings.endGroup();
+    Q_ASSERT(s_settings);
+
+    QSettings settings(s_settings->m_filename, QSettings::IniFormat);
+    settings.beginGroup(group);
+    settings.setValue(key, value);
+    settings.endGroup();
 }
 
 
 QVariant SettingsStorage::getValue(const QString &key, const QVariant &defaultValue)
 {
-  QSettings settings(m_filename, QSettings::IniFormat);
-  QVariant value = settings.value(key, defaultValue);
-  return value;
+    Q_ASSERT(s_settings);
+
+    QSettings settings(s_settings->m_filename, QSettings::IniFormat);
+    QVariant value = settings.value(key, defaultValue);
+    return value;
 }
 
 
