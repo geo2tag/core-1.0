@@ -44,7 +44,6 @@
 int main(int argc, char ** argv)
 {
   QCoreApplication app(argc,argv);
-  openlog("geo2tag_fcgi_test", LOG_CONS | LOG_NDELAY, LOG_USER);
   Log::init();
 
   common::DbObjectsCollection::getInstance();
