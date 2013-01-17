@@ -24,14 +24,6 @@ maemo5: {
     QMAKE_CXXFLAGS += -Werror
 }
 
-symbian: {
-    #For some reason the default include path doesn't include MOC_DIR on symbian
-    OBJECTS_DIR = obj
-    MOC_DIR = moc
-    INCLUDEPATH += $$MOC_DIR
-    DEFINES+= Q_WS_SYMBIAN
-}
-
 linux: {
 #    QMAKE_CXX = g++-4.5
 #    QMAKE_LINK = g++-4.5

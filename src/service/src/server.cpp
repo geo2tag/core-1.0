@@ -34,7 +34,7 @@
 
 #include <QDebug>
 #include <sstream>
-#include <syslog.h>
+#include "servicelogger.h"
 #include <string.h>
 #include <fcgi_stdio.h>
 #include <stdlib.h>
@@ -52,14 +52,14 @@ Server::Server()
 
   if (err)
   {
-    syslog(LOG_INFO, "FCGX_Init failed, errcode=%d",err);
+    qDebug() <<  QString("FCGX_Init failed, errcode=%1").arg(err);
   }
 
   err = FCGX_InitRequest(&m_cgi,LISTENSOCK_FILENO, LISTENSOCK_FLAGS);
 
   if (err)
   {
-    syslog(LOG_INFO, "FCGX_InitRequest failed, errcode=%d",err);
+      qDebug() <<  QString("FCGX_InitRequest failed, errcode=%1").arg(err);
   }
 }
 
@@ -118,9 +118,7 @@ QString Server::extractRESTQuery()
 
 QByteArray Server::process( const QByteArray &data)
 {
-  //  QMap<QString, QString> queryParameters = parseQuery(query);
   common::DbObjectsCollection &dboc = common::DbObjectsCollection::getInstance();
-  //  QByteArray result = dboc.process(queryParameters.value("query"), data);
   QByteArray result = dboc.process(extractRESTQuery(), data);
   return result;
 }
@@ -144,25 +142,31 @@ void Server::extractIncomingData(const FCGX_Request& request, QString& queryStri
 
 void Server::run()
 {
-  syslog(LOG_INFO,"Starting server thread...");
+  qDebug() << "Starting server thread...";
   for(;;)
   {
     int err = FCGX_Accept_r(&m_cgi);
     if (err)
     {
-      syslog(LOG_INFO, "FCGX_Accept_r stopped: %d", err);
+        qDebug() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
       break;
     }
+
     QString queryString;
     QByteArray queryBody, response;
     extractIncomingData(m_cgi,queryString,queryBody);
-    syslog(LOG_INFO, "query: %s", queryString.toStdString().c_str());
-    response = process( queryBody);
+
+    qDebug() <<  QString("query: %1").arg(queryString);
+
+    response = process(queryBody);
+
     int written = FCGX_PutStr(response.data(), response.size(), m_cgi.out);
+
     if(written != response.size())
     {
       qDebug() << "some data was loast during writing to the pipe";
     }
+
     FCGX_Finish_r(&m_cgi);
   }
 }

@@ -45,7 +45,7 @@
 namespace
 {
   const int LOG_INFO = 0;
-  void syslog(int priority, const char *format, ...)
+  void qDebug() << int priority, const char *format, ...)
   {
 
   }

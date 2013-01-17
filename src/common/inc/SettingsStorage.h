@@ -45,17 +45,21 @@
 class SettingsStorage
 {
   private:
-    QString m_filename;
+    QString                 m_filename;
+    static SettingsStorage *s_settings;
+
+    SettingsStorage(const QString filename);
 
   public:
-    SettingsStorage(const QString& filename);
 
-    QString getFileName();
+    static void init();
+    static void setValue(const QString &key, const QVariant &value, const QString &group = "");
+    static QVariant getValue(const QString &key, const QVariant &defaultValue = QVariant());
+
+  protected:
     void setFileName(const QString& filename);
+    QString getFileName() const;
 
-    void setValue(const QString &key, const QVariant &value, const QString &group = "");
-    QVariant getValue(const QString &key, const QVariant &defaultValue = QVariant());
-
-    ~SettingsStorage();
+    virtual ~SettingsStorage();
 };
 #endif                                  // SETTINGSSTORAGE_H

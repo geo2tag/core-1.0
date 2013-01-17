@@ -41,12 +41,11 @@
 #ifndef _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 #define _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 
-#include <syslog.h>
+#include "servicelogger.h"
 
 #include <QtSql>
 #include <QThread>
 #include <QMap>
-//#include </usr/include/qt4/QtSql/qsql_psql.h>
 #include "DataMarks.h"
 #include "Channel.h"
 #include "DataChannel.h"
@@ -83,6 +82,9 @@ namespace common
     static const QString ok;
 
     DbObjectsCollection();
+
+    // initializes db by default sql script
+    void autoInitdatabase();
 
     const QString getPasswordHash(const QString & login, const QString & pasword) const;
     const QString getPasswordHash(const QSharedPointer<User>& user)  const;

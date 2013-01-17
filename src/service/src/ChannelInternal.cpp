@@ -43,7 +43,7 @@
 #include "DataMarkInternal.h"
 #include "DbSession.h"
 #include "DynamicCastFailure.h"
-#include <syslog.h>
+#include "servicelogger.h"
 
 DbChannel::DbChannel(qlonglong id,
 const QString &name,

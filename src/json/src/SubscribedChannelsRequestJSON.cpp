@@ -61,7 +61,7 @@
 SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(QObject *parent)
 : JsonSerializer(parent)
 {
-  //  syslog(LOG_INFO,"SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON()");
+  //  qDebug() << "SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON()");
 }
 
 
