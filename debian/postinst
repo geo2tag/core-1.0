@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Create log files
+touch /var/log/geo2tag.log
+chmod a+rw /var/log/geo2tag.log
+
+
 create_db_user() {
 
 	sudo -u postgres createuser -s geo2tag
