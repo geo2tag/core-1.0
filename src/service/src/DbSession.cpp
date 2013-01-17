@@ -165,10 +165,17 @@ DbObjectsCollection::DbObjectsCollection():
 
     //GT-817 Now is only QPSQL base is supported
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
-    database.setHostName(SettingsStorage::getValue("General_Settings/database_host").toString());
-    database.setDatabaseName(SettingsStorage::getValue("General_Settings/database_name").toString());
-    database.setUserName(SettingsStorage::getValue("General_Settings/database_user").toString());
-    database.setPassword(SettingsStorage::getValue("General_Settings/database_password").toString());
+
+    QVariant defaultName("COULD_NOT_READ_CONFIG");
+    QString host=SettingsStorage::getValue("database/host",defaultName);
+    QString name=SettingsStorage::getValue("database/name",defaultName);
+    QString user=SettingsStorage::getValue("database/user",defaultName);
+    QString pass=SettingsStorage::getValue("database/password",defaultName);
+
+    database.setHostName(host);
+    database.setDatabaseName(name);
+    database.setUserName(user);
+    database.setPassword(password);
 
     qDebug() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
 
@@ -208,6 +215,8 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
     {
         m_queryExecutor->connect();
     }
+
+
 
     QList<QString> queries = m_processors.uniqueKeys();
     for (int i=0;i<queries.size();i++)
@@ -425,7 +434,7 @@ QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
 
     response.setErrno(SUCCESS);
 
-    QString serverUrl = SettingsStorage::getValue("General_Settings/server_url", QVariant(DEFAULT_SERVER)).toString();
+    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
     response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
     answer.append(response.getJson());
     qDebug() << "answer: " <<  answer.data();
@@ -1217,7 +1226,7 @@ QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
     VersionResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    QString version = SettingsStorage::getValue("General_Settings/geo2tag_version").toString();
+    QString version = SettingsStorage::getValue("general/geo2tag_version").toString();
 
     response.setErrno(SUCCESS);
     response.setVersion(version);
@@ -1231,7 +1240,7 @@ QByteArray DbObjectsCollection::processBuildQuery(const QByteArray&)
     BuildResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    QString version = SettingsStorage::getValue("General_Settings/geo2tag_build").toString();
+    QString version = SettingsStorage::getValue("general/geo2tag_build").toString();
 
     response.setErrno(SUCCESS);
     response.setVersion(version);
