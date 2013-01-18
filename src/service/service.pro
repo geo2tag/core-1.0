@@ -9,7 +9,7 @@ target.path = /opt/geo2tag/
 conf_lighttpd.files = wikigps-service.conf
 conf_lighttpd.path = /etc/lighttpd/conf-enabled
 
-postgre_conf.files = ../../scripts/odbc.ini/pg_hba.conf
+postgre_conf.files = ../../conf/pg_hba.conf
 postgre_conf.path = /opt/geo2tag/conf/
 
 db_content.files = base.sql
