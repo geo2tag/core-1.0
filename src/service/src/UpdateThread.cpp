@@ -79,18 +79,6 @@ m_transactionCount(0)
 }
 
 
-void UpdateThread::lockWriting()
-{
-  m_updateLock.lockForWrite();
-}
-
-
-void UpdateThread::unlockWriting()
-{
-  m_updateLock.unlock();
-}
-
-
 void UpdateThread::setQueryExecutor(QueryExecutor *queryExecutor)
 {
   m_queryExecutor = queryExecutor;
@@ -107,6 +95,11 @@ void UpdateThread::incrementTransactionCount(int i)
 {
   m_transactionCount+=i;
   qDebug() <<  "Number of write requests: logged " << m_transactionCount;
+}
+
+QReadWriteLock *UpdateThread::getLock()
+{
+    return &m_updateLock;
 }
 
 
@@ -165,7 +158,7 @@ void UpdateThread::run()
       m_queryExecutor->loadTags(tagsContainer);
       m_queryExecutor->loadSessions(sessionsContainer);
 
-      lockWriting();
+      QWriteLocker(getLock());
       qDebug() << "Containers locked for db_update";
 
       m_usersContainer->merge(usersContainer);
@@ -176,7 +169,6 @@ void UpdateThread::run()
       m_queryExecutor->updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_sessionsContainer);
 
       qDebug() <<  "tags added. trying to unlock";
-      unlockWriting();
 
       if (oldTagsContainerSize != m_tagsContainer->size())
       {
@@ -189,9 +181,8 @@ void UpdateThread::run()
             QSharedPointer<Channel> channel = tag->getChannel();
 
             qDebug() << "adding " << i << " from "<< m_tagsContainer->size() <<" to channel " << channel->getName();
-            lockWriting();
+            QWriteLocker(getLock());
             m_dataChannelsMap->insert(channel, tag);
-            unlockWriting();
           }
         }
         Q_EMIT newTagInsertionComplete(m_tagsContainer->size()-oldTagsContainerSize);

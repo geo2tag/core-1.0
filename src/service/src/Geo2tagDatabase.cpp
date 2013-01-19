@@ -48,9 +48,8 @@ void Geo2tagDatabase::incrementTransactionCount(int i)
 {
   if (!m_updateThread.isNull())
   {
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     m_updateThread->incrementTransactionCount(i);
-    m_updateThread->unlockWriting();
   }
 }
 

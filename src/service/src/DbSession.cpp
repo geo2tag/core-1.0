@@ -458,9 +458,8 @@ QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &r
     if (!newUser.isNull())
     {
         m_queryExecutor->deleteTmpUser(registrationToken);
-        m_updateThread->lockWriting();
+        QWriteLocker(m_updateThread->getLock());
         m_usersContainer->push_back(newUser);
-        m_updateThread->unlockWriting();
         answer.append("Congratulations!");
     }
     else
@@ -505,9 +504,8 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
                 qDebug() << "answer: " <<  answer.data();
                 return answer;
             }
-            m_updateThread->lockWriting();
+            QWriteLocker(m_updateThread->getLock());
             m_sessionsContainer->push_back(addedSession);
-            m_updateThread->unlockWriting();
             response.addSession(addedSession);
         }
         else
@@ -631,10 +629,9 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     m_tagsContainer->push_back(realTag);
     m_dataChannelsMap->insert(realChannel, realTag);
-    m_updateThread->unlockWriting();
 
     qDebug() << "Updating session";
     m_queryExecutor->updateSession(realSession);
@@ -847,10 +844,9 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     qDebug() << "Try to subscribe for realChannel " << realChannel->getId();
     realUser->subscribe(realChannel);
-    m_updateThread->unlockWriting();
 
     m_queryExecutor->updateSession(realSession);
 
@@ -914,10 +910,9 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
         qDebug() << "answer: " << answer.data();
         return answer;
     }
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     // Here will be adding user into user container
     m_usersContainer->push_back(addedUser);
-    m_updateThread->unlockWriting();
 
     response.addUser(addedUser);
     response.setErrno(SUCCESS);
@@ -979,10 +974,9 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     // Here will be adding user into user container
     m_channelsContainer->push_back(addedChannel);
-    m_updateThread->unlockWriting();
 
     m_queryExecutor->updateSession(realSession);
 
@@ -1073,10 +1067,8 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     realUser->unsubscribe(realChannel);
-    m_updateThread->unlockWriting();
-
     m_queryExecutor->updateSession(realSession);
 
     response.setErrno(SUCCESS);
@@ -1335,10 +1327,9 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         qDebug() << "answer: " << answer.data();
         return answer;
     }
-    m_updateThread->lockWriting();
+    QWriteLocker(m_updateThread->getLock());
     // Here will be removing user from container
     m_usersContainer->erase(realUser);
-    m_updateThread->unlockWriting();
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());

@@ -721,9 +721,8 @@ void QueryExecutor::checkSessions(UpdateThread* thread)
         qDebug() <<  "Commit for DeleteSession sql query";
         m_database.commit();
       }
-      thread->lockWriting();
+      QWriteLocker(thread->getLock());
       thread->getSessionsContainer()->erase(thread->getSessionsContainer()->at((i)));
-      thread->unlockWriting();
     }
   }
 }

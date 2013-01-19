@@ -89,9 +89,7 @@ class UpdateThread: public QThread
 
     void incrementTransactionCount(int i = 1);
 
-    void lockWriting();
-
-    void unlockWriting();
+    QReadWriteLock* getLock();
 
     void setQueryExecutor(QueryExecutor* queryExecutor);
     QSharedPointer<Sessions> getSessionsContainer() const;
