@@ -193,7 +193,7 @@ DbObjectsCollection::DbObjectsCollection():
                                         );
     m_updateThread->setQueryExecutor(m_queryExecutor);
 
-    m_updateThread->start();
+    //BUG: GT-765 m_updateThread->start();
 }
 
 DbObjectsCollection& DbObjectsCollection::getInstance()
@@ -215,8 +215,6 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
     {
         m_queryExecutor->connect();
     }
-
-
 
     QList<QString> queries = m_processors.uniqueKeys();
     for (int i=0;i<queries.size();i++)
@@ -588,6 +586,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     QSharedPointer<Session> dummySession = request.getSessions()->at(0);
     qDebug() << "Checking for sessions with token = " << dummySession->getSessionToken();
     QSharedPointer<Session> realSession = findSession(dummySession);
+
     if(realSession.isNull())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
