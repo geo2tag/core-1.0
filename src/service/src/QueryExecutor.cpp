@@ -72,7 +72,7 @@ bool QueryExecutor::isConnected()
 
 void QueryExecutor::disconnect()
 {
-  return m_database.close();
+  //GT-765 return m_database.close();
 }
 
 

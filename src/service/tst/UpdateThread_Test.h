@@ -40,7 +40,6 @@
 #include <QtTest/QtTest>
 #include <QSignalSpy>
 #include <QtSql>
-//include Application class
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 #include "signals.h"
