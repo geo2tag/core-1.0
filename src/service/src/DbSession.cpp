@@ -188,9 +188,12 @@ DbObjectsCollection::DbObjectsCollection():
                 NULL,
                 NULL);
 
-    m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database,"executor"),
-                                                        QSharedPointer<UpdateThread>(m_updateThread))
-                                        );
+//GT-765    m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database,"executor"),
+//                                                        QSharedPointer<UpdateThread>(m_updateThread))
+//                                        );
+
+    m_queryExecutor= new QueryExecutor(Geo2tagDatabase(QSqlDatabase::database(),QSharedPointer<UpdateThread>(m_updateThread)));
+
     m_updateThread->setQueryExecutor(m_queryExecutor);
 
     m_updateThread->start();

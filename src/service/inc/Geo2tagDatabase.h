@@ -56,5 +56,8 @@ class Geo2tagDatabase : public QSqlDatabase
     void setUpdateThread(const QSharedPointer<UpdateThread>& updateThread);
 
     bool transaction();
+
+protected:
+    QSqlDatabase cloneDatabase(const QSqlDatabase &other, const QString &connectionName);
 };
 #endif                                  // GEO2TAGDATABASE_H
