@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------- */
 
 #include "DynamicCastFailure.h"
-CDynamicCastFailure::CDynamicCastFailure(unsigned short /*errorcode*/,unsigned char /*package_id*/)
+#include <QDebug>
+CDynamicCastFailure::CDynamicCastFailure(unsigned short errorcode,unsigned char package_id)
 {
-
+    qWarning() << "Dynamic cast failure << code=" << errorcode << " pkg=" << package_id;
 }
