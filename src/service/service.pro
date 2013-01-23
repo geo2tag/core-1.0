@@ -22,6 +22,7 @@ database.files=../../scripts/*
 database.path=/opt/geo2tag/db/
 
 
+
 DEPENDPATH += . \
               inc \
               src \
