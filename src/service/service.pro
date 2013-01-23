@@ -18,7 +18,7 @@ db_content.path = /opt/geo2tag/
 odbc_configs.files = ../../scripts/odbc.ini ../../scripts/odbcinst.ini
 odbc_configs.path = /opt/geo2tag/
 
-database.files=../../scripts/base.sql ../../auto/bin/reinit_db.sh
+database.files=../../scripts/*
 database.path=/opt/geo2tag/db/
 
 

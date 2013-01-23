@@ -40,7 +40,6 @@
 #include <QtTest/QtTest>
 #include <QSignalSpy>
 #include <QtSql>
-//include Application class
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
 #include "signals.h"
@@ -90,7 +89,8 @@ namespace Test
         m_database.setHostName("localhost");
         m_database.setDatabaseName("test_db");
         m_database.setUserName("test_user");
-        m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(m_database, "QueryExecutor")));
+        // GT_765 m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(m_database, "QueryExecutor")));
+        m_queryExecutor = new QueryExecutor(Geo2tagDatabase::database(),this);
         m_database.open();
 
         m_updateInterval = SettingsStorage::getValue("general/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();

@@ -49,8 +49,9 @@ namespace Test
     database.setUserName("test_user");
     //database.setPassword("geo2tag");
     m_database = Geo2tagDatabase(database);
-    m_queryExecutor = QSharedPointer<QueryExecutor>(
-      new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database, "QueryExecutor"))));
+//GT-765    m_queryExecutor = QSharedPointer<QueryExecutor>(
+//      new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database, "QueryExecutor"))));
+    m_queryExecutor = QSharedPointer<QueryExecutor>(new QueryExecutor(Geo2tagDatabase::database()));
     m_database.open();
     m_queryExecutor->connect();
   }

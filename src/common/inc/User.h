@@ -75,7 +75,6 @@ namespace common
   };
 
   typedef ConcurrentVector<User> Users;
-
 }                                       //namespace common
 
 
