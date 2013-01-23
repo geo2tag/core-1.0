@@ -42,13 +42,12 @@
 #include <QSharedPointer>
 #include "UpdateThread.h"
 
-class Geo2tagDatabase : public QSqlDatabase
+class Geo2tagDatabase
 {
-  QSharedPointer<UpdateThread> m_updateThread;
+    QSharedPointer<UpdateThread> m_updateThread;
 
-  public:
-    Geo2tagDatabase(const QSqlDatabase& parent,
-      const QSharedPointer<UpdateThread>& updateThread = QSharedPointer<UpdateThread>(0));
+public:
+    Geo2tagDatabase();
 
     void incrementTransactionCount(int i = 1);
 

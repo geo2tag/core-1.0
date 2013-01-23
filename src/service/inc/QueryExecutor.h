@@ -45,20 +45,15 @@
 
 class QueryExecutor : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
     Geo2tagDatabase m_database;
 
-  qlonglong nextKey(const QString& sequence) const;
+    qlonglong nextKey(const QString& sequence) const;
+    QueryExecutor();
 
-  public:
+public:
 
-    QueryExecutor(const Geo2tagDatabase& db, QObject* parent = 0);
-
-    bool isConnected();
-    bool connect();
-    void disconnect();
-    QSqlError lastError();
 
     qlonglong nextUserKey() const;
     qlonglong nextChannelKey() const;
@@ -98,9 +93,14 @@ class QueryExecutor : public QObject
 
     qlonglong getFactTransactionNumber();
 
-    signals:
+    static QSqlQuery makeQuery();
+    static void rollback();
+    static void commit();
+    static QueryExecutor* instance();
 
-  public slots:
+signals:
+
+public slots:
 
 };
 #endif                                  // QUERYEXECUTOR_H

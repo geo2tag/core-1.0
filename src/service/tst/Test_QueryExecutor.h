@@ -51,7 +51,6 @@ namespace Test
     Q_OBJECT
 
       QSharedPointer<QueryExecutor> m_queryExecutor;
-    Geo2tagDatabase m_database;
 
     private:
       QSharedPointer<common::User> createTestUser(const QString& login,

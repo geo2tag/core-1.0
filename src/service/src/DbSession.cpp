@@ -131,8 +131,7 @@ DbObjectsCollection::DbObjectsCollection():
     m_usersContainer(new Users()),
     m_dataChannelsMap(new DataChannels()),
     m_sessionsContainer(new Sessions()),
-    m_updateThread(NULL),
-    m_queryExecutor(NULL)
+    m_updateThread(NULL)
 {
 
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
@@ -188,13 +187,7 @@ DbObjectsCollection::DbObjectsCollection():
                 NULL,
                 NULL);
 
-//GT-765    m_queryExecutor = new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database,"executor"),
-//                                                        QSharedPointer<UpdateThread>(m_updateThread))
-//                                        );
-
-    m_queryExecutor= new QueryExecutor(Geo2tagDatabase(QSqlDatabase::database(),QSharedPointer<UpdateThread>(m_updateThread)));
-
-    m_updateThread->setQueryExecutor(m_queryExecutor);
+    //BUG: GT-765 m_updateThread->setQueryExecutor(m_queryExecutor);
 
     //BUG: GT-765 m_updateThread->start();
 }
@@ -207,17 +200,10 @@ DbObjectsCollection& DbObjectsCollection::getInstance()
 
 DbObjectsCollection::~DbObjectsCollection()
 {
-    m_updateThread->wait();
-    delete m_updateThread;
-    delete m_queryExecutor;
 }
 
 QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArray& body)
 {
-    if(!m_queryExecutor->isConnected())
-    {
-        m_queryExecutor->connect();
-    }
 
     QList<QString> queries = m_processors.uniqueKeys();
     for (int i=0;i<queries.size();i++)
@@ -401,14 +387,14 @@ QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
         }
     }
 
-    if(m_queryExecutor->doesUserWithGivenEmailExist(newTmpUser))
+    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(newTmpUser))
     {
         response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    if(m_queryExecutor->doesTmpUserExist(newTmpUser))
+    if(QueryExecutor::instance()->doesTmpUserExist(newTmpUser))
     {
         response.setErrno(TMP_USER_ALREADY_EXIST_ERROR);
         answer.append(response.getJson());
@@ -424,7 +410,7 @@ QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
 
     // Only password hashes are stored, so we change password of this user by password hash
     newTmpUser->setPassword(getPasswordHash(newTmpUser));
-    QString confirmToken = m_queryExecutor->insertNewTmpUser(newTmpUser);
+    QString confirmToken = QueryExecutor::instance()->insertNewTmpUser(newTmpUser);
     if(confirmToken.isEmpty())
     {
         response.setErrno(INTERNAL_DB_ERROR);
@@ -447,18 +433,18 @@ QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &r
     QByteArray answer;
     answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
     //qDebug() <<  "Confirming!");
-    bool tokenExists = m_queryExecutor->doesRegistrationTokenExist(registrationToken);
+    bool tokenExists = QueryExecutor::instance()->doesRegistrationTokenExist(registrationToken);
     if (!tokenExists)
     {
         answer.append("Given token doesn't exist!");
         return answer;
     }
 
-    QSharedPointer<User> newUser = m_queryExecutor->insertTmpUserIntoUsers(registrationToken);
+    QSharedPointer<User> newUser = QueryExecutor::instance()->insertTmpUserIntoUsers(registrationToken);
 
     if (!newUser.isNull())
     {
-        m_queryExecutor->deleteTmpUser(registrationToken);
+        QueryExecutor::instance()->deleteTmpUser(registrationToken);
         QWriteLocker(m_updateThread->getLock());
         m_usersContainer->push_back(newUser);
         answer.append("Congratulations!");
@@ -497,7 +483,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         {
             QSharedPointer<Session> dummySession(new Session("", QDateTime::currentDateTime(), realUser));
             qDebug() <<  "Session hasn't been found. Generating of new Session.";
-            QSharedPointer<Session> addedSession = m_queryExecutor->insertNewSession(dummySession);
+            QSharedPointer<Session> addedSession = QueryExecutor::instance()->insertNewSession(dummySession);
             if (!addedSession)
             {
                 response.setErrno(INTERNAL_DB_ERROR);
@@ -513,7 +499,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         {
             qDebug() <<  "Session has been found. Session's token:" << session->getSessionToken();
             qDebug() <<  "Updating session";
-            m_queryExecutor->updateSession(session);
+            QueryExecutor::instance()->updateSession(session);
             response.addSession(session);
         }
         response.setErrno(SUCCESS);
@@ -553,7 +539,7 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &data)
 
     qDebug() <<  "Session has been found. Deleting...";
     qDebug() <<  "Number of sessions before deleting: "<< m_sessionsContainer->size();
-    bool result = m_queryExecutor->deleteSession(realSession);
+    bool result = QueryExecutor::instance()->deleteSession(realSession);
     if (!result)
     {
         response.setErrno(INTERNAL_DB_ERROR);
@@ -611,7 +597,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         }
     }
 
-    //bool channelSubscribed = m_queryExecutor->isChannelSubscribed(dummyChannel, realUser);
+    //bool channelSubscribed = QueryExecutor::instance()->isChannelSubscribed(dummyChannel, realUser);
     if(realChannel.isNull())
     {
         response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
@@ -623,7 +609,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     dummyTag->setSession(realSession);
     dummyTag->setUser(realUser);
     //now
-    QSharedPointer<DataMark> realTag = m_queryExecutor->insertNewTag(dummyTag);
+    QSharedPointer<DataMark> realTag = QueryExecutor::instance()->insertNewTag(dummyTag);
     if(realTag == NULL)
     {
         response.setErrno(INTERNAL_DB_ERROR);
@@ -636,7 +622,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     m_dataChannelsMap->insert(realChannel, realTag);
 
     qDebug() << "Updating session";
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
     qDebug() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
@@ -681,7 +667,7 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
     }
 
     qDebug() << "Updating session";
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
     qDebug() << "Updating session ..done";
 
     response.setChannels(ownedChannels);
@@ -718,7 +704,7 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
     response.setChannels(channels);
 
     qDebug() << "Updating session";
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
     qDebug() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
@@ -775,7 +761,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     response.setData(feed);
 
     qDebug() << "Updating session";
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
     qDebug() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
@@ -839,7 +825,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         }
     }
     qDebug() <<  "Sending sql request for SubscribeQuery";
-    bool result = m_queryExecutor->subscribeChannel(realUser,realChannel);
+    bool result = QueryExecutor::instance()->subscribeChannel(realUser,realChannel);
     if(!result)
     {
         response.setErrno(INTERNAL_DB_ERROR);
@@ -850,7 +836,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
     qDebug() << "Try to subscribe for realChannel " << realChannel->getId();
     realUser->subscribe(realChannel);
 
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -886,7 +872,7 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
         }
     }
 
-    if(m_queryExecutor->doesUserWithGivenEmailExist(dummyUser))
+    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(dummyUser))
     {
         response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
         answer.append(response.getJson());
@@ -903,7 +889,7 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
     qDebug() <<  "Sending sql request for AddUser";
     // Only password hashes are stored, so we change password of this user by password hash
     dummyUser->setPassword(getPasswordHash(dummyUser));
-    QSharedPointer<User> addedUser = m_queryExecutor->insertNewUser(dummyUser);
+    QSharedPointer<User> addedUser = QueryExecutor::instance()->insertNewUser(dummyUser);
 
     if(!addedUser)
     {
@@ -966,7 +952,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 
     qDebug() <<  "Sending sql request for AddChannel";
     dummyChannel->setOwner(realSession->getUser());
-    QSharedPointer<Channel> addedChannel = m_queryExecutor->insertNewChannel(dummyChannel);
+    QSharedPointer<Channel> addedChannel = QueryExecutor::instance()->insertNewChannel(dummyChannel);
 
     if(!addedChannel)
     {
@@ -980,7 +966,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
     // Here will be adding user into user container
     m_channelsContainer->push_back(addedChannel);
 
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -1010,7 +996,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
         return answer;
     }
 
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     response.setChannels(m_channelsContainer);
     response.setErrno(SUCCESS);
@@ -1061,7 +1047,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         return answer;
     }
     qDebug() <<  "Sending sql request for UnsubscribeQuery";
-    bool result = m_queryExecutor->unsubscribeChannel(realUser,realChannel);
+    bool result = QueryExecutor::instance()->unsubscribeChannel(realUser,realChannel);
 
     if(!result)
     {
@@ -1071,7 +1057,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
     }
     QWriteLocker(m_updateThread->getLock());
     realUser->unsubscribe(realChannel);
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -1197,7 +1183,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
     }
     response.setDataChannels(feed);
 
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     answer.append(response.getJson());
     qDebug() << "answer: " << answer.data();
@@ -1287,7 +1273,7 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
     int amount = request.getAmount();
     tags = tags.count() > amount ? tags.mid(0, amount) : tags;
 
-    m_queryExecutor->updateSession(realSession);
+    QueryExecutor::instance()->updateSession(realSession);
 
     response.setData(channel, tags);
     response.setErrno(SUCCESS);
@@ -1320,7 +1306,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
     }
 
     qDebug() <<  "Sending sql request for DeleteUser";
-    bool isDeleted = m_queryExecutor->deleteUser(realUser);
+    bool isDeleted = QueryExecutor::instance()->deleteUser(realUser);
 
     if(!isDeleted)
     {
@@ -1366,7 +1352,7 @@ QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& da
     QString password = generateNewPassword(realUser).left(passwLength);
     QString hash = getPasswordHash(realUser->getLogin(), password);
     qDebug() << realUser->getPassword();
-    QSharedPointer<common::User> updatedUser = m_queryExecutor->updateUserPassword(realUser, hash);
+    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
 
     if(updatedUser.isNull())
     {

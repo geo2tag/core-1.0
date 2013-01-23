@@ -39,241 +39,240 @@
 
 namespace Test
 {
-  Test_QueryExecutor::Test_QueryExecutor()
-    : QObject(),
-    m_database(QSqlDatabase())
+  Test_QueryExecutor::Test_QueryExecutor()  : QObject()
   {
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
     database.setHostName("localhost");
     database.setDatabaseName("test_db");
     database.setUserName("test_user");
     //database.setPassword("geo2tag");
-    m_database = Geo2tagDatabase(database);
+//    m_database = Geo2tagDatabase(database);
 //GT-765    m_queryExecutor = QSharedPointer<QueryExecutor>(
 //      new QueryExecutor(Geo2tagDatabase(QSqlDatabase::cloneDatabase(database, "QueryExecutor"))));
-    m_queryExecutor = QSharedPointer<QueryExecutor>(new QueryExecutor(Geo2tagDatabase::database()));
-    m_database.open();
-    m_queryExecutor->connect();
+//    m_queryExecutor = QSharedPointer<QueryExecutor>(new QueryExecutor(Geo2tagDatabase::database()));
+//    m_database.open();
+//    QueryExecutor::instance()->connect();
   }
 
   QSharedPointer<common::User> Test_QueryExecutor::createTestUser(const QString &login,
     const QString &password,
     const QString &email)
   {
-    DbUser* user = new DbUser(login, password, email, 0);
-    qlonglong userId = 0;
+//    DbUser* user = new DbUser(login, password, email, 0);
+//    qlonglong userId = 0;
 
-    QSqlQuery query(m_database);
-    query.prepare("insert into users (email, login, password) values (:email, :login, :password);");
-    query.bindValue(":email", user->getEmail());
-    query.bindValue(":login", user->getLogin());
-    query.bindValue(":password", user->getPassword());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      delete(user);
-      return QSharedPointer<common::User>(0);
-    }
-    else
-    {
-      m_database.commit();
-    }
+//    QSqlQuery query=QueryExecutor::makeQuery();
+//    query.prepare("insert into users (email, login, password) values (:email, :login, :password);");
+//    query.bindValue(":email", user->getEmail());
+//    query.bindValue(":login", user->getLogin());
+//    query.bindValue(":password", user->getPassword());
+//    QueryExecutor::transaction();
 
-    query.prepare("select id from users where login = :login;");
-    query.bindValue(":login", user->getLogin());
-    result = query.exec();
-    query.next();
-    userId = query.value(0).toLongLong();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      delete(user);
+//      return QSharedPointer<common::User>(0);
+//    }
+//    else
+//    {
+//      commit();
+//    }
 
-    user->setId(userId);
-    return QSharedPointer<common::User>(user);
+//    query.prepare("select id from users where login = :login;");
+//    query.bindValue(":login", user->getLogin());
+//    result = query.exec();
+//    query.next();
+//    userId = query.value(0).toLongLong();
+
+//    user->setId(userId);
+//    return QSharedPointer<common::User>(user);
   }
 
   bool Test_QueryExecutor::deleteTestUser(const QSharedPointer<common::User> &user)
   {
-    QSqlQuery query(m_database);
-    query.prepare("delete from users where id = :id");
-    query.bindValue(":id", user->getId());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      return false;
-    }
-    else
-    {
-      m_database.commit();
-      return true;
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("delete from users where id = :id");
+//    query.bindValue(":id", user->getId());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      return false;
+//    }
+//    else
+//    {
+//      commit();
+//      return true;
+//    }
   }
 
   QSharedPointer<Session> Test_QueryExecutor::createTestSession(const QString &token,
     const QDateTime &time,
     const QSharedPointer<common::User> &user)
   {
-    DbSession* session = new DbSession(0, token, time, user);
-    qlonglong sessionId = 0;
+//    DbSession* session = new DbSession(0, token, time, user);
+//    qlonglong sessionId = 0;
 
-    QSqlQuery query(m_database);
-    query.prepare("insert into sessions (user_id, session_token, last_access_time) values (:id, :token, :time);");
-    query.bindValue(":id", session->getUser()->getId());
-    query.bindValue(":token", session->getSessionToken());
-    query.bindValue(":time", session->getLastAccessTime().toUTC());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      delete(session);
-      return QSharedPointer<Session>(0);
-    }
-    else
-    {
-      m_database.commit();
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("insert into sessions (user_id, session_token, last_access_time) values (:id, :token, :time);");
+//    query.bindValue(":id", session->getUser()->getId());
+//    query.bindValue(":token", session->getSessionToken());
+//    query.bindValue(":time", session->getLastAccessTime().toUTC());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      delete(session);
+//      return QSharedPointer<Session>(0);
+//    }
+//    else
+//    {
+//      commit();
+//    }
 
-    query.prepare("select id from sessions where session_token = :token;");
-    query.bindValue(":token", session->getSessionToken());
-    result = query.exec();
-    query.next();
-    sessionId = query.value(0).toLongLong();
+//    query.prepare("select id from sessions where session_token = :token;");
+//    query.bindValue(":token", session->getSessionToken());
+//    result = query.exec();
+//    query.next();
+//    sessionId = query.value(0).toLongLong();
 
-    session->setId(sessionId);
-    return QSharedPointer<Session>(session);
+//    session->setId(sessionId);
+//    return QSharedPointer<Session>(session);
   }
 
   QSharedPointer<common::User> Test_QueryExecutor::createTestTmpUser(const QString &login,
     const QString &password,
     const QString &email)
   {
-    DbUser* tmpUser = new DbUser(login, password, email, 0);
-    qlonglong userId = 0;
+//    DbUser* tmpUser = new DbUser(login, password, email, 0);
+//    qlonglong userId = 0;
 
-    QSqlQuery query(m_database);
-    query.prepare("insert into signups (email,login,password,registration_token,sent) values(:email,:login,:password,:r_token,:sent);");
-    query.bindValue(":email", tmpUser->getEmail());
-    query.bindValue(":login", tmpUser->getLogin());
-    query.bindValue(":password", tmpUser->getPassword());
-    query.bindValue(":r_token", "TESTTESTTEST");
-    query.bindValue(":sent", FALSE);
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      delete(tmpUser);
-      return QSharedPointer<common::User>(0);
-    }
-    else
-    {
-      m_database.commit();
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("insert into signups (email,login,password,registration_token,sent) values(:email,:login,:password,:r_token,:sent);");
+//    query.bindValue(":email", tmpUser->getEmail());
+//    query.bindValue(":login", tmpUser->getLogin());
+//    query.bindValue(":password", tmpUser->getPassword());
+//    query.bindValue(":r_token", "TESTTESTTEST");
+//    query.bindValue(":sent", FALSE);
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      delete(tmpUser);
+//      return QSharedPointer<common::User>(0);
+//    }
+//    else
+//    {
+//      commit();
+//    }
 
-    query.prepare("select id from signups where login = :login;");
-    query.bindValue(":login", tmpUser->getLogin());
-    result = query.exec();
-    query.next();
-    userId = query.value(0).toLongLong();
+//    query.prepare("select id from signups where login = :login;");
+//    query.bindValue(":login", tmpUser->getLogin());
+//    result = query.exec();
+//    query.next();
+//    userId = query.value(0).toLongLong();
 
-    tmpUser->setId(userId);
-    return QSharedPointer<common::User>(tmpUser);
+//    tmpUser->setId(userId);
+//    return QSharedPointer<common::User>(tmpUser);
   }
 
   bool Test_QueryExecutor::deleteTestTmpUser(const QSharedPointer<common::User>& user)
   {
-    QSqlQuery query(m_database);
-    query.prepare("delete from signups where login = :login and email = :email");
-    query.bindValue(":login", user->getLogin());
-    query.bindValue(":email", user->getEmail());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      return false;
-    }
-    else
-    {
-      m_database.commit();
-      return true;
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("delete from signups where login = :login and email = :email");
+//    query.bindValue(":login", user->getLogin());
+//    query.bindValue(":email", user->getEmail());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      return false;
+//    }
+//    else
+//    {
+//      commit();
+//      return true;
+//    }
   }
 
   bool Test_QueryExecutor::deleteTestSession(const QSharedPointer<Session> &session)
   {
-    QSqlQuery query(m_database);
-    query.prepare("delete from sessions where session_token = :token");
-    query.bindValue(":token", session->getSessionToken());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      return false;
-    }
-    else
-    {
-      m_database.commit();
-      return true;
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("delete from sessions where session_token = :token");
+//    query.bindValue(":token", session->getSessionToken());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      return false;
+//    }
+//    else
+//    {
+//      commit();
+//      return true;
+//    }
   }
 
   QSharedPointer<Channel> Test_QueryExecutor::createTestChannel(const QString &name, const QString &description, const QString &url,
     const QSharedPointer<common::User>& owner)
   {
-    DbChannel* channel = new DbChannel(0, name, description, url);
-    qlonglong channelId = 0;
+//    DbChannel* channel = new DbChannel(0, name, description, url);
+//    qlonglong channelId = 0;
 
-    QSqlQuery query(m_database);
-    query.prepare("insert into channel (name, description, url, owner_id) values(:name,:description,:url,:owner_id);");
-    query.bindValue(":name", channel->getName());
-    query.bindValue(":description", channel->getDescription());
-    query.bindValue(":url", channel->getUrl());
-    query.bindValue(":owner_id", owner->getId());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      delete(channel);
-      return QSharedPointer<Channel>(0);
-    }
-    else
-    {
-      m_database.commit();
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("insert into channel (name, description, url, owner_id) values(:name,:description,:url,:owner_id);");
+//    query.bindValue(":name", channel->getName());
+//    query.bindValue(":description", channel->getDescription());
+//    query.bindValue(":url", channel->getUrl());
+//    query.bindValue(":owner_id", owner->getId());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      delete(channel);
+//      return QSharedPointer<Channel>(0);
+//    }
+//    else
+//    {
+//      commit();
+//    }
 
-    query.prepare("select id from channel where name = :name;");
-    query.bindValue(":name", channel->getName());
-    result = query.exec();
-    query.next();
-    channelId = query.value(0).toLongLong();
+//    query.prepare("select id from channel where name = :name;");
+//    query.bindValue(":name", channel->getName());
+//    result = query.exec();
+//    query.next();
+//    channelId = query.value(0).toLongLong();
 
-    channel->setId(channelId);
-    return QSharedPointer<Channel>(channel);
+//    channel->setId(channelId);
+//    return QSharedPointer<Channel>(channel);
 
   }
 
   bool Test_QueryExecutor::deleteTestChannel(const QSharedPointer<Channel> &channel)
   {
-    QSqlQuery query(m_database);
-    query.prepare("delete from channel where id = :id");
-    query.bindValue(":id", channel->getId());
-    m_database.transaction();
-    bool result = query.exec();
-    if (!result)
-    {
-      m_database.rollback();
-      return false;
-    }
-    else
-    {
-      m_database.commit();
-      return true;
-    }
+//    QSqlQuery query=makeQuery();
+//    query.prepare("delete from channel where id = :id");
+//    query.bindValue(":id", channel->getId());
+//    m_database.transaction();
+//    bool result = query.exec();
+//    if (!result)
+//    {
+//      rollback();
+//      return false;
+//    }
+//    else
+//    {
+//      commit();
+//      return true;
+//    }
   }
 
   QSharedPointer<DataMark> Test_QueryExecutor::createTestTag(double altitude, double latitude, double longitude,
@@ -286,7 +285,7 @@ namespace Test
     tag->setUser(user);
     tag->setChannel(channel);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, channel_id) "
       "         values(:altitude,:latitude,:longitude,:label,:description,:url,:user_id,:time, :channel_id);");
     query.bindValue(":altitude", tag->getAltitude());
@@ -303,13 +302,13 @@ namespace Test
     bool result = query.exec();
     if (!result)
     {
-      m_database.rollback();
+      rollback();
       delete(tag);
       return QSharedPointer<DataMark>(0);
     }
     else
     {
-      m_database.commit();
+      commit();
     }
 
     query.prepare("select id from tag where label = :label and description = :descr;");
@@ -325,19 +324,19 @@ namespace Test
 
   bool Test_QueryExecutor::deleteTestTag(const QSharedPointer<DataMark> &tag)
   {
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("delete from tag where id = :id;");
     query.bindValue(":id", tag->getId());
     m_database.transaction();
     bool result = query.exec();
     if (!result)
     {
-      m_database.rollback();
+      rollback();
       return false;
     }
     else
     {
-      m_database.commit();
+      commit();
       return true;
     }
   }
@@ -357,13 +356,13 @@ namespace Test
     QSharedPointer<Channel> channel = createTestChannel(name, descr, url, user);
     QVERIFY(channel != QSharedPointer<Channel>(0));
 
-    bool result = m_queryExecutor->subscribeChannel(user, channel);
+    bool result = QueryExecutor::instance()->subscribeChannel(user, channel);
     QCOMPARE(result, true);
 
-    result = m_queryExecutor->subscribeChannel(user, channel);
+    result = QueryExecutor::instance()->subscribeChannel(user, channel);
     QCOMPARE(result, false);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select * from subscribe where channel_id = :channel_id and user_id = :user_id;");
     query.bindValue(":channel_id", channel->getId());
     query.bindValue(":user_id", user->getId());
@@ -392,7 +391,7 @@ namespace Test
     QSharedPointer<Channel> channel = createTestChannel(name, descr, url, user);
     QVERIFY(channel != QSharedPointer<Channel>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("insert into subscribe (channel_id, user_id) values(:channel_id, :user_id);");
     query.bindValue(":channel_id", channel->getId());
     query.bindValue(":user_id", user->getId());
@@ -400,15 +399,15 @@ namespace Test
     bool result = query.exec();
     if (!result)
     {
-      m_database.rollback();
+      rollback();
     }
     else
     {
-      m_database.commit();
+      commit();
     }
     QCOMPARE(result, true);
 
-    result = m_queryExecutor->unsubscribeChannel(user, channel);
+    result = QueryExecutor::instance()->unsubscribeChannel(user, channel);
     QCOMPARE(result, true);
 
     query.prepare("select * from subscribe where channel_id = :channel_id and user_id = :user_id;");
@@ -434,13 +433,13 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login, passw, email);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    bool result = m_queryExecutor->doesTmpUserExist(tmpUser);
+    bool result = QueryExecutor::instance()->doesTmpUserExist(tmpUser);
     QCOMPARE(result, true);
 
     result = deleteTestTmpUser(tmpUser);
     QCOMPARE(result, true);
 
-    result = m_queryExecutor->doesTmpUserExist(tmpUser);
+    result = QueryExecutor::instance()->doesTmpUserExist(tmpUser);
     QCOMPARE(result, false);
   }
 
@@ -453,13 +452,13 @@ namespace Test
     QSharedPointer<common::User> user = createTestUser(login, passw, email);
     QVERIFY(user != QSharedPointer<common::User>(0));
 
-    bool result = m_queryExecutor->doesUserWithGivenEmailExist(user);
+    bool result = QueryExecutor::instance()->doesUserWithGivenEmailExist(user);
     QCOMPARE(result, true);
 
     result = deleteTestUser(user);
     QCOMPARE(result, true);
 
-    result = m_queryExecutor->doesUserWithGivenEmailExist(user);
+    result = QueryExecutor::instance()->doesUserWithGivenEmailExist(user);
     QCOMPARE(result, false);
   }
 
@@ -472,10 +471,10 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login, passw, email);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    bool result = m_queryExecutor->deleteTmpUser(QSharedPointer<common::User>(tmpUser));
+    bool result = QueryExecutor::instance()->deleteTmpUser(QSharedPointer<common::User>(tmpUser));
     QCOMPARE(result, true);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id from signups where login = :login;");
     query.bindValue(":login", tmpUser->getLogin());
     result = query.exec();
@@ -490,13 +489,13 @@ namespace Test
     QString email = "test_email6";
 
     QSharedPointer<common::User> tmpUser(new common::User(login, passw, email));
-    QString token = m_queryExecutor->insertNewTmpUser(tmpUser);
+    QString token = QueryExecutor::instance()->insertNewTmpUser(tmpUser);
     QVERIFY(token != "");
 
-    QString emptyToken = m_queryExecutor->insertNewTmpUser(tmpUser);
+    QString emptyToken = QueryExecutor::instance()->insertNewTmpUser(tmpUser);
     QVERIFY(emptyToken == "");
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id, email, login, password, registration_token from signups where login = :login;");
     query.bindValue(":login", tmpUser->getLogin());
     bool result = query.exec();
@@ -520,7 +519,7 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login, passw, email);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select registration_token from signups where login = :login;");
     query.bindValue(":login", login);
     bool result = query.exec();
@@ -528,13 +527,13 @@ namespace Test
     QVERIFY(query.next() == true);
     QString token = query.value(0).toString();
 
-    result = m_queryExecutor->doesRegistrationTokenExist(token);
+    result = QueryExecutor::instance()->doesRegistrationTokenExist(token);
     QCOMPARE(result, true);
 
     result = deleteTestTmpUser(tmpUser);
     QCOMPARE(result, true);
 
-    result = m_queryExecutor->doesRegistrationTokenExist(token);
+    result = QueryExecutor::instance()->doesRegistrationTokenExist(token);
     QCOMPARE(result, false);
   }
 
@@ -547,7 +546,7 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login, passw, email);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select registration_token from signups where login = :login;");
     query.bindValue(":login", login);
     bool result = query.exec();
@@ -555,7 +554,7 @@ namespace Test
     QVERIFY(query.next() == true);
     QString token = query.value(0).toString();
 
-    QSharedPointer<common::User> user = m_queryExecutor->insertTmpUserIntoUsers(token);
+    QSharedPointer<common::User> user = QueryExecutor::instance()->insertTmpUserIntoUsers(token);
     QVERIFY(user != QSharedPointer<common::User>(0));
     QVERIFY(user->getLogin() == login);
     QVERIFY(user->getEmail() == email);
@@ -577,7 +576,7 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login, passw, email);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select registration_token from signups where login = :login;");
     query.bindValue(":login", login);
     bool result = query.exec();
@@ -585,7 +584,7 @@ namespace Test
     QVERIFY(query.next() == true);
     QString token = query.value(0).toString();
 
-    result = m_queryExecutor->deleteTmpUser(token);
+    result = QueryExecutor::instance()->deleteTmpUser(token);
     QCOMPARE(result, true);
 
     query.prepare("select id from signups where login = :login;");
@@ -622,10 +621,10 @@ namespace Test
     dummyTag->setChannel(channel);
     dummyTag->setSession(session);
 
-    QSharedPointer<DataMark> tag = m_queryExecutor->insertNewTag(dummyTag);
+    QSharedPointer<DataMark> tag = QueryExecutor::instance()->insertNewTag(dummyTag);
     QVERIFY(tag != QSharedPointer<DataMark>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag where id = :id;");
     query.bindValue(":id", tag->getId());
     bool result = query.exec();
@@ -659,16 +658,16 @@ namespace Test
     QString passw = "test_pass11";
     QString email = "test_email11";
     QSharedPointer<common::User> dummyUser(new common::User(login, passw, email));
-    QSharedPointer<common::User> user = m_queryExecutor->insertNewUser(dummyUser);
+    QSharedPointer<common::User> user = QueryExecutor::instance()->insertNewUser(dummyUser);
     QCOMPARE(user.isNull(), false);
     QVERIFY(user->getEmail() == email);
     QVERIFY(user->getLogin() == login);
     QVERIFY(user->getPassword() == passw);
 
-    QSharedPointer<common::User> emptyUser = m_queryExecutor->insertNewUser(dummyUser);
+    QSharedPointer<common::User> emptyUser = QueryExecutor::instance()->insertNewUser(dummyUser);
     QCOMPARE(emptyUser.isNull(), true);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id, email, login, password from users where login = :login;");
     query.bindValue(":login", user->getLogin());
     bool result = query.exec();
@@ -696,13 +695,13 @@ namespace Test
     QVERIFY(user != QSharedPointer<common::User>(0));
 
     QSharedPointer<Channel> dummyChannel(new Channel(name, descr, url, user));
-    QSharedPointer<Channel> channel = m_queryExecutor->insertNewChannel(dummyChannel);
+    QSharedPointer<Channel> channel = QueryExecutor::instance()->insertNewChannel(dummyChannel);
     QCOMPARE(channel.isNull(), false);
     QVERIFY(channel->getName() == name);
     QVERIFY(channel->getDescription() == descr);
     QVERIFY(channel->getUrl() == url);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id, name, description, url from channel where name = :name;");
     query.bindValue(":name", channel->getName());
     bool result = query.exec();
@@ -727,10 +726,10 @@ namespace Test
 
     QSharedPointer<common::User> user = createTestUser(login, passw, email);
     QVERIFY(user != QSharedPointer<common::User>(0));
-    bool result = m_queryExecutor->deleteUser(user);
+    bool result = QueryExecutor::instance()->deleteUser(user);
     QCOMPARE(result, true);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id from users where login = :login;");
     query.bindValue(":login", user->getLogin());
     result = query.exec();
@@ -747,13 +746,13 @@ namespace Test
     QSharedPointer<common::User> user = createTestUser(login, passw, email);
     QVERIFY(user != QSharedPointer<common::User>(0));
     QSharedPointer<Session> dummySession(new Session("", QDateTime::currentDateTime(), user));
-    QSharedPointer<Session> session = m_queryExecutor->insertNewSession(dummySession);
+    QSharedPointer<Session> session = QueryExecutor::instance()->insertNewSession(dummySession);
     QCOMPARE(session.isNull(), false);
     QVERIFY(session->getUser()->getEmail() == email);
     QVERIFY(session->getUser()->getLogin() == login);
     QVERIFY(session->getUser()->getPassword() == passw);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id, user_id from sessions where session_token = :token;");
     query.bindValue(":token", session->getSessionToken());
     bool result = query.exec();
@@ -781,11 +780,11 @@ namespace Test
     QVERIFY(session != QSharedPointer<Session>(0));
 
     QDateTime timeBeforeUpdate = session->getLastAccessTime();
-    m_queryExecutor->updateSession(session);
+    QueryExecutor::instance()->updateSession(session);
     QDateTime timeAfterUpdate = session->getLastAccessTime();
     QVERIFY(timeBeforeUpdate != timeAfterUpdate);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select last_access_time from sessions where session_token = :token;");
     query.bindValue(":token", session->getSessionToken());
     bool result = query.exec();
@@ -811,10 +810,10 @@ namespace Test
     QVERIFY(user != QSharedPointer<common::User>(0));
     QSharedPointer<Session> session = createTestSession(sessionToken, time, user);
     QVERIFY(session != QSharedPointer<Session>(0));
-    bool result = m_queryExecutor->deleteSession(session);
+    bool result = QueryExecutor::instance()->deleteSession(session);
     QCOMPARE(result, true);
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("select id from sessions where session_token = :token;");
     query.bindValue(":token", session->getSessionToken());
     result = query.exec();
@@ -839,7 +838,7 @@ namespace Test
     QSharedPointer<common::User> tmpUser = createTestTmpUser(login1, passw1, email1);
     QVERIFY(tmpUser != QSharedPointer<common::User>(0));
 
-    QSqlQuery query(m_database);
+    QSqlQuery query=makeQuery();
     query.prepare("insert into signups (datetime,email,login,password,registration_token,sent) values(:time,:email,:login,:password,:r_token,:sent);");
     query.bindValue(":time", time);
     query.bindValue(":email", email2);
@@ -851,15 +850,15 @@ namespace Test
     bool result = query.exec();
     if (!result)
     {
-      m_database.rollback();
+      rollback();
     }
     else
     {
-      m_database.commit();
+      commit();
     }
     QCOMPARE(result, true);
 
-    m_queryExecutor->checkTmpUsers();
+    QueryExecutor::instance()->checkTmpUsers();
 
     query.prepare("select sent from signups where login = :login;");
     query.bindValue(":login", login1);
@@ -885,13 +884,13 @@ namespace Test
     QSharedPointer<common::Users> users(new common::Users());
     QCOMPARE(users->size(), 0);
 
-    m_queryExecutor->loadUsers(*users);
+    QueryExecutor::instance()->loadUsers(*users);
     int size = users->size();
 
     QSharedPointer<common::User> user = createTestUser(login, passw, email);
     QVERIFY(user != QSharedPointer<common::User>(0));
 
-    m_queryExecutor->loadUsers(*users);
+    QueryExecutor::instance()->loadUsers(*users);
     int newSize = users->size();
 
     QCOMPARE(size + 1, newSize);
@@ -925,14 +924,14 @@ namespace Test
     QSharedPointer<DataMarks> tags(new DataMarks);
     QCOMPARE(tags->size(), 0);
 
-    m_queryExecutor->loadTags(*tags);
+    QueryExecutor::instance()->loadTags(*tags);
     int size = tags->size();
 
     QSharedPointer<DataMark> tag = createTestTag(altitude, latitude, longitude, label, tagDescr, url, time,
       user, channel);
     QVERIFY(tag != QSharedPointer<DataMark>(0));
 
-    m_queryExecutor->loadTags(*tags);
+    QueryExecutor::instance()->loadTags(*tags);
     int newSize = tags->size();
     QCOMPARE(newSize, size + 1);
     QCOMPARE(tags->at(newSize - 1)->getLabel(), label);
@@ -961,7 +960,7 @@ namespace Test
     QSharedPointer<Channels> channels(new Channels());
     QCOMPARE(channels->size(), 0);
 
-    m_queryExecutor->loadChannels(*channels);
+    QueryExecutor::instance()->loadChannels(*channels);
     int size = channels->size();
 
     QSharedPointer<common::User> user = createTestUser(login, passw, email);
@@ -970,7 +969,7 @@ namespace Test
     QSharedPointer<Channel> channel = createTestChannel(name, descr, url, user);
     QVERIFY(channel != QSharedPointer<Channel>(0));
 
-    m_queryExecutor->loadChannels(*channels);
+    QueryExecutor::instance()->loadChannels(*channels);
     int newSize = channels->size();
 
     QCOMPARE(newSize, size + 1);
@@ -998,13 +997,13 @@ namespace Test
     QSharedPointer<Sessions> sessions(new Sessions());
     QCOMPARE(sessions->size(), 0);
 
-    m_queryExecutor->loadSessions(*sessions);
+    QueryExecutor::instance()->loadSessions(*sessions);
     int size = sessions->size();
 
     QSharedPointer<Session> session = createTestSession(sessionToken, time, user);
     QVERIFY(session != QSharedPointer<Session>(0));
 
-    m_queryExecutor->loadSessions(*sessions);
+    QueryExecutor::instance()->loadSessions(*sessions);
     int newSize = sessions->size();
 
     QCOMPARE(newSize, size + 1);

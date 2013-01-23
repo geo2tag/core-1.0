@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
   QObject *tests[] =
   {
-    new Test::Test_QueryExecutor(),
+  //  new Test::Test_QueryExecutor(),
     new Test::UpdateThread_Test()
   };
 

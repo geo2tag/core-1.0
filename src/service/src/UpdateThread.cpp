@@ -126,37 +126,27 @@ void UpdateThread::run()
     {
       PerformanceCounter counter("db_update");
 
-      qDebug() << "trying to connect to database...,";
-      bool result = m_queryExecutor->connect();
-      if(!result)
-      {
-        qCritical() << "connection error " << m_queryExecutor->lastError().text();
-        QThread::msleep(1000);
-        continue;
-      }
-
-      qDebug() << "connected...";
       // Check if DB contain new changes
       qlonglong oldTagsContainerSize = m_tagsContainer->size();
-      qlonglong factCount = m_queryExecutor->getFactTransactionNumber();
+      qlonglong factCount = QueryExecutor::instance()->getFactTransactionNumber();
       if (!compareTransactionNumber(factCount))
       {
         QThread::msleep(interval);
         continue;
       }
 
-      m_queryExecutor->checkTmpUsers();
-      m_queryExecutor->checkSessions(this);
+      QueryExecutor::instance()->checkTmpUsers();
+      QueryExecutor::instance()->checkSessions(this);
 
       common::Users       usersContainer(*m_usersContainer);
       DataMarks   tagsContainer(*m_tagsContainer);
       Channels    channelsContainer(*m_channelsContainer);
       Sessions    sessionsContainer(*m_sessionsContainer);
 
-      m_queryExecutor->loadUsers(usersContainer);
-      m_queryExecutor->loadChannels(channelsContainer);
-      m_queryExecutor->loadTags(tagsContainer);
-      m_queryExecutor->loadSessions(sessionsContainer);
+      QueryExecutor::instance()->loadUsers(usersContainer);
+      QueryExecutor::instance()->loadChannels(channelsContainer);
+      QueryExecutor::instance()->loadTags(tagsContainer);
+      QueryExecutor::instance()->loadSessions(sessionsContainer);
 
       QWriteLocker(getLock());
       qDebug() << "Containers locked for db_update";
@@ -166,7 +156,7 @@ void UpdateThread::run()
       m_channelsContainer->merge(channelsContainer);
       m_sessionsContainer->merge(sessionsContainer);
 
-      m_queryExecutor->updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_sessionsContainer);
+      QueryExecutor::instance()->updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_sessionsContainer);
 
       qDebug() <<  "tags added. trying to unlock";
 
@@ -192,7 +182,7 @@ void UpdateThread::run()
       qDebug() <<  "current channels' size = %d"  << m_channelsContainer->size();
       qDebug() <<  "current sessions' size = %d"  << m_sessionsContainer->size();
 
-      m_queryExecutor->disconnect();
+      QueryExecutor::instance()->disconnect();
       qDebug() << "sync completed!!!";
       Q_EMIT syncronizationComplete();
     }
