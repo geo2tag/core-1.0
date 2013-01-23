@@ -88,7 +88,7 @@ namespace common
 
     const QString generateNewPassword(const QSharedPointer<common::User>& user) const;
 
-    QSharedPointer<User> findUser(const QSharedPointer<User>) const;
+    QSharedPointer<User> findUser(const QSharedPointer<User> &dummyUser) const;
     QSharedPointer<Session> findSession(const QSharedPointer<Session>&) const;
     QSharedPointer<Session> findSessionForUser(const QSharedPointer<User>&) const;
 

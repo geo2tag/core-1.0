@@ -294,23 +294,22 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
     return result;
 }
 
-QSharedPointer<User> DbObjectsCollection::findUser(const QSharedPointer<User> /*&dummyUser*/) const
+QSharedPointer<User> DbObjectsCollection::findUser(const QSharedPointer<User> &dummyUser) const
 {
-    Q_ASSERT(false);
-    //GT-765
     QSharedPointer<User> realUser;      // Null pointer
-//    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-//    qDebug() << "checking user key: " << dummyUser->getLogin() << " from " << currentUsers.size() <<" known users";
-//    if (!dummyUser->getLogin().isEmpty() && !dummyUser->getPassword().isEmpty())
-//    {
-//        for(int i=0; i<currentUsers.size(); i++)
-//        {
-//            if(QString::compare(currentUsers.at(i)->getLogin(), dummyUser->getLogin(), Qt::CaseInsensitive) == 0
-//                    &&
-//                    currentUsers.at(i)->getPassword() == getPasswordHash(currentUsers.at(i)->getLogin(),dummyUser->getPassword()))
-//                return currentUsers.at(i);
-//        }
-//    }
+
+    QVector<QSharedPointer<User> > currentUsers = Core::MetaCache::getUsers();
+    qDebug() << "checking user key: " << dummyUser->getLogin() << " from " << currentUsers.size() <<" known users";
+    if (!dummyUser->getLogin().isEmpty() && !dummyUser->getPassword().isEmpty())
+    {
+        for(int i=0; i<currentUsers.size(); i++)
+        {
+            if(QString::compare(currentUsers.at(i)->getLogin(), dummyUser->getLogin(), Qt::CaseInsensitive) == 0
+                    &&
+                    currentUsers.at(i)->getPassword() == getPasswordHash(currentUsers.at(i)->getLogin(),dummyUser->getPassword()))
+                return currentUsers.at(i);
+        }
+    }
     return realUser;
 }
 
