@@ -57,6 +57,7 @@ QReadWriteLock      MetaCache::s_SessionsLock;
 void MetaCache::init()
 {
     qDebug() << "Initializing MetaCache objects";
+    initUsers();
 }
 
 QSharedPointer<User> MetaCache::getUserById(const QString userId)
