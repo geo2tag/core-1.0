@@ -61,15 +61,10 @@ class User: public QObject, public BasicUser
 public:
 
     User(const QString & name="", const QString & passw="", const QString & email="");
-
     virtual qlonglong getId() const;
-
     void subscribe(const QSharedPointer<Channel>& channel);
-
     void unsubscribe(const QSharedPointer<Channel>& channel);
-
     const QSharedPointer<Channels> getSubscribedChannels() const;
-
     virtual ~User();
     // class User
 };

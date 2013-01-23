@@ -135,7 +135,7 @@ QSharedPointer<DataMark> QueryExecutor::insertNewTag(const QSharedPointer<DataMa
     newTagQuery.bindValue(":time", tag->getTime().toUTC());
     newTagQuery.bindValue(":id", newId);
 
-    m_database.transaction();
+    transaction();
 
     result = newTagQuery.exec();
     if(!result)
@@ -173,7 +173,7 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const QSharedPointer<Cha
     newChannelQuery.bindValue(":url",channel->getUrl());
     newChannelQuery.bindValue(":owner_id",channel->getOwner()->getId());
 
-    m_database.transaction();
+    transaction();
 
     result=newChannelQuery.exec();
     if(!result)
@@ -247,7 +247,7 @@ bool QueryExecutor::deleteTmpUser(const QSharedPointer<common::User> &user)
     deleteSignupQuery.bindValue(":login",user->getLogin() );
     qDebug() << "Deleting: "<< deleteSignupQuery.lastQuery();
 
-    m_database.transaction();
+    transaction();
 
     result = deleteSignupQuery.exec();
     if(!result)
@@ -280,7 +280,7 @@ const QString QueryExecutor::insertNewTmpUser(const QSharedPointer<common::User>
     newSignupQuery.bindValue(":r_token", newToken);
     newSignupQuery.bindValue(":sent", FALSE);
 
-    m_database.transaction();
+    transaction();
 
     result = newSignupQuery.exec();
     if(!result)
@@ -358,7 +358,7 @@ bool QueryExecutor::deleteTmpUser(const QString &token)
     deleteSignupQuery.bindValue(":token", token);
     qDebug() << "Deleting: %s"<< deleteSignupQuery.lastQuery();
 
-    m_database.transaction();
+    transaction();
 
     result = deleteSignupQuery.exec();
     if(!result)
@@ -387,7 +387,7 @@ QSharedPointer<common::User> QueryExecutor::insertNewUser(const QSharedPointer<c
     newUserQuery.bindValue(":email",user->getEmail());
     newUserQuery.bindValue(":login",user->getLogin());
     newUserQuery.bindValue(":password",user->getPassword());
-    m_database.transaction();
+    transaction();
 
     result=newUserQuery.exec();
     QSharedPointer<common::User> newUser = QSharedPointer<common::User>(NULL);
@@ -416,8 +416,7 @@ bool QueryExecutor::subscribeChannel(const QSharedPointer<common::User>& user,co
     qDebug() << "Subscribing "<<user->getLogin()<<" (Id = "<<user->getId()
              <<") for "<<channel->getName()<<" (Id = "<<channel->getId() <<")";
 
-    m_database.transaction();
-
+    transaction();
     result=insertNewSubscribtion.exec();
     if(!result)
     {
@@ -443,7 +442,7 @@ bool QueryExecutor::unsubscribeChannel(const QSharedPointer<common::User>& user,
     qDebug() << "Unsubscribing " << user->getLogin() << " (Id = " << user->getId()
              << ") for " << channel->getName() << " (Id = " << channel->getId() <<")";
 
-    m_database.transaction();
+    transaction();
 
     result=deleteSubscribtion.exec();
     if(!result)
@@ -468,7 +467,7 @@ bool QueryExecutor::deleteUser(const QSharedPointer<common::User> &user)
     deleteUserQuery.prepare("delete from users where id = :id;");
     deleteUserQuery.bindValue(":id",user->getId() );
 
-    m_database.transaction();
+    transaction();
 
     result = deleteUserQuery.exec();
     if(!result)
@@ -493,7 +492,7 @@ QSharedPointer<common::User> QueryExecutor::updateUserPassword(const QSharedPoin
     query.bindValue(":pwd", password);
     query.bindValue(":id", user->getId());
 
-    m_database.transaction();
+    transaction();
 
     bool result = query.exec();
     if (!result)
@@ -528,7 +527,7 @@ QSharedPointer<Session> QueryExecutor::insertNewSession(const QSharedPointer<Ses
     query.bindValue(":token", newSessionToken);
     query.bindValue(":time", session->getLastAccessTime().toUTC());
 
-    m_database.transaction();
+    transaction();
 
     bool result = query.exec();
     if (!result)
@@ -556,7 +555,7 @@ bool QueryExecutor::updateSession(const QSharedPointer<Session>& session)
     query.bindValue(":time", currentTime);
     query.bindValue(":token", session->getSessionToken());
 
-    m_database.transaction();
+    transaction();
 
     bool result = query.exec();
     if (!result)
@@ -583,7 +582,7 @@ bool QueryExecutor::deleteSession(const QSharedPointer<Session> &session)
     query.prepare("delete from sessions where id = :id;");
     query.bindValue(":id", session->getId());
 
-    m_database.transaction();
+    transaction();
 
     bool result = query.exec();
     if (!result)
@@ -623,7 +622,7 @@ void QueryExecutor::checkTmpUsers()
         updateQuery.prepare("update signups set sent = true where id = :id;");
         updateQuery.bindValue(":id", id);
         bool result = updateQuery.exec();
-        m_database.transaction();
+        transaction();
         if(!result)
         {
             qDebug() << "Rollback for CheckTmpUser sql query";
@@ -651,7 +650,7 @@ void QueryExecutor::checkTmpUsers()
         deleteQuery.prepare("delete from signups where id = :id;");
         deleteQuery.bindValue(":id", id);
         qDebug() << "Deleting: " << deleteQuery.lastQuery();
-        m_database.transaction();
+        transaction();
         bool result = deleteQuery.exec();
         if(!result)
         {
@@ -683,7 +682,7 @@ void QueryExecutor::checkSessions(UpdateThread* thread)
             query.prepare("delete from sessions where id = :id;");
             query.bindValue(":id", thread->getSessionsContainer()->at(i)->getId());
             qDebug() << "Deleting: "<< query.lastQuery();
-            m_database.transaction();
+            transaction();
             bool result = query.exec();
             if (!result)
             {
@@ -878,6 +877,11 @@ QSqlQuery QueryExecutor::makeQuery()
     return QSqlQuery(QSqlDatabase::database());
 }
 
+void QueryExecutor::transaction()
+{
+    QSqlDatabase::database().transaction();
+}
+
 void QueryExecutor::rollback()
 {
     QSqlDatabase::database().rollback();
@@ -885,7 +889,7 @@ void QueryExecutor::rollback()
 
 void QueryExecutor::commit()
 {
-    QSqlDatabase::database().rollback();
+    QSqlDatabase::database().commit();
 }
 
 QueryExecutor *QueryExecutor::instance()

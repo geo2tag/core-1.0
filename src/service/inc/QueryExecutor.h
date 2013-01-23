@@ -47,7 +47,7 @@ class QueryExecutor : public QObject
 {
     Q_OBJECT
 
-    Geo2tagDatabase m_database;
+    //Geo2tagDatabase m_database;
 
     qlonglong nextKey(const QString& sequence) const;
     QueryExecutor();
@@ -94,6 +94,7 @@ public:
     qlonglong getFactTransactionNumber();
 
     static QSqlQuery makeQuery();
+    static void transaction();
     static void rollback();
     static void commit();
     static QueryExecutor* instance();
