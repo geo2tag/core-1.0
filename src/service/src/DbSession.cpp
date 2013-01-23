@@ -119,6 +119,7 @@
 
 #include "PerformanceCounter.h"
 #include "Geo2tagDatabase.h"
+#include "MetaCache.h"
 
 namespace common
 {
@@ -128,10 +129,8 @@ const QString DbObjectsCollection::ok = QString("Ok");
 DbObjectsCollection::DbObjectsCollection():
     m_channelsContainer(new Channels()),
     m_tagsContainer(new DataMarks()),
-    m_usersContainer(new Users()),
     m_dataChannelsMap(new DataChannels()),
-    m_sessionsContainer(new Sessions()),
-    m_updateThread(NULL)
+    m_sessionsContainer(new Sessions())
 {
 
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
@@ -178,14 +177,14 @@ DbObjectsCollection::DbObjectsCollection():
 
     qDebug() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
 
-    m_updateThread = new UpdateThread(
-                m_tagsContainer,
-                m_usersContainer,
-                m_channelsContainer,
-                m_dataChannelsMap,
-                m_sessionsContainer,
-                NULL,
-                NULL);
+//    m_updateThread = new UpdateThread(
+//                m_tagsContainer,
+//                m_usersContainer,
+//                m_channelsContainer,
+//                m_dataChannelsMap,
+//                m_sessionsContainer,
+//                NULL,
+//                NULL);
 
     //BUG: GT-765 m_updateThread->setQueryExecutor(m_queryExecutor);
 
@@ -253,7 +252,7 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
 bool DbObjectsCollection::checkPasswordQuality(const QString& password) const
 {
     // If check is not enabled in config - all passwords are good
-    bool checkEnabled = SettingsStorage::getValue("Security_Settings/password_quality_check", QVariant(DEFAULT_PASSWORD_QUALITY_CHECK)).toBool();
+    bool checkEnabled = SettingsStorage::getValue("security/password_quality_check", QVariant(DEFAULT_PASSWORD_QUALITY_CHECK)).toBool();
     if (!checkEnabled) return true;
 
     if ( password.size() < MINIMAL_PASSWORD_LENGTH )
@@ -295,40 +294,26 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
     return result;
 }
 
-QSharedPointer<User> DbObjectsCollection::findUser(const QSharedPointer<User> &dummyUser) const
+QSharedPointer<User> DbObjectsCollection::findUser(const QSharedPointer<User> /*&dummyUser*/) const
 {
+    Q_ASSERT(false);
+    //GT-765
     QSharedPointer<User> realUser;      // Null pointer
-    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    qDebug() << "checking user key: " << dummyUser->getLogin() << " from " << currentUsers.size() <<" known users";
-    if (!dummyUser->getLogin().isEmpty() && !dummyUser->getPassword().isEmpty())
-    {
-        for(int i=0; i<currentUsers.size(); i++)
-        {
-            if(QString::compare(currentUsers.at(i)->getLogin(), dummyUser->getLogin(), Qt::CaseInsensitive) == 0
-                    &&
-                    currentUsers.at(i)->getPassword() == getPasswordHash(currentUsers.at(i)->getLogin(),dummyUser->getPassword()))
-                return currentUsers.at(i);
-        }
-    }
+//    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
+//    qDebug() << "checking user key: " << dummyUser->getLogin() << " from " << currentUsers.size() <<" known users";
+//    if (!dummyUser->getLogin().isEmpty() && !dummyUser->getPassword().isEmpty())
+//    {
+//        for(int i=0; i<currentUsers.size(); i++)
+//        {
+//            if(QString::compare(currentUsers.at(i)->getLogin(), dummyUser->getLogin(), Qt::CaseInsensitive) == 0
+//                    &&
+//                    currentUsers.at(i)->getPassword() == getPasswordHash(currentUsers.at(i)->getLogin(),dummyUser->getPassword()))
+//                return currentUsers.at(i);
+//        }
+//    }
     return realUser;
 }
 
-QSharedPointer<User> DbObjectsCollection::findUser(const QString& email) const
-{
-    QSharedPointer<User> realUser;      // Null pointer
-    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    qDebug() << "checking user key: " << email << "from "<< currentUsers.size() << " known users";
-
-    if (!email.isEmpty())
-    {
-        for(int i=0; i<currentUsers.size(); i++)
-        {
-            if(QString::compare(currentUsers.at(i)->getEmail(), email, Qt::CaseInsensitive) == 0)
-                return currentUsers.at(i);
-        }
-    }
-    return realUser;
-}
 
 QSharedPointer<Session> DbObjectsCollection::findSession(const QSharedPointer<Session>& dummySession) const
 {
@@ -364,6 +349,8 @@ QSharedPointer<Session> DbObjectsCollection::findSessionForUser(const QSharedPoi
 
 QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
 {
+    Q_ASSERT(false); // Not_implemented
+
     RegisterUserRequestJSON request;
     RegisterUserResponseJSON response;
     QByteArray answer;
@@ -374,85 +361,84 @@ QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    QSharedPointer<User> newTmpUser = request.getUsers()->at(0);
-    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    for(int i=0; i<currentUsers.size(); i++)
-    {
-        if(QString::compare(currentUsers.at(i)->getLogin(), newTmpUser->getLogin(), Qt::CaseInsensitive) == 0)
-        {
-            response.setErrno(USER_ALREADY_EXIST_ERROR);
-            answer.append(response.getJson());
-            qDebug() << "answer: " <<  answer.data();
-            return answer;
-        }
-    }
+//    QSharedPointer<User> newTmpUser = request.getUsers()->at(0);
+//    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
+//    for(int i=0; i<currentUsers.size(); i++)
+//    {
+//        if(QString::compare(currentUsers.at(i)->getLogin(), newTmpUser->getLogin(), Qt::CaseInsensitive) == 0)
+//        {
+//            response.setErrno(USER_ALREADY_EXIST_ERROR);
+//            answer.append(response.getJson());
+//            qDebug() << "answer: " <<  answer.data();
+//            return answer;
+//        }
+//    }
 
-    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(newTmpUser))
-    {
-        response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(newTmpUser))
+//    {
+//        response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    if(QueryExecutor::instance()->doesTmpUserExist(newTmpUser))
-    {
-        response.setErrno(TMP_USER_ALREADY_EXIST_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if(QueryExecutor::instance()->doesTmpUserExist(newTmpUser))
+//    {
+//        response.setErrno(TMP_USER_ALREADY_EXIST_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    if ( !checkPasswordQuality(newTmpUser->getPassword()) )
-    {
-        response.setErrno(WEAK_PASSWORD_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if ( !checkPasswordQuality(newTmpUser->getPassword()) )
+//    {
+//        response.setErrno(WEAK_PASSWORD_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    // Only password hashes are stored, so we change password of this user by password hash
-    newTmpUser->setPassword(getPasswordHash(newTmpUser));
-    QString confirmToken = QueryExecutor::instance()->insertNewTmpUser(newTmpUser);
-    if(confirmToken.isEmpty())
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        qDebug() << "answer: " <<  answer.data();
-        return answer;
-    }
+//    // Only password hashes are stored, so we change password of this user by password hash
+//    newTmpUser->setPassword(getPasswordHash(newTmpUser));
+//    QString confirmToken = QueryExecutor::instance()->insertNewTmpUser(newTmpUser);
+//    if(confirmToken.isEmpty())
+//    {
+//        response.setErrno(INTERNAL_DB_ERROR);
+//        answer.append(response.getJson());
+//        qDebug() << "answer: " <<  answer.data();
+//        return answer;
+//    }
 
-    response.setErrno(SUCCESS);
+//    response.setErrno(SUCCESS);
 
-    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
-    response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
-    answer.append(response.getJson());
-    qDebug() << "answer: " <<  answer.data();
+//    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
+//    response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
+//    answer.append(response.getJson());
+//    qDebug() << "answer: " <<  answer.data();
     return answer;
 }
 
-QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &registrationToken)
+QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &/*registrationToken*/)
 {
     QByteArray answer;
     answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-    //qDebug() <<  "Confirming!");
-    bool tokenExists = QueryExecutor::instance()->doesRegistrationTokenExist(registrationToken);
-    if (!tokenExists)
-    {
-        answer.append("Given token doesn't exist!");
-        return answer;
-    }
+    Q_ASSERT(false); //NOT implemented
+//    bool tokenExists = QueryExecutor::instance()->doesRegistrationTokenExist(registrationToken);
+//    if (!tokenExists)
+//    {
+//        answer.append("Given token doesn't exist!");
+//        return answer;
+//    }
 
-    QSharedPointer<User> newUser = QueryExecutor::instance()->insertTmpUserIntoUsers(registrationToken);
+//    QSharedPointer<User> newUser = QueryExecutor::instance()->insertTmpUserIntoUsers(registrationToken);
 
-    if (!newUser.isNull())
-    {
-        QueryExecutor::instance()->deleteTmpUser(registrationToken);
-        QWriteLocker(m_updateThread->getLock());
-        m_usersContainer->push_back(newUser);
-        answer.append("Congratulations!");
-    }
-    else
-    {
-        answer.append("Attempt of inserting user has failed!");
-    }
+//    if (!newUser.isNull())
+//    {
+//        QueryExecutor::instance()->deleteTmpUser(registrationToken);
+//        m_usersContainer->push_back(newUser);
+//        answer.append("Congratulations!");
+//    }
+//    else
+//    {
+//        answer.append("Attempt of inserting user has failed!");
+//    }
     return answer;
 }
 
@@ -469,12 +455,17 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         return answer;
     }
 
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QSharedPointer<User> realUser = findUser(dummyUser);
 
-    if(realUser.isNull())
+    QSharedPointer<User> userId = request.getUsers()->at(0);
+    qDebug() << "userId=" << userId;
+
+    QSharedPointer<User> realUser = findUser(userId);
+    bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
+
+    if(realUser.isNull() && secirutyEnabled)
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
+        qDebug() << "Incorrect credentilas, security/enabled=" << secirutyEnabled;
     }
     else
     {
@@ -491,7 +482,6 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
                 qDebug() << "answer: " <<  answer.data();
                 return answer;
             }
-            QWriteLocker(m_updateThread->getLock());
             m_sessionsContainer->push_back(addedSession);
             response.addSession(addedSession);
         }
@@ -503,9 +493,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
             response.addSession(session);
         }
         response.setErrno(SUCCESS);
-        //response.addUser(realUser);
     }
-
     answer.append(response.getJson());
     qDebug() << "answer: " <<  answer.data();
     return answer;
@@ -617,7 +605,6 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
-    QWriteLocker(m_updateThread->getLock());
     m_tagsContainer->push_back(realTag);
     m_dataChannelsMap->insert(realChannel, realTag);
 
@@ -832,7 +819,6 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    QWriteLocker(m_updateThread->getLock());
     qDebug() << "Try to subscribe for realChannel " << realChannel->getId();
     realUser->subscribe(realChannel);
 
@@ -859,7 +845,8 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
     }
     // Look for user with the same name
     QSharedPointer<User> dummyUser = request.getUsers()->at(0);
-    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
+
+    QVector<QSharedPointer<User> > currentUsers = Core::MetaCache::getUsers();
 
     for(int i=0; i<currentUsers.size(); i++)
     {
@@ -898,9 +885,10 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
         qDebug() << "answer: " << answer.data();
         return answer;
     }
-    QWriteLocker(m_updateThread->getLock());
     // Here will be adding user into user container
-    m_usersContainer->push_back(addedUser);
+    Q_ASSERT(false);
+    // Not implemented
+    //m_usersContainer->push_back(addedUser);
 
     response.addUser(addedUser);
     response.setErrno(SUCCESS);
@@ -962,7 +950,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    QWriteLocker(m_updateThread->getLock());
+    //QWriteLocker(m_updateThread->getLock());
     // Here will be adding user into user container
     m_channelsContainer->push_back(addedChannel);
 
@@ -1055,7 +1043,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    QWriteLocker(m_updateThread->getLock());
+    //QWriteLocker(m_updateThread->getLock());
     realUser->unsubscribe(realChannel);
     QueryExecutor::instance()->updateSession(realSession);
 
@@ -1315,9 +1303,11 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         qDebug() << "answer: " << answer.data();
         return answer;
     }
-    QWriteLocker(m_updateThread->getLock());
+    //QWriteLocker(m_updateThread->getLock());
     // Here will be removing user from container
-    m_usersContainer->erase(realUser);
+    Q_ASSERT(false);
+    // not implemenytd
+    //m_usersContainer->erase(realUser);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -1338,9 +1328,10 @@ QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& da
         return answer;
     }
     // Look for user with the same name
-    QSharedPointer<User> realUser = findUser(request.getUsers()->at(0)->getEmail());
+    Q_ASSERT(false);
+    //QSharedPointer<User> realUser = findUser(request.getUsers()->at(0)->getEmail());
 
-    if(!realUser)
+    //if(!realUser)
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
         answer.append(response.getJson());
@@ -1348,28 +1339,28 @@ QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& da
         return answer;
     }
 
-    int passwLength = SettingsStorage::getValue("Security_Settings/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
-    QString password = generateNewPassword(realUser).left(passwLength);
-    QString hash = getPasswordHash(realUser->getLogin(), password);
-    qDebug() << realUser->getPassword();
-    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
+//    int passwLength = SettingsStorage::getValue("security/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
+//    QString password = generateNewPassword(realUser).left(passwLength);
+//    QString hash = getPasswordHash(realUser->getLogin(), password);
+//    qDebug() << realUser->getPassword();
+//    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
 
-    if(updatedUser.isNull())
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        qDebug() << "answer: %s" <<  answer.data();
-        return answer;
-    }
+//    if(updatedUser.isNull())
+//    {
+//        response.setErrno(INTERNAL_DB_ERROR);
+//        answer.append(response.getJson());
+//        qDebug() << "answer: %s" <<  answer.data();
+//        return answer;
+//    }
 
-    qDebug() <<  "Sending email for restoring password";
-    EmailMessage message(updatedUser->getEmail());
-    message.sendAsRestorePwdMessage(password);
+//    qDebug() <<  "Sending email for restoring password";
+//    EmailMessage message(updatedUser->getEmail());
+//    message.sendAsRestorePwdMessage(password);
 
-    response.setErrno(SUCCESS);
-    answer.append(response.getJson());
-    qDebug() << "answer: %s" <<  answer.data();
-    return answer;
+//    response.setErrno(SUCCESS);
+//    answer.append(response.getJson());
+//    qDebug() << "answer: %s" <<  answer.data();
+//    return answer;
 }
 }                                       // namespace common
 

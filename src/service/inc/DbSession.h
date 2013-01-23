@@ -65,11 +65,8 @@ namespace common
 
     QSharedPointer<Channels>     m_channelsContainer;
     QSharedPointer<DataMarks>    m_tagsContainer;
-    QSharedPointer<Users>        m_usersContainer;
     QSharedPointer<DataChannels> m_dataChannelsMap;
     QSharedPointer<Sessions>     m_sessionsContainer;
-
-    UpdateThread *              m_updateThread;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
     typedef QByteArray (DbObjectsCollection::*ProcessMethodWithStr)(const QString&);
@@ -91,8 +88,7 @@ namespace common
 
     const QString generateNewPassword(const QSharedPointer<common::User>& user) const;
 
-    QSharedPointer<User> findUser(const QSharedPointer<User>&) const;
-    QSharedPointer<User> findUser(const QString&) const;
+    QSharedPointer<User> findUser(const QSharedPointer<User>) const;
     QSharedPointer<Session> findSession(const QSharedPointer<Session>&) const;
     QSharedPointer<Session> findSessionForUser(const QSharedPointer<User>&) const;
 

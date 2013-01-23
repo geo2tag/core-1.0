@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2011  OSLL osll@osll.spb.ru
+ * Copyright 2013  Kirill Krinkin  kirill.krinkin@gmail.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -11,7 +11,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -28,33 +28,64 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*----------------------------------------------------------------- !
+
+/*! ---------------------------------------------------------------
+ * \file MetaCache.h
+ * \brief Header of MetaCache
+ * \todo add comment here
+ *
+ * File description
+ *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include <QCoreApplication>
-#include <iostream>
-#include "server.h"
-#include "DbSession.h"
-#include "UpdateThread.h"
-#include "UserInternal.h"
-#include "ChannelInternal.h"
-#include "servicelogger.h"
-#include "SettingsStorage.h"
-#include "MetaCache.h"
 
-int main(int argc, char ** argv)
+#ifndef _MetaCache_H_E337695F_C96B_4956_A169_5053A7AF8B1A_INCLUDED_
+#define _MetaCache_H_E337695F_C96B_4956_A169_5053A7AF8B1A_INCLUDED_
+
+#include <QReadWriteLock>
+
+#include "Channel.h"
+#include "User.h"
+#include "Session.h"
+
+namespace Core
 {
-  QCoreApplication app(argc,argv);
+    using namespace common;
+ /*!
+   * Cache for meta information: Users, Sessions, Channels...
+   *
+   */
+  class MetaCache
+  {
 
-  Log::init();
-  SettingsStorage::init();
+      static Channels s_channels;
+      static Sessions s_sessions;
+      static Users    s_users;
 
-  common::DbObjectsCollection::getInstance();
+      static QReadWriteLock      s_cacheLock;
+      static QReadWriteLock      s_usersLock;
+      static QReadWriteLock      s_channelsLock;
+      static QReadWriteLock      s_SessionsLock;
 
-  Core::MetaCache::init();
-  Server s;
-  s.serve();
+  public:
 
-  return app.exec();
-}
+      static void init();
+      static QSharedPointer<User> getUserById(const QString userId);
+      static QVector<QSharedPointer<User> > getUsers();
+
+  protected:
+
+      static void initUsers();
+      static void initSessions();
+      static void initChannels();
+    
+  private:    
+    MetaCache(const MetaCache& obj);
+    MetaCache& operator=(const MetaCache& obj);
+
+  }; // class MetaCache
+  
+} // namespace Core
+
+#endif //_MetaCache_H_E337695F_C96B_4956_A169_5053A7AF8B1A_INCLUDED_
