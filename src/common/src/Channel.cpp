@@ -45,23 +45,19 @@ const qulonglong Channel::DEFAULT_TIME_SLOT_VALUE_MIN = 525600;
 
 Channel::Channel(const QString &name,
 const QString &description,
-const QString &url,
-const QSharedPointer<common::BasicUser>& owner):
+const QString &url):
 m_name(name),
 m_description(description),
 m_url(url),
-m_owner(owner),
 m_isDisplayed(true)
 {
     m_activeRadius = 5.0;                 // 5 km
 }
 
-Channel::Channel(const Channel &obj) : m_name(obj.name),
-    m_description(obj.description),
-    m_url(obj.url),
-    m_owner(obj.owner),
+Channel::Channel(const Channel &obj) : m_name(obj.m_name),
+    m_description(obj.m_description),
+    m_url(obj.m_url),
     m_isDisplayed(true)
-
 {
 }
 
@@ -72,7 +68,7 @@ Channel &Channel::operator =(const Channel &obj)
     m_isDisplayed=obj.m_isDisplayed;
     m_name=obj.m_name;
     m_url=obj.m_url;
-    retun this;
+    return *this;
 }
 
 
@@ -107,21 +103,10 @@ const QString& Channel::getUrl() const
 }
 
 
-const QSharedPointer<common::BasicUser>& Channel::getOwner() const
-{
-  return m_owner;
-}
-
 
 void Channel::setUrl(const QString& url)
 {
   m_url = url;
-}
-
-
-void Channel::setOwner(const QSharedPointer<common::BasicUser> &owner)
-{
-  m_owner = owner;
 }
 
 

@@ -46,7 +46,8 @@ INCLUDEPATH += \
                ../common/exception/inc \
                ../common/thread/inc \
                ../fcgiio/inc \
-               ../json/inc
+               ../json/inc \
+
 
 # Input
 HEADERS += \
@@ -76,7 +77,9 @@ SOURCES += src/main.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \
     src/servicelogger.cpp \
-    src/MetaCache.cpp
+    src/MetaCache.cpp \
+    processors/ProcessorsCore.cpp \
+    processors/ProcessorsFilters.cpp
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
 OBJECTS_DIR = .obj

@@ -47,10 +47,10 @@ class JsonSerializer:public QObject
 {
 
   protected:
-    QSharedPointer<Channels>            m_channelsContainer;
-    QSharedPointer<DataMarks>           m_tagsContainer;
-    QSharedPointer<common::Users>       m_usersContainer;
-    QSharedPointer<Sessions>            m_sessionsContainer;
+    QList<Tag>                 m_tagsContainer;
+    QList<Channel>             m_channelsContainer;
+    QList<common::BasicUser>   m_usersContainer;
+    QList<Sessions>            m_sessionsContainer;
 
     QVariantMap m_jsonTree;
 
@@ -63,22 +63,23 @@ class JsonSerializer:public QObject
   public:
     JsonSerializer(QObject * parent=0);
 
-    void addChannel(const QSharedPointer<Channel>&);
-    void addTag(const QSharedPointer<Tag>&);
-    void addUser(const QSharedPointer<common::User>&);
+    void addChannel(Channel&);
+    void addTag(const Tag&);
+    void addUser(const common::BasicUser&);
     void addSession(const Session &);
 
     virtual QByteArray getJson() const = 0;
 
     virtual bool parseJson(const QByteArray&) = 0;
 
-    QSharedPointer<DataMarks> getTags() const;
+    QList<Tag> getTags() const;
+    Tag getTag() const;
 
-    QSharedPointer<common::Users> getUsers() const;
+    QList<common::BasicUser> getUsers() const;
     common::BasicUser getUser() const;
 
-    QSharedPointer<Channels> getChannels() const;
-    QSharedPointer<Sessions> getSessions() const;
+    QList<Channel> getChannels() const;
+    //QList<Session> getSessions() const;
     Session getSession() const;
     Channel getChannel() const;
 

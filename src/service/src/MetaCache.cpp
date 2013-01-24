@@ -133,6 +133,11 @@ bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
     return true;
 }
 
+bool MetaCache::writeTag(const Tag &tag)
+{
+    return QueryExecutor::instance()->insertNewTag(tag);
+}
+
 void MetaCache::initUsers()
 {
     QWriteLocker lock(&s_cacheLock);

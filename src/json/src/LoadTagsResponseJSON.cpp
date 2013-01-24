@@ -60,7 +60,7 @@
 #include "JsonDataMark.h"
 
 LoadTagsResponseJSON::LoadTagsResponseJSON(const DataChannels &hashMap, QObject *parent):
-JsonSerializer(parent), m_hashMap(hashMap)
+JsonSerializer(parent), m_tags(hashMap)
 {
 }
 
@@ -126,7 +126,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
         link,
         time));
       newMark->setUser(user);
-      m_hashMap.insert(channel, newMark);
+      m_tags.insert(channel, newMark);
     }
   }
   return true;
@@ -138,12 +138,12 @@ QByteArray LoadTagsResponseJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj, rss, jchannel;
 
-  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
+  QList<QSharedPointer<Channel> > hashKeys = m_tags.uniqueKeys();
   QVariantList jchannels;
 
   for(int i=0; i<hashKeys.size(); i++)
   {
-    QList<QSharedPointer<Tag> > tags = m_hashMap.values(hashKeys.at(i));
+    QList<QSharedPointer<Tag> > tags = m_tags.values(hashKeys.at(i));
     QVariantList jtags;
     QVariantMap channel;
 
@@ -173,15 +173,15 @@ QByteArray LoadTagsResponseJSON::getJson() const
 }
 
 
-const DataChannels& LoadTagsResponseJSON::getData() const
+const QList<Tag> &LoadTagsResponseJSON::getData() const
 {
-  return m_hashMap;
+  return m_tags;
 }
 
 
-void LoadTagsResponseJSON::setData(const DataChannels& d)
+void LoadTagsResponseJSON::setData(const QList<Tag>& d)
 {
-  m_hashMap = d ;
+  m_ = d ;
 }
 
 

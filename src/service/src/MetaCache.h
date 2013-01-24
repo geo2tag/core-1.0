@@ -48,6 +48,7 @@
 #include "Channel.h"
 #include "User.h"
 #include "Session.h"
+#include "DataMarks.h"
 
 namespace Core
 {
@@ -88,7 +89,7 @@ namespace Core
       // returns true if channed exists and user is subscribed
       static bool testChannel(common::BasicUser &user, const Channel& channel);
 
-      static void writeTag();
+      static bool writeTag(const Tag& tag);
 
   protected:
 

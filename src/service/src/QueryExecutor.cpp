@@ -115,7 +115,7 @@ const QString QueryExecutor::generateNewToken(const QString& accessTime, const Q
 }
 
 
-QSharedPointer<Tag> QueryExecutor::insertNewTag(const QSharedPointer<Tag>& tag)
+bool QueryExecutor::insertNewTag(const Tag &tag)
 {
     PerformanceCounter counter("QueryExecutor::insertNewTag");
     bool result;
@@ -126,15 +126,21 @@ QSharedPointer<Tag> QueryExecutor::insertNewTag(const QSharedPointer<Tag>& tag)
     QSqlQuery newTagQuery=makeQuery();
     newTagQuery.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, id, channel_id) "
                         "         values(:altitude,:latitude,:longitude,:label,:description,:url,:user_id,:time,:id, :channel_id);");
-    newTagQuery.bindValue(":altitude", tag->getAltitude());
-    newTagQuery.bindValue(":latitude", tag->getLatitude());
-    newTagQuery.bindValue(":longitude", tag->getLongitude());
-    newTagQuery.bindValue(":label", tag->getLabel().isEmpty()? "New Mark" : tag->getLabel());
-    newTagQuery.bindValue(":description", tag->getDescription());
-    newTagQuery.bindValue(":url", tag->getUrl());
-    newTagQuery.bindValue(":user_id", tag->getUser()->getId());
-    newTagQuery.bindValue(":channel_id", tag->getChannel()->getId());
-    newTagQuery.bindValue(":time", tag->getTime().toUTC());
+    newTagQuery.bindValue(":altitude", tag.getAltitude());
+    newTagQuery.bindValue(":latitude", tag.getLatitude());
+    newTagQuery.bindValue(":longitude", tag.getLongitude());
+    newTagQuery.bindValue(":label", tag.getLabel().isEmpty() ? "New Mark" : tag.getLabel());
+    newTagQuery.bindValue(":description", tag.getDescription());
+    newTagQuery.bindValue(":url", tag.getUrl());
+
+
+    qlonglong userId = QueryExecutor::instance()->getUserIdByName(tag.getUser().getLogin());
+    qlonglong channelId = QueryExecutor::instance()->getChannelIdByName(tag.getChannel().getName());
+
+
+    newTagQuery.bindValue(":user_id", userId);
+    newTagQuery.bindValue(":channel_id", channelId);
+    newTagQuery.bindValue(":time", tag.getTime().toUTC());
     newTagQuery.bindValue(":id", newId);
 
     transaction();
@@ -144,24 +150,16 @@ QSharedPointer<Tag> QueryExecutor::insertNewTag(const QSharedPointer<Tag>& tag)
     {
         rollback();
         qDebug() <<  "Rollback for NewTag sql query";
-        return QSharedPointer<Tag>(NULL);
+        return false;
     }
 
     commit();
 
-    QSharedPointer<Tag> t(
-                new DbDataMark(newId, tag->getAltitude(), tag->getLatitude(),
-                               tag->getLongitude(), tag->getLabel(),
-                               tag->getDescription(), tag->getUrl(),
-                               tag->getTime(), tag->getUser()->getId(),tag->getChannel()->getId()));
-    t->setUser(tag->getUser());
-    t->setChannel(tag->getChannel());
-
-    return t;
+    return true;
 }
 
 
-QSharedPointer<Channel> QueryExecutor::insertNewChannel(const Channel &channel)
+bool QueryExecutor::insertNewChannel(const Channel &channel)
 {
     PerformanceCounter counter("QueryExecutor::insertNewChannel");
     bool result;
@@ -173,7 +171,9 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const Channel &channel)
     newChannelQuery.bindValue(":name",channel.getName());
     newChannelQuery.bindValue(":description",channel.getDescription());
     newChannelQuery.bindValue(":url",channel.getUrl());
-    newChannelQuery.bindValue(":owner_id",channel.getOwner()->getId());
+
+
+    newChannelQuery.bindValue(":owner_id",0);
 
     transaction();
 
@@ -188,8 +188,8 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const Channel &channel)
 
     commit();
 
-    QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel.getName(),channel.getDescription(),channel.getUrl(),channel.getOwner()));
-    return newChannel;
+    //QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel.getName(),channel.getDescription(),channel.getUrl(),channel.getOwner()));
+    return true;
 }
 
 
@@ -731,18 +731,13 @@ QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &/*user*
 }
 
 
-void QueryExecutor::loadChannels(Channels &container)
+QList<Channel> QueryExecutor::loadChannels()
 {
     QSqlQuery query=makeQuery();
+    QList<Channel> container;
     query.exec("select id, description, name, url, owner_id from channel order by id;");
     while (query.next())
     {
-        qlonglong id = query.record().value("id").toLongLong();
-        if(container.exist(id))
-        {
-            // skip record
-            continue;
-        }
         QString name = query.record().value("name").toString();
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
@@ -758,49 +753,62 @@ void QueryExecutor::loadChannels(Channels &container)
         QString login = selectQuery.record().value("login").toString();
         QString passw = selectQuery.record().value("password").toString();
 
-        QSharedPointer<common::BasicUser> owner(new DbUser(login, passw, email, ownerId));
-        QSharedPointer<DbChannel> pointer(new DbChannel(id,name,description,url,owner));
-        container.push_back(pointer);
+        Channel channel(name,description,url);
+        container.push_back(channel);
     }
+    return container;
 }
 
 
-void QueryExecutor::loadTags(DataMarks &container)
+QList<Tag> QueryExecutor::loadTags()
 {
+    QList<Tag> container;
     QSqlQuery query=makeQuery();
-    query.exec("select id, time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag order by time;");
+    query.exec("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag order by time;");
     while (query.next())
     {
-        qlonglong id = query.record().value("id").toLongLong();
-        if(container.exist(id))
-        {
-            // skip record
-            continue;
-        }
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
-        //       // qDebug() <<  "loaded tag with time: %s milliseconds", time;
         qreal latitude = query.record().value("latitude").toReal();
         qreal altitude = query.record().value("altitude").toReal();
         qreal longitude = query.record().value("longitude").toReal();
         QString label = query.record().value("label").toString();
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
-        qlonglong userId = query.record().value("user_id").toLongLong();
-        qlonglong channelId = query.record().value("channel_id").toLongLong();
 
-        DbDataMark *newMark = new DbDataMark(id,
-                                             altitude,
-                                             latitude,
-                                             longitude,
-                                             label,
-                                             description,
-                                             url,
-                                             time,
-                                             userId,
-                                             channelId);
-        QSharedPointer<DbDataMark> pointer(newMark);
-        container.push_back(pointer);
+//        qlonglong userId = query.record().value("user_id").toLongLong();
+//        qlonglong channelId = query.record().value("channel_id").toLongLong();
+
+        Tag tag(altitude,latitude,longitude,label,description,url,time);
+        container.push_back(tag);
     }
+    return container;
+}
+
+QList<Tag> QueryExecutor::loadTags(const Channel &channel)
+{
+    QList<Tag> container;
+    qlonglong channelId=getChannelIdByName(channel.getName());
+
+    QSqlQuery query=makeQuery();
+    query.exec(QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
+               "from tag where channel_id = %1 order by time;").arg(channelId));
+    while (query.next())
+    {
+        QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
+        qreal latitude = query.record().value("latitude").toReal();
+        qreal altitude = query.record().value("altitude").toReal();
+        qreal longitude = query.record().value("longitude").toReal();
+        QString label = query.record().value("label").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+
+//        qlonglong userId = query.record().value("user_id").toLongLong();
+//        qlonglong channelId = query.record().value("channel_id").toLongLong();
+
+        Tag tag(altitude,latitude,longitude,label,description,url,time);
+        container.push_back(tag);
+    }
+    return container;
 }
 
 
@@ -888,7 +896,26 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
 
     if(!query.next())
     {
-        qCritical() << "Callot find existing user " << name;
+        qCritical() << "Cannot find existing user " << name;
+    }
+    else
+    {
+        id = query.record().value("id").toLongLong();
+    }
+
+    return id;
+}
+
+qlonglong QueryExecutor::getChannelIdByName(const QString &name)
+{
+    QSqlQuery query=makeQuery();
+
+    query.exec(QString("select id from channels where name=%1;").arg(name));
+    qlonglong id =-1;
+
+    if(!query.next())
+    {
+        qCritical() << "Cannot find existing channel " << name;
     }
     else
     {

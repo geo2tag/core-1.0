@@ -65,7 +65,7 @@ namespace common
 
     QSharedPointer<Channels>     m_channelsContainer;
     QSharedPointer<DataMarks>    m_tagsContainer;
-    QSharedPointer<DataChannels> m_dataChannelsMap;
+//    QSharedPointer<DataChannels> m_dataChannelsMap;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
     typedef QByteArray (DbObjectsCollection::*ProcessMethodWithStr)(const QString&);

@@ -83,4 +83,10 @@ namespace common
   {
   }
 
+  QDebug& operator<<(QDebug& dbg,const BasicUser& obj)
+  {
+      dbg << "{login:" << obj.getLogin() << ",passw:" << obj.getPassword() << "email:" << obj.getEmail() << "}";
+      return dbg;
+  }
+
 }                                       //namespace common

@@ -50,8 +50,7 @@ JsonSerializer::~JsonSerializer()
 }
 
 
-
-QSharedPointer<common::Users> JsonSerializer::getUsers() const
+QList<common::BasicUser> JsonSerializer::getUsers() const
 {
     return m_usersContainer;
 }
@@ -76,15 +75,20 @@ QSharedPointer<DataMarks> JsonSerializer::getTags() const
     return m_tagsContainer;
 }
 
-
-QSharedPointer<Sessions> JsonSerializer::getSessions() const
+Tag JsonSerializer::getTag() const
 {
-    return m_sessionsContainer;
+    return getTags()->at(0);
 }
+
+
+//QSharedPointer<Sessions> JsonSerializer::getSessions() const
+//{
+//    return m_sessionsContainer;
+//}
 
 Session JsonSerializer::getSession() const
 {
-    return getSessions()->at(0);
+    return m_sessionsContainer.at(0);
 }
 
 Channel JsonSerializer::getChannel() const

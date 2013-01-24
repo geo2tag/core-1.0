@@ -68,11 +68,7 @@ public:
     virtual ~BasicUser();
 };
 
-QDebug& operator<<(QDebug& dbg,const BasicUser& obj)
-{
-    dbg << "{login:" << obj.getLogin() << ",passw:" << obj.getPassword() << "email:" << obj.getEmail() << "}";
-    return dbg;
-}
+QDebug& operator<<(QDebug& dbg,const BasicUser& obj);
 
 }                                       //namespace common
 #endif                                  // BASICUSER_H

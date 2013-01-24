@@ -60,7 +60,7 @@ AvailableChannelsResponseJSON::~AvailableChannelsResponseJSON()
 }
 
 
-void AvailableChannelsResponseJSON::setChannels(QSharedPointer<Channels> channels)
+void AvailableChannelsResponseJSON::setChannels(QList<Channel> channels)
 {
   if (!channels.isNull()) m_channelsContainer=channels;
 }

@@ -45,31 +45,30 @@
 #include "DynamicCastFailure.h"
 #include "servicelogger.h"
 
-DbChannel::DbChannel(qlonglong id,
-const QString &name,
-const QString &description,
-const QString &url,
-const QSharedPointer<common::BasicUser>& owner)
-: Channel(name, description, url, owner), m_id(id)
-{
-}
+//DbChannel::DbChannel(qlonglong id,
+//const QString &name,
+//const QString &description,
+//const QString &urlr)
+//: Channel(name, description, url), m_id(id)
+//{
+//}
 
 
-qlonglong DbChannel::getId() const
-{
-  return m_id;
-}
+//qlonglong DbChannel::getId() const
+//{
+//  return m_id;
+//}
 
 
-void DbChannel::setId(qlonglong id)
-{
-  m_id=id;
-}
+//void DbChannel::setId(qlonglong id)
+//{
+//  m_id=id;
+//}
 
 
-DbChannel::~DbChannel()
-{
-}
+//DbChannel::~DbChannel()
+//{
+//}
 
 
 /* ===[ End of file ]=== */

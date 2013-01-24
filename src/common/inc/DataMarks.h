@@ -51,9 +51,9 @@
 #include "ConcurrentVector.h"
 //#include "Channel.h"
 
-class Tag: public QObject
+class Tag
 {
-    Q_OBJECT
+
     double m_altitude;
     double m_latitude;
     double m_longitude;
@@ -63,25 +63,28 @@ class Tag: public QObject
     QString m_url;
     QDateTime m_time;
 
-    QSharedPointer<common::User> m_user;
-
-    QSharedPointer<Session> m_session;
-
-    QSharedPointer<Channel> m_channel;
+    common::BasicUser m_user;
+    Channel           m_channel;
 
 public:
 
-    Tag(double altitude, double latitude, double longitude, QString label,  QString description, QString url, QDateTime time);
+    Tag(double altitude =0.0,
+        double latitude =0.0,
+        double longitude =0.0,
+        QString label="",
+        QString description="",
+        QString url="",
+        QDateTime time=QDateTime::currentDateTime());
+    Tag(const Tag& tag);
+    Tag& operator=(const Tag& obj);
 
-    void setUser(QSharedPointer<common::User> user);
 
-    void setSession(QSharedPointer<Session> session);
+    void setUser(const common::BasicUser& user);
+    void setChannel(const Channel& channel);
 
-    void setChannel(QSharedPointer<Channel> channel);
+    void copyFrom(const Tag& obj);
 
 public:
-
-    virtual qlonglong getId() const;
 
     void setDescription(const QString&);
     const QString& getDescription() const;
@@ -104,11 +107,10 @@ public:
     const QDateTime& getTime() const;
     void setTime(const QDateTime& time=QDateTime::currentDateTime().toUTC());
 
-    QSharedPointer<common::User> getUser() const;
+    common::BasicUser getUser() const;
 
-    QSharedPointer<Session> getSession() const;
+    Channel getChannel() const;
 
-    QSharedPointer<Channel> getChannel() const;
     static double getDistance(double lat1, double lon1, double lat2, double lon2);
 
     virtual ~Tag();

@@ -62,9 +62,9 @@ namespace common
     m_points = points;
   }
 
-  void Region::addPoint(const QSharedPointer<Tag>& point)
+  void Region::addPoint(const QSharedPointer<Tag>& /*point*/)
   {
-    m_points->push_back(point);
+    //FIXME m_points->push_back(point);
   }
 
   bool Region::atRegion(const QSharedPointer<Tag>& point)

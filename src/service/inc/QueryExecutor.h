@@ -73,9 +73,9 @@ public:
     bool                     doesRegistrationTokenExist(const QString &token);
     QSharedPointer<common::User> insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
-    QSharedPointer<Tag> insertNewTag(const QSharedPointer<Tag>&);
+    bool insertNewTag(const Tag& tag);
     QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
-    QSharedPointer<Channel>  insertNewChannel(const Channel &);
+    bool  insertNewChannel(const Channel &);
     bool                     deleteUser(const QSharedPointer<common::User> &user);
     QSharedPointer<common::User>  updateUserPassword(const QSharedPointer<common::User>& user, const QString& password);
     // Sessions
@@ -89,11 +89,15 @@ public:
 
     QList<common::BasicUser> loadUsers();
     QList<Channel> getChannelsByUser(const common::BasicUser& user );
-    void loadTags(DataMarks &);
-    void loadChannels(Channels &);
+    QList<Tag> loadTags();
+    QList<Tag> loadTags(const Channel &channel);
+
+    QList<Channel> loadChannels();
     QList<Session> loadSessions();
     void updateReflections(DataMarks&, common::Users&, Channels&, Sessions&);
     qlonglong getUserIdByName(const QString& name);
+    qlonglong getChannelIdByName(const QString& name);
+
 
     qlonglong getFactTransactionNumber();
 

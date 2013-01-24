@@ -66,37 +66,56 @@ m_description(description),
 m_url(url),
 m_time(time)
 {
-  m_user = QSharedPointer<common::User>(NULL);
-  m_session = QSharedPointer<Session>(NULL);
-  m_channel = QSharedPointer<Channel>(NULL);
-  if (m_label.isEmpty())
-    m_label = "New mark";
 
 }
 
-
-qlonglong Tag::getId() const
+Tag::Tag(const Tag &tag)
 {
-  // Database doesn't contain 0 in sequences, see scripts/base.sql
-  return 0;
+    copyFrom(tag);
+}
+
+Tag &Tag::operator=(const Tag &obj)
+{
+    copyFrom(obj);
+    return *this;
 }
 
 
-void Tag::setUser(QSharedPointer<common::User> user)
+//qlonglong Tag::getId() const
+//{
+//  // Database doesn't contain 0 in sequences, see scripts/base.sql
+//  return 0;
+//}
+
+
+void Tag::setUser(const common::BasicUser &user)
 {
   m_user=user;
 }
 
 
-void Tag::setSession(QSharedPointer<Session> session)
+//void Tag::setSession(const Session& session)
+//{
+//  m_session=session;
+//}
+
+
+void Tag::setChannel(const Channel& channel)
 {
-  m_session=session;
+    m_channel=channel;
 }
 
-
-void Tag::setChannel(QSharedPointer<Channel> channel)
+void Tag::copyFrom(const Tag &obj)
 {
-  m_channel=channel;
+    m_altitude = obj.m_altitude;
+    m_latitude = obj.m_latitude;
+    m_longitude = obj.m_longitude;
+    m_label = obj.m_label;
+    m_description = obj.m_description;
+    m_url = obj.m_url;
+    m_time = obj.m_time;
+    m_user = obj.m_user;
+    m_channel = obj.m_channel;
 }
 
 
@@ -179,19 +198,18 @@ void Tag::setTime(const QDateTime& time)
 }
 
 
-QSharedPointer<common::User> Tag::getUser() const
+common::BasicUser Tag::getUser() const
 {
   return m_user;
 }
 
+//Session Tag::getSession() const
+//{
+//  return m_session;
+//}
 
-QSharedPointer<Session> Tag::getSession() const
-{
-  return m_session;
-}
 
-
-QSharedPointer<Channel> Tag::getChannel() const
+Channel Tag::getChannel() const
 {
   return m_channel;
 }

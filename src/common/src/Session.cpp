@@ -58,7 +58,7 @@ Session &Session::operator =(const Session &obj)
     m_token = obj.m_token;
     m_accessTime = obj.m_accessTime;
     m_user = obj.m_user;
-    return this;
+    return *this;
 }
 
 
@@ -68,13 +68,13 @@ void Session::setSessionToken(const QString &sessionToken)
 }
 
 
-void Session::setLastAccessTime(const QDateTime lastAccessTime)
+void Session::setLastAccessTime(const QDateTime& lastAccessTime)
 {
     m_accessTime = lastAccessTime;
 }
 
 
-void Session::setUser(const QSharedPointer<common::User> &user)
+void Session::setUser(const common::BasicUser &user)
 {
     m_user = user;
 }
@@ -92,17 +92,10 @@ const QDateTime& Session::getLastAccessTime() const
 }
 
 
-const QSharedPointer<common::User>& Session::getUser() const
+common::BasicUser Session::getUser() const
 {
     return m_user;
 }
-
-
-qlonglong Session::getId() const
-{
-    return 0;
-}
-
 
 Session::~Session()
 {

@@ -44,7 +44,7 @@
 
 #include "User.h"
 
-class Session : public QObject
+class Session
 {
   private:
     QString             m_token;
