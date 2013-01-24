@@ -51,6 +51,8 @@
 #include "PerformanceCounter.h"
 #include "EmailMessage.h"
 
+#include "MetaCache.h"
+
 QueryExecutor::QueryExecutor()
 {
 }
@@ -113,7 +115,7 @@ const QString QueryExecutor::generateNewToken(const QString& accessTime, const Q
 }
 
 
-QSharedPointer<DataMark> QueryExecutor::insertNewTag(const QSharedPointer<DataMark>& tag)
+QSharedPointer<Tag> QueryExecutor::insertNewTag(const QSharedPointer<Tag>& tag)
 {
     PerformanceCounter counter("QueryExecutor::insertNewTag");
     bool result;
@@ -142,12 +144,12 @@ QSharedPointer<DataMark> QueryExecutor::insertNewTag(const QSharedPointer<DataMa
     {
         rollback();
         qDebug() <<  "Rollback for NewTag sql query";
-        return QSharedPointer<DataMark>(NULL);
+        return QSharedPointer<Tag>(NULL);
     }
 
     commit();
 
-    QSharedPointer<DataMark> t(
+    QSharedPointer<Tag> t(
                 new DbDataMark(newId, tag->getAltitude(), tag->getLatitude(),
                                tag->getLongitude(), tag->getLabel(),
                                tag->getDescription(), tag->getUrl(),
@@ -159,7 +161,7 @@ QSharedPointer<DataMark> QueryExecutor::insertNewTag(const QSharedPointer<DataMa
 }
 
 
-QSharedPointer<Channel> QueryExecutor::insertNewChannel(const QSharedPointer<Channel>& channel)
+QSharedPointer<Channel> QueryExecutor::insertNewChannel(const Channel &channel)
 {
     PerformanceCounter counter("QueryExecutor::insertNewChannel");
     bool result;
@@ -168,10 +170,10 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const QSharedPointer<Cha
     qDebug() << "NewId ready, now preparing sql query for adding new channel";
     newChannelQuery.prepare("insert into channel (id,name,description,url,owner_id) values(:id,:name,:description,:url,:owner_id);");
     newChannelQuery.bindValue(":id",newId);
-    newChannelQuery.bindValue(":name",channel->getName());
-    newChannelQuery.bindValue(":description",channel->getDescription());
-    newChannelQuery.bindValue(":url",channel->getUrl());
-    newChannelQuery.bindValue(":owner_id",channel->getOwner()->getId());
+    newChannelQuery.bindValue(":name",channel.getName());
+    newChannelQuery.bindValue(":description",channel.getDescription());
+    newChannelQuery.bindValue(":url",channel.getUrl());
+    newChannelQuery.bindValue(":owner_id",channel.getOwner()->getId());
 
     transaction();
 
@@ -186,7 +188,7 @@ QSharedPointer<Channel> QueryExecutor::insertNewChannel(const QSharedPointer<Cha
 
     commit();
 
-    QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel->getName(),channel->getDescription(),channel->getUrl(),channel->getOwner()));
+    QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel.getName(),channel.getDescription(),channel.getUrl(),channel.getOwner()));
     return newChannel;
 }
 
@@ -511,21 +513,22 @@ QSharedPointer<common::User> QueryExecutor::updateUserPassword(const QSharedPoin
 }
 
 
-QSharedPointer<Session> QueryExecutor::insertNewSession(const QSharedPointer<Session>& session)
+Session QueryExecutor::insertNewSession(const common::BasicUser &user)
 {
     QSqlQuery query=makeQuery();
     qlonglong newId = nextSessionKey();
-    QString newSessionToken = generateNewToken(session->getLastAccessTime().toUTC().toString(),
-                                               session->getUser()->getEmail(),
-                                               session->getUser()->getLogin(),
-                                               session->getUser()->getPassword());
+    QDateTime time=QDateTime::currentDateTimeUtc();
+    QString newSessionToken = generateNewToken(QDateTime::currentDateTimeUtc().toString(),
+                                               user.getEmail(),
+                                               user.getLogin(),
+                                               user.getPassword());
 
     qDebug() <<  "NewId ready, now preparing sql query for adding new session";
     query.prepare("insert into sessions (id, user_id, session_token, last_access_time) values (:id, :user_id, :token, :time);");
     query.bindValue(":id", newId);
-    query.bindValue(":user_id", session->getUser()->getId());
+    query.bindValue(":user_id", QueryExecutor::getUserIdByName(user.getLogin()));
     query.bindValue(":token", newSessionToken);
-    query.bindValue(":time", session->getLastAccessTime().toUTC());
+    query.bindValue(":time", time);
 
     transaction();
 
@@ -534,26 +537,26 @@ QSharedPointer<Session> QueryExecutor::insertNewSession(const QSharedPointer<Ses
     {
         qDebug() << "Rollback for NewSession sql query";
         rollback();
-        return QSharedPointer<Session>(NULL);
+        return Session();
     }
     else
     {
         qDebug() << "Commit for NewSession sql query - insert in table sessions";
         commit();
     }
-    return QSharedPointer<Session>(new DbSession(newId, newSessionToken, session->getLastAccessTime(), session->getUser()));
+    return Session(newSessionToken, time, user);
 }
 
 
-bool QueryExecutor::updateSession(const QSharedPointer<Session>& session)
+bool QueryExecutor::updateSession(Session &session)
 {
     QSqlQuery query=makeQuery();
-    QDateTime currentTime = QDateTime::currentDateTime().toUTC();
-    qDebug() <<  "Updating session with token: " << session->getSessionToken();
+    QDateTime currentTime = QDateTime::currentDateTime();
+    qDebug() <<  "Updating session with token: " << session.getSessionToken();
 
     query.prepare("update sessions set last_access_time = :time where session_token = :token;");
     query.bindValue(":time", currentTime);
-    query.bindValue(":token", session->getSessionToken());
+    query.bindValue(":token", session.getSessionToken());
 
     transaction();
 
@@ -568,19 +571,19 @@ bool QueryExecutor::updateSession(const QSharedPointer<Session>& session)
     {
         qDebug() << "Commit for updateSession sql query";
         commit();
-        session->setLastAccessTime(currentTime);
+        session.setLastAccessTime(currentTime);
         return true;
     }
 }
 
 
-bool QueryExecutor::deleteSession(const QSharedPointer<Session> &session)
+bool QueryExecutor::deleteSession(const Session &session)
 {
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Deleting session with token: " <<  session->getSessionToken();
+    qDebug() <<  "Deleting session with token: " <<  session.getSessionToken();
 
-    query.prepare("delete from sessions where id = :id;");
-    query.bindValue(":id", session->getId());
+    query.prepare("delete from sessions where session_token = :id;");
+    query.bindValue(":id", session.getSessionToken());
 
     transaction();
 
@@ -666,8 +669,9 @@ void QueryExecutor::checkTmpUsers()
 }
 
 
-void QueryExecutor::checkSessions(UpdateThread* thread)
+void QueryExecutor::checkSessions(UpdateThread* /*thread*/)
 {
+#if 0 // GT-765
     qDebug() << "checkSessions query is running now...";
     int timelife = SettingsStorage::getValue("general/session_timelife", QVariant(DEFAULT_SESSION_TIMELIFE)).toInt();
     for (int i = 0; i < thread->getSessionsContainer()->size(); i++)
@@ -698,29 +702,32 @@ void QueryExecutor::checkSessions(UpdateThread* thread)
             thread->getSessionsContainer()->erase(thread->getSessionsContainer()->at((i)));
         }
     }
+#endif
 }
 
 
-void QueryExecutor::loadUsers(common::Users &container)
+QList<common::BasicUser> QueryExecutor::loadUsers()
 {
+    QList<common::BasicUser> result;
     QSqlQuery query=makeQuery();
     query.exec("select id, login, password, email from users order by id;");
     while (query.next())
     {
-        qlonglong id = query.record().value("id").toLongLong();
-        if(container.exist(id))
-        {
-            // skip record
-            continue;
-        }
         QString login = query.record().value("login").toString();
         QString password = query.record().value("password").toString();
         QString email = query.record().value("email").toString();
-        qDebug() << "Pushing | %lld | %s " <<id << "," << login;
-        DbUser *newUser = new DbUser(login,password,email,id);
-        QSharedPointer<DbUser> pointer(newUser);
-        container.push_back(pointer);
+        result.push_back(common::BasicUser(login,password,email));
     }
+    return result;
+}
+
+QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &/*user*/)
+{
+    QList<Channel> r;
+
+    NOT_IMPLEMENTED();
+
+    return r;
 }
 
 
@@ -797,30 +804,43 @@ void QueryExecutor::loadTags(DataMarks &container)
 }
 
 
-void QueryExecutor::loadSessions(Sessions &container)
+QList<Session> QueryExecutor::loadSessions()
 {
+    // NOTE: Users should be loaded before!
+
+    QList<Session> result;
     QSqlQuery query=makeQuery();
-    query.exec("select id, user_id, session_token, last_access_time from sessions;");
+
+    query.exec("select u.login as login, u.password as password, u.email as email, s.session_token, s.last_access_time "\
+               "from users as u, sessions as s where u.id=s.user_id;");
+
     while (query.next())
     {
-        qlonglong id = query.record().value("id").toLongLong();
-        if (container.exist(id))
-            continue;
-        qlonglong userId = query.record().value("user_id").toLongLong();
-        QSharedPointer<common::User> user(new DbUser( userId));
-
-        QString sessionToken = query.record().value("session_token").toString();
-        //.toTimeSpec(Qt::LocalTime);
+        QString   login     = query.record().value("login").toString();
+        QString   password  = query.record().value("password").toString();
+        QString   email     = query.record().value("email").toString();
+        QString   token = query.record().value("session_token").toString();
         QDateTime lastAccessTime = query.record().value("last_access_time").toDateTime();
 
-        QSharedPointer<Session> newSession(new DbSession(id, sessionToken, lastAccessTime, user));
-        container.push_back(newSession);
+        common::BasicUser user(login,password,email);
+        if(Core::MetaCache::checkUser(user))
+        {
+            Session session(token,lastAccessTime,user);
+            result.push_back(session);
+            qDebug() << "added session " << session.getSessionToken() << " for " << user;
+        } else
+        {
+            qDebug() << "User " << user << " is not valid";
+        }
     }
+    return result;
 }
 
 
-void QueryExecutor::updateReflections(DataMarks &tags, common::Users &users, Channels &channels, Sessions &sessions)
+void QueryExecutor::updateReflections(DataMarks &, common::Users &, Channels &, Sessions &)
 {
+    Q_ASSERT(false);
+#if 0 // GT-765
     {
         QSqlQuery query=makeQuery();
         query.exec("select user_id, channel_id from subscribe;");
@@ -856,6 +876,26 @@ void QueryExecutor::updateReflections(DataMarks &tags, common::Users &users, Cha
     {
         sessions[i]->setUser(users.item(sessions[i]->getUser()->getId()));
     }
+#endif
+}
+
+qlonglong QueryExecutor::getUserIdByName(const QString &name)
+{
+    QSqlQuery query=makeQuery();
+
+    query.exec(QString("select id from users where login=%1;").arg(name));
+    qlonglong id =-1;
+
+    if(!query.next())
+    {
+        qCritical() << "Callot find existing user " << name;
+    }
+    else
+    {
+        id = query.record().value("id").toLongLong();
+    }
+
+    return id;
 }
 
 

@@ -81,7 +81,7 @@ bool WriteTagResponseJSON::parseJson(const QByteArray &data)
 
   JsonDataMark* jsonMark = new JsonDataMark(0,0,0,"unknown", "unknown", "unknown", QDateTime());
   jsonMark->setId(markId);
-  QSharedPointer<DataMark> mark(jsonMark);
+  QSharedPointer<Tag> mark(jsonMark);
   m_tagsContainer->push_back(mark);
   return true;
 }

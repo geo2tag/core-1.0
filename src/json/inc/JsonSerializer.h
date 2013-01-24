@@ -47,10 +47,10 @@ class JsonSerializer:public QObject
 {
 
   protected:
-    QSharedPointer<Channels>    m_channelsContainer;
-    QSharedPointer<DataMarks>   m_tagsContainer;
+    QSharedPointer<Channels>            m_channelsContainer;
+    QSharedPointer<DataMarks>           m_tagsContainer;
     QSharedPointer<common::Users>       m_usersContainer;
-    QSharedPointer<Sessions>    m_sessionsContainer;
+    QSharedPointer<Sessions>            m_sessionsContainer;
 
     QVariantMap m_jsonTree;
 
@@ -64,18 +64,23 @@ class JsonSerializer:public QObject
     JsonSerializer(QObject * parent=0);
 
     void addChannel(const QSharedPointer<Channel>&);
-    void addTag(const QSharedPointer<DataMark>&);
+    void addTag(const QSharedPointer<Tag>&);
     void addUser(const QSharedPointer<common::User>&);
-    void addSession(const QSharedPointer<Session>&);
+    void addSession(const Session &);
 
     virtual QByteArray getJson() const = 0;
 
     virtual bool parseJson(const QByteArray&) = 0;
 
     QSharedPointer<DataMarks> getTags() const;
+
     QSharedPointer<common::Users> getUsers() const;
+    common::BasicUser getUser() const;
+
     QSharedPointer<Channels> getChannels() const;
     QSharedPointer<Sessions> getSessions() const;
+    Session getSession() const;
+    Channel getChannel() const;
 
     const QString& getStatus() const;
     void setStatus(const QString&);

@@ -62,12 +62,12 @@ namespace common
     m_points = points;
   }
 
-  void Region::addPoint(const QSharedPointer<DataMark>& point)
+  void Region::addPoint(const QSharedPointer<Tag>& point)
   {
     m_points->push_back(point);
   }
 
-  bool Region::atRegion(const QSharedPointer<DataMark>& point)
+  bool Region::atRegion(const QSharedPointer<Tag>& point)
   {
     if (m_points.isNull() || m_points->size() == 0) return false;
 

@@ -82,11 +82,22 @@ namespace common
 
   const QSharedPointer<Channels> User::getSubscribedChannels() const
   {
-    return m_channels;
+      return m_channels;
+  }
+
+  User &User::operator =(const User &obj)
+  {
+      m_
+      return this;
   }
 
   User::~User()
   {
+  }
+
+  bool User::isValid() const
+  {
+      return !BasicUser::getLogin().isEmpty();
   }
 
 }                                       // namespace common

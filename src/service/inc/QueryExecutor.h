@@ -42,6 +42,7 @@
 #include "DataMarks.h"
 #include "Session.h"
 #include "Geo2tagDatabase.h"
+#include <QList>
 
 class QueryExecutor : public QObject
 {
@@ -72,24 +73,27 @@ public:
     bool                     doesRegistrationTokenExist(const QString &token);
     QSharedPointer<common::User> insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
-    QSharedPointer<DataMark> insertNewTag(const QSharedPointer<DataMark>&);
+    QSharedPointer<Tag> insertNewTag(const QSharedPointer<Tag>&);
     QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
-    QSharedPointer<Channel>  insertNewChannel(const QSharedPointer<Channel>&);
+    QSharedPointer<Channel>  insertNewChannel(const Channel &);
     bool                     deleteUser(const QSharedPointer<common::User> &user);
     QSharedPointer<common::User>  updateUserPassword(const QSharedPointer<common::User>& user, const QString& password);
     // Sessions
-    QSharedPointer<Session>  insertNewSession(const QSharedPointer<Session>& session);
-    bool                     updateSession(const QSharedPointer<Session>& session);
-    bool                     deleteSession(const QSharedPointer<Session>& session);
+    Session insertNewSession(const common::BasicUser& user);
+
+    bool                     updateSession(Session& session);
+    bool                     deleteSession(const Session& session);
 
     void checkTmpUsers();
     void checkSessions(UpdateThread* thread);
 
-    void loadUsers(common::Users &);
+    QList<common::BasicUser> loadUsers();
+    QList<Channel> getChannelsByUser(const common::BasicUser& user );
     void loadTags(DataMarks &);
     void loadChannels(Channels &);
-    void loadSessions(Sessions &);
+    QList<Session> loadSessions();
     void updateReflections(DataMarks&, common::Users&, Channels&, Sessions&);
+    qlonglong getUserIdByName(const QString& name);
 
     qlonglong getFactTransactionNumber();
 

@@ -48,7 +48,7 @@
 class Filter
 {
   public:
-    virtual bool filtrate(const QSharedPointer<DataMark> &mark) = 0;
+    virtual bool filtrate(const QSharedPointer<Tag> &mark) = 0;
     virtual ~Filter() {}
 
 };                                      // class Filter

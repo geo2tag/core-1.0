@@ -119,7 +119,7 @@ bool UpdateThread::compareTransactionNumber(qlonglong factCount)
 
 void UpdateThread::run()
 {
-
+#if 0 //GT-765
   for(;;)
   {
     qlonglong interval = SettingsStorage::getValue("general/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
@@ -188,4 +188,5 @@ void UpdateThread::run()
     }
     QThread::msleep(interval);
   }
+#endif
 }

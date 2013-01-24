@@ -47,24 +47,28 @@
 class Session : public QObject
 {
   private:
-    QString      m_sessionToken;
-    QDateTime    m_lastAccessTime;
-    QSharedPointer<common::User> m_user;
+    QString             m_token;
+    QDateTime           m_accessTime;
+    common::BasicUser   m_user;
 
   public:
-    Session(const QString& sessionToken, const QDateTime& lastAccessTime, const QSharedPointer<common::User>& user);
+
+    Session(const QString& token, const QDateTime& accessTime, const common::BasicUser& user);
+    Session(const Session& obj);
+    Session();
+    Session& operator=(const Session& obj);
 
     void setSessionToken(const QString& sessionToken);
-    void setLastAccessTime(const QDateTime lastAccessTime);
-    void setUser(const QSharedPointer<common::User>& user);
+    void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
+    void setUser(const common::BasicUser& user);
+
+    bool isValid() const { return !m_token.isEmpty(); }
 
     const QString& getSessionToken() const;
     const QDateTime& getLastAccessTime() const;
-    const QSharedPointer<common::User>& getUser() const;
+    common::BasicUser getUser() const;
 
-    virtual qlonglong getId() const;
-
-    ~Session();
+    virtual ~Session();
 };
 
 typedef ConcurrentVector<Session> Sessions;

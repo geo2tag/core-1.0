@@ -59,9 +59,9 @@ namespace Core
   class MetaCache
   {
 
-      static Channels s_channels;
-      static Sessions s_sessions;
-      static Users    s_users;
+      static QList<Channel>     s_channels;
+      static QList<Session>     s_sessions;
+      static QList<BasicUser>   s_users;
 
       static QReadWriteLock      s_cacheLock;
       static QReadWriteLock      s_usersLock;
@@ -71,8 +71,24 @@ namespace Core
   public:
 
       static void init();
-      static QSharedPointer<User> getUserById(const QString userId);
-      static QVector<QSharedPointer<User> > getUsers();
+      static BasicUser getUserById(const QString userId);
+      static QList<BasicUser> getUsers();
+      static QList<Channel> getChannels();
+
+      static void addChannel(const Channel &channel);
+
+      static Session findSession(const common::BasicUser& user);
+
+      // Reloading sessions from db (used after adding session)
+      static void reloadSessions();
+
+      // returns true if user exists and loaded
+      static bool checkUser(common::BasicUser &user);
+
+      // returns true if channed exists and user is subscribed
+      static bool testChannel(common::BasicUser &user, const Channel& channel);
+
+      static void writeTag();
 
   protected:
 

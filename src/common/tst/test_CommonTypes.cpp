@@ -22,10 +22,10 @@ namespace Test
         // Object for testing
         common::Region *  m_tstObject = new common::Region();
 
-        QSharedPointer<DataMark> p1(new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
-        QSharedPointer<DataMark> p2(new JsonDataMark(0.,1000.,0.,"","","",QDateTime::currentDateTime()));
-        QSharedPointer<DataMark> p3(new JsonDataMark(0.,1000.,1000.,"","","",QDateTime::currentDateTime()));
-        QSharedPointer<DataMark> p4(new JsonDataMark(0.,0.,1000.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> p1(new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> p2(new JsonDataMark(0.,1000.,0.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> p3(new JsonDataMark(0.,1000.,1000.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> p4(new JsonDataMark(0.,0.,1000.,"","","",QDateTime::currentDateTime()));
 
         m_tstObject->addPoint(p1);
         m_tstObject->addPoint(p2);

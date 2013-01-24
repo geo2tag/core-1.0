@@ -59,7 +59,7 @@ class FShapeCircle : public FShape
     double getLongitude() const;
     double getRadius() const;
 
-    bool filtrate(const QSharedPointer<DataMark> &mark);
+    bool filtrate(const QSharedPointer<Tag> &mark);
 
 };                                      // class FShapeCircle
 #endif                                  //_FShapeCircle_H_685324AD_3719_4618_BE1B_F0221ABB524D_INCLUDED_

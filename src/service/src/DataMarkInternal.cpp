@@ -50,7 +50,7 @@ QString description,
 const QString &url,
 const QDateTime &time,
 qlonglong userId, qlonglong channelId):
-DataMark(altitude,latitude, longitude, label, description, url, time),
+Tag(altitude,latitude, longitude, label, description, url, time),
 m_id(id),
 m_userId(userId),
 m_channelId(channelId)

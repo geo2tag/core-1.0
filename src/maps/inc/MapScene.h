@@ -86,7 +86,7 @@ class MapScene : public QGraphicsScene
     void update_state();
 
   private:
-    void add_mark(QPointF pos,QSharedPointer<DataMark> mark,QSharedPointer<Channel> channel);
+    void add_mark(QPointF pos,QSharedPointer<Tag> mark,QSharedPointer<Channel> channel);
     QPair<QPoint, QPoint> getBorders();
 
     signals:

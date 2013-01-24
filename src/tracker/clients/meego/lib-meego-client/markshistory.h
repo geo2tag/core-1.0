@@ -43,15 +43,15 @@
 class MarksHistory : public QObject
 {
   Q_OBJECT
-    QVector<QSharedPointer<DataMark> > m_marks;
+    QVector<QSharedPointer<Tag> > m_marks;
   int m_historyLimit;
   public:
     explicit MarksHistory(QObject *parent = 0);
     void setHistoryLimit(int limit);
     int getHistoryLimit();
     bool isEmpty();
-    void pushMark(QSharedPointer<DataMark> mark);
-    QSharedPointer<DataMark> popMark();
+    void pushMark(QSharedPointer<Tag> mark);
+    QSharedPointer<Tag> popMark();
     signals:
     void isFull();
   public slots:

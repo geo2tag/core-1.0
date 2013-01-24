@@ -58,7 +58,7 @@ class LightMap: public QWidget
   bool invert;
 
   void drawMarks(QPainter& painter);
-  void drawMarkIco(QPainter& painter, QPointF& position, QSharedPointer<DataMark> mark, QSharedPointer<Channel> channel);
+  void drawMarkIco(QPainter& painter, QPointF& position, QSharedPointer<Tag> mark, QSharedPointer<Channel> channel);
 
   DataChannels m_marks;
   private slots:

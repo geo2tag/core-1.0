@@ -57,10 +57,10 @@ void Filtration::addFilter(const QSharedPointer<Filter> & filter)
 }
 
 
-QList<QSharedPointer<DataMark> > Filtration::filtrate(const QList<QSharedPointer<DataMark> > tags)
+QList<QSharedPointer<Tag> > Filtration::filtrate(const QList<QSharedPointer<Tag> > tags)
 {
-  QList<QSharedPointer<DataMark> > result;
-  foreach(QSharedPointer<DataMark> tag, tags)
+  QList<QSharedPointer<Tag> > result;
+  foreach(QSharedPointer<Tag> tag, tags)
   {
     bool b = true;
     foreach(QSharedPointer<Filter> filter, m_filters)

@@ -37,53 +37,70 @@
 
 #include "Session.h"
 
-Session::Session(const QString &sessionToken, const QDateTime &lastAccessTime, const QSharedPointer<common::User> &user)
-: m_sessionToken(sessionToken),
-m_lastAccessTime(lastAccessTime),
-m_user(user)
+Session::Session(const QString &token, const QDateTime &accessTime, const common::BasicUser &user)
+    : m_token(token), m_accessTime(accessTime), m_user(user)
 {
+}
+
+Session::Session(const Session &obj)
+{
+    m_token = obj.m_token;
+    m_accessTime = obj.m_accessTime;
+    m_user = obj.m_user;
+}
+
+Session::Session() : m_token(""), m_accessTime(QDateTime::currentDateTime())
+{
+}
+
+Session &Session::operator =(const Session &obj)
+{
+    m_token = obj.m_token;
+    m_accessTime = obj.m_accessTime;
+    m_user = obj.m_user;
+    return this;
 }
 
 
 void Session::setSessionToken(const QString &sessionToken)
 {
-  m_sessionToken = sessionToken;
+    m_token = sessionToken;
 }
 
 
 void Session::setLastAccessTime(const QDateTime lastAccessTime)
 {
-  m_lastAccessTime = lastAccessTime;
+    m_accessTime = lastAccessTime;
 }
 
 
 void Session::setUser(const QSharedPointer<common::User> &user)
 {
-  m_user = user;
+    m_user = user;
 }
 
 
 const QString& Session::getSessionToken() const
 {
-  return m_sessionToken;
+    return m_token;
 }
 
 
 const QDateTime& Session::getLastAccessTime() const
 {
-  return m_lastAccessTime;
+    return m_accessTime;
 }
 
 
 const QSharedPointer<common::User>& Session::getUser() const
 {
-  return m_user;
+    return m_user;
 }
 
 
 qlonglong Session::getId() const
 {
-  return 0;
+    return 0;
 }
 
 

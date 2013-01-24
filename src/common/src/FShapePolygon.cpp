@@ -53,7 +53,7 @@ void FShapePolygon::addPoint(int idx, double lat, double lon)
 }
 
 
-bool FShapePolygon::filtrate(const QSharedPointer<DataMark> &mark)
+bool FShapePolygon::filtrate(const QSharedPointer<Tag> &mark)
 {
   if (m_points.size() == 0) return false;
 

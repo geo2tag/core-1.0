@@ -39,30 +39,40 @@
 #define BASICUSER_H
 
 #include <QString>
+#include <QDebug>
 
 namespace common
 {
 
-  class BasicUser
-  {
-    private:
-      QString m_login;
-      QString m_password;
-      QString m_email;
+class BasicUser
+{
+private:
+    QString m_login;
+    QString m_password;
+    QString m_email;
 
-    public:
-      BasicUser(const QString & name="", const QString & passw="", const QString & email="");
+public:
+    BasicUser(const QString & name="", const QString & passw="", const QString & email="");
+    bool operator==(const BasicUser& obj);
 
-      virtual qlonglong getId() const;
+    virtual qlonglong getId() const;
 
-      const QString& getLogin() const;
-      const QString& getPassword() const;
-      const QString& getEmail() const;
+    const QString& getLogin() const;
+    const QString& getPassword() const;
+    const QString& getEmail() const;
 
-      void setPassword(const QString password);
+    bool isValid() const { return !m_login.isEmpty(); }
 
-      virtual ~BasicUser();
-  };
+    void setPassword(const QString password);
+
+    virtual ~BasicUser();
+};
+
+QDebug& operator<<(QDebug& dbg,const BasicUser& obj)
+{
+    dbg << "{login:" << obj.getLogin() << ",passw:" << obj.getPassword() << "email:" << obj.getEmail() << "}";
+    return dbg;
+}
 
 }                                       //namespace common
 #endif                                  // BASICUSER_H

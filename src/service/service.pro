@@ -55,13 +55,13 @@ HEADERS += \
            inc/ChannelInternal.h \
            inc/DataMarkInternal.h \
            inc/UserInternal.h \
-           inc/DbSession.h \
       	   inc/UpdateThread.h \
            inc/QueryExecutor.h \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
     src/servicelogger.h \
-    src/MetaCache.h
+    src/MetaCache.h \
+    inc/DbSession.h
 
 
 SOURCES += src/main.cpp \

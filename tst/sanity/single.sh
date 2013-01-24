@@ -90,29 +90,29 @@ then
 fi
 
 
-response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
-echo "Add user test - $response_add_user_test"
-if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at addUser test"
-        exit 1
-fi
+#response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
+#echo "Add user test - $response_add_user_test"
+#if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
+#then
+#        echo "Fail at addUser test"
+#        exit 1
+#fi
 
-echo "$test_channel"
-response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
-echo "Delete user test - $response_delete_user_test"
-response_check_delete_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/login`;
-echo "Check delete test - $response_check_delete_test"
-if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at deleteUser test"
-        exit 1
-fi
-if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at checkDelete test"
-        exit 1
-fi
+#echo "$test_channel"
+#response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
+#echo "Delete user test - $response_delete_user_test"
+#response_check_delete_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/login`;
+#echo "Check delete test - $response_check_delete_test"
+#if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
+#then
+#        echo "Fail at deleteUser test"
+#        exit 1
+#fi
+#if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
+#then
+#        echo "Fail at checkDelete test"
+#        exit 1
+#fi
 
 response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
 echo "Quit session test - $response_quit_session_test"
@@ -142,27 +142,27 @@ then
         exit 1
 fi
 
-random_number=$((RANDOM%1000000));
-rand_user=user_$random_number;
-rand_email=email_$random_number;
-response_add_rand_user_test=`curl   -d "{\"login\":\"$rand_user\",\"password\":\"test\",\"email\":\"$rand_email\"}" http://${INSTANCE}/service/addUser`;
-echo "Add random user test - $response_add_rand_user_test"
-if ! echo $response_add_rand_user_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at add random user test"
-        exit 1
-fi
+#random_number=$((RANDOM%1000000));
+#rand_user=user_$random_number;
+#rand_email=email_$random_number;
+#response_add_rand_user_test=`curl   -d "{\"login\":\"$rand_user\",\"password\":\"test\",\"email\":\"$rand_email\"}" http://${INSTANCE}/service/addUser`;
+#echo "Add random user test - $response_add_rand_user_test"
+#if ! echo $response_add_rand_user_test | grep -q -s -F "$correct_result"  ;
+#then
+#        echo "Fail at add random user test"
+#        exit 1
+#fi
 
 
-response_restore_password_test=`curl   -d "{\"email\":\"$rand_email\"}"  http://${INSTANCE}/service/restorePassword`;
-echo $response_restore_password_test;
-echo $ "Restore Password test - $response_restore_password_test"
-correct_result_restore_password="\"errno\" : 0";
-if ! echo $response_restore_password_test | grep -q -s -F "$correct_result_restore_password"  ; 
-then
-        echo "Fail at restorePassword test"
-        exit 1
-fi
+#response_restore_password_test=`curl   -d "{\"email\":\"$rand_email\"}"  http://${INSTANCE}/service/restorePassword`;
+#echo $response_restore_password_test;
+#echo $ "Restore Password test - $response_restore_password_test"
+#correct_result_restore_password="\"errno\" : 0";
+#if ! echo $response_restore_password_test | grep -q -s -F "$correct_result_restore_password"  ; 
+#then
+#        echo "Fail at restorePassword test"
+#        exit 1
+#fi
 
 
 

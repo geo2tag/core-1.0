@@ -41,13 +41,14 @@
 
 #include "MetaCache.h"
 #include "QueryExecutor.h"
+#include "defines.h"
 
 namespace Core
 {
 
-Channels            MetaCache::s_channels;
-Sessions            MetaCache::s_sessions;
-Users               MetaCache::s_users;
+QList<Channel>           MetaCache::s_channels;
+QList<Session>           MetaCache::s_sessions;
+QList<BasicUser>         MetaCache::s_users;
 
 QReadWriteLock      MetaCache::s_cacheLock;
 QReadWriteLock      MetaCache::s_usersLock;
@@ -60,29 +61,76 @@ void MetaCache::init()
     initUsers();
 }
 
-QSharedPointer<User> MetaCache::getUserById(const QString userId)
+BasicUser MetaCache::getUserById(const QString userId)
 {
     QReadLocker lock(&s_usersLock);
 
     QSharedPointer<User> realUser;      // Null pointer
-    QVector<QSharedPointer<User> > currentUsers = s_users.vector();
-    qDebug() << "checking user key: " << userId << "from "<< currentUsers.size() << " known users";
 
-    if (!userId.isEmpty())
+    BasicUser user;
+    foreach(user,s_users)
     {
-        for(int i=0; i<currentUsers.size(); i++)
-        {
-            if(QString::compare(currentUsers.at(i)->getEmail(), userId, Qt::CaseInsensitive) == 0)
-                return currentUsers.at(i);
-        }
+        if(QString::compare(user.getEmail(), userId, Qt::CaseInsensitive) == 0)
+            return user;
     }
-    return realUser;
+
+    return BasicUser();
 }
 
-QVector<QSharedPointer<User> > MetaCache::getUsers()
+QList<BasicUser> MetaCache::getUsers()
 {
     QReadLocker lock(&s_usersLock);
-    return   s_users.vector();
+    return   s_users;
+}
+
+QList<Channel> MetaCache::getChannels()
+{
+    QReadLocker lock(&s_channelsLock);
+    return   s_channels;
+}
+
+void MetaCache::addChannel(const Channel &channel)
+{
+    QueryExecutor::instance()->insertNewChannel(channel);
+    s_channels.push_back(Channel(channel));
+}
+
+Session MetaCache::findSession(const BasicUser &user)
+{
+    QReadLocker lock(&s_SessionsLock);
+
+    Session s;
+    foreach(s,s_sessions)
+    {
+        if(s.getUser() == user)
+            return s;
+    }
+    return Session();
+}
+
+void MetaCache::reloadSessions()
+{
+    initSessions();
+}
+
+bool MetaCache::checkUser(BasicUser &user)
+{
+    QReadLocker lock(&s_usersLock);
+
+    common::BasicUser u;
+    foreach(u,s_users)
+    {
+        if(u==user)
+            return true;
+    }
+    return false;
+}
+
+bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
+{
+    qDebug() << "check channel " << channel.getName() << " for " << user;
+    NOT_IMPLEMENTED();
+    return true;
 }
 
 void MetaCache::initUsers()
@@ -90,7 +138,7 @@ void MetaCache::initUsers()
     QWriteLocker lock(&s_cacheLock);
 
     qDebug() << "Initializing Users";
-    QueryExecutor::instance()->loadUsers(s_users);
+    s_users=QueryExecutor::instance()->loadUsers();
     qDebug() << "Loaded " << s_users.size() << "users";
 }
 

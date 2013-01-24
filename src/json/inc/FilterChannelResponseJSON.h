@@ -47,7 +47,7 @@
 class FilterChannelResponseJSON: public JsonSerializer
 {
   private:
-    QList<QSharedPointer<DataMark> > m_tags;
+    QList<QSharedPointer<Tag> > m_tags;
     QSharedPointer<Channel> m_channel;
 
   public:
@@ -57,6 +57,6 @@ class FilterChannelResponseJSON: public JsonSerializer
 
     bool parseJson(const QByteArray&);
 
-    void setData(QSharedPointer<Channel> channel, QList<QSharedPointer<DataMark> > tags);
+    void setData(QSharedPointer<Channel> channel, QList<QSharedPointer<Tag> > tags);
 };
 #endif                                  //_FilterChannelResponseJSON_H_D06843F4_D6CB_4B9E_B538_74F7B2E8D42A_INCLUDED_

@@ -47,6 +47,13 @@ namespace common
   {
   }
 
+  bool BasicUser::operator ==(const BasicUser &obj)
+  {
+      return  obj.m_email == m_email &&
+              obj.m_login == m_login &&
+              obj.m_password == m_password;
+  }
+
   qlonglong BasicUser::getId() const
   {
     return 0;

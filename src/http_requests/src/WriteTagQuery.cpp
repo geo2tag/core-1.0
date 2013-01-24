@@ -39,7 +39,7 @@
 
 WriteTagQuery::WriteTagQuery(const QSharedPointer<Session>& session,
 const QSharedPointer<Channel>& channel,
-const QSharedPointer<DataMark> &tag, QObject *parent)
+const QSharedPointer<Tag> &tag, QObject *parent)
 : DefaultQuery(parent),
 m_session(session),
 m_channel(channel),
@@ -54,7 +54,7 @@ WriteTagQuery::WriteTagQuery(QObject *parent): DefaultQuery(parent)
 }
 
 
-void WriteTagQuery::setTag(const QSharedPointer<DataMark> &tag)
+void WriteTagQuery::setTag(const QSharedPointer<Tag> &tag)
 {
   m_tag = tag;
 }
@@ -82,13 +82,13 @@ WriteTagQuery::~WriteTagQuery()
 }
 
 
-QSharedPointer<DataMark> WriteTagQuery::getTag()
+QSharedPointer<Tag> WriteTagQuery::getTag()
 {
   return m_tag;
 }
 
 
-const QSharedPointer<DataMark>& WriteTagQuery::getTag() const
+const QSharedPointer<Tag>& WriteTagQuery::getTag() const
 {
   return m_tag;
 }

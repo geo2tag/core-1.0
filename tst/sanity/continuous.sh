@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NUM=1000000
+NUM=100000000
 
 for ((i=0;i<${NUM}; i++)); do
 echo "TEST:$i/${NUM}"

@@ -157,7 +157,7 @@ void MapScene::setMarks(DataChannels marks)
   int markAge=0;
   int maxAgeOfMark=settings.value("timeLimit").toInt();
   //Getting list of all channels, wich marks are in request
-  QList<QSharedPointer<DataMark> > marks_to_show;
+  QList<QSharedPointer<Tag> > marks_to_show;
 
   for(int i = 0; i < m_marks.size(); i++)
   {
@@ -169,7 +169,7 @@ void MapScene::setMarks(DataChannels marks)
   for (int j = 0; j < channels.size(); j++)
   {
     marks_to_show = marks.values(channels.at(j));
-    qSort(marks_to_show.begin(), marks_to_show.end(), qGreater<QSharedPointer<DataMark> >());
+    qSort(marks_to_show.begin(), marks_to_show.end(), qGreater<QSharedPointer<Tag> >());
     for (int i = 0; i < qMin( marksCount, marks_to_show.size() ); i++)
     {
       //Check, that current mark isnt older that maxAgeOfMark minutes
@@ -192,7 +192,7 @@ void MapScene::setMarks(DataChannels marks)
 }
 
 
-void MapScene::add_mark(QPointF pos, QSharedPointer<DataMark> mark,QSharedPointer<Channel> channel)
+void MapScene::add_mark(QPointF pos, QSharedPointer<Tag> mark,QSharedPointer<Channel> channel)
 {
   QPointF posForPicture = QPointF(pos.x()-12.0, pos.y()-12.0);
   //QPointF posForText = QPointF(pos.x()-24.0, pos.y()+24.0);

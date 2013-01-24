@@ -53,7 +53,7 @@ WriteTagRequestJSON::WriteTagRequestJSON(QObject *parent) : JsonSerializer(paren
 
 WriteTagRequestJSON::WriteTagRequestJSON(const QSharedPointer<Session> &session,
 const QSharedPointer<Channel> &channel,
-const QSharedPointer<DataMark> &tag,
+const QSharedPointer<Tag> &tag,
 QObject *parent)
 : JsonSerializer(parent)
 {
@@ -89,7 +89,7 @@ bool WriteTagRequestJSON::parseJson(const QByteArray &data)
   QSharedPointer<Session> session(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL)));
   QSharedPointer<Channel> channel(new JsonChannel(channel_name, "unknown"));
 
-  QSharedPointer<DataMark> tag(new JsonDataMark(altitude, latitude, longitude, title, description, link, time));
+  QSharedPointer<Tag> tag(new JsonDataMark(altitude, latitude, longitude, title, description, link, time));
   //tag->setChannel(channel);
   //tag->setSession(session);
   m_channelsContainer->push_back(channel);
@@ -104,7 +104,7 @@ QByteArray WriteTagRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap request;
-  QSharedPointer<DataMark> mark = m_tagsContainer->at(0);
+  QSharedPointer<Tag> mark = m_tagsContainer->at(0);
   QSharedPointer<Session> session = m_sessionsContainer->at(0);
   QSharedPointer<Channel> channel = m_channelsContainer->at(0);
   request.insert("auth_token", session->getSessionToken());

@@ -59,9 +59,9 @@ namespace common
       const QSharedPointer<DataMarks>& getPoints() const;
       void setPoints(const QSharedPointer<DataMarks>& points);
 
-      void addPoint(const QSharedPointer<DataMark>& point);
+      void addPoint(const QSharedPointer<Tag>& point);
 
-      bool atRegion(const QSharedPointer<DataMark>& point) ;
+      bool atRegion(const QSharedPointer<Tag>& point) ;
 
       ~Region();
 

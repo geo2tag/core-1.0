@@ -54,11 +54,11 @@ FShapeCircle::~FShapeCircle()
 }
 
 
-bool FShapeCircle::filtrate(const QSharedPointer<DataMark> &mark)
+bool FShapeCircle::filtrate(const QSharedPointer<Tag> &mark)
 {
   double lat = mark->getLatitude();
   double lon = mark->getLongitude();
-  return DataMark::getDistance(m_lat, m_lon, lat, lon) <= m_radius;
+  return Tag::getDistance(m_lat, m_lon, lat, lon) <= m_radius;
 }
 
 

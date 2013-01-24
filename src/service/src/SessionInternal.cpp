@@ -37,12 +37,12 @@
 
 #include "SessionInternal.h"
 
+#if 0
 DbSession::DbSession(qlonglong id,
 const QString &sessionToken,
 const QDateTime &lastAccessTime,
 const QSharedPointer<common::User> &user)
-: Session(sessionToken, lastAccessTime, user),
-m_id(id)
+: Session(sessionToken, lastAccessTime, user), m_id(id)
 {
 }
 
@@ -62,3 +62,4 @@ void DbSession::setId(qlonglong id)
 DbSession::~DbSession()
 {
 }
+#endif

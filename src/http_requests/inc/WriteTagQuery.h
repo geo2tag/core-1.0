@@ -49,7 +49,7 @@ class WriteTagQuery: public DefaultQuery
 
     QSharedPointer<Session> m_session;
   QSharedPointer<Channel> m_channel;
-  QSharedPointer<DataMark> m_tag;
+  QSharedPointer<Tag> m_tag;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -57,13 +57,13 @@ class WriteTagQuery: public DefaultQuery
   public:
     WriteTagQuery(const QSharedPointer<Session>& session,
       const QSharedPointer<Channel>& channel,
-      const QSharedPointer<DataMark>& tag, QObject *parent = 0);
+      const QSharedPointer<Tag>& tag, QObject *parent = 0);
     WriteTagQuery(QObject *parent = 0);
 
     ~WriteTagQuery();
-    void setTag(const QSharedPointer<DataMark> &tag);
-    QSharedPointer<DataMark> getTag();
-    const QSharedPointer<DataMark>& getTag() const;
+    void setTag(const QSharedPointer<Tag> &tag);
+    QSharedPointer<Tag> getTag();
+    const QSharedPointer<Tag>& getTag() const;
 
     void setSession(const QSharedPointer<Session>& session);
     const QSharedPointer<Session>& getSession() const;

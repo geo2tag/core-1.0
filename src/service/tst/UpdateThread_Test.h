@@ -129,7 +129,7 @@ private slots:
     {
 
         // #2 Add manualy dataMarks, check that they appear at cache
-        QSharedPointer<DataMark> testMark (new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> testMark (new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
         testMark->setUser(m_users->at(0));
         testMark->setChannel(m_users->at(0)->getSubscribedChannels()->at(0));
 
@@ -217,7 +217,7 @@ private slots:
     void testDataChannelSync()
     {
         // Add marks and check newTagInsertionComplete(int)
-        QSharedPointer<DataMark> testMark (new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
+        QSharedPointer<Tag> testMark (new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));
         testMark->setUser(m_users->at(0));
         testMark->setChannel(m_users->at(0)->getSubscribedChannels()->at(0));
 

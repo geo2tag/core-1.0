@@ -96,6 +96,8 @@ void setServerPort(int port);
 #define DEFAULT_DB_UPDATE_INTERVAL 10000
 #define DEFAULT_TRANSACTION_DIFF_TO_SYNC 0
 
+#define NOT_IMPLEMENTED() { qWarning() << "NOT_IMPLEMENTED " << __FILE__ << ":" << __LINE__;}
+
 #ifndef Q_WS_SYMBIAN
 extern uint qHash(const QPoint & p);
 #endif

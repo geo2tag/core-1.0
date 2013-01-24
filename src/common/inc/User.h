@@ -55,16 +55,21 @@ class User: public QObject, public BasicUser
 
     QString m_result;
     QString m_token;
-    // list of subscribed channels
     QSharedPointer<Channels> m_channels;
 
 public:
+
+    // chech if user attrs is set
+    bool isValid() const;
 
     User(const QString & name="", const QString & passw="", const QString & email="");
     virtual qlonglong getId() const;
     void subscribe(const QSharedPointer<Channel>& channel);
     void unsubscribe(const QSharedPointer<Channel>& channel);
     const QSharedPointer<Channels> getSubscribedChannels() const;
+
+    User& operator=(const User& obj);
+
     virtual ~User();
     // class User
 };

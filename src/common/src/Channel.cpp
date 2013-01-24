@@ -53,7 +53,26 @@ m_url(url),
 m_owner(owner),
 m_isDisplayed(true)
 {
-  m_activeRadius = 5.0;                 // 5 km
+    m_activeRadius = 5.0;                 // 5 km
+}
+
+Channel::Channel(const Channel &obj) : m_name(obj.name),
+    m_description(obj.description),
+    m_url(obj.url),
+    m_owner(obj.owner),
+    m_isDisplayed(true)
+
+{
+}
+
+Channel &Channel::operator =(const Channel &obj)
+{
+    m_activeRadius=obj.m_activeRadius;
+    m_description=obj.m_description;
+    m_isDisplayed=obj.m_isDisplayed;
+    m_name=obj.m_name;
+    m_url=obj.m_url;
+    retun this;
 }
 
 

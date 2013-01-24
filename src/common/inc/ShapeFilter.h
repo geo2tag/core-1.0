@@ -54,7 +54,7 @@ class ShapeFilter : public Filter
 
     ~ShapeFilter();
 
-    bool filtrate(const QSharedPointer<DataMark> &mark);
+    bool filtrate(const QSharedPointer<Tag> &mark);
 
 };                                      // class ShapeFilter
 #endif                                  //_ShapeFilter_H_9AD98461_22F5_4885_9FAA_2575F66F4DC6_INCLUDED_

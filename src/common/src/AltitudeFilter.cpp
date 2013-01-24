@@ -53,7 +53,7 @@ AltitudeFilter::~AltitudeFilter()
 }
 
 
-bool AltitudeFilter::filtrate(const QSharedPointer<DataMark> &mark)
+bool AltitudeFilter::filtrate(const QSharedPointer<Tag> &mark)
 {
   double minAlt = 0.;
   double maxAlt = 0.;

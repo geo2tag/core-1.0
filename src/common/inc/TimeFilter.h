@@ -55,7 +55,7 @@ class TimeFilter : public Filter
 
     ~TimeFilter();
 
-    bool filtrate(const QSharedPointer<DataMark> &mark);
+    bool filtrate(const QSharedPointer<Tag> &mark);
 
 };                                      // class TimeFilter
 #endif                                  //_TimeFilter_H_6FEC6059_BB09_4A0A_BED5_E017346722CD_INCLUDED_

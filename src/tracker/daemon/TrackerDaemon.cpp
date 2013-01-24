@@ -212,7 +212,7 @@ void TrackerDaemon::onConnected()
   qDebug() << "Auth_token received - " << m_loginQuery->getUser()->getToken() ;
   if(m_tagQuery == NULL)
   {
-    QSharedPointer<DataMark> mark(new JsonDataMark(0.,0.,
+    QSharedPointer<Tag> mark(new JsonDataMark(0.,0.,
     //DEFAULT_LATITUDE,DEFAULT_LONGITUDE,
       m_visibleName,
       "this tag was generated automaticaly by tracker application",

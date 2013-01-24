@@ -158,14 +158,14 @@ QByteArray FilterDefaultResponseJSON::getJson() const
 
   for(int i=0; i<hashKeys.size(); i++)
   {
-    QList<QSharedPointer<DataMark> > tags = m_hashMap.values(hashKeys.at(i));
+    QList<QSharedPointer<Tag> > tags = m_hashMap.values(hashKeys.at(i));
     QVariantList jtags;
     QVariantMap jchannel;
     QVariantMap channel;
 
     for(int j=0; j<tags.size(); j++)
     {
-      QSharedPointer<DataMark> tag = tags.at(j);
+      QSharedPointer<Tag> tag = tags.at(j);
       QVariantMap jtag;
       jtag["id"] = tag->getId();
       jtag["title"] = tag->getLabel();
