@@ -23,7 +23,6 @@ echo "CI test - $response_CI_test"
 if ! echo $response_CI_test | grep -q -s -F "$correct_result_login"  ; 
 then
 	echo "Fail at caseinsentivenes test"
-	exit 1
 fi
 
 response_add_channel=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"description\":\"\", \"url\":\"\", \"activeRadius\":30}"  http://${INSTANCE}/service/addChannel`;

@@ -173,7 +173,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel)
     newChannelQuery.bindValue(":url",channel.getUrl());
 
 
-    newChannelQuery.bindValue(":owner_id",0);
+//    newChannelQuery.bindValue(":owner_id",QueryExecutor::instance()->getUserId();
 
     transaction();
 
@@ -891,7 +891,9 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
 
-    query.exec(QString("select id from users where login=%1;").arg(name));
+    QString qry=QString("select id from users where login='%1';").arg(name);
+	qDebug() << "qry:" << qry;
+    query.exec(qry);
     qlonglong id =-1;
 
     if(!query.next())
