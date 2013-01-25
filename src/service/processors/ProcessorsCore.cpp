@@ -230,7 +230,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 
     Channel channel = request.getChannel();
 
-    if(!QueryExecutor::instance()->insertNewChannel(channel))
+    if(!QueryExecutor::instance()->insertNewChannel(channel,session.getUser()))
     {
         qWarning() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);

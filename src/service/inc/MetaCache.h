@@ -76,7 +76,7 @@ namespace Core
       static QList<BasicUser> getUsers();
       static QList<Channel> getChannels();
 
-      static void addChannel(const Channel &channel);
+      static void addChannel(const Channel &channel, const BasicUser &user);
 
       static Session findSession(const common::BasicUser& user);
 

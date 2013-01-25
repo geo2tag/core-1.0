@@ -75,7 +75,7 @@ public:
     bool                     deleteTmpUser(const QString &token);
     bool insertNewTag(const Tag& tag);
     QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
-    bool  insertNewChannel(const Channel &);
+    bool  insertNewChannel(const Channel &, const common::BasicUser& user);
     bool                     deleteUser(const QSharedPointer<common::User> &user);
     QSharedPointer<common::User>  updateUserPassword(const QSharedPointer<common::User>& user, const QString& password);
     // Sessions

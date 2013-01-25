@@ -89,9 +89,9 @@ QList<Channel> MetaCache::getChannels()
     return   s_channels;
 }
 
-void MetaCache::addChannel(const Channel &channel)
+void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user)
 {
-    QueryExecutor::instance()->insertNewChannel(channel);
+    QueryExecutor::instance()->insertNewChannel(channel, user);
     s_channels.push_back(Channel(channel));
 }
 

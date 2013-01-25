@@ -159,7 +159,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
 }
 
 
-bool QueryExecutor::insertNewChannel(const Channel &channel)
+bool QueryExecutor::insertNewChannel(const Channel &channel, const common::BasicUser& user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewChannel");
     bool result;
@@ -173,7 +173,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel)
     newChannelQuery.bindValue(":url",channel.getUrl());
 
 
-//    newChannelQuery.bindValue(":owner_id",QueryExecutor::instance()->getUserId();
+    newChannelQuery.bindValue(":owner_id",QueryExecutor::instance()->getUserIdByName(user.getLogin()));
 
     transaction();
 
