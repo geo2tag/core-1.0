@@ -21,6 +21,7 @@
 
 #include "ErrnoTypes.h"
 #include "defines.h"
+#include "Session.h"
 
 namespace common
 {
@@ -81,6 +82,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     return answer;
 }
 
+
 QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 {
     WriteTagRequestJSON request;
@@ -100,7 +102,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     Session session = request.getSession();
     qDebug() << "Checking for sessions with token = " << session.getSessionToken();
 
-    DEBUG() << "Session:" << session;
+    qDebug() << "Session:" << session;
 
     if(session.isValid())
     {
@@ -111,7 +113,6 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     }
 
     common::BasicUser user = session.getUser();
-
 
 
     if(!Core::MetaCache::testChannel(user,request.getChannel()))

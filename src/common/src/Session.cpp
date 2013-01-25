@@ -101,8 +101,8 @@ Session::~Session()
 {
 }
 
-QDebug& operator<<(QDebug &dbg, const Session& session)
-{
+QDebug& operator<<(QDebug &dbg, Session const& session)
+    {
     dbg << session.getSessionToken() << " user:"
         << session.getUser() << " accessTime:"
         << session.getLastAccessTime() << ", valid=" << session.isValid();

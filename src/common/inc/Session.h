@@ -41,6 +41,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QDateTime>
+#include <QDebug>
 
 #include "User.h"
 
@@ -72,7 +73,8 @@ class Session
     virtual ~Session();
 };
 
-QDebug& operator<<(QDebug &dbg, const Session& session);
+QDebug& operator<<(QDebug &dbg, Session const& session);
+
 
 typedef ConcurrentVector<Session> Sessions;
 #endif                                  // SESSION_H
