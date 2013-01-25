@@ -59,7 +59,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
-LoadTagsResponseJSON::LoadTagsResponseJSON(const DataChannels &hashMap, QObject *parent):
+LoadTagsResponseJSON::LoadTagsResponseJSON(const QList<Tag>&hashMap, QObject *parent):
 JsonSerializer(parent), m_tags(hashMap)
 {
 }
@@ -114,19 +114,11 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
       QString timeStr =  markMap["pubDate"].toString();
       QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
 
-      QVector<QSharedPointer<common::User> > v = m_usersContainer->vector();
-      QSharedPointer<common::User> user(new JsonUser(userName));
-      m_usersContainer->push_back(user);
+      m_usersContainer.push_back(common::BasicUser(userName));
 
-      QSharedPointer<JsonDataMark> newMark(new JsonDataMark(altitude,
-        latitude,
-        longitude,
-        title,
-        description,
-        link,
-        time));
-      newMark->setUser(user);
-      m_tags.insert(channel, newMark);
+      Tag tag(altitude, latitude, longitude, title,  description, link,  time);
+      qDebug() << "Tag:" << tag;
+      m_tags << tag;
     }
   }
   return true;
@@ -138,31 +130,30 @@ QByteArray LoadTagsResponseJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj, rss, jchannel;
 
-  QList<QSharedPointer<Channel> > hashKeys = m_tags.uniqueKeys();
+  //QList<QSharedPointer<Channel> > hashKeys = m_tags.uniqueKeys();
   QVariantList jchannels;
 
-  for(int i=0; i<hashKeys.size(); i++)
+  for(int i=0; i<m_channelsContainer.size(); i++)
   {
-    QList<QSharedPointer<Tag> > tags = m_tags.values(hashKeys.at(i));
     QVariantList jtags;
     QVariantMap channel;
 
-    for(int j=0; j<tags.size(); j++)
+    for(int j=0; j<m_tags.size(); j++)
     {
-      QSharedPointer<Tag> tag = tags.at(j);
+      Tag tag = m_tags.at(j);
       QVariantMap jtag;
-      jtag["title"] = tag->getLabel();
-      jtag["link"] = tag->getUrl();
-      jtag["description"] = tag->getDescription();
-      jtag["latitude"] = tag->getLatitude();
-      jtag["altitude"] = tag->getAltitude();
-      jtag["longitude"] = tag->getLongitude();
-      jtag["user"] = tag->getUser()->getLogin();
-      jtag["pubDate"] = tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz");
+      jtag["title"] = tag.getLabel();
+      jtag["link"] = tag.getUrl();
+      jtag["description"] = tag.getDescription();
+      jtag["latitude"] = tag.getLatitude();
+      jtag["altitude"] = tag.getAltitude();
+      jtag["longitude"] = tag.getLongitude();
+      jtag["user"] = tag.getUser().getLogin();
+      jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
       jtags.append(jtag);
     }
     channel["items"] = jtags;
-    channel["name"] = hashKeys.at(i)->getName();
+    channel["name"] = m_channelsContainer.at(i).getName();
     jchannels.append(channel);
   }
   jchannel["items"] = jchannels;
@@ -181,7 +172,7 @@ const QList<Tag> &LoadTagsResponseJSON::getData() const
 
 void LoadTagsResponseJSON::setData(const QList<Tag>& d)
 {
-  m_ = d ;
+  m_tags = d ;
 }
 
 

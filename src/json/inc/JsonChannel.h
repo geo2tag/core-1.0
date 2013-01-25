@@ -51,8 +51,7 @@ class JsonChannel: public Channel
   public:
     JsonChannel(const QString &name,
       const QString &description,
-      const QString &url = "",
-      const QSharedPointer<common::BasicUser>& owner = QSharedPointer<common::BasicUser>(0));
+      const QString &url = "");
 
     qlonglong getId() const;
 

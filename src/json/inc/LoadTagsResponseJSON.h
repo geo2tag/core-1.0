@@ -55,7 +55,7 @@ class LoadTagsResponseJSON: public JsonSerializer
   QList<Tag> m_tags;
 
   public:
-    LoadTagsResponseJSON(const DataChannels &, QObject *parent=0);
+    LoadTagsResponseJSON(const QList<Tag> &, QObject *parent=0);
 
     LoadTagsResponseJSON(QObject *parent=0);
 

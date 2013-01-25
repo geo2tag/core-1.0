@@ -62,8 +62,8 @@ class SubscribedChannelsQuery : public DefaultQuery
 {
   Q_OBJECT
 
-    QSharedPointer<Session> m_session;
-  QSharedPointer<Channels> m_channels;
+  Session m_session;
+  QList<Channel> m_channels;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -76,12 +76,12 @@ class SubscribedChannelsQuery : public DefaultQuery
 
     SubscribedChannelsQuery(QObject *parent = 0);
 
-    SubscribedChannelsQuery(const QSharedPointer<Session>& session, QObject *parent = 0);
+    SubscribedChannelsQuery(const Session &session, QObject *parent = 0);
 
     ~SubscribedChannelsQuery();
 
-    const QSharedPointer<Channels>& getChannels() const;
-    void setQuery(const QSharedPointer<Session>& session);
+    QList<Channel> getChannels() const;
+    void setQuery(const Session& session);
 
     Q_SIGNALS:
 

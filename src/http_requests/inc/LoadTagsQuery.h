@@ -62,12 +62,12 @@ class LoadTagsQuery : public DefaultQuery
 {
   Q_OBJECT
 
-    QSharedPointer<Session> m_session;
+  Session m_session;
   double m_latitude;
   double m_longitude;
   double m_radius;
 
-  DataChannels m_hashMap;
+  QList<Tag> m_tag;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -78,7 +78,7 @@ class LoadTagsQuery : public DefaultQuery
 
   public:
 
-    LoadTagsQuery(QSharedPointer<Session> &session,
+    LoadTagsQuery(const Session &session,
       double latitude,
       double longitude,
       double radius,
@@ -86,14 +86,14 @@ class LoadTagsQuery : public DefaultQuery
 
     LoadTagsQuery(QObject *parent = 0);
 
-    void setQuery(QSharedPointer<Session> &session,
+    void setQuery(const Session &session,
       double latitude,
       double longitude,
       double radius);
 
     ~LoadTagsQuery();
 
-    const DataChannels& getData() const;
+    QList<Tag> getData() const;
 
     Q_SIGNALS:
 

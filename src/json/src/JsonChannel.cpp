@@ -44,11 +44,12 @@
 
 qlonglong JsonChannel::globalChannelId = 0;
 
+
+
 JsonChannel::JsonChannel(const QString &name,
 const QString &description,
-const QString &url,
-const QSharedPointer<common::BasicUser>& owner)
-: Channel(name, description, url, owner),
+const QString &url)
+: Channel(name, description, url),
 m_id(globalChannelId++)
 {
 }

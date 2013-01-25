@@ -55,8 +55,6 @@ QByteArray WriteTagResponseJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  if (m_tagsContainer->size() > 0)
-    obj.insert("mark_id", m_tagsContainer->at(0)->getId());
   obj.insert("errno", m_errno);
   return serializer.serialize(obj);
 }
@@ -76,12 +74,7 @@ bool WriteTagResponseJSON::parseJson(const QByteArray &data)
   if (!ok) return false;
   m_errno = result["errno"].toInt();
 
-  qlonglong markId = result["mark_id"].toLongLong(&ok);
-  if (!ok) return false;
-
-  JsonDataMark* jsonMark = new JsonDataMark(0,0,0,"unknown", "unknown", "unknown", QDateTime());
-  jsonMark->setId(markId);
-  QSharedPointer<Tag> mark(jsonMark);
-  m_tagsContainer->push_back(mark);
+  Tag mark;
+  m_tagsContainer.push_back(mark);
   return true;
 }

@@ -52,7 +52,7 @@ class SubscribeChannelRequestJSON: public JsonSerializer
   public:
     SubscribeChannelRequestJSON(QObject *parent = 0);
 
-    SubscribeChannelRequestJSON(const QSharedPointer<Session>& session, const QSharedPointer<Channel> &channel, QObject *parent = 0);
+    SubscribeChannelRequestJSON(const Session &session, const Channel &channel, QObject *parent = 0);
 
     // Three functions below was virtual
     QByteArray getJson() const;

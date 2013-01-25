@@ -41,7 +41,6 @@
 #include "ChannelInternal.h"
 #include "servicelogger.h"
 #include "SettingsStorage.h"
-#include "MetaCache.h"
 
 int main(int argc, char ** argv)
 {
@@ -50,9 +49,8 @@ int main(int argc, char ** argv)
   Log::init();
   SettingsStorage::init();
 
-  common::DbObjectsCollection::getInstance();
+  common::DbObjectsCollection::init();
 
-  Core::MetaCache::init();
   Server s;
   s.serve();
 

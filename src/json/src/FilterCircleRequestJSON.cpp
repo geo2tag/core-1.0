@@ -50,6 +50,7 @@
 #include "serializer.h"
 #endif
 
+#if 0
 FilterCircleRequestJSON::FilterCircleRequestJSON(QObject *parent) : FilterRequestJSON(parent)
 {
 }
@@ -126,3 +127,4 @@ double FilterCircleRequestJSON::getRadius() const
 {
   return m_radius;
 }
+#endif

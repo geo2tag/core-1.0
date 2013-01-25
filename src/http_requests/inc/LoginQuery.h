@@ -59,10 +59,10 @@ class LoginQuery: public DefaultQuery
 {
   Q_OBJECT
 
-    QString m_login;
+  QString m_login;
   QString m_password;
 
-  QSharedPointer<Session> m_session;
+  Session m_session;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -79,7 +79,7 @@ class LoginQuery: public DefaultQuery
 
     void setQuery(const QString& login, const QString& password);
 
-    QSharedPointer<Session> getSession() const;
+    Session getSession() const;
 
     ~LoginQuery();
 

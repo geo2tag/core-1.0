@@ -127,6 +127,7 @@ namespace common
     public:
 
       static DbObjectsCollection& getInstance();
+      static void init();
 
       QByteArray process(const QString& queryType, const QByteArray& body);
 

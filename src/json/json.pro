@@ -35,20 +35,20 @@ HEADERS += \
            inc/AddChannelRequestJSON.h \
            inc/AddChannelResponseJSON.h \
            inc/DefaultResponseJSON.h \
-           inc/FilterRequestJSON.h \
-           inc/FilterDefaultResponseJSON.h \
-           inc/FilterCircleRequestJSON.h \ 
-           inc/FilterCylinderRequestJSON.h \
-           inc/FilterPolygonRequestJSON.h \
-           inc/FilterRectangleRequestJSON.h \
-           inc/FilterBoxRequestJSON.h \
-           inc/FilterFenceRequestJSON.h \
+#           inc/FilterRequestJSON.h \
+#           inc/FilterDefaultResponseJSON.h \
+#           inc/FilterCircleRequestJSON.h \
+#           inc/FilterCylinderRequestJSON.h \
+#           inc/FilterPolygonRequestJSON.h \
+#           inc/FilterRectangleRequestJSON.h \
+#           inc/FilterBoxRequestJSON.h \
+#           inc/FilterFenceRequestJSON.h \
            inc/RegisterUserRequestJSON.h \
            inc/RegisterUserResponseJSON.h \
            inc/ErrnoInfoResponseJSON.h \
            inc/VersionResponseJSON.h \
-           inc/FilterChannelRequestJSON.h \
-           inc/FilterChannelResponseJSON.h \
+ #          inc/FilterChannelRequestJSON.h \
+ #          inc/FilterChannelResponseJSON.h \
 	   inc/DeleteUserRequestJSON.h \
 	   inc/DeleteUserResponseJSON.h \
 	   inc/BuildResponseJSON.h \ 
@@ -76,21 +76,21 @@ SOURCES += \
            src/AddChannelRequestJSON.cpp \
            src/DefaultResponseJSON.cpp \
            src/WriteTagResponseJSON.cpp \
-           src/FilterRequestJSON.cpp \
-           src/FilterDefaultResponseJSON.cpp \
-           src/FilterCircleRequestJSON.cpp \
-           src/FilterCylinderRequestJSON.cpp \
-           src/FilterPolygonRequestJSON.cpp \
-           src/FilterRectangleRequestJSON.cpp \
-           src/FilterBoxRequestJSON.cpp \
-           src/FilterFenceRequestJSON.cpp \
+  #         src/FilterRequestJSON.cpp \
+  #         src/FilterDefaultResponseJSON.cpp \
+  #         src/FilterCircleRequestJSON.cpp \
+  #         src/FilterCylinderRequestJSON.cpp \
+  #         src/FilterPolygonRequestJSON.cpp \
+  #         src/FilterRectangleRequestJSON.cpp \
+  #         src/FilterBoxRequestJSON.cpp \
+  #         src/FilterFenceRequestJSON.cpp \
            src/RegisterUserRequestJSON.cpp \
            src/RegisterUserResponseJSON.cpp \
            src/ErrnoInfoResponseJSON.cpp \
            src/VersionResponseJSON.cpp \
            src/AddUserRequestJSON.cpp \
-           src/FilterChannelRequestJSON.cpp \
-           src/FilterChannelResponseJSON.cpp \             
+   #        src/FilterChannelRequestJSON.cpp \
+   #        src/FilterChannelResponseJSON.cpp \
     src/QuitSessionRequestJSON.cpp \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \

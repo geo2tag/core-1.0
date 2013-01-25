@@ -45,7 +45,7 @@
 #include "serializer.h"
 #endif
 
-LoadTagsRequestJSON::LoadTagsRequestJSON(const QSharedPointer<Session>& session,
+LoadTagsRequestJSON::LoadTagsRequestJSON(const Session& session,
 double latitude,
 double longitude,
 double radius,
@@ -55,7 +55,7 @@ m_latitude(latitude),
 m_longitude(longitude),
 m_radius(radius)
 {
-  m_sessionsContainer->push_back(session);
+  m_sessionsContainer.push_back(session);
 }
 
 
@@ -75,7 +75,7 @@ bool LoadTagsRequestJSON::parseJson(const QByteArray &data)
   if (!ok) return false;
 
   QString auth_token = result["auth_token"].toString();
-  m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
+  m_sessionsContainer.push_back(Session(auth_token, QDateTime::currentDateTime(), common::BasicUser()));
 
   result["latitude"].toDouble(&ok);
   if (!ok) return false;
@@ -110,7 +110,7 @@ QByteArray LoadTagsRequestJSON::getJson() const
 
 QString LoadTagsRequestJSON::getSessionToken() const
 {
-  return m_sessionsContainer->at(0)->getSessionToken();
+  return m_sessionsContainer.at(0).getSessionToken();
 }
 
 

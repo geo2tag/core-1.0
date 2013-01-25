@@ -24,130 +24,139 @@
 
 namespace common
 {
-#if 0
+
 QByteArray DbObjectsCollection::processFilterCircleQuery(const QByteArray& data)
 {
-    qDebug() <<  ">>> processFilterCircleQuery";
+    return data;
+//    qDebug() <<  ">>> processFilterCircleQuery";
 
-    FilterCircleRequestJSON request;
-    return internalProcessFilterQuery(request, data, false);
+//    FilterCircleRequestJSON request;
+//    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterCylinderQuery(const QByteArray& data)
 {
-    FilterCylinderRequestJSON request;
-    return internalProcessFilterQuery(request, data, true);
+    return data;
+//    FilterCylinderRequestJSON request;
+//    return internalProcessFilterQuery(request, data, true);
 }
 
 QByteArray DbObjectsCollection::processFilterPolygonQuery(const QByteArray& data)
 {
-    FilterPolygonRequestJSON request;
-    return internalProcessFilterQuery(request, data, false);
+    return data;
+
+//    FilterPolygonRequestJSON request;
+//    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterRectangleQuery(const QByteArray& data)
 {
-    FilterRectangleRequestJSON request;
-    return internalProcessFilterQuery(request, data, false);
+    return data;
+//    FilterRectangleRequestJSON request;
+//    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterBoxQuery(const QByteArray& data)
 {
-    FilterBoxRequestJSON request;
-    return internalProcessFilterQuery(request, data, true);
+    return data;
+//    FilterBoxRequestJSON request;
+//    return internalProcessFilterQuery(request, data, true);
 }
 
 QByteArray DbObjectsCollection::processFilterFenceQuery(const QByteArray& data)
 {
-    FilterFenceRequestJSON request;
-    return internalProcessFilterQuery(request, data, true);
+    return data;
+//    FilterFenceRequestJSON request;
+//    return internalProcessFilterQuery(request, data, true);
 }
 
-QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& request,
-                                                           const QByteArray& data, bool is3d)
+QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*request*/,
+                                                           const QByteArray& data, bool /*is3d*/)
 {
-    Filtration filtration;
-    FilterDefaultResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    return data;
 
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    Filtration filtration;
+//    FilterDefaultResponseJSON response;
+//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-    QSharedPointer<Session> realSession = findSession(dummySession);
-    if(realSession.isNull())
-    {
-        response.setErrno(WRONG_TOKEN_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    QSharedPointer<User> realUser = realSession->getUser();
+//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
+//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    if(realSession.isNull())
+//    {
+//        response.setErrno(WRONG_TOKEN_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
-    filtration.addFilter(QSharedPointer<Filter>(new TimeFilter(request.getTimeFrom(), request.getTimeTo())));
-    if(is3d)
-    {
-        filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
-    }
+//    QSharedPointer<User> realUser = realSession->getUser();
 
-    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
-    DataChannels feed;
-    if (request.getChannels()->size() > 0)
-    {
-        qDebug() <<  "point_2";
+//    filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
+//    filtration.addFilter(QSharedPointer<Filter>(new TimeFilter(request.getTimeFrom(), request.getTimeTo())));
+//    if(is3d)
+//    {
+//        filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
+//    }
 
-        QSharedPointer<Channel> targetChannel;
-        // look for ...
-        for(int i = 0; i<channels->size(); i++)
-        {
-            if (channels->at(i)->getName() == request.getChannels()->at(0)->getName())
-            {
-                targetChannel = channels->at(i);
-                break;
-            }
-        }
+//    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
+//    DataChannels feed;
+//    if (request.getChannels()->size() > 0)
+//    {
+//        qDebug() <<  "point_2";
 
-        if (targetChannel.isNull())
-        {
-            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
-            answer.append(response.getJson());
-            qDebug() << "answer: " << answer.data();
-            return answer;
-        }
-        QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(targetChannel);
-        QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
-        for(int i = 0; i < filteredTags.size(); i++)
-        {
-            feed.insert(targetChannel, filteredTags.at(i));
-        }
-        response.setErrno(SUCCESS);
-    }
-    else
-    {
-        for(int i = 0; i<channels->size(); i++)
-        {
-            QSharedPointer<Channel> channel = channels->at(i);
-            QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(channel);
-            QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
-            for(int j = 0; j < filteredTags.size(); j++)
-            {
-                feed.insert(channel, filteredTags.at(j));
-            }
-        }
-        response.setErrno(SUCCESS);
-    }
-    response.setDataChannels(feed);
+//        QSharedPointer<Channel> targetChannel;
+//        // look for ...
+//        for(int i = 0; i<channels->size(); i++)
+//        {
+//            if (channels->at(i)->getName() == request.getChannels()->at(0)->getName())
+//            {
+//                targetChannel = channels->at(i);
+//                break;
+//            }
+//        }
 
-    QueryExecutor::instance()->updateSession(realSession);
+//        if (targetChannel.isNull())
+//        {
+//            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+//            answer.append(response.getJson());
+//            qDebug() << "answer: " << answer.data();
+//            return answer;
+//        }
+//        QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(targetChannel);
+//        QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
+//        for(int i = 0; i < filteredTags.size(); i++)
+//        {
+//            feed.insert(targetChannel, filteredTags.at(i));
+//        }
+//        response.setErrno(SUCCESS);
+//    }
+//    else
+//    {
+//        for(int i = 0; i<channels->size(); i++)
+//        {
+//            QSharedPointer<Channel> channel = channels->at(i);
+//            QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(channel);
+//            QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
+//            for(int j = 0; j < filteredTags.size(); j++)
+//            {
+//                feed.insert(channel, filteredTags.at(j));
+//            }
+//        }
+//        response.setErrno(SUCCESS);
+//    }
+//    response.setDataChannels(feed);
 
-    answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
-    return answer;
+//    QueryExecutor::instance()->updateSession(realSession);
+
+//    answer.append(response.getJson());
+//    qDebug() << "answer: " << answer.data();
+//    return answer;
 }
-#endif
+
 } // namespace common

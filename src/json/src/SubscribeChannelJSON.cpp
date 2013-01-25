@@ -62,6 +62,8 @@
 #include <syslog.h>
 #endif
 
+#if 0
+
 SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
   #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
@@ -70,13 +72,13 @@ SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : Json
 }
 
 
-SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(const QSharedPointer<Session> &session,
-const QSharedPointer<Channel> &channel,
+SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(const Session &session,
+const Channel &channel,
 QObject *parent)
 : JsonSerializer(parent)
 {
-  m_sessionsContainer->push_back(session);
-  m_channelsContainer->push_back(channel);
+  m_sessionsContainer.push_back(session);
+  m_channelsContainer.push_back(channel);
 }
 
 
@@ -99,10 +101,10 @@ bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
   QString auth_token = result["auth_token"].toString();
 
   QSharedPointer<Channel> dummyChannel(new JsonChannel(channelLabel, "from SubscribeChannelReques"));
-  m_channelsContainer->push_back(dummyChannel);
+  m_channelsContainer.push_back(dummyChannel);
 
   QSharedPointer<Session> dummySession(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL)));
-  m_sessionsContainer->push_back(dummySession);
+  m_sessionsContainer.push_back(dummySession);
 
   return true;
 }
@@ -119,5 +121,5 @@ QByteArray SubscribeChannelRequestJSON::getJson() const
   return serializer.serialize(request);
 }
 
-
+#endif
 /* ===[ End of file $HeadURL$ ]=== */

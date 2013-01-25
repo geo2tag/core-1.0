@@ -43,6 +43,7 @@
 #include "serializer.h"
 #endif
 
+#if 0
 AddUserRequestJSON::AddUserRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -82,3 +83,4 @@ bool AddUserRequestJSON::parseJson(const QByteArray &data)
   m_usersContainer->push_back(QSharedPointer<common::User>(new JsonUser(login, password, email)));
   return true;
 }
+#endif

@@ -147,4 +147,9 @@ void MetaCache::initUsers()
     qDebug() << "Loaded " << s_users.size() << "users";
 }
 
+void MetaCache::initSessions()
+{
+    NOT_IMPLEMENTED();
+}
+
 } // namespace Core

@@ -53,7 +53,8 @@ class Session
 
   public:
 
-    Session(const QString& token, const QDateTime& accessTime, const common::BasicUser& user);
+    Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
+            const common::BasicUser& user=common::BasicUser());
     Session(const Session& obj);
     Session();
     Session& operator=(const Session& obj);

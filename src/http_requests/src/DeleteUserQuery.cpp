@@ -76,9 +76,9 @@ QString DeleteUserQuery::getUrl() const
 
 QByteArray DeleteUserQuery::getRequestBody() const
 {
-  QSharedPointer<common::User> dummyUser(new JsonUser(m_login,m_password));
+  common::BasicUser user(m_login,m_password);
   DeleteUserRequestJSON request;
-  request.addUser(dummyUser);
+  request.addUser(user);
   return request.getJson();
 }
 

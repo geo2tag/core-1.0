@@ -75,20 +75,18 @@ QString LoginQuery::getUrl() const
 
 QByteArray LoginQuery::getRequestBody() const
 {
-  QSharedPointer<common::User> dummyUser(new JsonUser(m_login,m_password));
+ common::BasicUser user(m_login,m_password);
   LoginRequestJSON request;
-  request.addUser(dummyUser);
+  request.addUser(user);
   return request.getJson();
 }
 
 
 void LoginQuery::processResponse(QByteArray &data)
 {
-  //#ifndef Q_OS_SYMBIAN
   LoginResponseJSON response;
   response.parseJson(data);
-  m_session = response.getSessions()->at(0);
-  //  #endif
+  m_session = response.getSession();
 }
 
 
@@ -99,7 +97,7 @@ void LoginQuery::setQuery(const QString& login, const QString& password)
 }
 
 
-QSharedPointer<Session> LoginQuery::getSession() const
+Session LoginQuery::getSession() const
 {
   return m_session;
 }

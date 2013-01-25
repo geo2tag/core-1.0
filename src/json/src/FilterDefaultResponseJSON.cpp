@@ -59,6 +59,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
+#if 0
 FilterDefaultResponseJSON::FilterDefaultResponseJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -187,3 +188,4 @@ QByteArray FilterDefaultResponseJSON::getJson() const
   obj.insert("errno", getErrno());
   return serializer.serialize(obj);
 }
+#endif

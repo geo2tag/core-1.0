@@ -37,9 +37,9 @@
 #include "WriteTagRequestJSON.h"
 #include "WriteTagResponseJSON.h"
 
-WriteTagQuery::WriteTagQuery(const QSharedPointer<Session>& session,
-const QSharedPointer<Channel>& channel,
-const QSharedPointer<Tag> &tag, QObject *parent)
+WriteTagQuery::WriteTagQuery(const Session& session,
+const Channel& channel,
+const Tag &tag, QObject *parent)
 : DefaultQuery(parent),
 m_session(session),
 m_channel(channel),
@@ -54,7 +54,7 @@ WriteTagQuery::WriteTagQuery(QObject *parent): DefaultQuery(parent)
 }
 
 
-void WriteTagQuery::setTag(const QSharedPointer<Tag> &tag)
+void WriteTagQuery::setTag(const Tag &tag)
 {
   m_tag = tag;
 }
@@ -82,37 +82,37 @@ WriteTagQuery::~WriteTagQuery()
 }
 
 
-QSharedPointer<Tag> WriteTagQuery::getTag()
+Tag WriteTagQuery::getTag()
 {
   return m_tag;
 }
 
 
-const QSharedPointer<Tag>& WriteTagQuery::getTag() const
+Tag WriteTagQuery::getTag() const
 {
   return m_tag;
 }
 
 
-void WriteTagQuery::setSession(const QSharedPointer<Session> &session)
+void WriteTagQuery::setSession(const Session &session)
 {
   m_session = session;
 }
 
 
-const QSharedPointer<Session>& WriteTagQuery::getSession() const
+Session WriteTagQuery::getSession() const
 {
   return m_session;
 }
 
 
-void WriteTagQuery::setChannel(const QSharedPointer<Channel> &channel)
+void WriteTagQuery::setChannel(const Channel &channel)
 {
   m_channel = channel;
 }
 
 
-const QSharedPointer<Channel>& WriteTagQuery::getChannel() const
+Channel WriteTagQuery::getChannel() const
 {
   return m_channel;
 }

@@ -61,8 +61,8 @@ HEADERS += \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
     src/servicelogger.h \
-    src/MetaCache.h \
-    inc/DbSession.h
+    inc/DbSession.h \
+    inc/MetaCache.h
 
 
 SOURCES += src/main.cpp \
@@ -77,9 +77,9 @@ SOURCES += src/main.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \
     src/servicelogger.cpp \
-    src/MetaCache.cpp \
     processors/ProcessorsCore.cpp \
-    processors/ProcessorsFilters.cpp
+    processors/ProcessorsFilters.cpp \
+    src/MetaCache.cpp
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
 OBJECTS_DIR = .obj

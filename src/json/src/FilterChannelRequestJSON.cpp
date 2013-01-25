@@ -51,6 +51,8 @@
 #include "serializer.h"
 #endif
 
+#if 0
+
 FilterChannelRequestJSON::FilterChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -91,3 +93,4 @@ int FilterChannelRequestJSON::getAmount()
 {
   return m_amount;
 }
+#endif

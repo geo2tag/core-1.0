@@ -56,6 +56,8 @@
 
 #include <QDebug>
 
+#if 0
+
 FilterRectangleRequestJSON::FilterRectangleRequestJSON(QObject *parent) : FilterRequestJSON(parent)
 {
 }
@@ -106,3 +108,4 @@ bool FilterRectangleRequestJSON::parseJson(const QByteArray&data)
   m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
   return true;
 }
+#endif

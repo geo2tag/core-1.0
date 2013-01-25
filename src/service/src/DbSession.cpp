@@ -314,73 +314,73 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
 //    return QSharedPointer<Session>(NULL);
 //}
 
-QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
-{
-    Q_ASSERT(false); // Not_implemented
+//QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
+//{
+//    Q_ASSERT(false); // Not_implemented
 
-    RegisterUserRequestJSON request;
-    RegisterUserResponseJSON response;
-    QByteArray answer;
-    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-    //    QSharedPointer<User> newTmpUser = request.getUsers()->at(0);
-    //    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
-    //    for(int i=0; i<currentUsers.size(); i++)
-    //    {
-    //        if(QString::compare(currentUsers.at(i)->getLogin(), newTmpUser->getLogin(), Qt::CaseInsensitive) == 0)
-    //        {
-    //            response.setErrno(USER_ALREADY_EXIST_ERROR);
-    //            answer.append(response.getJson());
-    //            qDebug() << "answer: " <<  answer.data();
-    //            return answer;
-    //        }
-    //    }
+//    RegisterUserRequestJSON request;
+//    RegisterUserResponseJSON response;
+//    QByteArray answer;
+//    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
+//    //    QSharedPointer<User> newTmpUser = request.getUsers()->at(0);
+//    //    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
+//    //    for(int i=0; i<currentUsers.size(); i++)
+//    //    {
+//    //        if(QString::compare(currentUsers.at(i)->getLogin(), newTmpUser->getLogin(), Qt::CaseInsensitive) == 0)
+//    //        {
+//    //            response.setErrno(USER_ALREADY_EXIST_ERROR);
+//    //            answer.append(response.getJson());
+//    //            qDebug() << "answer: " <<  answer.data();
+//    //            return answer;
+//    //        }
+//    //    }
 
-    //    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(newTmpUser))
-    //    {
-    //        response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
-    //        answer.append(response.getJson());
-    //        return answer;
-    //    }
+//    //    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(newTmpUser))
+//    //    {
+//    //        response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
+//    //        answer.append(response.getJson());
+//    //        return answer;
+//    //    }
 
-    //    if(QueryExecutor::instance()->doesTmpUserExist(newTmpUser))
-    //    {
-    //        response.setErrno(TMP_USER_ALREADY_EXIST_ERROR);
-    //        answer.append(response.getJson());
-    //        return answer;
-    //    }
+//    //    if(QueryExecutor::instance()->doesTmpUserExist(newTmpUser))
+//    //    {
+//    //        response.setErrno(TMP_USER_ALREADY_EXIST_ERROR);
+//    //        answer.append(response.getJson());
+//    //        return answer;
+//    //    }
 
-    //    if ( !checkPasswordQuality(newTmpUser->getPassword()) )
-    //    {
-    //        response.setErrno(WEAK_PASSWORD_ERROR);
-    //        answer.append(response.getJson());
-    //        return answer;
-    //    }
+//    //    if ( !checkPasswordQuality(newTmpUser->getPassword()) )
+//    //    {
+//    //        response.setErrno(WEAK_PASSWORD_ERROR);
+//    //        answer.append(response.getJson());
+//    //        return answer;
+//    //    }
 
-    //    // Only password hashes are stored, so we change password of this user by password hash
-    //    newTmpUser->setPassword(getPasswordHash(newTmpUser));
-    //    QString confirmToken = QueryExecutor::instance()->insertNewTmpUser(newTmpUser);
-    //    if(confirmToken.isEmpty())
-    //    {
-    //        response.setErrno(INTERNAL_DB_ERROR);
-    //        answer.append(response.getJson());
-    //        qDebug() << "answer: " <<  answer.data();
-    //        return answer;
-    //    }
+//    //    // Only password hashes are stored, so we change password of this user by password hash
+//    //    newTmpUser->setPassword(getPasswordHash(newTmpUser));
+//    //    QString confirmToken = QueryExecutor::instance()->insertNewTmpUser(newTmpUser);
+//    //    if(confirmToken.isEmpty())
+//    //    {
+//    //        response.setErrno(INTERNAL_DB_ERROR);
+//    //        answer.append(response.getJson());
+//    //        qDebug() << "answer: " <<  answer.data();
+//    //        return answer;
+//    //    }
 
-    //    response.setErrno(SUCCESS);
+//    //    response.setErrno(SUCCESS);
 
-    //    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
-    //    response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
-    //    answer.append(response.getJson());
-    //    qDebug() << "answer: " <<  answer.data();
-    return answer;
-}
+//    //    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
+//    //    response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
+//    //    answer.append(response.getJson());
+//    //    qDebug() << "answer: " <<  answer.data();
+//    return answer;
+//}
 
 QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &/*registrationToken*/)
 {
@@ -459,162 +459,162 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 }
 
 
-QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data)
-{
-    OwnedChannelsRequestJSON request;
-    OwnedChannelsResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data)
+//{
+//    OwnedChannelsRequestJSON request;
+//    OwnedChannelsResponseJSON response;
+//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    Session session =  request.getSession();
-    if(!session.isValid())
-    {
-        response.setErrno(WRONG_TOKEN_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    Session session =  request.getSession();
+//    if(!session.isValid())
+//    {
+//        response.setErrno(WRONG_TOKEN_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    common::BasicUser user = session.getUser();
-    if(!Core::MetaCache::testChannel(user,request.getChannel()))
-    {
-        qDebug() << "user has no roghts to write";
-        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    common::BasicUser user = session.getUser();
+//    if(!Core::MetaCache::testChannel(user,request.getChannel()))
+//    {
+//        qDebug() << "user has no roghts to write";
+//        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    qDebug() << "Updating session";
-    QueryExecutor::instance()->updateSession(session);
-    qDebug() << "Updating session ..done";
+//    qDebug() << "Updating session";
+//    QueryExecutor::instance()->updateSession(session);
+//    qDebug() << "Updating session ..done";
 
-    //response.setChannels(ownedChannels);
-    NOT_IMPLEMENTED();
-    response.setErrno(SUCCESS);
-    answer.append(response.getJson());
-    qDebug() << "answer: %s" << answer.data();
-    return answer;
-}
+//    //response.setChannels(ownedChannels);
+//    NOT_IMPLEMENTED();
+//    response.setErrno(SUCCESS);
+//    answer.append(response.getJson());
+//    qDebug() << "answer: %s" << answer.data();
+//    return answer;
+//}
 
-QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray &data)
-{
-    SubscribedChannelsRequestJSON request;
-    SubscribedChannelsResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray &data)
+//{
+//    SubscribedChannelsRequestJSON request;
+//    SubscribedChannelsResponseJSON response;
+//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-#if 0
-    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-    QSharedPointer<Session> realSession = findSession(dummySession);
-    if(realSession.isNull())
-    {
-        response.setErrno(WRONG_TOKEN_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
+//#if 0
+//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
+//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    if(realSession.isNull())
+//    {
+//        response.setErrno(WRONG_TOKEN_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    QSharedPointer<User> realUser = realSession->getUser();
+//    QSharedPointer<User> realUser = realSession->getUser();
 
-    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
-    response.setChannels(channels);
+//    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
+//    response.setChannels(channels);
 
-    qDebug() << "Updating session";
-    QueryExecutor::instance()->updateSession(realSession);
-    qDebug() << "Updating session ..done";
-#endif
-    NOT_IMPLEMENTED();
-    response.setErrno(SUCCESS);
-    answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
-    return answer;
-}
+//    qDebug() << "Updating session";
+//    QueryExecutor::instance()->updateSession(realSession);
+//    qDebug() << "Updating session ..done";
+//#endif
+//    NOT_IMPLEMENTED();
+//    response.setErrno(SUCCESS);
+//    answer.append(response.getJson());
+//    qDebug() << "answer: " << answer.data();
+//    return answer;
+//}
 
 
-//TODO create function that will check validity of authkey, and channel name
-QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &/*data*/)
-{
-    qDebug() <<  "starting SubscribeQuery processing";
-    SubscribeChannelRequestJSON request;
-    SubscribeChannelResponseJSON response;
-    NOT_IMPLEMENTED();
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-#if 0
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+////TODO create function that will check validity of authkey, and channel name
+//QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &/*data*/)
+//{
+//    qDebug() <<  "starting SubscribeQuery processing";
+//    SubscribeChannelRequestJSON request;
+//    SubscribeChannelResponseJSON response;
+//    NOT_IMPLEMENTED();
+//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//#if 0
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    QSharedPointer<Session> dummySession = request.getSessions()->at(0);;
-    QSharedPointer<Session> realSession = findSession(dummySession);
-    if(realSession.isNull())
-    {
-        response.setErrno(WRONG_TOKEN_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);;
+//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    if(realSession.isNull())
+//    {
+//        response.setErrno(WRONG_TOKEN_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    QSharedPointer<User> realUser = realSession->getUser();
+//    QSharedPointer<User> realUser = realSession->getUser();
 
-    QSharedPointer<Channel> dummyChannel = request.getChannels()->at(0);;
+//    QSharedPointer<Channel> dummyChannel = request.getChannels()->at(0);;
 
-    QSharedPointer<Channel> realChannel;// Null pointer
-    QVector<QSharedPointer<Channel> > currentChannels = Core::MetaCache::getChannels();
-    for(int i=0; i<currentChannels.size(); i++)
-    {
-        if(QString::compare(currentChannels.at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
-        {
-            realChannel = currentChannels.at(i);
-        }
-    }
-    if(realChannel.isNull())
-    {
-        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+//    QSharedPointer<Channel> realChannel;// Null pointer
+//    QVector<QSharedPointer<Channel> > currentChannels = Core::MetaCache::getChannels();
+//    for(int i=0; i<currentChannels.size(); i++)
+//    {
+//        if(QString::compare(currentChannels.at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
+//        {
+//            realChannel = currentChannels.at(i);
+//        }
+//    }
+//    if(realChannel.isNull())
+//    {
+//        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
 
-    QSharedPointer<Channels>  subscribedChannels = realUser->getSubscribedChannels();
-    for(int i=0; i<subscribedChannels->size(); i++)
-    {
-        //qDebug() << "%s is subscribed for  %s , %lld",realUser->getLogin().toStdString().c_str(),subscribedChannels->at(i)->getName().toStdString().c_str(),subscribedChannels->at(i)->getId());
-        if(QString::compare(subscribedChannels->at(i)->getName(), realChannel->getName(),Qt::CaseInsensitive) == 0)
-        {
-            response.setErrno(CHANNEL_ALREADY_SUBSCRIBED_ERROR);
-            answer.append(response.getJson());
-            return answer;
-        }
-    }
-    qDebug() <<  "Sending sql request for SubscribeQuery";
-    bool result = QueryExecutor::instance()->subscribeChannel(realUser,realChannel);
-    if(!result)
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-    qDebug() << "Try to subscribe for realChannel " << realChannel->getId();
-    realUser->subscribe(realChannel);
+//    QSharedPointer<Channels>  subscribedChannels = realUser->getSubscribedChannels();
+//    for(int i=0; i<subscribedChannels->size(); i++)
+//    {
+//        //qDebug() << "%s is subscribed for  %s , %lld",realUser->getLogin().toStdString().c_str(),subscribedChannels->at(i)->getName().toStdString().c_str(),subscribedChannels->at(i)->getId());
+//        if(QString::compare(subscribedChannels->at(i)->getName(), realChannel->getName(),Qt::CaseInsensitive) == 0)
+//        {
+//            response.setErrno(CHANNEL_ALREADY_SUBSCRIBED_ERROR);
+//            answer.append(response.getJson());
+//            return answer;
+//        }
+//    }
+//    qDebug() <<  "Sending sql request for SubscribeQuery";
+//    bool result = QueryExecutor::instance()->subscribeChannel(realUser,realChannel);
+//    if(!result)
+//    {
+//        response.setErrno(INTERNAL_DB_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
+//    qDebug() << "Try to subscribe for realChannel " << realChannel->getId();
+//    realUser->subscribe(realChannel);
 
-    QueryExecutor::instance()->updateSession(realSession);
+//    QueryExecutor::instance()->updateSession(realSession);
 
-    response.setErrno(SUCCESS);
-    answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
-#endif
-    return answer;
-}
+//    response.setErrno(SUCCESS);
+//    answer.append(response.getJson());
+//    qDebug() << "answer: " << answer.data();
+//#endif
+//    return answer;
+//}
 
 QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 {
@@ -889,53 +889,60 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
     return data;
 }
 
-QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)
+//QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)
+//{
+//    qDebug() <<  "starting RestorePassword processing";
+//    RestorePasswordRequestJSON request;
+//    RestorePasswordResponseJSON response;
+//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//    if (!request.parseJson(data))
+//    {
+//        response.setErrno(INCORRECT_JSON_ERROR);
+//        answer.append(response.getJson());
+//        return answer;
+//    }
+//    // Look for user with the same name
+//    Q_ASSERT(false);
+//    //QSharedPointer<User> realUser = findUser(request.getUsers()->at(0)->getEmail());
+
+//    //if(!realUser)
+//    {
+//        response.setErrno(INCORRECT_CREDENTIALS_ERROR);
+//        answer.append(response.getJson());
+//        qDebug() << "answer: %s" <<  answer.data();
+//        return answer;
+//    }
+
+//    //    int passwLength = SettingsStorage::getValue("security/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
+//    //    QString password = generateNewPassword(realUser).left(passwLength);
+//    //    QString hash = getPasswordHash(realUser->getLogin(), password);
+//    //    qDebug() << realUser->getPassword();
+//    //    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
+
+//    //    if(updatedUser.isNull())
+//    //    {
+//    //        response.setErrno(INTERNAL_DB_ERROR);
+//    //        answer.append(response.getJson());
+//    //        qDebug() << "answer: %s" <<  answer.data();
+//    //        return answer;
+//    //    }
+
+//    //    qDebug() <<  "Sending email for restoring password";
+//    //    EmailMessage message(updatedUser->getEmail());
+//    //    message.sendAsRestorePwdMessage(password);
+
+//    //    response.setErrno(SUCCESS);
+//    //    answer.append(response.getJson());
+//    //    qDebug() << "answer: %s" <<  answer.data();
+//    //    return answer;
+//}
+
+void DbObjectsCollection::init()
 {
-    qDebug() <<  "starting RestorePassword processing";
-    RestorePasswordRequestJSON request;
-    RestorePasswordResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-    // Look for user with the same name
-    Q_ASSERT(false);
-    //QSharedPointer<User> realUser = findUser(request.getUsers()->at(0)->getEmail());
-
-    //if(!realUser)
-    {
-        response.setErrno(INCORRECT_CREDENTIALS_ERROR);
-        answer.append(response.getJson());
-        qDebug() << "answer: %s" <<  answer.data();
-        return answer;
-    }
-
-    //    int passwLength = SettingsStorage::getValue("security/password_length", QVariant(DEFAULT_PASSWORD_LENGTH)).toInt();
-    //    QString password = generateNewPassword(realUser).left(passwLength);
-    //    QString hash = getPasswordHash(realUser->getLogin(), password);
-    //    qDebug() << realUser->getPassword();
-    //    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
-
-    //    if(updatedUser.isNull())
-    //    {
-    //        response.setErrno(INTERNAL_DB_ERROR);
-    //        answer.append(response.getJson());
-    //        qDebug() << "answer: %s" <<  answer.data();
-    //        return answer;
-    //    }
-
-    //    qDebug() <<  "Sending email for restoring password";
-    //    EmailMessage message(updatedUser->getEmail());
-    //    message.sendAsRestorePwdMessage(password);
-
-    //    response.setErrno(SUCCESS);
-    //    answer.append(response.getJson());
-    //    qDebug() << "answer: %s" <<  answer.data();
-    //    return answer;
+    Core::MetaCache::init();
+    getInstance();
 }
+
 }                                       // namespace common
 
 

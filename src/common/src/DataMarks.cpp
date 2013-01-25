@@ -245,5 +245,12 @@ bool operator<(const QSharedPointer<Tag> &a, const QSharedPointer<Tag> &b)
   return a->getTime() < b->getTime();
 }
 
+QDebug& operator<<(QDebug& dbg, const Tag& tag)
+{
+    dbg << "[" << tag.getTime().toString() << tag.getAltitude() << "," << tag.getLongitude() << "]:"
+        << tag.getLabel() << "->" << tag.getUrl();
+    return dbg;
+}
+
 
 /* ===[ End of file  ]=== */

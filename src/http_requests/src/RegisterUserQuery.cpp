@@ -64,17 +64,15 @@ RegisterUserQuery::RegisterUserQuery(QObject *parent)
 
 QString RegisterUserQuery::getUrl() const
 {
-  //const QString str = "http://localhost:80/service/registerUser";
-  //return str;
   return REGISTER_USER_HTTP_URL;
 }
 
 
 QByteArray RegisterUserQuery::getRequestBody() const
 {
-  QSharedPointer<common::User> dummyUser(new JsonUser(m_login, m_password, m_email));
+  common::BasicUser user(m_login, m_password, m_email);
   RegisterUserRequestJSON request;
-  request.addUser(dummyUser);
+  request.addUser(user);
   return request.getJson();
 }
 

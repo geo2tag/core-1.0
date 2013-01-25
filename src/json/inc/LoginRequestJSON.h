@@ -39,7 +39,7 @@
 class LoginRequestJSON: public JsonSerializer
 {
   public:
-    LoginRequestJSON(const QSharedPointer<common::User>& user, QObject *parent = 0);
+    LoginRequestJSON(const common::BasicUser &user, QObject *parent = 0);
 
     LoginRequestJSON(QObject *parent = 0);
 

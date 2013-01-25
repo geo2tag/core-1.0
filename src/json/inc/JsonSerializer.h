@@ -50,7 +50,7 @@ class JsonSerializer:public QObject
     QList<Tag>                 m_tagsContainer;
     QList<Channel>             m_channelsContainer;
     QList<common::BasicUser>   m_usersContainer;
-    QList<Sessions>            m_sessionsContainer;
+    QList<Session>             m_sessionsContainer;
 
     QVariantMap m_jsonTree;
 
@@ -63,7 +63,7 @@ class JsonSerializer:public QObject
   public:
     JsonSerializer(QObject * parent=0);
 
-    void addChannel(Channel&);
+    void addChannel(const Channel&);
     void addTag(const Tag&);
     void addUser(const common::BasicUser&);
     void addSession(const Session &);

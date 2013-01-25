@@ -116,6 +116,8 @@ public:
     virtual ~Tag();
 };
 
+QDebug& operator<<(QDebug& dbg, const Tag& tag);
+
 bool operator<(const QSharedPointer<Tag> &a, const QSharedPointer<Tag> &b);
 
 typedef ConcurrentVector<Tag> DataMarks;

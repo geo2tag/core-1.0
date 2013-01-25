@@ -35,11 +35,7 @@
 #include "JsonSerializer.h"
 
 JsonSerializer::JsonSerializer(QObject * parent)
-    : QObject(parent),
-      m_channelsContainer(new Channels),
-      m_tagsContainer(new DataMarks),
-      m_usersContainer(new common::Users),
-      m_sessionsContainer(new Sessions)
+    : QObject(parent)
 {
 }
 
@@ -58,26 +54,26 @@ QList<common::BasicUser> JsonSerializer::getUsers() const
 common::BasicUser JsonSerializer::getUser() const
 {
     return
-            m_usersContainer->size()>0
-                ? m_usersContainer->at(0)
+            m_usersContainer.size()>0
+                ? m_usersContainer.at(0)
                 : common::BasicUser();
 }
 
 
-QSharedPointer<Channels> JsonSerializer::getChannels() const
+QList<Channel> JsonSerializer::getChannels() const
 {
     return m_channelsContainer;
 }
 
-
-QSharedPointer<DataMarks> JsonSerializer::getTags() const
+QList<Tag> JsonSerializer::getTags() const
 {
     return m_tagsContainer;
 }
 
 Tag JsonSerializer::getTag() const
 {
-    return getTags()->at(0);
+
+    return m_tagsContainer.isEmpty() ? Tag() : m_tagsContainer.at(0);
 }
 
 
@@ -93,39 +89,39 @@ Session JsonSerializer::getSession() const
 
 Channel JsonSerializer::getChannel() const
 {
-    return getChannels()->at(0);
+    return m_channelsContainer.isEmpty() ? Channel() : m_channelsContainer.at(0);
 }
 
 
-void JsonSerializer::addChannel(const QSharedPointer<Channel> &channel)
+void JsonSerializer::addChannel(const Channel &channel)
 {
-    m_channelsContainer->push_back(channel);
+    m_channelsContainer.push_back(channel);
 }
 
 
-void JsonSerializer::addTag(const QSharedPointer<Tag> &tag)
+void JsonSerializer::addTag(const Tag &tag)
 {
-    m_tagsContainer->push_back(tag);
+    m_tagsContainer.push_back(tag);
 }
 
 
-void JsonSerializer::addUser(const QSharedPointer<common::User> &user)
+void JsonSerializer::addUser(const common::BasicUser &user)
 {
-    m_usersContainer->push_back(user);
+    m_usersContainer.push_back(user);
 }
 
 
 void JsonSerializer::addSession(const Session &session)
 {
-    m_sessionsContainer->push_back(session);
+    m_sessionsContainer.push_back(session);
 }
 
 
 void JsonSerializer::clearContainers()
 {
-    m_usersContainer->clear();
-    m_tagsContainer->clear();
-    m_channelsContainer->clear();
+    m_usersContainer.clear();
+    m_tagsContainer.clear();
+    m_channelsContainer.clear();
 }
 
 

@@ -51,6 +51,8 @@
 #include "serializer.h"
 #endif
 
+#if 0
+
 FilterChannelResponseJSON::FilterChannelResponseJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -102,3 +104,4 @@ QList<QSharedPointer<Tag> > tags)
   m_channel = channel;
   m_tags = tags;
 }
+#endif

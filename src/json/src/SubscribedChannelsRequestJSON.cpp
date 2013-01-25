@@ -58,6 +58,8 @@
 #include "JsonDataMark.h"
 #include "JsonSession.h"
 //#include <syslog.h>
+
+
 SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(QObject *parent)
 : JsonSerializer(parent)
 {
@@ -65,10 +67,10 @@ SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(QObject *parent)
 }
 
 
-SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(const QSharedPointer<Session> &session, QObject *parent)
+SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(const Session &session, QObject *parent)
 : JsonSerializer(parent)
 {
-  m_sessionsContainer->push_back(session);
+  m_sessionsContainer.push_back(session);
 }
 
 
@@ -83,9 +85,9 @@ bool SubscribedChannelsRequestJSON::parseJson(const QByteArray &data)
   if (!ok) return false;
 
   QString auth_token = result["auth_token"].toString();
-  QSharedPointer<Session> dummySession(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL)));
+  Session session(auth_token);
 
-  m_sessionsContainer->push_back(dummySession);
+  m_sessionsContainer.push_back(session);
 
   return true;
 }
@@ -96,7 +98,7 @@ QByteArray SubscribedChannelsRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_sessionsContainer->at(0)->getSessionToken());
+  request.insert("auth_token", m_sessionsContainer.at(0).getSessionToken());
 
   return serializer.serialize(request);
 }
