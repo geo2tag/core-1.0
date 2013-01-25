@@ -95,18 +95,25 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     }
 
     Tag tag = request.getTag();
+    DEBUG() << "writing tag " << tag;
 
     Session session = request.getSession();
     qDebug() << "Checking for sessions with token = " << session.getSessionToken();
+
+    DEBUG() << "Session:" << session;
 
     if(session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
+        DEBUG() << "invalid session";
         return answer;
     }
 
     common::BasicUser user = session.getUser();
+
+
+
     if(!Core::MetaCache::testChannel(user,request.getChannel()))
     {
         qDebug() << "user has no roghts to write";
