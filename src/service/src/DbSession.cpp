@@ -128,6 +128,7 @@ DbObjectsCollection::DbObjectsCollection():
     //  Here also should be something like
     //  m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
+
     //GT-817 Now is only QPSQL base is supported
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
 
@@ -940,8 +941,10 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
 
 void DbObjectsCollection::init()
 {
-    Core::MetaCache::init();
+
     getInstance();
+    Core::MetaCache::init();
+
 }
 
 }                                       // namespace common
