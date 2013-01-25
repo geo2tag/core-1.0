@@ -890,11 +890,12 @@ void QueryExecutor::updateReflections(DataMarks &, common::Users &, Channels &, 
 qlonglong QueryExecutor::getUserIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
+    DEBUG() << "getUserIdByName " << name;
 
     QString qry=QString("select id from users where login='%1';").arg(name);
 	qDebug() << "qry:" << qry;
     query.exec(qry);
-    qlonglong id =-1;
+    qlonglong id =1;  //default value
 
     if(!query.next())
     {
