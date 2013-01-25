@@ -143,6 +143,7 @@ DbObjectsCollection::DbObjectsCollection():
     database.setPassword(pass);
 
     qDebug() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
+    qDebug() << "open=" << database.open();
 
     //    m_updateThread = new UpdateThread(
     //                m_tagsContainer,
