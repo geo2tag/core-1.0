@@ -100,3 +100,11 @@ common::BasicUser Session::getUser() const
 Session::~Session()
 {
 }
+
+QDebug& operator<<(QDebug &dbg, const Session& session)
+{
+    dbg << session.getSessionToken() << " user:"
+        << session.getUser() << " accessTime:"
+        << session.getLastAccessTime() << ", valid=" << session.isValid();
+    return dbg;
+}

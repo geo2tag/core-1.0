@@ -72,5 +72,7 @@ class Session
     virtual ~Session();
 };
 
+QDebug& operator<<(QDebug &dbg, const Session& session);
+
 typedef ConcurrentVector<Session> Sessions;
 #endif                                  // SESSION_H
