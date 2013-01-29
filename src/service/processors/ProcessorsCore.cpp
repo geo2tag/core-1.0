@@ -107,10 +107,8 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 
     Tag tag = request.getTag();
 
-    DEBUG() << "writing tag " << tag;
 
     Session session = Core::MetaCache::findSession(request.getSessionToken());
-    tag.setUser(session.getUser());
 
     DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
     DEBUG() << "Session:" << session;
@@ -124,7 +122,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     }
 
     common::BasicUser user = session.getUser();
-
+    tag.setUser(user);
 
     if(!Core::MetaCache::testChannel(user,request.getChannel()))
     {
@@ -134,7 +132,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
-
+    DEBUG() << "writing tag " << tag;
     if(!Core::MetaCache::writeTag(tag))
     {
         response.setErrno(INTERNAL_DB_ERROR);
