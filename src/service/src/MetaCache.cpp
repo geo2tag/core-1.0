@@ -121,8 +121,10 @@ Session MetaCache::findSession(const QString &token)
     Session s;
     foreach(s,s_sessions)
     {
+        DEBUG() << "test:" << s;
         if(s.getSessionToken() == token )
         {
+
             DEBUG() << "...found " << s;
             return s;
         }
