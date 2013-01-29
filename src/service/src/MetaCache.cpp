@@ -96,7 +96,7 @@ void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user
     s_channels.push_back(Channel(channel));
 }
 
-void MetaCache::insertSession(const Session session)
+void MetaCache::insertSession(const Session& session)
 {
     s_sessions << session;
     DEBUG() << "inserted " << session << ", session count=" << s_sessions.size();
