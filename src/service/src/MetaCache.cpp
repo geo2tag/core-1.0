@@ -117,6 +117,7 @@ Session MetaCache::findSession(const BasicUser &user)
 
 Session MetaCache::findSession(const QString &token)
 {
+    DEBUG() << "Looking op for a session, token " << token;
     Session s;
     foreach(s,s_sessions)
     {
