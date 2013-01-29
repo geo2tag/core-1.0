@@ -174,8 +174,10 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
         return answer;
     }
 
-    QList<Channel> channels = QueryExecutor::instance()->getChannelsByUser(session.getUser());
     QList<Tag> feed;
+
+    QList<Channel> channels = QueryExecutor::instance()->getChannelsByUser(session.getUser());
+    DEBUG() << "User channels" << channels;
 
     double lat1 = request.getLatitude();
     double lon1 = request.getLongitude();
