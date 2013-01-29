@@ -50,7 +50,7 @@ class JsonSerializer:public QObject
     QList<Tag>                 m_tagsContainer;
     QList<Channel>             m_channelsContainer;
     QList<common::BasicUser>   m_usersContainer;
-    QList<Session>             m_sessionsContainer;
+    QString                    m_sessionToken;
 
     QVariantMap m_jsonTree;
 
@@ -66,7 +66,7 @@ class JsonSerializer:public QObject
     void addChannel(const Channel&);
     void addTag(const Tag&);
     void addUser(const common::BasicUser&);
-    void addSession(const Session &);
+    void setSessionToken(const QString &);
 
     virtual QByteArray getJson() const = 0;
 
@@ -79,8 +79,7 @@ class JsonSerializer:public QObject
     common::BasicUser getUser() const;
 
     QList<Channel> getChannels() const;
-    //QList<Session> getSessions() const;
-    Session getSession() const;
+    QString getSessionToken() const;
     Channel getChannel() const;
 
     const QString& getStatus() const;

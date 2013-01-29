@@ -38,10 +38,11 @@
 #ifndef GEO2TAGDATABASE_H
 #define GEO2TAGDATABASE_H
 
-#include <QSqlDatabase>
+//#include <QSqlDatabase>
 #include <QSharedPointer>
 #include "UpdateThread.h"
 
+#if 0
 class Geo2tagDatabase
 {
     QSharedPointer<UpdateThread> m_updateThread;
@@ -60,3 +61,4 @@ protected:
     QSqlDatabase cloneDatabase(const QSqlDatabase &other, const QString &connectionName);
 };
 #endif                                  // GEO2TAGDATABASE_H
+#endif

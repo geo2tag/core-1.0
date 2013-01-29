@@ -49,7 +49,7 @@ void AddUserQuery::processResponse(const QByteArray &data)
   AddUserResponseJSON response;
   response.parseJson(data);
 
-  m_session = response.getSession();
+  //GT-834 m_session = response.getSession();
   m_user = common::BasicUser(m_login, m_password, m_email);
   #endif
 }

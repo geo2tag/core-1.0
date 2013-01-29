@@ -35,6 +35,7 @@
 #ifndef UPDATETHREAD_H
 #define UPDATETHREAD_H
 
+#if 0
 #include <QtSql>
 #include <QThread>
 #include <QReadWriteLock>
@@ -103,4 +104,5 @@ class UpdateThread: public QThread
 
 };
 // UPDATETHREAD_H
+#endif
 #endif

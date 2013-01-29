@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------- */
 
 #include "JsonSerializer.h"
+#include "MetaCache.h"
 
 JsonSerializer::JsonSerializer(QObject * parent)
     : QObject(parent)
@@ -76,9 +77,9 @@ Tag JsonSerializer::getTag() const
     return m_tagsContainer.isEmpty() ? Tag() : m_tagsContainer.at(0);
 }
 
-Session JsonSerializer::getSession() const
+QString JsonSerializer::getSessionToken() const
 {
-    return m_sessionsContainer.at(0);
+    return m_sessionToken;
 }
 
 Channel JsonSerializer::getChannel() const
@@ -105,9 +106,9 @@ void JsonSerializer::addUser(const common::BasicUser &user)
 }
 
 
-void JsonSerializer::addSession(const Session &session)
+void JsonSerializer::setSessionToken(const QString& token)
 {
-    m_sessionsContainer.push_back(session);
+    m_sessionToken=token;
 }
 
 

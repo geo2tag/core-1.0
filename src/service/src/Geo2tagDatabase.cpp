@@ -37,6 +37,8 @@
 
 #include "Geo2tagDatabase.h"
 
+#if 0
+
 Geo2tagDatabase::Geo2tagDatabase()
 {
 }
@@ -69,3 +71,4 @@ bool Geo2tagDatabase::transaction()
   incrementTransactionCount();
   return QSqlDatabase::database().transaction();
 }
+#endif

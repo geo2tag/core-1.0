@@ -657,42 +657,6 @@ void QueryExecutor::checkTmpUsers()
 }
 
 
-void QueryExecutor::checkSessions(UpdateThread* /*thread*/)
-{
-#if 0 // GT-765
-    DEBUG() << "checkSessions query is running now...";
-    int timelife = SettingsStorage::getValue("general/session_timelife", QVariant(DEFAULT_SESSION_TIMELIFE)).toInt();
-    for (int i = 0; i < thread->getSessionsContainer()->size(); i++)
-    {
-        QDateTime currentTime = QDateTime::currentDateTime().toUTC();
-        //DEBUG() <<  "Current time: %s", currentTime.toString().toStdString().c_str());
-        QDateTime lastAccessTime = thread->getSessionsContainer()->at(i)->getLastAccessTime();
-        //DEBUG() <<  "Last access time: %s", lastAccessTime.toString().toStdString().c_str());
-        if (lastAccessTime.addDays(timelife) <= currentTime)
-        {
-            QSqlQuery query=makeQuery();
-            query.prepare("delete from sessions where id = :id;");
-            query.bindValue(":id", thread->getSessionsContainer()->at(i)->getId());
-            DEBUG() << "Deleting: "<< query.lastQuery();
-            transaction();
-            bool result = query.exec();
-            if (!result)
-            {
-                DEBUG() <<  "Rollback for DeleteSession sql query";
-                rollback();
-            }
-            else
-            {
-                DEBUG() <<  "Commit for DeleteSession sql query";
-                commit();
-            }
-            QWriteLocker(thread->getLock());
-            thread->getSessionsContainer()->erase(thread->getSessionsContainer()->at((i)));
-        }
-    }
-#endif
-}
-
 
 QList<common::BasicUser> QueryExecutor::loadUsers()
 {

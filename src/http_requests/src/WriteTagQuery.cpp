@@ -69,7 +69,6 @@ QString WriteTagQuery::getUrl() const
 QByteArray WriteTagQuery::getRequestBody() const
 {
   WriteTagRequestJSON request;
-  request.addSession(m_session);
   request.addChannel(m_channel);
   request.addTag(m_tag);
   return request.getJson();

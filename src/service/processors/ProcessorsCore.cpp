@@ -72,14 +72,14 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
             }
             Core::MetaCache::reloadSessions();
 #endif
-            response.addSession(addedSession);
+            response.setSessionToken(token);
         }
         else
         {
             DEBUG() <<  "Session has been found. Session's token:" << session.getSessionToken();
             DEBUG() <<  "Updating session";
             QueryExecutor::instance()->updateSession(session);
-            response.addSession(session);
+            response.setSessionToken(session.getSessionToken());
         }
         response.setErrno(SUCCESS);
     }
@@ -105,9 +105,9 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     Tag tag = request.getTag();
     DEBUG() << "writing tag " << tag;
 
-    Session session = request.getSession();
-    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
 
+    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
     DEBUG() << "Session:" << session;
 
     if(session.isValid())
@@ -162,7 +162,8 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = request.getSession();
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -217,7 +218,8 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = request.getSession();
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+
     if(!session.isValid())
     {
         qWarning() << "WRONG_TOKEN_ERROR";
@@ -259,7 +261,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
         answer.append(response.getJson());
         return answer;
     }
-    Session session = request.getSession();
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);

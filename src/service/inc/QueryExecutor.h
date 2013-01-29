@@ -43,6 +43,7 @@
 #include "Session.h"
 #include "Geo2tagDatabase.h"
 #include <QList>
+#include <QSqlQuery>
 
 class QueryExecutor : public QObject
 {
@@ -85,7 +86,7 @@ public:
     bool                     deleteSession(const Session& session);
 
     void checkTmpUsers();
-    void checkSessions(UpdateThread* thread);
+    //void checkSessions(UpdateThread* thread);
 
     QList<common::BasicUser> loadUsers();
     QList<Channel> getChannelsByUser(const common::BasicUser& user );

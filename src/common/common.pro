@@ -16,6 +16,7 @@ DEPENDPATH += . \
 
 INCLUDEPATH += . \
     inc \
+    ../json/inc
 
 
 CONFIG += mobility
@@ -70,7 +71,8 @@ SOURCES += \
     src/SettingsStorage.cpp \
     src/Session.cpp \
     src/EmailMessage.cpp \
-    src/BasicUser.cpp
+    src/BasicUser.cpp \
+    ../json/src/AddChannelRequestJSON.cpp
 
 linux: {
     HEADERS += inc/GpsModeller.h

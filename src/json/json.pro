@@ -7,8 +7,10 @@ DEPENDPATH += . inc src
 target.path = /usr/lib
 INSTALLS += target
 
-INCLUDEPATH += . inc \
-                 ../common/inc/
+INCLUDEPATH += . ./inc \
+                 ../common/inc \
+                 ../service/inc
+
 
 # Input
 HEADERS += \
@@ -58,7 +60,8 @@ HEADERS += \
     inc/OwnedChannelsRequest.h \
     inc/OwnedChannelsResponse.h \
     inc/RestorePasswordRequestJSON.h \
-    inc/RestorePasswordResponseJSON.h
+    inc/RestorePasswordResponseJSON.h \
+    ../service/inc/MetaCache.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -94,7 +97,8 @@ SOURCES += \
     src/QuitSessionRequestJSON.cpp \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \
-    src/RestorePasswordRequestJSON.cpp
+    src/RestorePasswordRequestJSON.cpp \
+    ../service/src/MetaCache.cpp
            
 
 LIBS    +=  -lcommon -lqjson
@@ -103,5 +107,5 @@ linux: {
     DEFINES += DESKTOP_STYLE
 }
 
-QT += core
+QT += core sql
 QT -= gui

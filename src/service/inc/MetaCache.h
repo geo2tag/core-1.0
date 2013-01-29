@@ -80,6 +80,7 @@ namespace Core
       static void insertSession(const Session session);
 
       static Session findSession(const common::BasicUser& user);
+      static Session findSession(const QString& token);
 
       // Reloading sessions from db (used after adding session)
       static void reloadSessions();

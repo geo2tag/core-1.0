@@ -74,7 +74,7 @@ QString SubscribedChannelsQuery::getUrl() const
 QByteArray SubscribedChannelsQuery::getRequestBody() const
 {
   SubscribedChannelsRequestJSON request;
-  request.addSession(m_session);
+  //GT-834 request.setSessionToken(m_session);
   return request.getJson();
 }
 

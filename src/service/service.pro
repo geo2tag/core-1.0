@@ -40,6 +40,7 @@ DEPENDPATH += . \
 INCLUDEPATH += \
                . \
                inc \
+               ../inc/ \
                ../common/inc \
                ../common/odbc/inc \
                ../common/common/inc \
@@ -56,7 +57,6 @@ HEADERS += \
            inc/ChannelInternal.h \
            inc/DataMarkInternal.h \
            inc/UserInternal.h \
-      	   inc/UpdateThread.h \
            inc/QueryExecutor.h \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
@@ -72,7 +72,6 @@ SOURCES += src/main.cpp \
            src/DynamicCastFailure.cpp \
            src/UserInternal.cpp \
            src/DbSession.cpp \
-           src/UpdateThread.cpp \
            src/QueryExecutor.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \

@@ -41,6 +41,7 @@
 #include "PerformanceCounter.h"
 #include "QueryExecutor.h"
 #include "Geo2tagDatabase.h"
+#if 0
 
 UpdateThread::UpdateThread(const QList<Tag> &tags,
 const QList<common::BasicUser> &users,
@@ -190,3 +191,4 @@ void UpdateThread::run()
   }
 #endif
 }
+#endif

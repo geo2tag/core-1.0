@@ -115,6 +115,17 @@ Session MetaCache::findSession(const BasicUser &user)
     return Session();
 }
 
+Session MetaCache::findSession(const QString &token)
+{
+    Session s;
+    foreach(s,s_sessions)
+    {
+        if(s.getSessionToken() == token )
+            return s;
+    }
+    return Session();
+}
+
 void MetaCache::reloadSessions()
 {
     initSessions();
