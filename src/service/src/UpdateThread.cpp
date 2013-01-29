@@ -94,7 +94,7 @@ QSharedPointer<Sessions> UpdateThread::getSessionsContainer() const
 void UpdateThread::incrementTransactionCount(int i)
 {
   m_transactionCount+=i;
-  qDebug() <<  "Number of write requests: logged " << m_transactionCount;
+  DEBUG() <<  "Number of write requests: logged " << m_transactionCount;
 }
 
 QReadWriteLock *UpdateThread::getLock()
@@ -106,10 +106,10 @@ QReadWriteLock *UpdateThread::getLock()
 bool UpdateThread::compareTransactionNumber(qlonglong factCount)
 {
   bool result;
-  qDebug() << "Checking number of write requests: logged/fact" << m_transactionCount <<"/" << factCount;
+  DEBUG() << "Checking number of write requests: logged/fact" << m_transactionCount <<"/" << factCount;
   // If m_transactionCount < transactionCount then need sync
   qlonglong transactionDiff =  SettingsStorage::getValue("general/transaction_diff", QVariant(DEFAULT_TRANSACTION_DIFF_TO_SYNC)).toLongLong();
-  qDebug() << "Diff from config/fact" << transactionDiff<<"/"<< factCount - m_transactionCount;
+  DEBUG() << "Diff from config/fact" << transactionDiff<<"/"<< factCount - m_transactionCount;
   result = (factCount - m_transactionCount >= transactionDiff);
   if (result) m_transactionCount = factCount;
 
@@ -149,7 +149,7 @@ void UpdateThread::run()
       QueryExecutor::instance()->loadSessions(sessionsContainer);
 
       QWriteLocker(getLock());
-      qDebug() << "Containers locked for db_update";
+      DEBUG() << "Containers locked for db_update";
 
       m_usersContainer->merge(usersContainer);
       m_tagsContainer->merge(tagsContainer);
@@ -158,11 +158,11 @@ void UpdateThread::run()
 
       QueryExecutor::instance()->updateReflections(*m_tagsContainer,*m_usersContainer, *m_channelsContainer, *m_sessionsContainer);
 
-      qDebug() <<  "tags added. trying to unlock";
+      DEBUG() <<  "tags added. trying to unlock";
 
       if (oldTagsContainerSize != m_tagsContainer->size())
       {
-        qDebug() << "lock: filling m_dataChannelsMap ";
+        DEBUG() << "lock: filling m_dataChannelsMap ";
         for(int i=0; i<m_tagsContainer->size(); i++)
         {
           if(!m_dataChannelsMap->contains(m_tagsContainer->at(i)->getChannel(), m_tagsContainer->at(i)))
@@ -170,20 +170,20 @@ void UpdateThread::run()
             QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
             Channel channel = tag->getChannel();
 
-            qDebug() << "adding " << i << " from "<< m_tagsContainer->size() <<" to channel " << channel->getName();
+            DEBUG() << "adding " << i << " from "<< m_tagsContainer->size() <<" to channel " << channel->getName();
             QWriteLocker(getLock());
             m_dataChannelsMap->insert(channel, tag);
           }
         }
         Q_EMIT newTagInsertionComplete(m_tagsContainer->size()-oldTagsContainerSize);
       }
-      qDebug() <<  "current users' size = %d"     << m_usersContainer->size();
-      qDebug() <<  "current tags' size = %d"      << m_tagsContainer->size();
-      qDebug() <<  "current channels' size = %d"  << m_channelsContainer->size();
-      qDebug() <<  "current sessions' size = %d"  << m_sessionsContainer->size();
+      DEBUG() <<  "current users' size = %d"     << m_usersContainer->size();
+      DEBUG() <<  "current tags' size = %d"      << m_tagsContainer->size();
+      DEBUG() <<  "current channels' size = %d"  << m_channelsContainer->size();
+      DEBUG() <<  "current sessions' size = %d"  << m_sessionsContainer->size();
 
       QueryExecutor::instance()->disconnect();
-      qDebug() << "sync completed!!!";
+      DEBUG() << "sync completed!!!";
       Q_EMIT syncronizationComplete();
     }
     QThread::msleep(interval);

@@ -67,7 +67,7 @@
 SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
   #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
-  qDebug() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
+  DEBUG() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
   #endif
 }
 

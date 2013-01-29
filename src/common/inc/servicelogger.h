@@ -2,6 +2,7 @@
 #define SERVICELOGGER_H
 
 #include <QObject>
+#include <QDebug>
 
 class Log : public QObject
 {

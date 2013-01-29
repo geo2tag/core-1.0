@@ -41,7 +41,7 @@
  * ---------------------------------------------------------------- */
 
 #include <QVariant>
-#include <QDebug>
+#include "servicelogger.h"
 #include "LoadTagsResponseJSON.h"
 
 #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
@@ -117,7 +117,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
       m_usersContainer.push_back(common::BasicUser(userName));
 
       Tag tag(altitude, latitude, longitude, title,  description, link,  time);
-      qDebug() << "Tag:" << tag;
+      DEBUG() << "Tag:" << tag;
       m_tags << tag;
     }
   }

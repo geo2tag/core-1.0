@@ -58,7 +58,7 @@ QReadWriteLock      MetaCache::s_SessionsLock;
 
 void MetaCache::init()
 {
-    qDebug() << "Initializing MetaCache objects";
+    DEBUG() << "Initializing MetaCache objects";
     initUsers();
 }
 
@@ -135,7 +135,7 @@ bool MetaCache::checkUser(BasicUser &user)
 
 bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 {
-    qDebug() << "check channel " << channel.getName() << " for " << user;
+    DEBUG() << "check channel " << channel.getName() << " for " << user;
     NOT_IMPLEMENTED();
     return true;
 }
@@ -149,15 +149,15 @@ void MetaCache::initUsers()
 {
     QWriteLocker lock(&s_cacheLock);
 
-    qDebug() << "Initializing Users";
+    DEBUG() << "Initializing Users";
     s_users=QueryExecutor::instance()->loadUsers();
-    qDebug() << "Loaded " << s_users.size() << "users";
+    DEBUG() << "Loaded " << s_users.size() << "users";
 }
 
 void MetaCache::initSessions()
 {
 #if GEO2TAG_LITE
-    qDebug() << "Session persistans is not supported in lite version";
+    DEBUG() << "Session persistans is not supported in lite version";
 #else
     NOT_IMPLEMENTED();
 #endif

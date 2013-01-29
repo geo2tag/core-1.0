@@ -40,14 +40,14 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     }
 
     common::BasicUser user = request.getUser();
-    qDebug() << "user=" << user;
+    DEBUG() << "user=" << user;
 
     bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
 
     if(user.isValid() && secirutyEnabled)
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
-        qDebug() << "Incorrect credentilas, security/enabled=" << secirutyEnabled;
+        DEBUG() << "Incorrect credentilas, security/enabled=" << secirutyEnabled;
     }
 
     else
@@ -61,13 +61,13 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 #ifdef GEO2TAG_LITE
             Core::MetaCache::insertSession(session);
 #else
-            qDebug() <<  "Session hasn't been found. Generating of new Session.";
+            DEBUG() <<  "Session hasn't been found. Generating of new Session.";
             addedSession = QueryExecutor::instance()->insertNewSession(user);
             if (!addedSession.isValid())
             {
                 response.setErrno(INTERNAL_DB_ERROR);
                 answer.append(response.getJson());
-                qDebug() << "answer: " <<  answer.data();
+                DEBUG() << "answer: " <<  answer.data();
                 return answer;
             }
             Core::MetaCache::reloadSessions();
@@ -76,15 +76,15 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         }
         else
         {
-            qDebug() <<  "Session has been found. Session's token:" << session.getSessionToken();
-            qDebug() <<  "Updating session";
+            DEBUG() <<  "Session has been found. Session's token:" << session.getSessionToken();
+            DEBUG() <<  "Updating session";
             QueryExecutor::instance()->updateSession(session);
             response.addSession(session);
         }
         response.setErrno(SUCCESS);
     }
     answer.append(response.getJson());
-    qDebug() << "answer: " <<  answer.data();
+    DEBUG() << "answer: " <<  answer.data();
     return answer;
 }
 
@@ -106,9 +106,9 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     DEBUG() << "writing tag " << tag;
 
     Session session = request.getSession();
-    qDebug() << "Checking for sessions with token = " << session.getSessionToken();
+    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
 
-    qDebug() << "Session:" << session;
+    DEBUG() << "Session:" << session;
 
     if(session.isValid())
     {
@@ -123,7 +123,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 
     if(!Core::MetaCache::testChannel(user,request.getChannel()))
     {
-        qDebug() << "user has no roghts to write";
+        DEBUG() << "user has no roghts to write";
         response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
         answer.append(response.getJson());
         return answer;
@@ -137,15 +137,15 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
-    qDebug() << "Updating session";
+    DEBUG() << "Updating session";
     QueryExecutor::instance()->updateSession(session);
-    qDebug() << "Updating session ..done";
+    DEBUG() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
     response.addTag(tag);
 
     answer.append(response.getJson());
-    qDebug() <<  "answer: " << answer.data();
+    DEBUG() <<  "answer: " << answer.data();
     return answer;
 }
 
@@ -192,19 +192,19 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
 
     response.setData(feed);
 
-    qDebug() << "Updating session";
+    DEBUG() << "Updating session";
     QueryExecutor::instance()->updateSession(session);
-    qDebug() << "Updating session ..done";
+    DEBUG() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
+    DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
 QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 {
-    qDebug() <<  "starting AddChannelQuery processing";
+    DEBUG() <<  "starting AddChannelQuery processing";
     AddChannelRequestJSON request;
     AddChannelResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
@@ -233,7 +233,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         qWarning() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
-        qDebug() << "answer: " << answer.data();
+        DEBUG() << "answer: " << answer.data();
         return answer;
     }
 
@@ -241,7 +241,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
+    DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -250,7 +250,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
 {
     AvailableChannelsRequestJSON request;
     AvailableChannelsResponseJSON response;
-    qDebug() << "processAvailableChannelsQuery - data = " << data.data();
+    DEBUG() << "processAvailableChannelsQuery - data = " << data.data();
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
     if (!request.parseJson(data))
@@ -272,7 +272,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
     response.setChannels(Core::MetaCache::getChannels());
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
+    DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -286,7 +286,7 @@ QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
     response.setErrno(SUCCESS);
     response.setVersion(version);
     answer.append(response.getJson());
-    qDebug() << "answer: " << answer.data();
+    DEBUG() << "answer: " << answer.data();
     return answer;
 }
 

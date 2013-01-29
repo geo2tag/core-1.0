@@ -60,16 +60,16 @@ namespace common
 
   void User::subscribe(const Channel& channel)
   {
-    //    qDebug() << "Trying subscribed %lld for %lld",getId(),channel->getId());
+    //    DEBUG() << "Trying subscribed %lld for %lld",getId(),channel->getId());
     //   if(!m_channels->exist(channel->getId()))
     //   {
-    //qDebug() <<  "User->Subscribe: Num of channels before: %d", m_channels->size());
+    //DEBUG() <<  "User->Subscribe: Num of channels before: %d", m_channels->size());
     m_channels.push_back(channel);
-    //qDebug() <<  "User->Subscribe: Num of channels after: %d", m_channels->size());
-    //qDebug() << "Success subscription");
+    //DEBUG() <<  "User->Subscribe: Num of channels after: %d", m_channels->size());
+    //DEBUG() << "Success subscription");
     //    }else
     //    {
-    //      qDebug() << "Unsuccess subscription");
+    //      DEBUG() << "Unsuccess subscription");
     //    }
   }
 

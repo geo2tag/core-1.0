@@ -52,14 +52,14 @@ Server::Server()
 
   if (err)
   {
-    qDebug() <<  QString("FCGX_Init failed, errcode=%1").arg(err);
+    DEBUG() <<  QString("FCGX_Init failed, errcode=%1").arg(err);
   }
 
   err = FCGX_InitRequest(&m_cgi,LISTENSOCK_FILENO, LISTENSOCK_FLAGS);
 
   if (err)
   {
-      qDebug() <<  QString("FCGX_InitRequest failed, errcode=%1").arg(err);
+      DEBUG() <<  QString("FCGX_InitRequest failed, errcode=%1").arg(err);
   }
 }
 
@@ -142,13 +142,13 @@ void Server::extractIncomingData(const FCGX_Request& request, QString& queryStri
 
 void Server::run()
 {
-  qDebug() << "Starting server thread...";
+  DEBUG() << "Starting server thread...";
   for(;;)
   {
     int err = FCGX_Accept_r(&m_cgi);
     if (err)
     {
-        qDebug() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
+        DEBUG() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
       break;
     }
 
@@ -156,7 +156,7 @@ void Server::run()
     QByteArray queryBody, response;
     extractIncomingData(m_cgi,queryString,queryBody);
 
-    qDebug() <<  QString("query: %1").arg(queryString);
+    DEBUG() <<  QString("query: %1").arg(queryString);
 
     response = process(queryBody);
 
@@ -164,7 +164,7 @@ void Server::run()
 
     if(written != response.size())
     {
-      qDebug() << "some data was loast during writing to the pipe";
+      DEBUG() << "some data was loast during writing to the pipe";
     }
 
     FCGX_Finish_r(&m_cgi);

@@ -99,7 +99,7 @@ const QString QueryExecutor::generateNewToken(const QString& accessTime, const Q
     QByteArray toHash(log.toUtf8());
     toHash=QCryptographicHash::hash(log.toUtf8(),QCryptographicHash::Md5);
     QString result(toHash.toHex());
-    qDebug() << "TOken = %s" << result;
+    DEBUG() << "TOken = %s" << result;
     return result;
 }
 
@@ -110,7 +110,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     bool result;
     qlonglong newId = nextTagKey();
 
-    qDebug() <<  QString("insertNewTag-start-").append(QString::number(newId));
+    DEBUG() <<  QString("insertNewTag-start-").append(QString::number(newId));
 
     QSqlQuery newTagQuery=makeQuery();
     newTagQuery.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, id, channel_id) "
@@ -138,7 +138,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     if(!result)
     {
         rollback();
-        qDebug() <<  "Rollback for NewTag sql query";
+        DEBUG() <<  "Rollback for NewTag sql query";
         return false;
     }
 
@@ -154,7 +154,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     bool result;
     QSqlQuery newChannelQuery=makeQuery();
     qlonglong newId = nextChannelKey();
-    qDebug() << "NewId ready, now preparing sql query for adding new channel";
+    DEBUG() << "NewId ready, now preparing sql query for adding new channel";
     newChannelQuery.prepare("insert into channel (id,name,description,url,owner_id) values(:id,:name,:description,:url,:owner_id);");
     newChannelQuery.bindValue(":id",newId);
     newChannelQuery.bindValue(":name",channel.getName());
@@ -169,11 +169,11 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     result=newChannelQuery.exec();
     if(!result)
     {
-        qDebug() << "Rollback for NewChannel sql query";
+        DEBUG() << "Rollback for NewChannel sql query";
         rollback();
         return false;
     }else
-        qDebug() << "Commit for NewChannel sql query - insert in table channel";
+        DEBUG() << "Commit for NewChannel sql query - insert in table channel";
 
     commit();
 
@@ -189,7 +189,7 @@ bool QueryExecutor::doesTmpUserExist(const common::BasicUser &user)
     query.prepare("select * from signups where login = :login or email = :email;");
     query.bindValue(":login",user.getLogin());
     query.bindValue(":email",user.getEmail());
-    qDebug() << "Selecting: %s" <<  query.lastQuery();
+    DEBUG() << "Selecting: %s" <<  query.lastQuery();
 
     query.exec();
 
@@ -199,7 +199,7 @@ bool QueryExecutor::doesTmpUserExist(const common::BasicUser &user)
     }
     else
     {
-        qDebug() << "No matching users.";
+        DEBUG() << "No matching users.";
         return false;
     }
 }
@@ -209,21 +209,21 @@ bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::doesUserWithGivenEmailExist");
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Checking of user existence in users by email: "<<user.getEmail();
+    DEBUG() <<  "Checking of user existence in users by email: "<<user.getEmail();
 
     query.prepare("select id from users where email = :email;");
     query.bindValue(":email", user.getEmail());
-    qDebug() << "Selecting: " <<  query.lastQuery();
+    DEBUG() << "Selecting: " <<  query.lastQuery();
     query.exec();
 
     if (query.next())
     {
-        qDebug() << "Match found.";
+        DEBUG() << "Match found.";
         return true;
     }
     else
     {
-        qDebug() << "No matching users.";
+        DEBUG() << "No matching users.";
         return false;
     }
 }
@@ -236,19 +236,19 @@ bool QueryExecutor::deleteTmpUser(const common::BasicUser &user)
     QSqlQuery deleteSignupQuery=makeQuery();
     deleteSignupQuery.prepare("delete from signups where login = :login;");
     deleteSignupQuery.bindValue(":login",user.getLogin() );
-    qDebug() << "Deleting: "<< deleteSignupQuery.lastQuery();
+    DEBUG() << "Deleting: "<< deleteSignupQuery.lastQuery();
 
     transaction();
 
     result = deleteSignupQuery.exec();
     if(!result)
     {
-        qDebug() << "Rollback for deleteSignup sql query";
+        DEBUG() << "Rollback for deleteSignup sql query";
         rollback();
     }
     else
     {
-        qDebug() << "Commit for deleteSignup sql query";
+        DEBUG() << "Commit for deleteSignup sql query";
         commit();
     }
     return result;
@@ -263,7 +263,7 @@ bool QueryExecutor::insertNewTmpUser(const common::BasicUser &)
     bool result;
     QSqlQuery newSignupQuery=makeQuery();
     qlonglong newId = nextUserKey();
-    qDebug() << "Generating token for new signup " << user.getLogin() << user.getPassword();
+    DEBUG() << "Generating token for new signup " << user.getLogin() << user.getPassword();
     QString newToken = generateNewToken(user.getEmail(), user.getLogin(),user.getPassword());
     newSignupQuery.prepare("insert into signups (id,email,login,password,registration_token,sent) values(:id,:email,:login,:password,:r_token,:sent);");
     newSignupQuery.bindValue(":id", newId);
@@ -278,11 +278,11 @@ bool QueryExecutor::insertNewTmpUser(const common::BasicUser &)
     result = newSignupQuery.exec();
     if(!result)
     {
-        qDebug() << "Rollback for NewSignup sql query";
+        DEBUG() << "Rollback for NewSignup sql query";
         rollback();
         return false;
     }
-    qDebug() << "Commit for NewSignup sql query";
+    DEBUG() << "Commit for NewSignup sql query";
     commit();
 
     return true;
@@ -295,21 +295,21 @@ bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
 {
     PerformanceCounter counter("QueryExecutor::doesRegistrationTokenExist");
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Checking of user existence in signups by token:" <<  token.toStdString().c_str();
+    DEBUG() <<  "Checking of user existence in signups by token:" <<  token.toStdString().c_str();
 
     query.prepare("select id from signups where registration_token = :token;");
     query.bindValue(":token", token);
-    qDebug() << "Selecting: "<< query.lastQuery().toStdString().c_str();
+    DEBUG() << "Selecting: "<< query.lastQuery().toStdString().c_str();
     query.exec();
 
     if (query.next())
     {
-        qDebug() << "Match found.";
+        DEBUG() << "Match found.";
         return true;
     }
     else
     {
-        qDebug() << "No matching users.";
+        DEBUG() << "No matching users.";
         return false;
     }
 }
@@ -319,16 +319,16 @@ common::BasicUser QueryExecutor::insertTmpUserIntoUsers(const QString &token)
 {
     PerformanceCounter counter("QueryExecutor::insertTmpUserIntoUsers");
     QSqlQuery checkQuery=makeQuery();
-    qDebug() <<  "Checking of user existence in signups by token: %s"<< token;
+    DEBUG() <<  "Checking of user existence in signups by token: %s"<< token;
 
     checkQuery.prepare("select email, login, password from signups where registration_token = :token;");
     checkQuery.bindValue(":token", token);
-    qDebug() << "Selecting: %s"<< checkQuery.lastQuery();
+    DEBUG() << "Selecting: %s"<< checkQuery.lastQuery();
     checkQuery.exec();
 
     if (checkQuery.next())
     {
-        qDebug() << "Match found.";
+        DEBUG() << "Match found.";
         QString email = checkQuery.value(0).toString();
         QString login = checkQuery.value(1).toString();
         QString password = checkQuery.value(2).toString();
@@ -338,7 +338,7 @@ common::BasicUser QueryExecutor::insertTmpUserIntoUsers(const QString &token)
     }
     else
     {
-        qDebug() << "No matching users.";
+        DEBUG() << "No matching users.";
         return common::BasicUser(NULL);;
     }
 }
@@ -351,19 +351,19 @@ bool QueryExecutor::deleteTmpUser(const QString &token)
     QSqlQuery deleteSignupQuery=makeQuery();
     deleteSignupQuery.prepare("delete from signups where registration_token = :token;");
     deleteSignupQuery.bindValue(":token", token);
-    qDebug() << "Deleting: %s"<< deleteSignupQuery.lastQuery();
+    DEBUG() << "Deleting: %s"<< deleteSignupQuery.lastQuery();
 
     transaction();
 
     result = deleteSignupQuery.exec();
     if(!result)
     {
-        qDebug() << "Rollback for deleteSignup sql query";
+        DEBUG() << "Rollback for deleteSignup sql query";
         rollback();
     }
     else
     {
-        qDebug() << "Commit for deleteSignup sql query";
+        DEBUG() << "Commit for deleteSignup sql query";
         commit();
     }
     return result;
@@ -376,7 +376,7 @@ common::BasicUser QueryExecutor::insertNewUser(const common::BasicUser& user)
     bool result;
     QSqlQuery newUserQuery=makeQuery();
     qlonglong newId = nextUserKey();
-    //  qDebug() << "newToken = %s",newToken.toStdString().c_str());
+    //  DEBUG() << "newToken = %s",newToken.toStdString().c_str());
     newUserQuery.prepare("insert into users (id,email,login,password) values(:id,:email,:login,:password);");
     newUserQuery.bindValue(":id",newId);
     newUserQuery.bindValue(":email",user.getEmail());
@@ -388,11 +388,11 @@ common::BasicUser QueryExecutor::insertNewUser(const common::BasicUser& user)
     common::BasicUser newUser = common::BasicUser(NULL);
     if(!result)
     {
-        qDebug() << "Rollback for NewUser sql query";
+        DEBUG() << "Rollback for NewUser sql query";
         rollback();
     }else
     {
-        qDebug() << "Commit for NewUser sql query";
+        DEBUG() << "Commit for NewUser sql query";
         newUser = common::BasicUser(user.getLogin(),user.getPassword(),user.getEmail());
         commit();
     }
@@ -408,18 +408,18 @@ bool QueryExecutor::subscribeChannel(const common::BasicUser& user,const Channel
     insertNewSubscribtion.prepare("insert into subscribe (channel_id,user_id) values(:channel_id,:user_id);");
     insertNewSubscribtion.bindValue(":channel_id",channel.getId());
     insertNewSubscribtion.bindValue(":user_id",user.getId());
-    qDebug() << "Subscribing "<<user.getLogin()<<" (Id = "<<user.getId()
+    DEBUG() << "Subscribing "<<user.getLogin()<<" (Id = "<<user.getId()
              <<") for "<<channel.getName()<<" (Id = "<<channel.getId() <<")";
 
     transaction();
     result=insertNewSubscribtion.exec();
     if(!result)
     {
-        qDebug() << "Rollback for subscribeChannel sql query";
+        DEBUG() << "Rollback for subscribeChannel sql query";
         rollback();
     }else
     {
-        qDebug() << "Commit for subscribeChannel sql query";
+        DEBUG() << "Commit for subscribeChannel sql query";
         commit();
     }
     return result;
@@ -434,7 +434,7 @@ bool QueryExecutor::unsubscribeChannel(const common::BasicUser& user,const Chann
     deleteSubscribtion.prepare("delete from subscribe where channel_id = :channel_id AND user_id = :user_id;");
     deleteSubscribtion.bindValue(":channel_id",channel.getId());
     deleteSubscribtion.bindValue(":user_id",user.getId());
-    qDebug() << "Unsubscribing " << user.getLogin() << " (Id = " << user.getId()
+    DEBUG() << "Unsubscribing " << user.getLogin() << " (Id = " << user.getId()
              << ") for " << channel.getName() << " (Id = " << channel.getId() <<")";
 
     transaction();
@@ -442,11 +442,11 @@ bool QueryExecutor::unsubscribeChannel(const common::BasicUser& user,const Chann
     result=deleteSubscribtion.exec();
     if(!result)
     {
-        qDebug() << "Rollback for unsubscribeChannel sql query";
+        DEBUG() << "Rollback for unsubscribeChannel sql query";
         rollback();
     }else
     {
-        qDebug() << "Commit for unsubscribeChannel sql query";
+        DEBUG() << "Commit for unsubscribeChannel sql query";
         commit();
     }
     return result;
@@ -458,7 +458,7 @@ bool QueryExecutor::deleteUser(const common::BasicUser &user)
     PerformanceCounter counter("QueryExecutor::deleteUser");
     bool result;
     QSqlQuery deleteUserQuery=makeQuery();
-    qDebug() << "Deleting: id = " << user.getId();
+    DEBUG() << "Deleting: id = " << user.getId();
     deleteUserQuery.prepare("delete from users where id = :id;");
     deleteUserQuery.bindValue(":id",user.getId() );
 
@@ -467,12 +467,12 @@ bool QueryExecutor::deleteUser(const common::BasicUser &user)
     result = deleteUserQuery.exec();
     if(!result)
     {
-        qDebug() << "Rollback for deleteUser sql query";
+        DEBUG() << "Rollback for deleteUser sql query";
         rollback();
     }
     else
     {
-        qDebug() << "Commit for deleteUser sql query";
+        DEBUG() << "Commit for deleteUser sql query";
         commit();
     }
     return result;
@@ -482,7 +482,7 @@ bool QueryExecutor::deleteUser(const common::BasicUser &user)
 common::BasicUser QueryExecutor::updateUserPassword(common::BasicUser& user, const QString& password)
 {
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Updating password for user with id:" << user.getId();
+    DEBUG() <<  "Updating password for user with id:" << user.getId();
     query.prepare("update users set password = :pwd where id = :id;");
     query.bindValue(":pwd", password);
     query.bindValue(":id", user.getId());
@@ -492,13 +492,13 @@ common::BasicUser QueryExecutor::updateUserPassword(common::BasicUser& user, con
     bool result = query.exec();
     if (!result)
     {
-        qDebug() << "Rollback for updateUserPassword sql query";
+        DEBUG() << "Rollback for updateUserPassword sql query";
         rollback();
         return common::BasicUser(NULL);
     }
     else
     {
-        qDebug() << "Commit for updateUsersPassword sql query";
+        DEBUG() << "Commit for updateUsersPassword sql query";
         commit();
         user.setPassword(password);
         return user;
@@ -511,7 +511,7 @@ bool QueryExecutor::insertNewSession(const Session& session)
     QSqlQuery query=makeQuery();
     qlonglong newId = nextSessionKey();
 
-    qDebug() <<  "NewId ready, now preparing sql query for adding new session";
+    DEBUG() <<  "NewId ready, now preparing sql query for adding new session";
     query.prepare("insert into sessions (id, user_id, session_token, last_access_time) values (:id, :user_id, :token, :time);");
     query.bindValue(":id", newId);
     query.bindValue(":user_id", QueryExecutor::getUserIdByName(session.getUser().getLogin()));
@@ -523,13 +523,13 @@ bool QueryExecutor::insertNewSession(const Session& session)
     bool result = query.exec();
     if (!result)
     {
-        qDebug() << "Rollback for NewSession sql query";
+        DEBUG() << "Rollback for NewSession sql query";
         rollback();
         return false;
     }
     else
     {
-        qDebug() << "Commit for NewSession sql query - insert in table sessions";
+        DEBUG() << "Commit for NewSession sql query - insert in table sessions";
         commit();
     }
     return true;
@@ -540,7 +540,7 @@ bool QueryExecutor::updateSession(Session &session)
 {
     QSqlQuery query=makeQuery();
     QDateTime currentTime = QDateTime::currentDateTime();
-    qDebug() <<  "Updating session with token: " << session.getSessionToken();
+    DEBUG() <<  "Updating session with token: " << session.getSessionToken();
 
     query.prepare("update sessions set last_access_time = :time where session_token = :token;");
     query.bindValue(":time", currentTime);
@@ -551,13 +551,13 @@ bool QueryExecutor::updateSession(Session &session)
     bool result = query.exec();
     if (!result)
     {
-        qDebug() << "Rollback for updateSession sql query";
+        DEBUG() << "Rollback for updateSession sql query";
         rollback();
         return false;
     }
     else
     {
-        qDebug() << "Commit for updateSession sql query";
+        DEBUG() << "Commit for updateSession sql query";
         commit();
         session.setLastAccessTime(currentTime);
         return true;
@@ -568,7 +568,7 @@ bool QueryExecutor::updateSession(Session &session)
 bool QueryExecutor::deleteSession(const Session &session)
 {
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Deleting session with token: " <<  session.getSessionToken();
+    DEBUG() <<  "Deleting session with token: " <<  session.getSessionToken();
 
     query.prepare("delete from sessions where session_token = :id;");
     query.bindValue(":id", session.getSessionToken());
@@ -578,13 +578,13 @@ bool QueryExecutor::deleteSession(const Session &session)
     bool result = query.exec();
     if (!result)
     {
-        qDebug() <<  "Rollback for deleteSession sql query";
+        DEBUG() <<  "Rollback for deleteSession sql query";
         rollback();
         return false;
     }
     else
     {
-        qDebug() <<  "Commit for deleteSession sql query";
+        DEBUG() <<  "Commit for deleteSession sql query";
         commit();
         return true;
     }
@@ -595,7 +595,7 @@ void QueryExecutor::checkTmpUsers()
 {
     QSqlQuery checkQuery=makeQuery();
     QSqlQuery deleteQuery=makeQuery();
-    qDebug() << "checkTmpUsers query is running now...";
+    DEBUG() << "checkTmpUsers query is running now...";
     // Sending emails to new users
     checkQuery.exec("select id, email, registration_token from signups where sent = false;");
     while (checkQuery.next())
@@ -604,10 +604,10 @@ void QueryExecutor::checkTmpUsers()
         QString email = checkQuery.value(1).toString();
         QString token = checkQuery.value(2).toString();
 
-        qDebug() <<  "Process registration confirmation is started... ";
+        DEBUG() <<  "Process registration confirmation is started... ";
         EmailMessage message(email);
         message.sendAsRegistrationLetter(token);
-        qDebug() <<  "Process registration confirmation finished... ";
+        DEBUG() <<  "Process registration confirmation finished... ";
 
         QSqlQuery updateQuery=makeQuery();
         updateQuery.prepare("update signups set sent = true where id = :id;");
@@ -616,12 +616,12 @@ void QueryExecutor::checkTmpUsers()
         transaction();
         if(!result)
         {
-            qDebug() << "Rollback for CheckTmpUser sql query";
+            DEBUG() << "Rollback for CheckTmpUser sql query";
             rollback();
         }
         else
         {
-            qDebug() << "Commit for CheckTmpUser sql query";
+            DEBUG() << "Commit for CheckTmpUser sql query";
             commit();
         }
     }
@@ -640,17 +640,17 @@ void QueryExecutor::checkTmpUsers()
         qlonglong id = checkQuery.value(0).toLongLong();
         deleteQuery.prepare("delete from signups where id = :id;");
         deleteQuery.bindValue(":id", id);
-        qDebug() << "Deleting: " << deleteQuery.lastQuery();
+        DEBUG() << "Deleting: " << deleteQuery.lastQuery();
         transaction();
         bool result = deleteQuery.exec();
         if(!result)
         {
-            qDebug() << "Rollback for DeleteTmpUser sql query";
+            DEBUG() << "Rollback for DeleteTmpUser sql query";
             rollback();
         }
         else
         {
-            qDebug() << "Commit for DeleteTmpUser sql query";
+            DEBUG() << "Commit for DeleteTmpUser sql query";
             commit();
         }
     }
@@ -660,30 +660,30 @@ void QueryExecutor::checkTmpUsers()
 void QueryExecutor::checkSessions(UpdateThread* /*thread*/)
 {
 #if 0 // GT-765
-    qDebug() << "checkSessions query is running now...";
+    DEBUG() << "checkSessions query is running now...";
     int timelife = SettingsStorage::getValue("general/session_timelife", QVariant(DEFAULT_SESSION_TIMELIFE)).toInt();
     for (int i = 0; i < thread->getSessionsContainer()->size(); i++)
     {
         QDateTime currentTime = QDateTime::currentDateTime().toUTC();
-        //qDebug() <<  "Current time: %s", currentTime.toString().toStdString().c_str());
+        //DEBUG() <<  "Current time: %s", currentTime.toString().toStdString().c_str());
         QDateTime lastAccessTime = thread->getSessionsContainer()->at(i)->getLastAccessTime();
-        //qDebug() <<  "Last access time: %s", lastAccessTime.toString().toStdString().c_str());
+        //DEBUG() <<  "Last access time: %s", lastAccessTime.toString().toStdString().c_str());
         if (lastAccessTime.addDays(timelife) <= currentTime)
         {
             QSqlQuery query=makeQuery();
             query.prepare("delete from sessions where id = :id;");
             query.bindValue(":id", thread->getSessionsContainer()->at(i)->getId());
-            qDebug() << "Deleting: "<< query.lastQuery();
+            DEBUG() << "Deleting: "<< query.lastQuery();
             transaction();
             bool result = query.exec();
             if (!result)
             {
-                qDebug() <<  "Rollback for DeleteSession sql query";
+                DEBUG() <<  "Rollback for DeleteSession sql query";
                 rollback();
             }
             else
             {
-                qDebug() <<  "Commit for DeleteSession sql query";
+                DEBUG() <<  "Commit for DeleteSession sql query";
                 commit();
             }
             QWriteLocker(thread->getLock());
@@ -823,10 +823,10 @@ QList<Session> QueryExecutor::loadSessions()
         {
             Session session(token,lastAccessTime,user);
             result.push_back(session);
-            qDebug() << "added session " << session.getSessionToken() << " for " << user;
+            DEBUG() << "added session " << session.getSessionToken() << " for " << user;
         } else
         {
-            qDebug() << "User " << user << " is not valid";
+            DEBUG() << "User " << user << " is not valid";
         }
     }
     return result;
@@ -881,7 +881,7 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
     DEBUG() << "getUserIdByName " << name;
 
     QString qry=QString("select id from users where login='%1';").arg(name);
-    qDebug() << "qry:" << qry;
+    DEBUG() << "qry:" << qry;
     query.exec(qry);
     qlonglong id =1;  //default value
 

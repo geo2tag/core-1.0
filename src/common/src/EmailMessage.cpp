@@ -36,7 +36,7 @@
  * ---------------------------------------------------------------- */
 
 #include <syslog.h>
-#include <QDebug>
+#include "servicelogger.h"
 #include "EmailMessage.h"
 #include "defines.h"
 #include "SettingsStorage.h"
@@ -88,7 +88,7 @@ void EmailMessage::send() const
   QString command = QString("echo \"%1\" | mail -s '%2' %3 &").arg(m_body).arg(m_subject).arg(m_email);
   if( -1 == system(command.toStdString().c_str()))
 	{
-		qDebug() << "system is failed for : " << command;
+		DEBUG() << "system is failed for : " << command;
 	}
 }
 
@@ -105,9 +105,9 @@ void EmailMessage::sendAsRegistrationLetter(const QString& info)
   body.append(info);
   m_subject = subject;
   m_body = body;
-  qDebug() <<  "Email: " << m_email.toStdString().c_str();
-  qDebug() <<  "Subject: %s" << m_subject.toStdString().c_str();
-  qDebug() <<  "Body: %s" << m_body.toStdString().c_str();
+  DEBUG() <<  "Email: " << m_email.toStdString().c_str();
+  DEBUG() <<  "Subject: %s" << m_subject.toStdString().c_str();
+  DEBUG() <<  "Body: %s" << m_body.toStdString().c_str();
   send();
 }
 
@@ -120,8 +120,8 @@ void EmailMessage::sendAsRestorePwdMessage(const QString& pwd)
 
   m_subject = subject;
   m_body = body;
-    qDebug() <<  "Email: " <<  m_email.toStdString().c_str();
-  qDebug() <<  "Subject:" << m_subject.toStdString().c_str();
-  qDebug() <<  "Body: " << m_body.toStdString().c_str();
+    DEBUG() <<  "Email: " <<  m_email.toStdString().c_str();
+  DEBUG() <<  "Subject:" << m_subject.toStdString().c_str();
+  DEBUG() <<  "Body: " << m_body.toStdString().c_str();
   send();
 }

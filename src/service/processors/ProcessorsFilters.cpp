@@ -28,7 +28,7 @@ namespace common
 QByteArray DbObjectsCollection::processFilterCircleQuery(const QByteArray& data)
 {
     return data;
-//    qDebug() <<  ">>> processFilterCircleQuery";
+//    DEBUG() <<  ">>> processFilterCircleQuery";
 
 //    FilterCircleRequestJSON request;
 //    return internalProcessFilterQuery(request, data, false);
@@ -108,7 +108,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //    DataChannels feed;
 //    if (request.getChannels()->size() > 0)
 //    {
-//        qDebug() <<  "point_2";
+//        DEBUG() <<  "point_2";
 
 //        Channel targetChannel;
 //        // look for ...
@@ -125,7 +125,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //        {
 //            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
 //            answer.append(response.getJson());
-//            qDebug() << "answer: " << answer.data();
+//            DEBUG() << "answer: " << answer.data();
 //            return answer;
 //        }
 //        QList<Tag > tags = m_dataChannelsMap->values(targetChannel);
@@ -155,7 +155,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //    QueryExecutor::instance()->updateSession(realSession);
 
 //    answer.append(response.getJson());
-//    qDebug() << "answer: " << answer.data();
+//    DEBUG() << "answer: " << answer.data();
 //    return answer;
 }
 
