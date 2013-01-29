@@ -41,6 +41,7 @@
 
 #include "MetaCache.h"
 #include "QueryExecutor.h"
+#include "servicelogger.h"
 #include "defines.h"
 
 namespace Core
@@ -93,6 +94,12 @@ void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user
 {
     QueryExecutor::instance()->insertNewChannel(channel, user);
     s_channels.push_back(Channel(channel));
+}
+
+void MetaCache::insertSession(const Session session)
+{
+    s_sessions << session;
+    DEBUG() << "inserted " << session << ", session count=" << s_sessions.size();
 }
 
 Session MetaCache::findSession(const BasicUser &user)
@@ -149,7 +156,11 @@ void MetaCache::initUsers()
 
 void MetaCache::initSessions()
 {
+#if GEO2TAG_LITE
+    qDebug() << "Session persistans is not supported in lite version";
+#else
     NOT_IMPLEMENTED();
+#endif
 }
 
 } // namespace Core
