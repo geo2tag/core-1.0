@@ -866,7 +866,7 @@ qlonglong QueryExecutor::getChannelIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
 
-    query.exec(QString("select id from channels where name=%1;").arg(name));
+    query.exec(QString("select id from channel where name=%1;").arg(name));
     qlonglong id =-1;
 
     if(!query.next())
