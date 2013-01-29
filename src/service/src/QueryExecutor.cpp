@@ -871,7 +871,7 @@ qlonglong QueryExecutor::getChannelIdByName(const QString &name)
 
     if(!query.next())
     {
-        qCritical() << "Cannot find existing channel " << name;
+        CRITICAL() << "Cannot find existing channel " << name;
     }
     else
     {
