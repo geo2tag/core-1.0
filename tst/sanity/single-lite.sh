@@ -33,14 +33,6 @@ then
 	exit 1
 fi
 
-response_subscribe=`curl   -d "{\"auth_token\":"$auth_token", \"channel\":\"$test_channel\"}" http://${INSTANCE}/service/subscribe`;
-echo "Subscribe test - $response_subscribe"
-if ! echo $response_subscribe | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at subscribe test"
-        exit 1
-fi
-
 response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
 echo "Incorrect Json test - $response_incorrect_json_test"
 correct_result_incorrect_json='{ "errno" : 9 }';
