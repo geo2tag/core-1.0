@@ -887,6 +887,9 @@ Channel QueryExecutor::getChannel(const QString &name)
     DEBUG() << "Looking up channel " << name;
     query.exec(QString("select name, description, url from channels where name=%1;").arg(name));
 
+    DEBUG() << " ... found " << query.size() << "results, take first if possibe";
+
+
     if(!query.next())
     {
         WARNING() << "Cannot find channel \"" << name << "\"";
@@ -894,7 +897,6 @@ Channel QueryExecutor::getChannel(const QString &name)
     }
     else
     {
-        DEBUG() << " ... found " << query.size() << "results, take first";
         QString name = query.record().value("name").toString();
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
