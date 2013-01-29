@@ -35,10 +35,12 @@ fi
 
 response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
 echo "Incorrect Json test - $response_incorrect_json_test"
-correct_result_incorrect_json='{ "errno" : 9 }';
+correct_result_incorrect_json='9';
 if ! echo $response_incorrect_json_test | grep -q -s -F "$correct_result_incorrect_json"  ; 
 then
 	echo "Fail at incorrect json test"
+	echo "expected "${correct_result_incorrect_json}
+	echo "received "${response_incorrect_json_test}
 	exit 1
 fi
 
