@@ -762,8 +762,6 @@ QList<Tag> QueryExecutor::loadTags()
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
-        //        qlonglong userId = query.record().value("user_id").toLongLong();
-        //        qlonglong channelId = query.record().value("channel_id").toLongLong();
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
         container.push_back(tag);
@@ -775,6 +773,8 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
 {
     QList<Tag> container;
     qlonglong channelId=getChannelIdByName(channel.getName());
+
+    DEBUG() << "Loading tags for " << channel.getName();
 
     QSqlQuery query=makeQuery();
     query.exec(QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
@@ -795,6 +795,7 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
         Tag tag(altitude,latitude,longitude,label,description,url,time);
         container.push_back(tag);
     }
+    DEBUG() << ".... done, amount = " << container.size();
     return container;
 }
 

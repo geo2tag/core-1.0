@@ -177,7 +177,8 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     QList<Tag> feed;
 
     QList<Channel> channels = QueryExecutor::instance()->getChannelsByUser(session.getUser());
-    DEBUG() << "User channels" << channels;
+
+    DEBUG() << "User is owner for " << channels.size() << " channels";
 
     double lat1 = request.getLatitude();
     double lon1 = request.getLongitude();
