@@ -678,13 +678,43 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
     return result;
 }
 
-QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &/*user*/)
+QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &user)
 {
-    QList<Channel> r;
+    QList<Channel> container;
 
+#ifdef GEO2TAG_LITE
+    QSqlQuery query=makeQuery();
+    qlonglong owner_id = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    QString qry = QString(("select description, name, url from channel where owner_id='%1'")).arg(owner_id);
+    query.exec(qry);
+
+    DEBUG() << "Found " << query.size() << " channels";
+    while (query.next())
+    {
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        qlonglong ownerId = query.record().value("owner_id").toLongLong();
+
+        QSqlQuery selectQuery=makeQuery();
+        selectQuery.prepare("select email, login, password from users where id = :owner_id;");
+        selectQuery.bindValue(":owner_id", ownerId);
+        selectQuery.exec();
+        selectQuery.next();
+
+        QString email = selectQuery.record().value("email").toString();
+        QString login = selectQuery.record().value("login").toString();
+        QString passw = selectQuery.record().value("password").toString();
+
+        Channel channel(name,description,url);
+        container.push_back(channel);
+    }
+
+#else
     NOT_IMPLEMENTED();
+#endif
 
-    return r;
+    return container;
 }
 
 
