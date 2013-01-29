@@ -189,6 +189,7 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
 
     // Extra code for extracting token from url !
     QRegExp rx("confirmRegistration-([a-zA-Z0-9]+)");
+
     if (rx.exactMatch(queryType))
     {
         DEBUG() <<  "Pattern matched!";
@@ -198,11 +199,10 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
         PerformanceCounter a("confirmRegistration");
         aa = (*this.*method)(token);
         return aa;
-
     }
     else
     {
-        DEBUG() <<  "Pattern not matched!";
+        WARNING() << "Command \"" << queryType << "\" not found. Maybe not supported in this build";
     }
     // end of extra code !
 

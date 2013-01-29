@@ -14,5 +14,6 @@ public:
 };
 
 #define DEBUG() ( qDebug() <<__FILE__<<":"<<__LINE__ )
+#define WARNING() ( qWarning() <<__FILE__<<":"<<__LINE__ )
 
 #endif // SERVICELOGGER_H
