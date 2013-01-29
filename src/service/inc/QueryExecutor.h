@@ -69,7 +69,7 @@ public:
     bool                 doesTmpUserExist(const common::BasicUser &user);
     bool                     doesUserWithGivenEmailExist(const common::BasicUser &user);
     bool                     deleteTmpUser(const common::BasicUser &user);
-    const QString  insertNewTmpUser(const common::BasicUser &user);
+    bool  insertNewTmpUser(const common::BasicUser &user);
     bool                     doesRegistrationTokenExist(const QString &token);
     common::BasicUser insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
@@ -79,7 +79,7 @@ public:
     bool                     deleteUser(const common::BasicUser &user);
     common::BasicUser  updateUserPassword(common::BasicUser &user, const QString& password);
     // Sessions
-    Session insertNewSession(const common::BasicUser& user);
+    bool insertNewSession(const Session &session);
 
     bool                     updateSession(Session& session);
     bool                     deleteSession(const Session& session);

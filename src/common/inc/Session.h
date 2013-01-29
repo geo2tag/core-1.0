@@ -70,6 +70,8 @@ class Session
     const QDateTime& getLastAccessTime() const;
     common::BasicUser getUser() const;
 
+    static QString generateToken(const common::BasicUser& user);
+
     virtual ~Session();
 };
 

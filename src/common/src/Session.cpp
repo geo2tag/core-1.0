@@ -36,6 +36,8 @@
  * ---------------------------------------------------------------- */
 
 #include "Session.h"
+#include <QCryptographicHash>
+#include "servicelogger.h"
 
 Session::Session(const QString &token, const QDateTime &accessTime, const common::BasicUser &user)
     : m_token(token), m_accessTime(accessTime), m_user(user)
@@ -97,12 +99,22 @@ common::BasicUser Session::getUser() const
     return m_user;
 }
 
+QString Session::generateToken(const common::BasicUser &user)
+{
+    QString token=user.getLogin()+user.getPassword()+user.getEmail();
+    QByteArray toHash(token.toUtf8());
+    toHash=QCryptographicHash::hash(token.toUtf8(),QCryptographicHash::Md5);
+    QString result(toHash.toHex());
+    DEBUG() << "Generated token " << result << " for user " << user.getLogin();
+    return result;
+}
+
 Session::~Session()
 {
 }
 
 QDebug& operator<<(QDebug &dbg, Session const& session)
-    {
+{
     dbg << session.getSessionToken() << " user:"
         << session.getUser() << " accessTime:"
         << session.getLastAccessTime() << ", valid=" << session.isValid();

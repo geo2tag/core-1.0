@@ -93,17 +93,6 @@ qlonglong QueryExecutor::nextSessionKey() const
 }
 
 
-const QString QueryExecutor::generateNewToken(const QString& email, const QString& login,const QString& password) const
-{
-    QString log=login+password+email;
-    QByteArray toHash(log.toUtf8());
-    toHash=QCryptographicHash::hash(log.toUtf8(),QCryptographicHash::Md5);
-    QString result(toHash.toHex());
-    qDebug() << "Token = %s" << result;
-    return result;
-}
-
-
 const QString QueryExecutor::generateNewToken(const QString& accessTime, const QString& email, const QString& login,const QString& password) const
 {
     QString log=login+password+email+accessTime;
@@ -266,8 +255,10 @@ bool QueryExecutor::deleteTmpUser(const common::BasicUser &user)
 }
 
 
-const QString QueryExecutor::insertNewTmpUser(const common::BasicUser &user)
+bool QueryExecutor::insertNewTmpUser(const common::BasicUser &)
 {
+    NOT_IMPLEMENTED();
+#if 0
     PerformanceCounter counter("QueryExecutor::insertNewTmpUser");
     bool result;
     QSqlQuery newSignupQuery=makeQuery();
@@ -289,12 +280,14 @@ const QString QueryExecutor::insertNewTmpUser(const common::BasicUser &user)
     {
         qDebug() << "Rollback for NewSignup sql query";
         rollback();
-        return QString("");
+        return false;
     }
     qDebug() << "Commit for NewSignup sql query";
     commit();
 
-    return newToken;
+    return true;
+#endif
+    return false;
 }
 
 
@@ -513,22 +506,17 @@ common::BasicUser QueryExecutor::updateUserPassword(common::BasicUser& user, con
 }
 
 
-Session QueryExecutor::insertNewSession(const common::BasicUser &user)
+bool QueryExecutor::insertNewSession(const Session& session)
 {
     QSqlQuery query=makeQuery();
     qlonglong newId = nextSessionKey();
-    QDateTime time=QDateTime::currentDateTimeUtc();
-    QString newSessionToken = generateNewToken(QDateTime::currentDateTimeUtc().toString(),
-                                               user.getEmail(),
-                                               user.getLogin(),
-                                               user.getPassword());
 
     qDebug() <<  "NewId ready, now preparing sql query for adding new session";
     query.prepare("insert into sessions (id, user_id, session_token, last_access_time) values (:id, :user_id, :token, :time);");
     query.bindValue(":id", newId);
-    query.bindValue(":user_id", QueryExecutor::getUserIdByName(user.getLogin()));
-    query.bindValue(":token", newSessionToken);
-    query.bindValue(":time", time);
+    query.bindValue(":user_id", QueryExecutor::getUserIdByName(session.getUser().getLogin()));
+    query.bindValue(":token", session.getSessionToken());
+    query.bindValue(":time", session.getLastAccessTime());
 
     transaction();
 
@@ -537,14 +525,14 @@ Session QueryExecutor::insertNewSession(const common::BasicUser &user)
     {
         qDebug() << "Rollback for NewSession sql query";
         rollback();
-        return Session();
+        return false;
     }
     else
     {
         qDebug() << "Commit for NewSession sql query - insert in table sessions";
         commit();
     }
-    return Session(newSessionToken, time, user);
+    return true;
 }
 
 
@@ -775,8 +763,8 @@ QList<Tag> QueryExecutor::loadTags()
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
-//        qlonglong userId = query.record().value("user_id").toLongLong();
-//        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        //        qlonglong userId = query.record().value("user_id").toLongLong();
+        //        qlonglong channelId = query.record().value("channel_id").toLongLong();
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
         container.push_back(tag);
@@ -791,7 +779,7 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
 
     QSqlQuery query=makeQuery();
     query.exec(QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
-               "from tag where channel_id = %1 order by time;").arg(channelId));
+                       "from tag where channel_id = %1 order by time;").arg(channelId));
     while (query.next())
     {
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
@@ -802,8 +790,8 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
-//        qlonglong userId = query.record().value("user_id").toLongLong();
-//        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        //        qlonglong userId = query.record().value("user_id").toLongLong();
+        //        qlonglong channelId = query.record().value("channel_id").toLongLong();
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
         container.push_back(tag);
@@ -893,7 +881,7 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
     DEBUG() << "getUserIdByName " << name;
 
     QString qry=QString("select id from users where login='%1';").arg(name);
-	qDebug() << "qry:" << qry;
+    qDebug() << "qry:" << qry;
     query.exec(qry);
     qlonglong id =1;  //default value
 

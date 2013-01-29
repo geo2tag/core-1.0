@@ -55,8 +55,14 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         Session session = Core::MetaCache::findSession(user);
         if (!session.isValid())
         {
+            QString token=Session::generateToken(user);
+            Session addedSession = Session(token,QDateTime::currentDateTime(),user);
+
+#ifdef GEO2TAG_LITE
+            Core::MetaCache::insertSession(session);
+#else
             qDebug() <<  "Session hasn't been found. Generating of new Session.";
-            Session addedSession = QueryExecutor::instance()->insertNewSession(user);
+            addedSession = QueryExecutor::instance()->insertNewSession(user);
             if (!addedSession.isValid())
             {
                 response.setErrno(INTERNAL_DB_ERROR);
@@ -64,8 +70,8 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
                 qDebug() << "answer: " <<  answer.data();
                 return answer;
             }
-
             Core::MetaCache::reloadSessions();
+#endif
             response.addSession(addedSession);
         }
         else
@@ -183,22 +189,6 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
         }
     }
 
-
-//    for(int i = 0; i<channels->size(); i++)
-//    {
-//        Channel channel = channels->at(i);
-//        QList<Tag > tags = m_dataChannelsMap->values(channel);
-//        qSort(tags);
-//        for(int j = 0; j < tags.size(); j++)
-//        {
-//            Tag mark = tags.at(j);
-//            double lat2 = mark->getLatitude();
-//            double lon2 = mark->getLongitude();
-
-//            if ( Tag::getDistance(lat1, lon1, lat2, lon2) < radius )
-//                feed.insert(channel, mark);
-//        }
-//    }
 
     response.setData(feed);
 
