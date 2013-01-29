@@ -47,6 +47,7 @@
 
 #include "DataChannel.h"
 
+#if 0
 class MapScene : public QGraphicsScene
 {
   Q_OBJECT
@@ -86,7 +87,7 @@ class MapScene : public QGraphicsScene
     void update_state();
 
   private:
-    void add_mark(QPointF pos,QSharedPointer<Tag> mark,QSharedPointer<Channel> channel);
+    void add_mark(QPointF pos,Tag mark,Channel channel);
     QPair<QPoint, QPoint> getBorders();
 
     signals:
@@ -98,4 +99,5 @@ class MapScene : public QGraphicsScene
 
 };
 // MAPSCENE_H
+#endif
 #endif

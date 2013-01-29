@@ -54,7 +54,6 @@ class Channel
     QString m_description;                //!< URL for mark
     QString m_url;                        //!< Radius for visible marks
 
-//    QSharedPointer<common::BasicUser> m_owner;
     double m_activeRadius;                //!< Displayed on the UI
     bool m_isDisplayed;
 

@@ -65,7 +65,7 @@ BasicUser MetaCache::getUserById(const QString userId)
 {
     QReadLocker lock(&s_usersLock);
 
-    QSharedPointer<User> realUser;      // Null pointer
+    common::BasicUser realUser;      // Null pointer
 
     BasicUser user;
     foreach(user,s_users)

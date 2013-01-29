@@ -39,6 +39,6 @@
 #include "Channel.h"
 #include "DataMarks.h"
 
-typedef QMultiMap<QSharedPointer<Channel>, QSharedPointer<Tag> > DataChannels;
+typedef QMultiMap<Channel, Tag > DataChannels;
 // DATACHANNEL_H
 #endif

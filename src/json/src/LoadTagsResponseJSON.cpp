@@ -94,7 +94,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
     QVariantList markList = channelDesc["items"].toList();
     QString channelName = channelDesc["name"].toString();
 
-    QSharedPointer<Channel> channel(new JsonChannel(channelName,"dummy channel[LoadTagsResponse]"));
+    Channel channel(channelName,"dummy channel[LoadTagsResponse]");
 
     for(int j=0; j<markList.size(); j++)
     {
@@ -130,7 +130,7 @@ QByteArray LoadTagsResponseJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj, rss, jchannel;
 
-  //QList<QSharedPointer<Channel> > hashKeys = m_tags.uniqueKeys();
+  //QList<Channel > hashKeys = m_tags.uniqueKeys();
   QVariantList jchannels;
 
   for(int i=0; i<m_channelsContainer.size(); i++)

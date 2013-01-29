@@ -53,8 +53,8 @@ TimeFilter::~TimeFilter()
 }
 
 
-bool TimeFilter::filtrate(const QSharedPointer<Tag> &mark)
+bool TimeFilter::filtrate(const Tag &mark)
 {
-  QDateTime time = mark->getTime();
+  QDateTime time = mark.getTime();
   return m_timeFrom <= time && time <= m_timeTo;
 }

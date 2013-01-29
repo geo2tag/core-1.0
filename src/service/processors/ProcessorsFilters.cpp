@@ -86,8 +86,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //        return answer;
 //    }
 
-//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    Session dummySession = request.getSessions()->at(0);
+//    Session realSession = findSession(dummySession);
 //    if(realSession.isNull())
 //    {
 //        response.setErrno(WRONG_TOKEN_ERROR);
@@ -95,7 +95,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //        return answer;
 //    }
 
-//    QSharedPointer<User> realUser = realSession->getUser();
+//    common::BasicUser realUser = realSession->getUser();
 
 //    filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
 //    filtration.addFilter(QSharedPointer<Filter>(new TimeFilter(request.getTimeFrom(), request.getTimeTo())));
@@ -104,13 +104,13 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //        filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
 //    }
 
-//    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
+//    QList<Channel> channels = realUser->getSubscribedChannels();
 //    DataChannels feed;
 //    if (request.getChannels()->size() > 0)
 //    {
 //        qDebug() <<  "point_2";
 
-//        QSharedPointer<Channel> targetChannel;
+//        Channel targetChannel;
 //        // look for ...
 //        for(int i = 0; i<channels->size(); i++)
 //        {
@@ -128,8 +128,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //            qDebug() << "answer: " << answer.data();
 //            return answer;
 //        }
-//        QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(targetChannel);
-//        QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
+//        QList<Tag > tags = m_dataChannelsMap->values(targetChannel);
+//        QList<Tag > filteredTags = filtration.filtrate(tags);
 //        for(int i = 0; i < filteredTags.size(); i++)
 //        {
 //            feed.insert(targetChannel, filteredTags.at(i));
@@ -140,9 +140,9 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*
 //    {
 //        for(int i = 0; i<channels->size(); i++)
 //        {
-//            QSharedPointer<Channel> channel = channels->at(i);
-//            QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(channel);
-//            QList<QSharedPointer<Tag> > filteredTags = filtration.filtrate(tags);
+//            Channel channel = channels->at(i);
+//            QList<Tag > tags = m_dataChannelsMap->values(channel);
+//            QList<Tag > filteredTags = filtration.filtrate(tags);
 //            for(int j = 0; j < filteredTags.size(); j++)
 //            {
 //                feed.insert(channel, filteredTags.at(j));

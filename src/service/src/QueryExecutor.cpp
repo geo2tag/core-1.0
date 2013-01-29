@@ -182,7 +182,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     {
         qDebug() << "Rollback for NewChannel sql query";
         rollback();
-        return QSharedPointer<Channel>(NULL);
+        return false;
     }else
         qDebug() << "Commit for NewChannel sql query - insert in table channel";
 
@@ -193,13 +193,13 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
 }
 
 
-bool QueryExecutor::doesTmpUserExist(const QSharedPointer<common::User> &user)
+bool QueryExecutor::doesTmpUserExist(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::doesTmpUserExist");
     QSqlQuery query=makeQuery();
     query.prepare("select * from signups where login = :login or email = :email;");
-    query.bindValue(":login",user->getLogin());
-    query.bindValue(":email",user->getEmail());
+    query.bindValue(":login",user.getLogin());
+    query.bindValue(":email",user.getEmail());
     qDebug() << "Selecting: %s" <<  query.lastQuery();
 
     query.exec();
@@ -216,14 +216,14 @@ bool QueryExecutor::doesTmpUserExist(const QSharedPointer<common::User> &user)
 }
 
 
-bool QueryExecutor::doesUserWithGivenEmailExist(const QSharedPointer<common::User> &user)
+bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::doesUserWithGivenEmailExist");
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Checking of user existence in users by email: "<<user->getEmail();
+    qDebug() <<  "Checking of user existence in users by email: "<<user.getEmail();
 
     query.prepare("select id from users where email = :email;");
-    query.bindValue(":email", user->getEmail());
+    query.bindValue(":email", user.getEmail());
     qDebug() << "Selecting: " <<  query.lastQuery();
     query.exec();
 
@@ -240,13 +240,13 @@ bool QueryExecutor::doesUserWithGivenEmailExist(const QSharedPointer<common::Use
 }
 
 
-bool QueryExecutor::deleteTmpUser(const QSharedPointer<common::User> &user)
+bool QueryExecutor::deleteTmpUser(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::deleteTmpUser");
     bool result;
     QSqlQuery deleteSignupQuery=makeQuery();
     deleteSignupQuery.prepare("delete from signups where login = :login;");
-    deleteSignupQuery.bindValue(":login",user->getLogin() );
+    deleteSignupQuery.bindValue(":login",user.getLogin() );
     qDebug() << "Deleting: "<< deleteSignupQuery.lastQuery();
 
     transaction();
@@ -266,19 +266,19 @@ bool QueryExecutor::deleteTmpUser(const QSharedPointer<common::User> &user)
 }
 
 
-const QString QueryExecutor::insertNewTmpUser(const QSharedPointer<common::User> &user)
+const QString QueryExecutor::insertNewTmpUser(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewTmpUser");
     bool result;
     QSqlQuery newSignupQuery=makeQuery();
     qlonglong newId = nextUserKey();
-    qDebug() << "Generating token for new signup " << user->getLogin() << user->getPassword();
-    QString newToken = generateNewToken(user->getEmail(), user->getLogin(),user->getPassword());
+    qDebug() << "Generating token for new signup " << user.getLogin() << user.getPassword();
+    QString newToken = generateNewToken(user.getEmail(), user.getLogin(),user.getPassword());
     newSignupQuery.prepare("insert into signups (id,email,login,password,registration_token,sent) values(:id,:email,:login,:password,:r_token,:sent);");
     newSignupQuery.bindValue(":id", newId);
-    newSignupQuery.bindValue(":email", user->getEmail());
-    newSignupQuery.bindValue(":login", user->getLogin());
-    newSignupQuery.bindValue(":password", user->getPassword());
+    newSignupQuery.bindValue(":email", user.getEmail());
+    newSignupQuery.bindValue(":login", user.getLogin());
+    newSignupQuery.bindValue(":password", user.getPassword());
     newSignupQuery.bindValue(":r_token", newToken);
     newSignupQuery.bindValue(":sent", FALSE);
 
@@ -322,7 +322,7 @@ bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
 }
 
 
-QSharedPointer<common::User> QueryExecutor::insertTmpUserIntoUsers(const QString &token)
+common::BasicUser QueryExecutor::insertTmpUserIntoUsers(const QString &token)
 {
     PerformanceCounter counter("QueryExecutor::insertTmpUserIntoUsers");
     QSqlQuery checkQuery=makeQuery();
@@ -339,14 +339,14 @@ QSharedPointer<common::User> QueryExecutor::insertTmpUserIntoUsers(const QString
         QString email = checkQuery.value(0).toString();
         QString login = checkQuery.value(1).toString();
         QString password = checkQuery.value(2).toString();
-        const QSharedPointer<common::User> newUser(new common::User(login, password, email));
-        QSharedPointer<common::User> insertedUser = insertNewUser(newUser);
+        const common::BasicUser newUser(login, password, email);
+        common::BasicUser insertedUser = insertNewUser(newUser);
         return insertedUser;
     }
     else
     {
         qDebug() << "No matching users.";
-        return QSharedPointer<common::User>(NULL);;
+        return common::BasicUser(NULL);;
     }
 }
 
@@ -377,7 +377,7 @@ bool QueryExecutor::deleteTmpUser(const QString &token)
 }
 
 
-QSharedPointer<common::User> QueryExecutor::insertNewUser(const QSharedPointer<common::User>& user)
+common::BasicUser QueryExecutor::insertNewUser(const common::BasicUser& user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewUser");
     bool result;
@@ -386,13 +386,13 @@ QSharedPointer<common::User> QueryExecutor::insertNewUser(const QSharedPointer<c
     //  qDebug() << "newToken = %s",newToken.toStdString().c_str());
     newUserQuery.prepare("insert into users (id,email,login,password) values(:id,:email,:login,:password);");
     newUserQuery.bindValue(":id",newId);
-    newUserQuery.bindValue(":email",user->getEmail());
-    newUserQuery.bindValue(":login",user->getLogin());
-    newUserQuery.bindValue(":password",user->getPassword());
+    newUserQuery.bindValue(":email",user.getEmail());
+    newUserQuery.bindValue(":login",user.getLogin());
+    newUserQuery.bindValue(":password",user.getPassword());
     transaction();
 
     result=newUserQuery.exec();
-    QSharedPointer<common::User> newUser = QSharedPointer<common::User>(NULL);
+    common::BasicUser newUser = common::BasicUser(NULL);
     if(!result)
     {
         qDebug() << "Rollback for NewUser sql query";
@@ -400,23 +400,23 @@ QSharedPointer<common::User> QueryExecutor::insertNewUser(const QSharedPointer<c
     }else
     {
         qDebug() << "Commit for NewUser sql query";
-        newUser = QSharedPointer<common::User>(new DbUser(user->getLogin(),user->getPassword(),user->getEmail(),newId));
+        newUser = common::BasicUser(user.getLogin(),user.getPassword(),user.getEmail());
         commit();
     }
     return newUser;
 }
 
 
-bool QueryExecutor::subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel)
+bool QueryExecutor::subscribeChannel(const common::BasicUser& user,const Channel& channel)
 {
     PerformanceCounter counter("QueryExecutor::subscribeChannel");
     bool result;
     QSqlQuery insertNewSubscribtion=makeQuery();
     insertNewSubscribtion.prepare("insert into subscribe (channel_id,user_id) values(:channel_id,:user_id);");
-    insertNewSubscribtion.bindValue(":channel_id",channel->getId());
-    insertNewSubscribtion.bindValue(":user_id",user->getId());
-    qDebug() << "Subscribing "<<user->getLogin()<<" (Id = "<<user->getId()
-             <<") for "<<channel->getName()<<" (Id = "<<channel->getId() <<")";
+    insertNewSubscribtion.bindValue(":channel_id",channel.getId());
+    insertNewSubscribtion.bindValue(":user_id",user.getId());
+    qDebug() << "Subscribing "<<user.getLogin()<<" (Id = "<<user.getId()
+             <<") for "<<channel.getName()<<" (Id = "<<channel.getId() <<")";
 
     transaction();
     result=insertNewSubscribtion.exec();
@@ -433,16 +433,16 @@ bool QueryExecutor::subscribeChannel(const QSharedPointer<common::User>& user,co
 }
 
 
-bool QueryExecutor::unsubscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel)
+bool QueryExecutor::unsubscribeChannel(const common::BasicUser& user,const Channel& channel)
 {
     PerformanceCounter counter("QueryExecutor::unsubscribeChannel");
     bool result;
     QSqlQuery deleteSubscribtion=makeQuery();
     deleteSubscribtion.prepare("delete from subscribe where channel_id = :channel_id AND user_id = :user_id;");
-    deleteSubscribtion.bindValue(":channel_id",channel->getId());
-    deleteSubscribtion.bindValue(":user_id",user->getId());
-    qDebug() << "Unsubscribing " << user->getLogin() << " (Id = " << user->getId()
-             << ") for " << channel->getName() << " (Id = " << channel->getId() <<")";
+    deleteSubscribtion.bindValue(":channel_id",channel.getId());
+    deleteSubscribtion.bindValue(":user_id",user.getId());
+    qDebug() << "Unsubscribing " << user.getLogin() << " (Id = " << user.getId()
+             << ") for " << channel.getName() << " (Id = " << channel.getId() <<")";
 
     transaction();
 
@@ -460,14 +460,14 @@ bool QueryExecutor::unsubscribeChannel(const QSharedPointer<common::User>& user,
 }
 
 
-bool QueryExecutor::deleteUser(const QSharedPointer<common::User> &user)
+bool QueryExecutor::deleteUser(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::deleteUser");
     bool result;
     QSqlQuery deleteUserQuery=makeQuery();
-    qDebug() << "Deleting: id = " << user->getId();
+    qDebug() << "Deleting: id = " << user.getId();
     deleteUserQuery.prepare("delete from users where id = :id;");
-    deleteUserQuery.bindValue(":id",user->getId() );
+    deleteUserQuery.bindValue(":id",user.getId() );
 
     transaction();
 
@@ -486,13 +486,13 @@ bool QueryExecutor::deleteUser(const QSharedPointer<common::User> &user)
 }
 
 
-QSharedPointer<common::User> QueryExecutor::updateUserPassword(const QSharedPointer<common::User>& user, const QString& password)
+common::BasicUser QueryExecutor::updateUserPassword(common::BasicUser& user, const QString& password)
 {
     QSqlQuery query=makeQuery();
-    qDebug() <<  "Updating password for user with id:" << user->getId();
+    qDebug() <<  "Updating password for user with id:" << user.getId();
     query.prepare("update users set password = :pwd where id = :id;");
     query.bindValue(":pwd", password);
-    query.bindValue(":id", user->getId());
+    query.bindValue(":id", user.getId());
 
     transaction();
 
@@ -501,13 +501,13 @@ QSharedPointer<common::User> QueryExecutor::updateUserPassword(const QSharedPoin
     {
         qDebug() << "Rollback for updateUserPassword sql query";
         rollback();
-        return QSharedPointer<common::User>(NULL);
+        return common::BasicUser(NULL);
     }
     else
     {
         qDebug() << "Commit for updateUsersPassword sql query";
         commit();
-        user->setPassword(password);
+        user.setPassword(password);
         return user;
     }
 }
@@ -845,7 +845,7 @@ QList<Session> QueryExecutor::loadSessions()
 }
 
 
-void QueryExecutor::updateReflections(DataMarks &, common::Users &, Channels &, Sessions &)
+void QueryExecutor::updateReflections(DataMarks &, QList<common::BasicUser> &, Channels &, Sessions &)
 {
     Q_ASSERT(false);
 #if 0 // GT-765
@@ -867,7 +867,7 @@ void QueryExecutor::updateReflections(DataMarks &, common::Users &, Channels &, 
             qlonglong tag_id = query.record().value("tag_id").toLongLong();
             qlonglong channel_id = query.record().value("channel_id").toLongLong();
 
-            QSharedPointer<Channel> channel = channels.item(channel_id);
+            Channel channel = channels.item(channel_id);
             QSharedPointer<DataMark> tag = tags.item(tag_id);
 
             tag->setChannel(channel);

@@ -63,8 +63,8 @@ namespace common
   class DbObjectsCollection
   {
 
-    QSharedPointer<Channels>     m_channelsContainer;
-    QSharedPointer<DataMarks>    m_tagsContainer;
+    QList<Channel>     m_channelsContainer;
+    QList<Tag>    m_tagsContainer;
 //    QSharedPointer<DataChannels> m_dataChannelsMap;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
@@ -81,13 +81,13 @@ namespace common
     void autoInitdatabase();
 
     const QString getPasswordHash(const QString & login, const QString & pasword) const;
-    const QString getPasswordHash(const QSharedPointer<User>& user)  const;
+    const QString getPasswordHash(const common::BasicUser& user)  const;
 
     bool checkPasswordQuality(const QString& password) const;
 
-    const QString generateNewPassword(const QSharedPointer<common::User>& user) const;
+    const QString generateNewPassword(const common::BasicUser& user) const;
 
-    QSharedPointer<User> findUser(const QSharedPointer<User> &dummyUser) const;
+    common::BasicUser findUser(const common::BasicUser &dummyUser) const;
 
     QByteArray processRegisterUserQuery(const QByteArray&);
     QByteArray processConfirmRegistrationQuery(const QString&);

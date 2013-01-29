@@ -10,7 +10,7 @@ message($$LIBS)
              json \
              http_requests \
              service \
-	     maps \ 
+#	     maps \
 #            http_requests/tst_http_requests \
 #             tracker/clients/meego/tst \
              #json/tst \

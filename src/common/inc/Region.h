@@ -51,17 +51,17 @@ namespace common
 {
   class Region
   {
-    QSharedPointer<DataMarks> m_points;
+    QList<Tag> m_points;
     public:
       Region();
-      Region(const QSharedPointer<DataMarks>& points);
+      Region(const QList<Tag>& points);
 
-      const QSharedPointer<DataMarks>& getPoints() const;
-      void setPoints(const QSharedPointer<DataMarks>& points);
+      const QList<Tag>& getPoints() const;
+      void setPoints(const QList<Tag>& points);
 
-      void addPoint(const QSharedPointer<Tag>& point);
+      void addPoint(const Tag& point);
 
-      bool atRegion(const QSharedPointer<Tag>& point) ;
+      bool atRegion(const Tag& point) ;
 
       ~Region();
 

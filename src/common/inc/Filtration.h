@@ -57,7 +57,7 @@ class Filtration
 
     void addFilter(const QSharedPointer<Filter> & filter);
 
-    QList<QSharedPointer<Tag> > filtrate(const QList<QSharedPointer<Tag> > tags);
+    QList<Tag > filtrate(const QList<Tag > tags);
 
 };                                      // class Filtration
 #endif                                  //_Filtration_H_A12E4622_FC1F_4AA0_8E00_D4E6B6E36300_INCLUDED_

@@ -41,7 +41,7 @@
 DbSession::DbSession(qlonglong id,
 const QString &sessionToken,
 const QDateTime &lastAccessTime,
-const QSharedPointer<common::User> &user)
+const common::BasicUser &user)
 : Session(sessionToken, lastAccessTime, user), m_id(id)
 {
 }

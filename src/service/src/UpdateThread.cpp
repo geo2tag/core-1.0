@@ -42,9 +42,9 @@
 #include "QueryExecutor.h"
 #include "Geo2tagDatabase.h"
 
-UpdateThread::UpdateThread(const QSharedPointer<DataMarks> &tags,
-const QSharedPointer<common::Users> &users,
-const QSharedPointer<Channels> &channels,
+UpdateThread::UpdateThread(const QList<Tag> &tags,
+const QList<common::BasicUser> &users,
+const QList<Channel> &channels,
 const QSharedPointer<DataChannels>& dataChannelsMap,
 const QSharedPointer<Sessions>& sessions,
 QObject *parent)
@@ -60,9 +60,9 @@ m_transactionCount(0)
 }
 
 
-UpdateThread::UpdateThread(const QSharedPointer<DataMarks> &tags,
-const QSharedPointer<common::Users> &users,
-const QSharedPointer<Channels> &channels,
+UpdateThread::UpdateThread(const QList<Tag> &tags,
+const QList<common::BasicUser> &users,
+const QList<Channel> &channels,
 const QSharedPointer<DataChannels>& dataChannelsMap,
 const QSharedPointer<Sessions>& sessions,
 QueryExecutor* queryExecutor,
@@ -138,7 +138,7 @@ void UpdateThread::run()
       QueryExecutor::instance()->checkTmpUsers();
       QueryExecutor::instance()->checkSessions(this);
 
-      common::Users       usersContainer(*m_usersContainer);
+      QList<common::BasicUser>       usersContainer(*m_usersContainer);
       DataMarks   tagsContainer(*m_tagsContainer);
       Channels    channelsContainer(*m_channelsContainer);
       Sessions    sessionsContainer(*m_sessionsContainer);
@@ -168,7 +168,7 @@ void UpdateThread::run()
           if(!m_dataChannelsMap->contains(m_tagsContainer->at(i)->getChannel(), m_tagsContainer->at(i)))
           {
             QSharedPointer<DataMark> tag = m_tagsContainer->at(i);
-            QSharedPointer<Channel> channel = tag->getChannel();
+            Channel channel = tag->getChannel();
 
             qDebug() << "adding " << i << " from "<< m_tagsContainer->size() <<" to channel " << channel->getName();
             QWriteLocker(getLock());

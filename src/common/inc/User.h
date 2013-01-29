@@ -55,7 +55,7 @@ class User: public QObject, public BasicUser
 
     QString m_result;
     QString m_token;
-    QSharedPointer<Channels> m_channels;
+    QList<Channel> m_channels;
 
 public:
 
@@ -64,9 +64,9 @@ public:
 
     User(const QString & name="", const QString & passw="", const QString & email="");
     virtual qlonglong getId() const;
-    void subscribe(const QSharedPointer<Channel>& channel);
-    void unsubscribe(const QSharedPointer<Channel>& channel);
-    const QSharedPointer<Channels> getSubscribedChannels() const;
+    void subscribe(const Channel& channel);
+    void unsubscribe(const Channel& channel);
+    const QList<Channel> getSubscribedChannels() const;
 
     User& operator=(const User& obj);
 

@@ -100,10 +100,10 @@ bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
   QString channelLabel = result["channel"].toString();
   QString auth_token = result["auth_token"].toString();
 
-  QSharedPointer<Channel> dummyChannel(new JsonChannel(channelLabel, "from SubscribeChannelReques"));
+  Channel dummyChannel(new JsonChannel(channelLabel, "from SubscribeChannelReques"));
   m_channelsContainer.push_back(dummyChannel);
 
-  QSharedPointer<Session> dummySession(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL)));
+  Session dummySession(new JsonSession(auth_token, QDateTime::currentDateTime(), common::BasicUser(NULL)));
   m_sessionsContainer.push_back(dummySession);
 
   return true;

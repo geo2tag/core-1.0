@@ -186,12 +186,12 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
 
 //    for(int i = 0; i<channels->size(); i++)
 //    {
-//        QSharedPointer<Channel> channel = channels->at(i);
-//        QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(channel);
+//        Channel channel = channels->at(i);
+//        QList<Tag > tags = m_dataChannelsMap->values(channel);
 //        qSort(tags);
 //        for(int j = 0; j < tags.size(); j++)
 //        {
-//            QSharedPointer<Tag> mark = tags.at(j);
+//            Tag mark = tags.at(j);
 //            double lat2 = mark->getLatitude();
 //            double lon2 = mark->getLongitude();
 

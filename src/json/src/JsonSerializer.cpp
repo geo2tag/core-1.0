@@ -76,12 +76,6 @@ Tag JsonSerializer::getTag() const
     return m_tagsContainer.isEmpty() ? Tag() : m_tagsContainer.at(0);
 }
 
-
-//QSharedPointer<Sessions> JsonSerializer::getSessions() const
-//{
-//    return m_sessionsContainer;
-//}
-
 Session JsonSerializer::getSession() const
 {
     return m_sessionsContainer.at(0);

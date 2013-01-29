@@ -57,10 +57,10 @@ void Filtration::addFilter(const QSharedPointer<Filter> & filter)
 }
 
 
-QList<QSharedPointer<Tag> > Filtration::filtrate(const QList<QSharedPointer<Tag> > tags)
+QList<Tag > Filtration::filtrate(const QList<Tag > tags)
 {
-  QList<QSharedPointer<Tag> > result;
-  foreach(QSharedPointer<Tag> tag, tags)
+  QList<Tag > result;
+  foreach(Tag tag, tags)
   {
     bool b = true;
     foreach(QSharedPointer<Filter> filter, m_filters)

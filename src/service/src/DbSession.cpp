@@ -94,8 +94,7 @@ namespace common
 const QString DbObjectsCollection::error = QString("Error");
 const QString DbObjectsCollection::ok = QString("Ok");
 
-DbObjectsCollection::DbObjectsCollection():
-    m_tagsContainer(new DataMarks())
+DbObjectsCollection::DbObjectsCollection()
 {
     //Core processors
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
@@ -238,9 +237,9 @@ bool DbObjectsCollection::checkPasswordQuality(const QString& password) const
     return true;
 }
 
-const QString DbObjectsCollection::getPasswordHash(const QSharedPointer<User>& user) const
+const QString DbObjectsCollection::getPasswordHash(const common::BasicUser& user) const
 {
-    return getPasswordHash(user->getLogin(),user->getPassword());
+    return getPasswordHash(user.getLogin(),user.getPassword());
 }
 
 const QString DbObjectsCollection::getPasswordHash(const QString & login,const QString & password) const
@@ -252,10 +251,10 @@ const QString DbObjectsCollection::getPasswordHash(const QString & login,const Q
     return result;
 }
 
-const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<common::User>& user) const
+const QString DbObjectsCollection::generateNewPassword(const common::BasicUser& user) const
 {
     QDateTime time = QDateTime::currentDateTime().toUTC();
-    QString log = time.toString() + user->getEmail() + user->getPassword();
+    QString log = time.toString() + user.getEmail() + user.getPassword();
     QByteArray toHash(log.toUtf8());
     toHash=QCryptographicHash::hash(log.toUtf8(),QCryptographicHash::Md5);
     QString result(toHash.toHex());
@@ -263,9 +262,9 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
     return result;
 }
 
-//BasicUser DbObjectsCollection::findUser(const QSharedPointer<User> &dummyUser) const
+//BasicUser DbObjectsCollection::findUser(const common::BasicUser &dummyUser) const
 //{
-//    QSharedPointer<User> realUser;      // Null pointer
+//    common::BasicUser realUser;      // Null pointer
 
 //    QList<User> currentUsers = Core::MetaCache::getUsers();
 //    qDebug() << "checking user key: " << dummyUser->getLogin() << " from " << currentUsers.size() <<" known users";
@@ -285,9 +284,9 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
 //}
 
 
-//QSharedPointer<Session> DbObjectsCollection::findSession(const QSharedPointer<Session>& dummySession) const
+//Session DbObjectsCollection::findSession(const Session& dummySession) const
 //{
-//    QVector< QSharedPointer<Session> > currentSessions = m_sessionsContainer->vector();
+//    QVector< Session > currentSessions = m_sessionsContainer->vector();
 //    qDebug() << "checking session key: " << dummySession->getSessionToken()<<" from " << currentSessions.size() << " known sessions";
 //    if (!dummySession->getSessionToken().isEmpty())
 //    {
@@ -297,12 +296,12 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
 //                return currentSessions.at(i);
 //        }
 //    }
-//    return QSharedPointer<Session>(NULL);
+//    return Session(NULL);
 //}
 
 //Session DbObjectsCollection::findSessionForUser(const BasicUser &user) const
 //{
-//    QVector< QSharedPointer<Session> > currentSessions = m_sessionsContainer->vector();
+//    QVector< Session > currentSessions = m_sessionsContainer->vector();
 //    qDebug() << "checking of session existence for user with name:" <<  user.getLogin();
 
 //    Session s;
@@ -313,7 +312,7 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
 //                s->getUser()->getPassword() == user.getPassword())
 //            return s;
 //    }
-//    return QSharedPointer<Session>(NULL);
+//    return Session(NULL);
 //}
 
 //QByteArray DbObjectsCollection::processRegisterUserQuery(const QByteArray &data)
@@ -330,8 +329,8 @@ const QString DbObjectsCollection::generateNewPassword(const QSharedPointer<comm
 //        answer.append(response.getJson());
 //        return answer;
 //    }
-//    //    QSharedPointer<User> newTmpUser = request.getUsers()->at(0);
-//    //    QVector<QSharedPointer<User> > currentUsers = m_usersContainer->vector();
+//    //    common::BasicUser newTmpUser = request.getUsers()->at(0);
+//    //    QVector<common::BasicUser > currentUsers = m_usersContainer->vector();
 //    //    for(int i=0; i<currentUsers.size(); i++)
 //    //    {
 //    //        if(QString::compare(currentUsers.at(i)->getLogin(), newTmpUser->getLogin(), Qt::CaseInsensitive) == 0)
@@ -396,7 +395,7 @@ QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &/
     //        return answer;
     //    }
 
-    //    QSharedPointer<User> newUser = QueryExecutor::instance()->insertTmpUserIntoUsers(registrationToken);
+    //    common::BasicUser newUser = QueryExecutor::instance()->insertTmpUserIntoUsers(registrationToken);
 
     //    if (!newUser.isNull())
     //    {
@@ -516,8 +515,8 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //        return answer;
 //    }
 //#if 0
-//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    Session dummySession = request.getSessions()->at(0);
+//    Session realSession = findSession(dummySession);
 //    if(realSession.isNull())
 //    {
 //        response.setErrno(WRONG_TOKEN_ERROR);
@@ -525,9 +524,9 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //        return answer;
 //    }
 
-//    QSharedPointer<User> realUser = realSession->getUser();
+//    common::BasicUser realUser = realSession->getUser();
 
-//    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
+//    QList<Channel> channels = realUser->getSubscribedChannels();
 //    response.setChannels(channels);
 
 //    qDebug() << "Updating session";
@@ -558,8 +557,8 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //        return answer;
 //    }
 
-//    QSharedPointer<Session> dummySession = request.getSessions()->at(0);;
-//    QSharedPointer<Session> realSession = findSession(dummySession);
+//    Session dummySession = request.getSessions()->at(0);;
+//    Session realSession = findSession(dummySession);
 //    if(realSession.isNull())
 //    {
 //        response.setErrno(WRONG_TOKEN_ERROR);
@@ -567,12 +566,12 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //        return answer;
 //    }
 
-//    QSharedPointer<User> realUser = realSession->getUser();
+//    common::BasicUser realUser = realSession->getUser();
 
-//    QSharedPointer<Channel> dummyChannel = request.getChannels()->at(0);;
+//    Channel dummyChannel = request.getChannels()->at(0);;
 
-//    QSharedPointer<Channel> realChannel;// Null pointer
-//    QVector<QSharedPointer<Channel> > currentChannels = Core::MetaCache::getChannels();
+//    Channel realChannel;// Null pointer
+//    QVector<Channel > currentChannels = Core::MetaCache::getChannels();
 //    for(int i=0; i<currentChannels.size(); i++)
 //    {
 //        if(QString::compare(currentChannels.at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
@@ -587,7 +586,7 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //        return answer;
 //    }
 
-//    QSharedPointer<Channels>  subscribedChannels = realUser->getSubscribedChannels();
+//    QList<Channel>  subscribedChannels = realUser->getSubscribedChannels();
 //    for(int i=0; i<subscribedChannels->size(); i++)
 //    {
 //        //qDebug() << "%s is subscribed for  %s , %lld",realUser->getLogin().toStdString().c_str(),subscribedChannels->at(i)->getName().toStdString().c_str(),subscribedChannels->at(i)->getId());
@@ -633,9 +632,9 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
         return answer;
     }
     // Look for user with the same name
-    QSharedPointer<User> dummyUser = request.getUsers()->at(0);
+    common::BasicUser dummyUser = request.getUsers()->at(0);
 
-    QVector<QSharedPointer<User> > currentUsers = Core::MetaCache::getUsers();
+    QVector<common::BasicUser > currentUsers = Core::MetaCache::getUsers();
 
     for(int i=0; i<currentUsers.size(); i++)
     {
@@ -665,7 +664,7 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
     qDebug() <<  "Sending sql request for AddUser";
     // Only password hashes are stored, so we change password of this user by password hash
     dummyUser->setPassword(getPasswordHash(dummyUser));
-    QSharedPointer<User> addedUser = QueryExecutor::instance()->insertNewUser(dummyUser);
+    common::BasicUser addedUser = QueryExecutor::instance()->insertNewUser(dummyUser);
 
     if(!addedUser)
     {
@@ -707,8 +706,8 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-    QSharedPointer<Session> realSession = findSession(dummySession);
+    Session dummySession = request.getSessions()->at(0);
+    Session realSession = findSession(dummySession);
     if(realSession.isNull())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -716,12 +715,12 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    QSharedPointer<User> realUser = realSession->getUser();
+    common::BasicUser realUser = realSession->getUser();
 
-    QSharedPointer<Channel> dummyChannel = request.getChannels()->at(0);;
+    Channel dummyChannel = request.getChannels()->at(0);;
 
-    QSharedPointer<Channel> realChannel;// Null pointer
-    QSharedPointer<Channels> subscribedChannels = realUser->getSubscribedChannels();
+    Channel realChannel;// Null pointer
+    QList<Channel> subscribedChannels = realUser->getSubscribedChannels();
     for(int i=0; i<subscribedChannels->size(); i++)
     {
         if(QString::compare(subscribedChannels->at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
@@ -800,8 +799,8 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    QSharedPointer<Session> dummySession = request.getSessions()->at(0);
-    QSharedPointer<Session> realSession = findSession(dummySession);
+    Session dummySession = request.getSessions()->at(0);
+    Session realSession = findSession(dummySession);
     if(realSession.isNull())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -809,9 +808,9 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    QSharedPointer<User> realUser = realSession->getUser();
-    QSharedPointer<Channels> channels = realUser->getSubscribedChannels();
-    QSharedPointer<Channel> channel;
+    common::BasicUser realUser = realSession->getUser();
+    QList<Channel> channels = realUser->getSubscribedChannels();
+    Channel channel;
     for(int i = 0; i<channels->size(); i++)
     {
         if(QString::compare(channels->at(i)->getName(), request.getChannelName(), Qt::CaseInsensitive) == 0)
@@ -827,7 +826,7 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    QList<QSharedPointer<Tag> > tags = m_dataChannelsMap->values(channel);
+    QList<Tag > tags = m_dataChannelsMap->values(channel);
     int amount = request.getAmount();
     tags = tags.count() > amount ? tags.mid(0, amount) : tags;
 
@@ -857,7 +856,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         return answer;
     }
     // Look for user with the same name
-    QSharedPointer<User> realUser = findUser(request.getUsers()->at(0));
+    common::BasicUser realUser = findUser(request.getUsers()->at(0));
 
     if(!realUser)
     {
@@ -905,7 +904,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
 //    }
 //    // Look for user with the same name
 //    Q_ASSERT(false);
-//    //QSharedPointer<User> realUser = findUser(request.getUsers()->at(0)->getEmail());
+//    //common::BasicUser realUser = findUser(request.getUsers()->at(0)->getEmail());
 
 //    //if(!realUser)
 //    {
@@ -919,7 +918,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
 //    //    QString password = generateNewPassword(realUser).left(passwLength);
 //    //    QString hash = getPasswordHash(realUser->getLogin(), password);
 //    //    qDebug() << realUser->getPassword();
-//    //    QSharedPointer<common::User> updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
+//    //    common::BasicUser updatedUser = QueryExecutor::instance()->updateUserPassword(realUser, hash);
 
 //    //    if(updatedUser.isNull())
 //    //    {

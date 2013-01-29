@@ -64,20 +64,20 @@ public:
     const QString generateNewToken(const QString& email, const QString& login,const QString& password) const;
     const QString generateNewToken(const QString& accessTime, const QString& email, const QString& login,const QString& password) const;
 
-    bool                     subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
-    bool                     unsubscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
-    bool                 doesTmpUserExist(const QSharedPointer<common::User> &user);
-    bool                     doesUserWithGivenEmailExist(const QSharedPointer<common::User> &user);
-    bool                     deleteTmpUser(const QSharedPointer<common::User> &user);
-    const QString  insertNewTmpUser(const QSharedPointer<common::User> &user);
+    bool                     subscribeChannel(const common::BasicUser& user,const Channel& channel);
+    bool                     unsubscribeChannel(const common::BasicUser& user,const Channel& channel);
+    bool                 doesTmpUserExist(const common::BasicUser &user);
+    bool                     doesUserWithGivenEmailExist(const common::BasicUser &user);
+    bool                     deleteTmpUser(const common::BasicUser &user);
+    const QString  insertNewTmpUser(const common::BasicUser &user);
     bool                     doesRegistrationTokenExist(const QString &token);
-    QSharedPointer<common::User> insertTmpUserIntoUsers(const QString &token);
+    common::BasicUser insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
     bool insertNewTag(const Tag& tag);
-    QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
+    common::BasicUser    insertNewUser(const common::BasicUser&);
     bool  insertNewChannel(const Channel &, const common::BasicUser& user);
-    bool                     deleteUser(const QSharedPointer<common::User> &user);
-    QSharedPointer<common::User>  updateUserPassword(const QSharedPointer<common::User>& user, const QString& password);
+    bool                     deleteUser(const common::BasicUser &user);
+    common::BasicUser  updateUserPassword(common::BasicUser &user, const QString& password);
     // Sessions
     Session insertNewSession(const common::BasicUser& user);
 
@@ -94,7 +94,7 @@ public:
 
     QList<Channel> loadChannels();
     QList<Session> loadSessions();
-    void updateReflections(DataMarks&, common::Users&, Channels&, Sessions&);
+    void updateReflections(DataMarks&, QList<common::BasicUser>&, Channels&, Sessions&);
     qlonglong getUserIdByName(const QString& name);
     qlonglong getChannelIdByName(const QString& name);
 

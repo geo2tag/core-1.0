@@ -54,7 +54,7 @@ class FShapePolygon : public FShape
 
     void addPoint(int idx, double lat, double lon);
 
-    bool filtrate(const QSharedPointer<Tag> &mark);
+    bool filtrate(const Tag &mark);
 
 };                                      // class FShapePolygon
 #endif                                  //_FShapePolygon_H_A08ADAEE_DA07_4E75_A64D_F4F86290B7D1_INCLUDED_

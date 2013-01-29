@@ -118,7 +118,7 @@ public:
 
 QDebug& operator<<(QDebug& dbg, const Tag& tag);
 
-bool operator<(const QSharedPointer<Tag> &a, const QSharedPointer<Tag> &b);
+bool operator<(const Tag &a, const Tag &b);
 
 typedef ConcurrentVector<Tag> DataMarks;
 //_DataMarks_H_E8A2619E_0BF6_4AE8_BB61_F09B92F73637_INCLUDED_

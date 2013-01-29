@@ -240,9 +240,9 @@ double Tag::getDistance(double lat1, double lon1, double lat2, double lon2)
 }
 
 
-bool operator<(const QSharedPointer<Tag> &a, const QSharedPointer<Tag> &b)
+bool operator<(const Tag &a, const Tag &b)
 {
-  return a->getTime() < b->getTime();
+  return a.getTime() < b.getTime();
 }
 
 QDebug& operator<<(QDebug& dbg, const Tag& tag)

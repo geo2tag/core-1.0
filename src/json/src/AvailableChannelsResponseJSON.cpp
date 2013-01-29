@@ -85,7 +85,7 @@ bool AvailableChannelsResponseJSON::parseJson(const QByteArray &data)
     QString name = channelVariant["name"].toString();
     QString description = channelVariant["description"].toString();
     QString url = channelVariant["url"].toString();
-    //QSharedPointer<Channel> channel(new JsonChannel(name, description, url));
+    //Channel channel(new JsonChannel(name, description, url));
     m_channelsContainer.push_back(Channel(name, description, url));
   }
   return true;

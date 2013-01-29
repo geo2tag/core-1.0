@@ -42,7 +42,7 @@ class RestorePasswordRequestJSON : public JsonSerializer
   public:
     RestorePasswordRequestJSON(QObject *parent=0);
 
-    RestorePasswordRequestJSON(const QSharedPointer<common::User>& user, QObject *parent=0);
+    RestorePasswordRequestJSON(const common::BasicUser& user, QObject *parent=0);
 
     QByteArray getJson() const;
 
