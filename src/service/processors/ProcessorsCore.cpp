@@ -203,7 +203,9 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     DEBUG() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
+
     answer.append(response.getJson());
+
     DEBUG() << "answer: " << answer.data();
     return answer;
 }

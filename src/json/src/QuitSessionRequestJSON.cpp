@@ -45,7 +45,7 @@
 
 QuitSessionRequestJSON::QuitSessionRequestJSON(QString sessionToken, QObject *parent)
 : JsonSerializer(parent),
-m_sessionToken(sessionToken)
+m_token(sessionToken)
 
 {
 }
@@ -59,13 +59,13 @@ QuitSessionRequestJSON::QuitSessionRequestJSON(QObject *parent)
 
 void QuitSessionRequestJSON::setSessionToken(QString sessionToken)
 {
-  m_sessionToken = sessionToken;
+  m_token = sessionToken;
 }
 
 
 QString QuitSessionRequestJSON::getSessionToken() const
 {
-  return m_sessionToken;
+  return m_token;
 }
 
 
@@ -73,7 +73,7 @@ QByteArray QuitSessionRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("auth_token", m_sessionToken);
+  obj.insert("auth_token", m_token);
   return serializer.serialize(obj);
 }
 
@@ -85,7 +85,7 @@ bool QuitSessionRequestJSON::parseJson(const QByteArray&data)
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok) return false;
 
-  m_sessionToken = result["auth_token"].toString();
+  m_token = result["auth_token"].toString();
 
   return true;
 }

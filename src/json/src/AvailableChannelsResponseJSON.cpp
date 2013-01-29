@@ -62,7 +62,7 @@ AvailableChannelsResponseJSON::~AvailableChannelsResponseJSON()
 
 void AvailableChannelsResponseJSON::setChannels(QList<Channel> channels)
 {
-  m_channelsContainer=channels;
+  m_channels=channels;
 }
 
 
@@ -86,7 +86,7 @@ bool AvailableChannelsResponseJSON::parseJson(const QByteArray &data)
     QString description = channelVariant["description"].toString();
     QString url = channelVariant["url"].toString();
     //Channel channel(new JsonChannel(name, description, url));
-    m_channelsContainer.push_back(Channel(name, description, url));
+    m_channels.push_back(Channel(name, description, url));
   }
   return true;
 }
@@ -96,9 +96,9 @@ QByteArray AvailableChannelsResponseJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantList channelsList;
-  for (int i=0; i<m_channelsContainer.size(); i++)
+  for (int i=0; i<m_channels.size(); i++)
   {
-    Channel  ch=m_channelsContainer.at(i);
+    Channel  ch=m_channels.at(i);
     QVariantMap channelMap;
     channelMap.insert("name", ch.getName());
     channelMap.insert("description", ch.getDescription());
@@ -109,7 +109,7 @@ QByteArray AvailableChannelsResponseJSON::getJson() const
   }
 
   QVariantMap channelsMap;
-  if (!m_channelsContainer.size() == 0)
+  if (!m_channels.size() == 0)
   {
     channelsMap.insert("channels", channelsList);
   }

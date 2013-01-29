@@ -54,8 +54,8 @@ const Channel &channel,
 QObject *parent)
 : JsonSerializer(parent)
 {
-    m_sessionToken = session.getSessionToken();
-  m_channelsContainer.push_back(channel);
+    m_token = session.getSessionToken();
+  m_channels.push_back(channel);
 }
 
 
@@ -64,10 +64,10 @@ QByteArray AddChannelRequestJSON::getJson() const
   QJson::Serializer serializer;
 
   QVariantMap obj;
-  obj.insert("auth_token", m_sessionToken);
-  obj.insert("name", m_channelsContainer.at(0).getName());
-  obj.insert("description",m_channelsContainer.at(0).getDescription());
-  obj.insert("url",m_channelsContainer.at(0).getUrl());
+  obj.insert("auth_token", m_token);
+  obj.insert("name", m_channels.at(0).getName());
+  obj.insert("description",m_channels.at(0).getDescription());
+  obj.insert("url",m_channels.at(0).getUrl());
   return serializer.serialize(obj);
 }
 
@@ -86,7 +86,7 @@ bool AddChannelRequestJSON::parseJson(const QByteArray&data)
   QString description = result["description"].toString();
   QString url = result["url"].toString();
 
-  m_sessionToken = auth_token;
-  m_channelsContainer.push_back(Channel(name,description,url));
+  m_token = auth_token;
+  m_channels.push_back(Channel(name,description,url));
   return true;
 }

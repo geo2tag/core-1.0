@@ -51,7 +51,6 @@
 
 class LoadTagsResponseJSON: public JsonSerializer
 {
-  // map will contain channels and marks which should be serialized to JSON
   QList<Tag> m_tags;
 
   public:

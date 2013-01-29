@@ -55,7 +55,7 @@ m_latitude(latitude),
 m_longitude(longitude),
 m_radius(radius)
 {
-  m_sessionToken = session.getSessionToken();
+  m_token = session.getSessionToken();
 }
 
 
@@ -75,7 +75,7 @@ bool LoadTagsRequestJSON::parseJson(const QByteArray &data)
   if (!ok) return false;
 
   QString auth_token = result["auth_token"].toString();
-  m_sessionToken = auth_token;
+  m_token = auth_token;
 
   result["latitude"].toDouble(&ok);
   if (!ok) return false;
@@ -100,7 +100,7 @@ QByteArray LoadTagsRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("auth_token", m_sessionToken);
+  obj.insert("auth_token", m_token);
   obj.insert("latitude", getLatitude());
   obj.insert("longitude", getLongitude());
   obj.insert("radius", getRadius());

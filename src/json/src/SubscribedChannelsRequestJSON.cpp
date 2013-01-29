@@ -70,7 +70,7 @@ SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(QObject *parent)
 SubscribedChannelsRequestJSON::SubscribedChannelsRequestJSON(const Session &session, QObject *parent)
 : JsonSerializer(parent)
 {
-    m_sessionToken = session.getSessionToken();
+    m_token = session.getSessionToken();
 }
 
 
@@ -87,7 +87,7 @@ bool SubscribedChannelsRequestJSON::parseJson(const QByteArray &data)
   QString auth_token = result["auth_token"].toString();
   Session session(auth_token);
 
-  m_sessionToken = auth_token;
+  m_token = auth_token;
 
   return true;
 }
@@ -98,7 +98,7 @@ QByteArray SubscribedChannelsRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_sessionToken);
+  request.insert("auth_token", m_token);
 
   return serializer.serialize(request);
 }

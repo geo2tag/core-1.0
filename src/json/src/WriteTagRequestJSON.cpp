@@ -57,9 +57,9 @@ const Tag &tag,
 QObject *parent)
 : JsonSerializer(parent)
 {
-  m_sessionToken = session.getSessionToken();
-  m_channelsContainer.push_back(channel);
-  m_tagsContainer.push_back(tag);
+  m_token = session.getSessionToken();
+  m_channels.push_back(channel);
+  m_tags.push_back(tag);
 }
 
 
@@ -92,9 +92,9 @@ bool WriteTagRequestJSON::parseJson(const QByteArray &data)
   Tag tag(altitude, latitude, longitude, title, description, link, time);
   tag.setChannel(channel);
   //tag.setSession(session);
-  m_channelsContainer.push_back(channel);
-  m_sessionToken = auth_token;
-  m_tagsContainer.push_back(tag);
+  m_channels.push_back(channel);
+  m_token = auth_token;
+  m_tags.push_back(tag);
 
   return true;
 }
@@ -105,10 +105,10 @@ QByteArray WriteTagRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  Tag mark = m_tagsContainer.at(0);
+  Tag mark = m_tags.at(0);
 
-  Channel channel = m_channelsContainer.at(0);
-  request.insert("auth_token", m_sessionToken);
+  Channel channel = m_channels.at(0);
+  request.insert("auth_token", m_token);
   request.insert("channel", channel.getName());
   request.insert("title", mark.getLabel().isEmpty()? "New mark":mark.getLabel());
   request.insert("link", mark.getUrl());

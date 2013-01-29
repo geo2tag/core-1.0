@@ -75,6 +75,6 @@ bool WriteTagResponseJSON::parseJson(const QByteArray &data)
   m_errno = result["errno"].toInt();
 
   Tag mark;
-  m_tagsContainer.push_back(mark);
+  m_tags.push_back(mark);
   return true;
 }

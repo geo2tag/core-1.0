@@ -47,10 +47,10 @@ class JsonSerializer:public QObject
 {
 
   protected:
-    QList<Tag>                 m_tagsContainer;
-    QList<Channel>             m_channelsContainer;
-    QList<common::BasicUser>   m_usersContainer;
-    QString                    m_sessionToken;
+    QList<Tag>                 m_tags;
+    QList<Channel>             m_channels;
+    QList<common::BasicUser>   m_user;
+    QString                    m_token;
 
     QVariantMap m_jsonTree;
 

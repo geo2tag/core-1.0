@@ -56,7 +56,7 @@ QByteArray LoginResponseJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj;
 
-  obj.insert("auth_token", m_sessionToken);
+  obj.insert("auth_token", m_token);
   obj.insert("errno", m_errno);
 
   return serializer.serialize(obj);
@@ -79,6 +79,6 @@ bool LoginResponseJSON::parseJson(const QByteArray &data)
 
   QString session_token = result["auth_token"].toString();
   Session session(session_token, QDateTime::currentDateTime(), common::BasicUser());
-  m_sessionToken = session_token;
+  m_token = session_token;
   return true;
 }

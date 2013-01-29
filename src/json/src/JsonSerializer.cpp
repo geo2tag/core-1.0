@@ -38,6 +38,10 @@
 JsonSerializer::JsonSerializer(QObject * parent)
     : QObject(parent)
 {
+#ifdef GEO2TAG_LITE
+    m_channels << Channel("default","joint channel for all owned by user");
+#else
+#endif
 }
 
 
@@ -49,74 +53,74 @@ JsonSerializer::~JsonSerializer()
 
 QList<common::BasicUser> JsonSerializer::getUsers() const
 {
-    return m_usersContainer;
+    return m_user;
 }
 
 common::BasicUser JsonSerializer::getUser() const
 {
     return
-            m_usersContainer.size()>0
-                ? m_usersContainer.at(0)
+            m_user.size()>0
+                ? m_user.at(0)
                 : common::BasicUser();
 }
 
 
 QList<Channel> JsonSerializer::getChannels() const
 {
-    return m_channelsContainer;
+    return m_channels;
 }
 
 QList<Tag> JsonSerializer::getTags() const
 {
-    return m_tagsContainer;
+    return m_tags;
 }
 
 Tag JsonSerializer::getTag() const
 {
 
-    return m_tagsContainer.isEmpty() ? Tag() : m_tagsContainer.at(0);
+    return m_tags.isEmpty() ? Tag() : m_tags.at(0);
 }
 
 QString JsonSerializer::getSessionToken() const
 {
-    return m_sessionToken;
+    return m_token;
 }
 
 Channel JsonSerializer::getChannel() const
 {
-    return m_channelsContainer.isEmpty() ? Channel() : m_channelsContainer.at(0);
+    return m_channels.isEmpty() ? Channel() : m_channels.at(0);
 }
 
 
 void JsonSerializer::addChannel(const Channel &channel)
 {
-    m_channelsContainer.push_back(channel);
+    m_channels.push_back(channel);
 }
 
 
 void JsonSerializer::addTag(const Tag &tag)
 {
-    m_tagsContainer.push_back(tag);
+    m_tags.push_back(tag);
 }
 
 
 void JsonSerializer::addUser(const common::BasicUser &user)
 {
-    m_usersContainer.push_back(user);
+    m_user.push_back(user);
 }
 
 
 void JsonSerializer::setSessionToken(const QString& token)
 {
-    m_sessionToken=token;
+    m_token=token;
 }
 
 
 void JsonSerializer::clearContainers()
 {
-    m_usersContainer.clear();
-    m_tagsContainer.clear();
-    m_channelsContainer.clear();
+    m_user.clear();
+    m_tags.clear();
+    m_channels.clear();
 }
 
 

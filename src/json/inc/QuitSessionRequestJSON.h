@@ -42,7 +42,7 @@
 class QuitSessionRequestJSON: public JsonSerializer
 {
   private:
-    QString m_sessionToken;
+    QString m_token;
 
   public:
     QuitSessionRequestJSON(QString sessionToken, QObject *parent = 0);
