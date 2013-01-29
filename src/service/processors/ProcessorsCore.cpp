@@ -112,7 +112,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
     DEBUG() << "Session:" << session;
 
-    if(session.isValid())
+    if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
