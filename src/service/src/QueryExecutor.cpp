@@ -166,7 +166,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     qlonglong owner = QueryExecutor::instance()->getUserIdByName(user.getLogin());
     newChannelQuery.bindValue(":owner_id",owner);
 
-    DEBUG() << "Writing channel " << channel.name << " for user " << user << "(" << owner << ")";
+    DEBUG() << "Writing channel " << channel.getName() << " for user " << user << "(" << owner << ")";
 
 
     transaction();
