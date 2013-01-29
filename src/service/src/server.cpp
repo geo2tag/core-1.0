@@ -156,7 +156,7 @@ void Server::run()
     QByteArray queryBody, response;
     extractIncomingData(m_cgi,queryString,queryBody);
 
-    DEBUG() <<  QString("query: %1").arg(queryString);
+    DEBUG() << "query: "   << queryString;
 
     response = process(queryBody);
 
