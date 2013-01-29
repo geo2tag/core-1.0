@@ -172,6 +172,7 @@ const QList<Tag> &LoadTagsResponseJSON::getData() const
 
 void LoadTagsResponseJSON::setData(const QList<Tag>& d)
 {
+    DEBUG() << "set data " << d;
   m_tags = d ;
 }
 
