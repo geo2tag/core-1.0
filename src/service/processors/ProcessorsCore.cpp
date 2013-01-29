@@ -219,6 +219,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
     }
 
     Session session = Core::MetaCache::findSession(request.getSessionToken());
+    DEBUG() << "Session:" << session;
 
     if(!session.isValid())
     {
