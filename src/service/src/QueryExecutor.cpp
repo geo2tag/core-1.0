@@ -108,9 +108,10 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
 {
     PerformanceCounter counter("QueryExecutor::insertNewTag");
     bool result;
+
     qlonglong newId = nextTagKey();
 
-    DEBUG() <<  QString("insertNewTag-start-").append(QString::number(newId));
+    DEBUG() <<  QString("inserting tag ") << tag << ", id=" << newId;
 
     QSqlQuery newTagQuery=makeQuery();
     newTagQuery.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, id, channel_id) "
@@ -118,7 +119,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     newTagQuery.bindValue(":altitude", tag.getAltitude());
     newTagQuery.bindValue(":latitude", tag.getLatitude());
     newTagQuery.bindValue(":longitude", tag.getLongitude());
-    newTagQuery.bindValue(":label", tag.getLabel().isEmpty() ? "New Mark" : tag.getLabel());
+    newTagQuery.bindValue(":label", tag.getLabel().isEmpty() ? "unnamed" : tag.getLabel());
     newTagQuery.bindValue(":description", tag.getDescription());
     newTagQuery.bindValue(":url", tag.getUrl());
 

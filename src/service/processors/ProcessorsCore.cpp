@@ -95,6 +95,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 {
     WriteTagRequestJSON request;
     WriteTagResponseJSON response;
+
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
     if (!request.parseJson(data))
@@ -105,9 +106,11 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     }
 
     Tag tag = request.getTag();
+
     DEBUG() << "writing tag " << tag;
 
     Session session = Core::MetaCache::findSession(request.getSessionToken());
+    tag.setUser(session.getUser());
 
     DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
     DEBUG() << "Session:" << session;
