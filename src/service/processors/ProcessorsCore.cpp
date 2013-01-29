@@ -53,15 +53,17 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     else
     {
         Session session = Core::MetaCache::findSession(user);
+
         if (!session.isValid())
         {
             QString token=Session::generateToken(user);
             Session addedSession = Session(token,QDateTime::currentDateTime(),user);
 
-#ifdef GEO2TAG_LITE
-            Core::MetaCache::insertSession(session);
-#else
             DEBUG() <<  "Session hasn't been found. Generating of new Session.";
+
+#ifdef GEO2TAG_LITE
+            Core::MetaCache::insertSession(addedSession);
+#else
             addedSession = QueryExecutor::instance()->insertNewSession(user);
             if (!addedSession.isValid())
             {
