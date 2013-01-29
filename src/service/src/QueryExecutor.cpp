@@ -152,6 +152,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
 bool QueryExecutor::insertNewChannel(const Channel &channel, const common::BasicUser& user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewChannel");
+
     bool result;
     QSqlQuery newChannelQuery=makeQuery();
     qlonglong newId = nextChannelKey();
@@ -162,8 +163,11 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     newChannelQuery.bindValue(":description",channel.getDescription());
     newChannelQuery.bindValue(":url",channel.getUrl());
 
+    qlonglong owner = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    newChannelQuery.bindValue(":owner_id",owner);
 
-    newChannelQuery.bindValue(":owner_id",QueryExecutor::instance()->getUserIdByName(user.getLogin()));
+    DEBUG() << "Writing channel " << channel.name << " for user " << user << "(" << owner << ")";
+
 
     transaction();
 

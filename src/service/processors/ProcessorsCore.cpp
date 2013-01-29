@@ -195,7 +195,6 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
         }
     }
 
-
     response.setData(feed);
 
     DEBUG() << "Updating session";
