@@ -880,6 +880,28 @@ qlonglong QueryExecutor::getChannelIdByName(const QString &name)
     return id;
 }
 
+Channel QueryExecutor::getChannel(const QString &name)
+{
+    QSqlQuery query=makeQuery();
+
+    DEBUG() << "Looking up channel " << name;
+    query.exec(QString("select name, description, url from channels where name=%1;").arg(name));
+
+    if(!query.next())
+    {
+        WARNING() << "Cannot find channel \"" << name << "\"";
+        return Channel();
+    }
+    else
+    {
+        DEBUG() << " ... found " << query.size() << "results, take first";
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        return Channel(name,description,url);
+    }
+}
+
 
 qlonglong QueryExecutor::getFactTransactionNumber()
 {

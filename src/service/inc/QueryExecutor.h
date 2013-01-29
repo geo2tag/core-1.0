@@ -98,6 +98,7 @@ public:
     void updateReflections(DataMarks&, QList<common::BasicUser>&, Channels&, Sessions&);
     qlonglong getUserIdByName(const QString& name);
     qlonglong getChannelIdByName(const QString& name);
+    Channel getChannel(const QString& name);
 
 
     qlonglong getFactTransactionNumber();

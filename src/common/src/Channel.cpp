@@ -118,7 +118,12 @@ bool Channel::isDisplayed() const
 
 void Channel::setDisplayed(bool fl)
 {
-  m_isDisplayed = fl;
+    m_isDisplayed = fl;
+}
+
+bool Channel::isValid() const
+{
+    return !m_name.isEmpty();
 }
 
 
@@ -136,6 +141,13 @@ double Channel::getRadius() const
 
 Channel::~Channel()
 {
+}
+
+QDebug operator<<(QDebug& dbg, const Channel& channel)
+{
+    dbg << "[" << channel.getName() << "," << channel.getDescription() <<
+           ", radius=" << channel.getRadius() << ", url=" << channel.getUrl() << ")";
+    return dbg;
 }
 
 

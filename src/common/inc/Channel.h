@@ -42,6 +42,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QDebug>
 #include <QSharedPointer>
 
 #include "ConcurrentVector.h"
@@ -83,9 +84,13 @@ public:
     bool isDisplayed() const;
     void setDisplayed(bool);
 
+    bool isValid() const;
+
     virtual ~Channel();
     // class Channel
 };
+
+QDebug operator<<(QDebug& dbg, const Channel& channel);
 
 typedef ConcurrentVector<Channel> Channels;
 //_Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_

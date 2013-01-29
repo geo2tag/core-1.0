@@ -60,6 +60,7 @@ void MetaCache::init()
 {
     DEBUG() << "Initializing MetaCache objects";
     initUsers();
+    initChannels();
 }
 
 BasicUser MetaCache::getUserById(const QString userId)
@@ -133,8 +134,25 @@ Session MetaCache::findSession(const QString &token)
     return Session();
 }
 
+Channel MetaCache::findChannel(const QString &name)
+{
+#ifdef GEO2TAG_LITE
+    return QueryExecutor::instance()->getChannel(name);
+#else
+    Channel ch;
+    QReadLocker lock(&s_channelsLock);
+    foreach(ch,s_channels)
+    {
+        if(ch.getName() == name)
+            return ch;
+    }
+    return Channel();
+#endif
+}
+
 void MetaCache::reloadSessions()
 {
+    QWriteLocker lock(&s_SessionsLock);
     initSessions();
 }
 
@@ -153,9 +171,22 @@ bool MetaCache::checkUser(BasicUser &user)
 
 bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 {
-    DEBUG() << "check channel " << channel.getName() << " for " << user;
+    DEBUG() << "check channel " << channel.getName() << " for " << user.getLogin();
+
+    Channel ch = Core::MetaCache::findChannel(channel.getName());
+    if(!ch.isValid())
+    {
+        WARNING() << "Channel " << channel << " is invalid";
+        return false;
+    }
+
+#ifdef GEO2TAG_LITE
+    return true;
+#else
+    //TODO check user rights
     NOT_IMPLEMENTED();
     return true;
+#endif
 }
 
 bool MetaCache::writeTag(const Tag &tag)
@@ -176,6 +207,16 @@ void MetaCache::initSessions()
 {
 #if GEO2TAG_LITE
     DEBUG() << "Session persistans is not supported in lite version";
+#else
+    NOT_IMPLEMENTED();
+#endif
+}
+
+void MetaCache::initChannels()
+{
+    QWriteLocker lockf(&s_channelsLock);
+#ifdef GEO2TAG_LITE
+    // initialization is not supported;
 #else
     NOT_IMPLEMENTED();
 #endif

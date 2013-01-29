@@ -81,6 +81,7 @@ namespace Core
 
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
+      static Channel findChannel(const QString& name);
 
       // Reloading sessions from db (used after adding session)
       static void reloadSessions();
