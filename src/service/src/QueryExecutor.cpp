@@ -885,7 +885,7 @@ Channel QueryExecutor::getChannel(const QString &name)
     QSqlQuery query=makeQuery();
 
     DEBUG() << "Looking up channel " << name;
-    query.exec(QString("select name, description, url from channels where name='%1'';").arg(name));
+    query.exec(QString("select name, description, url from channels where name='%1';").arg(name));
 
     DEBUG() << " ... found " << query.size() << "results, take first if possibe";
 
