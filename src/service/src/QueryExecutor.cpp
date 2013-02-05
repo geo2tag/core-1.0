@@ -320,35 +320,6 @@ bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
 }
 
 
-common::BasicUser QueryExecutor::insertTmpUserIntoUsers(const QString &token)
-{
-    PerformanceCounter counter("QueryExecutor::insertTmpUserIntoUsers");
-    QSqlQuery checkQuery=makeQuery();
-    DEBUG() <<  "Checking of user existence in signups by token: %s"<< token;
-
-    checkQuery.prepare("select email, login, password from signups where registration_token = :token;");
-    checkQuery.bindValue(":token", token);
-    DEBUG() << "Selecting: %s"<< checkQuery.lastQuery();
-    checkQuery.exec();
-
-    if (checkQuery.next())
-    {
-        DEBUG() << "Match found.";
-        QString email = checkQuery.value(0).toString();
-        QString login = checkQuery.value(1).toString();
-        QString password = checkQuery.value(2).toString();
-        const common::BasicUser newUser(login, password, email);
-        common::BasicUser insertedUser = insertNewUser(newUser);
-        return insertedUser;
-    }
-    else
-    {
-        DEBUG() << "No matching users.";
-        return common::BasicUser(NULL);;
-    }
-}
-
-
 bool QueryExecutor::deleteTmpUser(const QString &token)
 {
     PerformanceCounter counter("QueryExecutor::deleteTmpUser");
@@ -375,7 +346,7 @@ bool QueryExecutor::deleteTmpUser(const QString &token)
 }
 
 
-common::BasicUser QueryExecutor::insertNewUser(const common::BasicUser& user)
+bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewUser");
     bool result;
@@ -401,7 +372,7 @@ common::BasicUser QueryExecutor::insertNewUser(const common::BasicUser& user)
         newUser = common::BasicUser(user.getLogin(),user.getPassword(),user.getEmail());
         commit();
     }
-    return newUser;
+    return true;
 }
 
 

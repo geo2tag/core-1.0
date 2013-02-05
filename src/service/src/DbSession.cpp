@@ -113,11 +113,11 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
 
 
-    //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
-    //    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
-    //    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
-    //    m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
-    //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
+    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
+    //m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
+    //m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
+
+
 
     //    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
     //    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
@@ -127,6 +127,9 @@ DbObjectsCollection::DbObjectsCollection()
     //    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
     //    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
     //  Here also should be something like
+
+    //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
+    //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
     //  m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
 
@@ -587,72 +590,44 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
 
 QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 {
-#if 0
     DEBUG() <<  "starting AddUser processing";
     AddUserRequestJSON request;
-    DEBUG() <<  " AddUserRequestJSON created, now create AddUserResponseJSON ";
+
     AddUserResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+
     if (!request.parseJson(data))
     {
         response.setErrno(INCORRECT_JSON_ERROR);
         answer.append(response.getJson());
         return answer;
     }
-    // Look for user with the same name
-    common::BasicUser dummyUser = request.getUsers()->at(0);
 
-    QVector<common::BasicUser > currentUsers = Core::MetaCache::getUsers();
 
-    for(int i=0; i<currentUsers.size(); i++)
+    common::BasicUser user = request.getUser();
+    if(Core::MetaCache::checkUser(user))
     {
-        if(QString::compare(currentUsers.at(i)->getLogin(), dummyUser->getLogin(), Qt::CaseInsensitive) == 0)
-        {
             response.setErrno(USER_ALREADY_EXIST_ERROR);
             answer.append(response.getJson());
             DEBUG() << "answer: " << answer.data();
             return answer;
-        }
     }
 
-    if(QueryExecutor::instance()->doesUserWithGivenEmailExist(dummyUser))
-    {
-        response.setErrno(EMAIL_ALREADY_EXIST_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
+    ;
 
-    if ( !checkPasswordQuality(dummyUser->getPassword()) )
-    {
-        response.setErrno(WEAK_PASSWORD_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-
-    DEBUG() <<  "Sending sql request for AddUser";
-    // Only password hashes are stored, so we change password of this user by password hash
-    dummyUser->setPassword(getPasswordHash(dummyUser));
-    common::BasicUser addedUser = QueryExecutor::instance()->insertNewUser(dummyUser);
-
-    if(!addedUser)
+    if(!Core::MetaCache::addUser(user))
     {
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         DEBUG() << "answer: " << answer.data();
         return answer;
     }
-    // Here will be adding user into user container
-    Q_ASSERT(false);
-    // Not implemented
-    //m_usersContainer->push_back(addedUser);
 
-    response.addUser(addedUser);
+    response.addUser(user);
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
-#endif
-    return data;
 }
 
 

@@ -53,14 +53,14 @@ JsonSerializer::~JsonSerializer()
 
 QList<common::BasicUser> JsonSerializer::getUsers() const
 {
-    return m_user;
+    return m_users;
 }
 
 common::BasicUser JsonSerializer::getUser() const
 {
     return
-            m_user.size()>0
-                ? m_user.at(0)
+            m_users.size()>0
+                ? m_users.at(0)
                 : common::BasicUser();
 }
 
@@ -106,7 +106,7 @@ void JsonSerializer::addTag(const Tag &tag)
 
 void JsonSerializer::addUser(const common::BasicUser &user)
 {
-    m_user.push_back(user);
+    m_users.push_back(user);
 }
 
 
@@ -118,7 +118,7 @@ void JsonSerializer::setSessionToken(const QString& token)
 
 void JsonSerializer::clearContainers()
 {
-    m_user.clear();
+    m_users.clear();
     m_tags.clear();
     m_channels.clear();
 }

@@ -114,7 +114,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
             QString timeStr =  markMap["pubDate"].toString();
             QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
 
-            m_user.push_back(common::BasicUser(userName));
+            m_users.push_back(common::BasicUser(userName));
 
             Tag tag(altitude, latitude, longitude, title,  description, link,  time);
             DEBUG() << "Tag:" << tag;

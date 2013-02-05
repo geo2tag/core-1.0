@@ -97,6 +97,11 @@ void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user
     s_channels.push_back(Channel(channel));
 }
 
+bool MetaCache::addUser(const common::BasicUser &user)
+{
+    return QueryExecutor::instance()->insertNewUser(user);
+}
+
 void MetaCache::insertSession(const Session& session)
 {
     s_sessions << session;

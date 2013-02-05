@@ -35,52 +35,48 @@
 #include "AddUserRequestJSON.h"
 #include "JsonUser.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
-#if 0
 AddUserRequestJSON::AddUserRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
 
 
 AddUserRequestJSON::AddUserRequestJSON(const common::BasicUser& user,
-QObject *parent)
-: JsonSerializer(parent)
+                                       QObject *parent)
+    : JsonSerializer(parent)
 {
-  m_usersContainer->push_back(user);
+    m_users.push_back(user);
 }
 
 
 QByteArray AddUserRequestJSON::getJson() const
 {
-  QJson::Serializer serializer;
-  QVariantMap obj;
-  obj.insert("email", m_usersContainer->at(0)->getEmail());
-  obj.insert("login", m_usersContainer->at(0)->getLogin());
-  obj.insert("password", m_usersContainer->at(0)->getPassword());
-  return serializer.serialize(obj);
+    QJson::Serializer serializer;
+    QVariantMap obj;
+    if(m_users.size()>0)
+    {
+        obj.insert("email", m_users.at(0).getEmail());
+        obj.insert("login", m_users.at(0).getLogin());
+        obj.insert("password", m_users.at(0).getPassword());
+    }
+    return serializer.serialize(obj);
 }
 
 
 bool AddUserRequestJSON::parseJson(const QByteArray &data)
 {
-  clearContainers();
+    clearContainers();
 
-  QJson::Parser parser;
-  bool ok;
-  QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
+    QJson::Parser parser;
+    bool ok;
+    QVariantMap result = parser.parse(data, &ok).toMap();
+    if (!ok) return false;
 
-  QString email = result["email"].toString();
-  QString login = result["login"].toString();
-  QString password = result["password"].toString();
-  m_usersContainer->push_back(common::BasicUser(new JsonUser(login, password, email)));
-  return true;
+    QString email = result["email"].toString();
+    QString login = result["login"].toString();
+    QString password = result["password"].toString();
+    m_users.push_back(common::BasicUser(login, password, email));
+    return true;
 }
-#endif

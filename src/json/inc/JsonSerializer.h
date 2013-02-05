@@ -49,7 +49,7 @@ class JsonSerializer:public QObject
   protected:
     QList<Tag>                 m_tags;
     QList<Channel>             m_channels;
-    QList<common::BasicUser>   m_user;
+    QList<common::BasicUser>   m_users;
     QString                    m_token;
 
     QVariantMap m_jsonTree;

@@ -75,7 +75,7 @@ public:
     common::BasicUser insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
     bool insertNewTag(const Tag& tag);
-    common::BasicUser    insertNewUser(const common::BasicUser&);
+    bool insertNewUser(const common::BasicUser&);
     bool  insertNewChannel(const Channel &, const common::BasicUser& user);
     bool                     deleteUser(const common::BasicUser &user);
     common::BasicUser  updateUserPassword(common::BasicUser &user, const QString& password);
