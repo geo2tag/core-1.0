@@ -103,20 +103,22 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);
     m_processors.insert("channels", &DbObjectsCollection::processAvailableChannelsQuery);
     m_processors.insert("version", &DbObjectsCollection::processVersionQuery);
+    m_processors.insert("quitSession", &DbObjectsCollection::processQuitSessionQuery);
+    //    m_processors.insert("build", &DbObjectsCollection::processBuildQuery);
+    //    m_processors.insert("errnoInfo", &DbObjectsCollection::processGetErrnoInfo);
+
+
+    m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
+    m_processors.insert("unsubscribe", &DbObjectsCollection::processUnsubscribeQuery);
+    //    m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
 
 
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
-    m_processors.insert("quitSession", &DbObjectsCollection::processQuitSessionQuery);
-    m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
 //    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
-//    m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
 //    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
-//    m_processors.insert("unsubscribe", &DbObjectsCollection::processUnsubscribeQuery);
 //    m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
-//    m_processors.insert("build", &DbObjectsCollection::processBuildQuery);
 //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
 
-//    m_processors.insert("errnoInfo", &DbObjectsCollection::processGetErrnoInfo);
 //    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
 //    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
 //    m_processors.insert("filterPolygon", &DbObjectsCollection::processFilterPolygonQuery);
@@ -666,10 +668,6 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 
 QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
 {
-
-    NOT_IMPLEMENTED();
-
-#if 0
     UnsubscribeChannelRequestJSON request;
     UnsubscribeChannelResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
@@ -680,54 +678,29 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    Session dummySession = request.getSessions()->at(0);
-    Session realSession = findSession(dummySession);
-    if(realSession.isNull())
+
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    common::BasicUser realUser = realSession->getUser();
-
-    Channel dummyChannel = request.getChannels()->at(0);;
-
-    Channel realChannel;// Null pointer
-    QList<Channel> subscribedChannels = realUser->getSubscribedChannels();
-    for(int i=0; i<subscribedChannels->size(); i++)
-    {
-        if(QString::compare(subscribedChannels->at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
-        {
-            realChannel = subscribedChannels->at(i);
-            break;
-        }
-    }
-    if(realChannel.isNull())
-    {
-        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-    DEBUG() <<  "Sending sql request for UnsubscribeQuery";
-    bool result = QueryExecutor::instance()->unsubscribeChannel(realUser,realChannel);
+    common::BasicUser user = session.getUser();
+    bool result = Core::MetaCache::unsubscribeChannel(user,request.getChannel());
 
     if(!result)
     {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        return answer;
+       response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+       answer.append(response.getJson());
+       return answer;
     }
-    //QWriteLocker(m_updateThread->getLock());
-    realUser->unsubscribe(realChannel);
-    QueryExecutor::instance()->updateSession(realSession);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
-#endif
-    return data;
 }
 
 

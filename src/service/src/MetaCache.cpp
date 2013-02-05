@@ -160,6 +160,11 @@ bool MetaCache::subscribeChannel(const BasicUser &user, const Channel &channel)
     return QueryExecutor::instance()->subscribeChannel(user,channel);
 }
 
+bool MetaCache::unsubscribeChannel(const BasicUser &user, const Channel &channel)
+{
+    return QueryExecutor::instance()->unsubscribeChannel(user,channel);
+}
+
 void MetaCache::reloadSessions()
 {
     QWriteLocker lock(&s_SessionsLock);
