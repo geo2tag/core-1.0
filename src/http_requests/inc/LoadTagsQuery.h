@@ -50,7 +50,6 @@
 #include "DataMarks.h"
 #include "Session.h"
 #include "Channel.h"
-#include "DataChannel.h"
 
 /*!
  * LoadTagsQuery class definition.

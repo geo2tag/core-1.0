@@ -114,7 +114,6 @@ HEADERS += \
     ../../../../json/inc/AddChannelResponseJSON.h \
     ../../../../common/inc/ConcurrentVector.h \
     ../../../../common/inc/defines.h \
-    ../../../../common/inc/DataChannel.h \
     ../../../../common/inc/symbian.h \
     ../../../../../3rdparty/qjson-0.7.1/src/parser.h \
     ../../../../json/inc/DefaultResponseJSON.h \

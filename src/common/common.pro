@@ -31,7 +31,6 @@ HEADERS += \
     inc/DataMarks.h \
     inc/GpsInfo.h \
     inc/defines.h \
-    inc/DataChannel.h\
     inc/ChannelAction.h\
     inc/ErrnoTypes.h \
     inc/Filtration.h \

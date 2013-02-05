@@ -43,20 +43,19 @@
 #define _FilterDefaultResponseJSON_H_9F6E9355_0467_4027_87F0_9F45C6039952_INCLUDED_
 
 #include "JsonSerializer.h"
-#include "DataChannel.h"
 
 class FilterDefaultResponseJSON : public JsonSerializer
 {
-  DataChannels m_hashMap;
+  QList<Tag> m_hashMap;
 
   public:
     FilterDefaultResponseJSON(QObject *parent=0);
 
     ~FilterDefaultResponseJSON();
 
-    const DataChannels& getDataChannels();
+    QList<Tag> getTags() const;
 
-    void setDataChannels(const DataChannels& dataChannels);
+    void setTags(const QList<Tag>& tags);
 
     virtual bool parseJson(const QByteArray&);
 

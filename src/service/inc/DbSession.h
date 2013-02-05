@@ -48,7 +48,6 @@
 #include <QMap>
 #include "DataMarks.h"
 #include "Channel.h"
-#include "DataChannel.h"
 #include "User.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
@@ -65,7 +64,7 @@ namespace common
 
     QList<Channel>     m_channelsContainer;
     QList<Tag>    m_tagsContainer;
-//    QSharedPointer<DataChannels> m_dataChannelsMap;
+//    QSharedPointer<QList<tag>> m_QList<Tag>Map;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
     typedef QByteArray (DbObjectsCollection::*ProcessMethodWithStr)(const QString&);

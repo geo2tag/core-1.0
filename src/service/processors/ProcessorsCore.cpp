@@ -176,9 +176,9 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
 
     QList<Tag> feed;
 
-    QList<Channel> channels = QueryExecutor::instance()->getChannelsByUser(session.getUser());
+    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(session.getUser());
 
-    DEBUG() << "User is owner for " << channels.size() << " channels";
+    DEBUG() << "User is subscribed for " << channels.size() << " channels";
 
     double lat1 = request.getLatitude();
     double lon1 = request.getLongitude();
@@ -187,7 +187,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     Channel channel;
     foreach(channel, channels)
     {
-        QList<Tag> tags = QueryExecutor::instance()->loadTags(channel);
+        QList<Tag> tags = Core::MetaCache::loadTagsFromChannel(channel);
         Tag tag;
         foreach(tag,tags)
         {

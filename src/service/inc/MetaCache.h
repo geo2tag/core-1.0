@@ -82,11 +82,12 @@ namespace Core
       static void insertSession(const Session &session);
       static Channel getChannel(const QString name);
       static QList<Channel> getChannels(const common::BasicUser& user);
-      static QList<Channel> getUserChannels(const BasicUser &user);
+      static QList<Channel> getChannelsByOwner(const BasicUser &user);
 
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
       static Channel findChannel(const QString& name);
+      static QList<Channel> getSubscribedChannels(const BasicUser& user);
 
       static bool subscribeChannel(const common::BasicUser& user, const Channel& channel);
       static bool unsubscribeChannel(const common::BasicUser& user, const Channel& channel);
@@ -101,6 +102,7 @@ namespace Core
       static bool testChannel(common::BasicUser &user, const Channel& channel);
 
       static bool writeTag(const Tag& tag);
+      static QList<Tag> loadTagsFromChannel(const Channel& channel);
 
   protected:
 

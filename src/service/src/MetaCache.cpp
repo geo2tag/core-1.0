@@ -118,14 +118,9 @@ Channel MetaCache::getChannel(const QString name)
     return QueryExecutor::instance()->getChannel(name);
 }
 
-QList<Channel> MetaCache::getChannels(const BasicUser &user)
+QList<Channel> MetaCache::getChannelsByOwner(const BasicUser &user)
 {
-    return QueryExecutor::instance()->getChannelsByUser(user);
-}
-
-QList<Channel> MetaCache::getUserChannels(const BasicUser &user)
-{
-    return QueryExecutor::instance()->getChannelsByUser(user);
+    return QueryExecutor::instance()->getChannelsByOwner(user);
 }
 
 Session MetaCache::findSession(const BasicUser &user)
@@ -173,6 +168,11 @@ Channel MetaCache::findChannel(const QString &name)
     }
     return Channel();
 #endif
+}
+
+QList<Channel> MetaCache::getSubscribedChannels(const BasicUser &user)
+{
+    return QueryExecutor::instance()->getSubscribedChannels(user);
 }
 
 bool MetaCache::subscribeChannel(const BasicUser &user, const Channel &channel)
@@ -227,6 +227,11 @@ bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 bool MetaCache::writeTag(const Tag &tag)
 {
     return QueryExecutor::instance()->insertNewTag(tag);
+}
+
+QList<Tag> MetaCache::loadTagsFromChannel(const Channel &channel)
+{
+    return QueryExecutor::instance()->loadTags(channel);
 }
 
 void MetaCache::initUsers()

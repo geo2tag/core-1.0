@@ -48,7 +48,7 @@ class DataThread : public QThread
 
     QSettings m_settings;
   // here marks are stored
-  DataChannels m_marks;
+  QList<Tag> m_marks;
   QSharedPointer<common::User> m_user;
   MapScene * m_map;
 

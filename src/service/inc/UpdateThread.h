@@ -55,7 +55,7 @@ class UpdateThread: public QThread
     QList<Channel>     m_channelsContainer;
   QList<Tag>    m_tagsContainer;
   QList<common::BasicUser>        m_usersContainer;
-  QSharedPointer<DataChannels> m_dataChannelsMap;
+  QSharedPointer<QList<Tag>> m_QList<Tag>Map;
   QSharedPointer<Sessions>     m_sessionsContainer;
 
   QueryExecutor* m_queryExecutor;
@@ -75,7 +75,7 @@ class UpdateThread: public QThread
       const QList<Tag>& tags,
       const QList<common::BasicUser>& users,
       const QList<Channel>& channels,
-      const QSharedPointer<DataChannels>& dataChannelsMap,
+      const QSharedPointer<QList<Tag>>& QList<Tag>Map,
       const QSharedPointer<Sessions>& sessions,
       QObject *parent = 0);
 
@@ -83,7 +83,7 @@ class UpdateThread: public QThread
       const QList<Tag>& tags,
       const QList<common::BasicUser>& users,
       const QList<Channel>& channels,
-      const QSharedPointer<DataChannels>& dataChannelsMap,
+      const QSharedPointer<QList<Tag>>& QList<Tag>Map,
       const QSharedPointer<Sessions>& sessions,
       QueryExecutor* queryExecutor,
       QObject *parent = 0);

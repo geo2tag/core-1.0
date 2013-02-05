@@ -21,142 +21,127 @@
 #include "FilterChannelRequestJSON.h"
 #include "FilterChannelResponseJSON.h"
 
+#include "MetaCache.h"
 
 namespace common
 {
 
 QByteArray DbObjectsCollection::processFilterCircleQuery(const QByteArray& data)
 {
-    return data;
-//    DEBUG() <<  ">>> processFilterCircleQuery";
+    DEBUG() <<  ">>> processFilterCircleQuery";
 
-//    FilterCircleRequestJSON request;
-//    return internalProcessFilterQuery(request, data, false);
+    FilterCircleRequestJSON request;
+    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterCylinderQuery(const QByteArray& data)
 {
-    return data;
-//    FilterCylinderRequestJSON request;
-//    return internalProcessFilterQuery(request, data, true);
+    FilterCylinderRequestJSON request;
+    return internalProcessFilterQuery(request, data, true);
 }
 
 QByteArray DbObjectsCollection::processFilterPolygonQuery(const QByteArray& data)
 {
-    return data;
-
-//    FilterPolygonRequestJSON request;
-//    return internalProcessFilterQuery(request, data, false);
+    FilterPolygonRequestJSON request;
+    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterRectangleQuery(const QByteArray& data)
 {
-    return data;
-//    FilterRectangleRequestJSON request;
-//    return internalProcessFilterQuery(request, data, false);
+    FilterRectangleRequestJSON request;
+    return internalProcessFilterQuery(request, data, false);
 }
 
 QByteArray DbObjectsCollection::processFilterBoxQuery(const QByteArray& data)
 {
-    return data;
-//    FilterBoxRequestJSON request;
-//    return internalProcessFilterQuery(request, data, true);
+    FilterBoxRequestJSON request;
+    return internalProcessFilterQuery(request, data, true);
 }
 
 QByteArray DbObjectsCollection::processFilterFenceQuery(const QByteArray& data)
 {
-    return data;
-//    FilterFenceRequestJSON request;
-//    return internalProcessFilterQuery(request, data, true);
+    FilterFenceRequestJSON request;
+    return internalProcessFilterQuery(request, data, true);
 }
 
-QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& /*request*/,
-                                                           const QByteArray& data, bool /*is3d*/)
+QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& request,
+                                                           const QByteArray& data, bool is3d)
 {
-    return data;
+    Filtration filtration;
+    FilterDefaultResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-//    Filtration filtration;
-//    FilterDefaultResponseJSON response;
-//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    if (!request.parseJson(data))
-//    {
-//        response.setErrno(INCORRECT_JSON_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
 
-//    Session dummySession = request.getSessions()->at(0);
-//    Session realSession = findSession(dummySession);
-//    if(realSession.isNull())
-//    {
-//        response.setErrno(WRONG_TOKEN_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    if(session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    common::BasicUser realUser = realSession->getUser();
+    common::BasicUser user = session.getUser();
 
-//    filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
-//    filtration.addFilter(QSharedPointer<Filter>(new TimeFilter(request.getTimeFrom(), request.getTimeTo())));
-//    if(is3d)
-//    {
-//        filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
-//    }
+    filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
+    filtration.addFilter(QSharedPointer<Filter>(new TimeFilter(request.getTimeFrom(), request.getTimeTo())));
+    if(is3d)
+    {
+        filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
+    }
 
-//    QList<Channel> channels = realUser->getSubscribedChannels();
-//    DataChannels feed;
-//    if (request.getChannels()->size() > 0)
-//    {
-//        DEBUG() <<  "point_2";
+    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(user);
+    QList<Tag> feed;
 
-//        Channel targetChannel;
-//        // look for ...
-//        for(int i = 0; i<channels->size(); i++)
-//        {
-//            if (channels->at(i)->getName() == request.getChannels()->at(0)->getName())
-//            {
-//                targetChannel = channels->at(i);
-//                break;
-//            }
-//        }
+    if (request.getChannels().size() > 0)
+    {
+        Channel targetChannel;
+        // look for ...
+        for(int i = 0; i<channels.size(); i++)
+        {
+            if (channels.at(i).getName() == request.getChannels().at(0).getName())
+            {
+                targetChannel = channels.at(i);
+                break;
+            }
+        }
 
-//        if (targetChannel.isNull())
-//        {
-//            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
-//            answer.append(response.getJson());
-//            DEBUG() << "answer: " << answer.data();
-//            return answer;
-//        }
-//        QList<Tag > tags = m_dataChannelsMap->values(targetChannel);
-//        QList<Tag > filteredTags = filtration.filtrate(tags);
-//        for(int i = 0; i < filteredTags.size(); i++)
-//        {
-//            feed.insert(targetChannel, filteredTags.at(i));
-//        }
-//        response.setErrno(SUCCESS);
-//    }
-//    else
-//    {
-//        for(int i = 0; i<channels->size(); i++)
-//        {
-//            Channel channel = channels->at(i);
-//            QList<Tag > tags = m_dataChannelsMap->values(channel);
-//            QList<Tag > filteredTags = filtration.filtrate(tags);
-//            for(int j = 0; j < filteredTags.size(); j++)
-//            {
-//                feed.insert(channel, filteredTags.at(j));
-//            }
-//        }
-//        response.setErrno(SUCCESS);
-//    }
-//    response.setDataChannels(feed);
+        if (!targetChannel.isValid())
+        {
+            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+            answer.append(response.getJson());
+            DEBUG() << "answer: " << answer.data();
+            return answer;
+        }
 
-//    QueryExecutor::instance()->updateSession(realSession);
+        QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(targetChannel);
+        QList<Tag > filteredTags = filtration.filtrate(tags);
 
-//    answer.append(response.getJson());
-//    DEBUG() << "answer: " << answer.data();
-//    return answer;
+        feed << filteredTags;
+        response.setErrno(SUCCESS);
+    }
+    else
+    {
+        for(int i = 0; i<channels.size(); i++)
+        {
+            Channel channel = channels.at(i);
+            QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
+            QList<Tag > filteredTags = filtration.filtrate(tags);
+                feed << filteredTags;
+        }
+        response.setErrno(SUCCESS);
+    }
+    response.setTags(feed);
+
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
 }
 
 } // namespace common

@@ -89,7 +89,8 @@ public:
     //void checkSessions(UpdateThread* thread);
 
     QList<common::BasicUser> loadUsers();
-    QList<Channel> getChannelsByUser(const common::BasicUser& user );
+    QList<Channel> getChannelsByOwner(const common::BasicUser& user );
+    QList<Channel> getSubscribedChannels(const common::BasicUser& user );
     QList<Tag> loadTags();
     QList<Tag> loadTags(const Channel &channel);
 

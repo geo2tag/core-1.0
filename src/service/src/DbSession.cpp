@@ -119,17 +119,17 @@ DbObjectsCollection::DbObjectsCollection()
 
 
 
-    //    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
-    //    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
-    //    m_processors.insert("filterPolygon", &DbObjectsCollection::processFilterPolygonQuery);
-    //    m_processors.insert("filterRectangle", &DbObjectsCollection::processFilterRectangleQuery);
-    //    m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
-    //    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
-    //    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
+    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
+    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
+    m_processors.insert("filterPolygon", &DbObjectsCollection::processFilterPolygonQuery);
+    m_processors.insert("filterRectangle", &DbObjectsCollection::processFilterRectangleQuery);
+    m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
+    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
+    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
 
-    //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
-    //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
-    //  m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
+//    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
+//    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
+//    m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
 
     //GT-817 Now is only QPSQL base is supported
@@ -148,19 +148,6 @@ DbObjectsCollection::DbObjectsCollection()
 
     DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
     DEBUG() << "database.open()=" << database.open();
-
-    //    m_updateThread = new UpdateThread(
-    //                m_tagsContainer,
-    //                m_usersContainer,
-    //                m_channelsContainer,
-    //                m_dataChannelsMap,
-    //                m_sessionsContainer,
-    //                NULL,
-    //                NULL);
-
-    //BUG: GT-765 m_updateThread->setQueryExecutor(m_queryExecutor);
-
-    //BUG: GT-765 m_updateThread->start();
 }
 
 DbObjectsCollection& DbObjectsCollection::getInstance()
@@ -486,7 +473,7 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
     }
 
     BasicUser user = request.getUser();
-    QList<Channel> channels = Core::MetaCache::getUserChannels(user);
+    QList<Channel> channels = Core::MetaCache::getChannelsByOwner(user);
 
     response.setChannels(channels);
     response.setErrno(SUCCESS);
@@ -516,7 +503,7 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
         return answer;
     }
 
-    QList<Channel> channels = Core::MetaCache::getChannels(request.getUser());
+    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(request.getUser());
     response.setChannels(channels);
 
     response.setErrno(SUCCESS);

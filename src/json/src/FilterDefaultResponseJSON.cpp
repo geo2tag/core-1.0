@@ -59,7 +59,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
-#if 0
+
 FilterDefaultResponseJSON::FilterDefaultResponseJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -70,15 +70,15 @@ FilterDefaultResponseJSON::~FilterDefaultResponseJSON()
 }
 
 
-const DataChannels& FilterDefaultResponseJSON::getDataChannels()
+QList<Tag> FilterDefaultResponseJSON::getTags() const
 {
-  return m_hashMap;
+  return m_tags;
 }
 
 
-void FilterDefaultResponseJSON::setDataChannels(const DataChannels& dataChannels)
+void FilterDefaultResponseJSON::setTags(const QList<Tag>& tags)
 {
-  m_hashMap = dataChannels;
+  m_tags = tags;
 }
 
 
@@ -96,7 +96,6 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
   if (!ok) return false;
   m_errno = result["errno"].toInt(&ok);
 
-  //QVariantMap channelVariant = result["channels"].toMap();
   QVariantList channelsList = result["channels"].toList();
   int size = channelsList.size();
 
@@ -107,13 +106,12 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
     QVariantList markList = channelInternal["items"].toList();
     QString channelName = channelInternal["name"].toString();
 
-    QSharedPointer<Channel> channel(new JsonChannel(channelName,"dummy channel[LoadTagsResponse]"));
+    Channel channel(channelName,"dummy channel[LoadTagsResponse]");
 
     for(int j=0; j<markList.size(); j++)
     {
       QVariantMap markMap = markList.at(j).toMap();
 
-      int id = markMap["id"].toInt();
       QString title = markMap["title"].toString();
       QString link = markMap["link"].toString();
       QString description = markMap["description"].toString();
@@ -129,20 +127,8 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
       QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
       time.setTimeSpec(Qt::UTC);
 
-      QVector<QSharedPointer<common::User> > v = m_usersContainer->vector();
-      QSharedPointer<common::User> user(new JsonUser(userName));
-      m_usersContainer->push_back(user);
 
-      QSharedPointer<JsonDataMark> newMark(new JsonDataMark(altitude,
-        latitude,
-        longitude,
-        title,
-        description,
-        link,
-        time));
-      newMark->setId(id);
-      newMark->setUser(user);
-      m_hashMap.insert(channel, newMark);
+      m_tags << Tag(altitude,  latitude, longitude, title, description, link, time);
     }
   }
   return true;
@@ -154,38 +140,37 @@ QByteArray FilterDefaultResponseJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj;
 
-  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
-  QVariantList jchannels;
+//  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
+//  QVariantList jchannels;
 
-  for(int i=0; i<hashKeys.size(); i++)
+  for(int i=0; i<m_channels.size(); i++)
   {
-    QList<QSharedPointer<Tag> > tags = m_hashMap.values(hashKeys.at(i));
+    QList<Tag> tags = m_tags;
     QVariantList jtags;
     QVariantMap jchannel;
     QVariantMap channel;
 
     for(int j=0; j<tags.size(); j++)
     {
-      QSharedPointer<Tag> tag = tags.at(j);
+      Tag tag = tags.at(j);
       QVariantMap jtag;
-      jtag["id"] = tag->getId();
-      jtag["title"] = tag->getLabel();
-      jtag["link"] = tag->getUrl();
-      jtag["description"] = tag->getDescription();
-      jtag["latitude"] = tag->getLatitude();
-      jtag["longitude"] = tag->getLongitude();
-      jtag["altitude"] = tag->getAltitude();
-      jtag["user"] = tag->getUser()->getLogin();
-      jtag["pubDate"] = tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz");
+      jtag["title"] = tag.getLabel();
+      jtag["link"] = tag.getUrl();
+      jtag["description"] = tag.getDescription();
+      jtag["latitude"] = tag.getLatitude();
+      jtag["longitude"] = tag.getLongitude();
+      jtag["altitude"] = tag.getAltitude();
+      jtag["user"] = tag.getUser().getLogin();
+      jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
       jtags.append(jtag);
     }
     channel["items"] = jtags;
-    channel["name"] = hashKeys.at(i)->getName();
+    channel["name"] = m_channels[i].getName();
     jchannel["channel"] = channel;
-    jchannels.append(jchannel);
+//    jchannels.append(jchannel);
   }
-  obj["channels"] = jchannels;
+//  obj["channels"] = jchannels;
   obj.insert("errno", getErrno());
   return serializer.serialize(obj);
 }
-#endif
+

@@ -56,8 +56,6 @@
 
 #include <QDebug>
 
-#if 0
-
 FilterRectangleRequestJSON::FilterRectangleRequestJSON(QObject *parent) : FilterRequestJSON(parent)
 {
 }
@@ -68,7 +66,7 @@ QByteArray FilterRectangleRequestJSON::getJson() const
   // TODO it's necessary for symbian client
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("auth_token", m_sessionsContainer->at(0)->getSessionToken());
+  obj.insert("auth_token", m_token);
   return serializer.serialize(obj);
 }
 
@@ -105,7 +103,7 @@ bool FilterRectangleRequestJSON::parseJson(const QByteArray&data)
 
   FShapeRectangle * shape = new FShapeRectangle(lat1, lon1, lat2, lon2);
   setShape(QSharedPointer<FShape>(shape));
-  m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
+  //m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
   return true;
 }
-#endif
+

@@ -73,14 +73,14 @@ class UpdateThread_Test : public QObject
     QSharedPointer<DataMarks> m_tags;
     QSharedPointer<common::Users> m_users;
     QSharedPointer<Channels> m_channels;
-    QSharedPointer<DataChannels> m_dataChannelsMap;
+    QSharedPointer<QList<Tag>> m_QList<Tag>Map;
     QSharedPointer<Sessions> m_sessions;
 
 public:
 
     UpdateThread_Test(QObject *parent =NULL) : QObject(parent), m_tags(new DataMarks()),
         m_users(new common::Users()), m_channels(new Channels()),
-        m_dataChannelsMap(new DataChannels), m_sessions(new Sessions())
+        m_QList<Tag>Map(new QList<Tag>), m_sessions(new Sessions())
     {
         // initialization here
         // m_tstObject = new UpdateThread;
@@ -108,13 +108,13 @@ private slots:
     {
 
         // #1 Create updateThread and check that it syncronize with DB
-        m_tstObject = new UpdateThread(m_tags, m_users, m_channels, m_dataChannelsMap, m_sessions, m_queryExecutor);
+        m_tstObject = new UpdateThread(m_tags, m_users, m_channels, m_QList<Tag>Map, m_sessions, m_queryExecutor);
         m_tstObject->start();
         QVERIFY(waitForSignal(m_tstObject, SIGNAL(syncronizationComplete()), 2 * m_updateInterval));
         QVERIFY(m_tags->size() > 0);
         QVERIFY(m_channels->size() > 0);
         QVERIFY(m_users->size() > 0);
-        QVERIFY(m_dataChannelsMap->size() > 0);
+        QVERIFY(m_QList<Tag>Map->size() > 0);
         QVERIFY(m_sessions->size() > 0);
 
         // see docs: http://doc.qt.nokia.com/4.7/qtest.html
@@ -134,7 +134,7 @@ private slots:
         testMark->setChannel(m_users->at(0)->getSubscribedChannels()->at(0));
 
         qlonglong tagsOldSize = m_tags->size();
-        qlonglong dataChannelsOldSize = m_dataChannelsMap->size();
+        qlonglong QList<Tag>OldSize = m_QList<Tag>Map->size();
         qDebug() << "tagsOldSize = " << tagsOldSize;
         for (int i = 0; i < DATAMARKS_TO_ADD; i++ )
             QVERIFY(QueryExecutor::instance()->insertNewTag(testMark));
@@ -142,7 +142,7 @@ private slots:
         QVERIFY(waitForSignal(m_tstObject, SIGNAL(syncronizationComplete()), 2 * m_updateInterval));
         qDebug() << "tagsNewSize = " << m_tags->size();
         QVERIFY(m_tags->size() == tagsOldSize + DATAMARKS_TO_ADD);
-        QVERIFY(m_dataChannelsMap->size() == dataChannelsOldSize + DATAMARKS_TO_ADD);
+        QVERIFY(m_QList<Tag>Map->size() == QList<Tag>OldSize + DATAMARKS_TO_ADD);
 
     }
 
@@ -214,7 +214,7 @@ private slots:
         QVERIFY(m_sessions->size() == sessionsOldSize + SESSIONS_TO_ADD);
     }
 
-    void testDataChannelSync()
+    void testQList<Tag>ync()
     {
         // Add marks and check newTagInsertionComplete(int)
         QSharedPointer<Tag> testMark (new JsonDataMark(0.,0.,0.,"","","",QDateTime::currentDateTime()));

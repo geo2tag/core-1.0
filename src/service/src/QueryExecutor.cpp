@@ -186,30 +186,6 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     return true;
 }
 
-
-bool QueryExecutor::doesTmpUserExist(const common::BasicUser &user)
-{
-    PerformanceCounter counter("QueryExecutor::doesTmpUserExist");
-    QSqlQuery query=makeQuery();
-    query.prepare("select * from signups where login = :login or email = :email;");
-    query.bindValue(":login",user.getLogin());
-    query.bindValue(":email",user.getEmail());
-    DEBUG() << "Selecting: %s" <<  query.lastQuery();
-
-    query.exec();
-
-    if (query.next())
-    {
-        return true;
-    }
-    else
-    {
-        DEBUG() << "No matching users.";
-        return false;
-    }
-}
-
-
 bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
 {
     PerformanceCounter counter("QueryExecutor::doesUserWithGivenEmailExist");
@@ -233,69 +209,6 @@ bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
     }
 }
 
-
-bool QueryExecutor::deleteTmpUser(const common::BasicUser &user)
-{
-    PerformanceCounter counter("QueryExecutor::deleteTmpUser");
-    bool result;
-    QSqlQuery deleteSignupQuery=makeQuery();
-    deleteSignupQuery.prepare("delete from signups where login = :login;");
-    deleteSignupQuery.bindValue(":login",user.getLogin() );
-    DEBUG() << "Deleting: "<< deleteSignupQuery.lastQuery();
-
-    transaction();
-
-    result = deleteSignupQuery.exec();
-    if(!result)
-    {
-        DEBUG() << "Rollback for deleteSignup sql query";
-        rollback();
-    }
-    else
-    {
-        DEBUG() << "Commit for deleteSignup sql query";
-        commit();
-    }
-    return result;
-}
-
-
-bool QueryExecutor::insertNewTmpUser(const common::BasicUser &)
-{
-    NOT_IMPLEMENTED();
-#if 0
-    PerformanceCounter counter("QueryExecutor::insertNewTmpUser");
-    bool result;
-    QSqlQuery newSignupQuery=makeQuery();
-    qlonglong newId = nextUserKey();
-    DEBUG() << "Generating token for new signup " << user.getLogin() << user.getPassword();
-    QString newToken = generateNewToken(user.getEmail(), user.getLogin(),user.getPassword());
-    newSignupQuery.prepare("insert into signups (id,email,login,password,registration_token,sent) values(:id,:email,:login,:password,:r_token,:sent);");
-    newSignupQuery.bindValue(":id", newId);
-    newSignupQuery.bindValue(":email", user.getEmail());
-    newSignupQuery.bindValue(":login", user.getLogin());
-    newSignupQuery.bindValue(":password", user.getPassword());
-    newSignupQuery.bindValue(":r_token", newToken);
-    newSignupQuery.bindValue(":sent", FALSE);
-
-    transaction();
-
-    result = newSignupQuery.exec();
-    if(!result)
-    {
-        DEBUG() << "Rollback for NewSignup sql query";
-        rollback();
-        return false;
-    }
-    DEBUG() << "Commit for NewSignup sql query";
-    commit();
-
-    return true;
-#endif
-    return false;
-}
-
-
 bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
 {
     PerformanceCounter counter("QueryExecutor::doesRegistrationTokenExist");
@@ -317,32 +230,6 @@ bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
         DEBUG() << "No matching users.";
         return false;
     }
-}
-
-
-bool QueryExecutor::deleteTmpUser(const QString &token)
-{
-    PerformanceCounter counter("QueryExecutor::deleteTmpUser");
-    bool result;
-    QSqlQuery deleteSignupQuery=makeQuery();
-    deleteSignupQuery.prepare("delete from signups where registration_token = :token;");
-    deleteSignupQuery.bindValue(":token", token);
-    DEBUG() << "Deleting: %s"<< deleteSignupQuery.lastQuery();
-
-    transaction();
-
-    result = deleteSignupQuery.exec();
-    if(!result)
-    {
-        DEBUG() << "Rollback for deleteSignup sql query";
-        rollback();
-    }
-    else
-    {
-        DEBUG() << "Commit for deleteSignup sql query";
-        commit();
-    }
-    return result;
 }
 
 
@@ -649,7 +536,7 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
     return result;
 }
 
-QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &user)
+QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
 {
     QList<Channel> container;
 
@@ -680,6 +567,30 @@ QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &user)
         container.push_back(channel);
     }
 
+    return container;
+}
+
+QList<Channel> QueryExecutor::getSubscribedChannels(const common::BasicUser &user)
+{
+    QSqlQuery query=makeQuery();
+    QList<Channel> container;
+    qlonglong userId = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+
+    QString qry("select channel.name, channel.description, channel.url from channel, users, subscribe where subscribe.channel_id=channel.id and users.id =%1;");
+
+    query.exec(qry.arg(userId));
+
+    DEBUG() << "User " << user.getLogin() << " subscribed to " << query.size() << " channels";
+
+    while (query.next())
+    {
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+
+        Channel channel(name,description,url);
+        container.push_back(channel);
+    }
     return container;
 }
 
@@ -798,48 +709,6 @@ QList<Session> QueryExecutor::loadSessions()
     return result;
 }
 
-
-void QueryExecutor::updateReflections(DataMarks &, QList<common::BasicUser> &, Channels &, Sessions &)
-{
-    Q_ASSERT(false);
-#if 0 // GT-765
-    {
-        QSqlQuery query=makeQuery();
-        query.exec("select user_id, channel_id from subscribe;");
-        while (query.next())
-        {
-            qlonglong user_id = query.record().value("user_id").toLongLong();
-            qlonglong channel_id = query.record().value("channel_id").toLongLong();
-            users.item(user_id)->subscribe(channels.item(channel_id));
-        }
-    }
-    {
-        QSqlQuery query=makeQuery();
-        query.exec("select tag_id, channel_id from tags;");
-        while (query.next())
-        {
-            qlonglong tag_id = query.record().value("tag_id").toLongLong();
-            qlonglong channel_id = query.record().value("channel_id").toLongLong();
-
-            Channel channel = channels.item(channel_id);
-            QSharedPointer<DataMark> tag = tags.item(tag_id);
-
-            tag->setChannel(channel);
-        }
-    }
-
-    for(int i=0; i<tags.size(); i++)
-    {
-        tags[i]->setUser(users.item(tags.at(i).dynamicCast<DbDataMark>()->getUserId()));
-        tags[i]->setChannel(channels.item(tags.at(i).dynamicCast<DbDataMark>()->getChannelId()));
-    }
-
-    for(int i=0; i<sessions.size(); i++)
-    {
-        sessions[i]->setUser(users.item(sessions[i]->getUser()->getId()));
-    }
-#endif
-}
 
 qlonglong QueryExecutor::getUserIdByName(const QString &name)
 {

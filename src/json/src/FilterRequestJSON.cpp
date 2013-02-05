@@ -116,7 +116,7 @@ double FilterRequestJSON::getAltitude1() const
 
 void FilterRequestJSON::setChannel(const Channel &channel)
 {
-  m_channelsContainer.push_back(channel);
+  m_channels.push_back(channel);
 }
 
 
@@ -139,7 +139,7 @@ bool FilterRequestJSON::parseJson(const QByteArray& data)
   if (!name.isEmpty())
   {
     Channel ch(name,"n/a","n/a");
-    m_channelsContainer.push_back(ch);
+    m_channels.push_back(ch);
   }
   return true;
 }

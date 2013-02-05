@@ -72,7 +72,7 @@ class MapScene : public QGraphicsScene
     void addMark(qreal x, qreal y, QVariant data);
     void addMark(qreal x, qreal y, QVariant data, QWidget * widget);
     void removeMark(QGraphicsItem * mark);
-    void setMarks(DataChannels marks);
+    void setMarks(QList<Tag> marks);
 
     int maxThreads() const;
     void setMaxThreads(const int & max_threads);
