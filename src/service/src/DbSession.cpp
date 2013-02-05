@@ -114,7 +114,7 @@ DbObjectsCollection::DbObjectsCollection()
 
 
     m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
-    //m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
+    m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
     //m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
 
 
@@ -757,8 +757,6 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
 
 QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
 {
-    NOT_IMPLEMENTED();
-#if 0
     DEBUG() <<  "starting DeleteUser processing";
     DeleteUserRequestJSON request;
     DeleteUserResponseJSON response;
@@ -769,10 +767,10 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         answer.append(response.getJson());
         return answer;
     }
-    // Look for user with the same name
-    common::BasicUser realUser = findUser(request.getUsers()->at(0));
 
-    if(!realUser)
+    common::BasicUser user=request.getUser();
+
+    if(!user.isValid())
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
         answer.append(response.getJson());
@@ -780,28 +778,18 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         return answer;
     }
 
-    DEBUG() <<  "Sending sql request for DeleteUser";
-    bool isDeleted = QueryExecutor::instance()->deleteUser(realUser);
-
-    if(!isDeleted)
+    if(! Core::MetaCache::deleteUser(user))
     {
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         DEBUG() << "answer: " << answer.data();
         return answer;
     }
-    //QWriteLocker(m_updateThread->getLock());
-    // Here will be removing user from container
-    Q_ASSERT(false);
-    // not implemenytd
-    //m_usersContainer->erase(realUser);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
-#endif
-    return data;
 }
 
 //QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)

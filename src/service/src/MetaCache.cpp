@@ -102,6 +102,11 @@ bool MetaCache::addUser(const common::BasicUser &user)
     return QueryExecutor::instance()->insertNewUser(user);
 }
 
+bool MetaCache::deleteUser(const BasicUser &user)
+{
+    return QueryExecutor::instance()->deleteUser(user);
+}
+
 void MetaCache::insertSession(const Session& session)
 {
     s_sessions << session;
