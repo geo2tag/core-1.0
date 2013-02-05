@@ -115,7 +115,7 @@ DbObjectsCollection::DbObjectsCollection()
 
     m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
     m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
-    //m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
+    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
 
 
 
@@ -126,7 +126,6 @@ DbObjectsCollection::DbObjectsCollection()
     //    m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
     //    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
     //    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
-    //  Here also should be something like
 
     //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
     //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
@@ -465,47 +464,36 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 }
 
 
-//QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data)
-//{
-//    OwnedChannelsRequestJSON request;
-//    OwnedChannelsResponseJSON response;
-//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data)
+{
+    OwnedChannelsRequestJSON request;
+    OwnedChannelsResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-//    if (!request.parseJson(data))
-//    {
-//        response.setErrno(INCORRECT_JSON_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    Session session =  request.getSession();
-//    if(!session.isValid())
-//    {
-//        response.setErrno(WRONG_TOKEN_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    Session session =  Core::MetaCache::findSession(request.getSessionToken());
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    common::BasicUser user = session.getUser();
-//    if(!Core::MetaCache::testChannel(user,request.getChannel()))
-//    {
-//        DEBUG() << "user has no roghts to write";
-//        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    BasicUser user = request.getUser();
+    QList<Channel> channels = Core::MetaCache::getUserChannels(user);
 
-//    DEBUG() << "Updating session";
-//    QueryExecutor::instance()->updateSession(session);
-//    DEBUG() << "Updating session ..done";
-
-//    //response.setChannels(ownedChannels);
-//    NOT_IMPLEMENTED();
-//    response.setErrno(SUCCESS);
-//    answer.append(response.getJson());
-//    DEBUG() << "answer: %s" << answer.data();
-//    return answer;
-//}
+    response.setChannels(channels);
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: %s" << answer.data();
+    return answer;
+}
 
 QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray &data)
 {

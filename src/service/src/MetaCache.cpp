@@ -123,6 +123,11 @@ QList<Channel> MetaCache::getChannels(const BasicUser &user)
     return QueryExecutor::instance()->getChannelsByUser(user);
 }
 
+QList<Channel> MetaCache::getUserChannels(const BasicUser &user)
+{
+    return QueryExecutor::instance()->getChannelsByUser(user);
+}
+
 Session MetaCache::findSession(const BasicUser &user)
 {
     QReadLocker lock(&s_SessionsLock);

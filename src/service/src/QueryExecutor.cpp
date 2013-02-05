@@ -653,7 +653,6 @@ QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &user)
 {
     QList<Channel> container;
 
-#ifdef GEO2TAG_LITE
     QSqlQuery query=makeQuery();
     qlonglong owner_id = QueryExecutor::instance()->getUserIdByName(user.getLogin());
     QString qry = QString(("select description, name, url from channel where owner_id='%1'")).arg(owner_id);
@@ -680,10 +679,6 @@ QList<Channel> QueryExecutor::getChannelsByUser(const common::BasicUser &user)
         Channel channel(name,description,url);
         container.push_back(channel);
     }
-
-#else
-    NOT_IMPLEMENTED();
-#endif
 
     return container;
 }
