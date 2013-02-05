@@ -104,8 +104,8 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("channels", &DbObjectsCollection::processAvailableChannelsQuery);
     m_processors.insert("version", &DbObjectsCollection::processVersionQuery);
     m_processors.insert("quitSession", &DbObjectsCollection::processQuitSessionQuery);
-    //    m_processors.insert("build", &DbObjectsCollection::processBuildQuery);
-    //    m_processors.insert("errnoInfo", &DbObjectsCollection::processGetErrnoInfo);
+    m_processors.insert("build", &DbObjectsCollection::processBuildQuery);
+    m_processors.insert("errnoInfo", &DbObjectsCollection::processGetErrnoInfo);
 
 
     m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
