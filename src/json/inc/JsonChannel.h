@@ -43,6 +43,7 @@
 
 #include "Channel.h"
 
+#if 0
 class JsonChannel: public Channel
 {
   static qlonglong globalChannelId;
@@ -59,6 +60,7 @@ class JsonChannel: public Channel
 
     virtual ~JsonChannel();
 };
+#endif
 //_JsonChannel_H_F613BD25_03A0_4229_9305_260275C911A1_INCLUDED_
 #endif
 

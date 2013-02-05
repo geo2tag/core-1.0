@@ -42,13 +42,8 @@
 
 #include "SubscribeChannelJSON.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
 #include <QVariant>
 #include <QVariantMap>
@@ -57,35 +52,13 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 #include "JsonSession.h"
+#include "servicelogger.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
-#include <syslog.h>
-#endif
-
-#if 0
 
 SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
-  #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
   DEBUG() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
-  #endif
 }
-
-
-SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(const Session &session,
-const Channel &channel,
-QObject *parent)
-: JsonSerializer(parent)
-{
-  m_sessionsContainer.push_back(session);
-  m_channelsContainer.push_back(channel);
-}
-
-
-/*SubscribeChannelRequestJSON::~SubscribeChannelRequestJSON()
-{
-
-}*/
 
 bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
 {
@@ -95,17 +68,14 @@ bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
 
-  if (!ok) return false;
+  if(!ok) return false;
 
   QString channelLabel = result["channel"].toString();
   QString auth_token = result["auth_token"].toString();
 
-  Channel dummyChannel(new JsonChannel(channelLabel, "from SubscribeChannelReques"));
-  m_channelsContainer.push_back(dummyChannel);
+  m_channels.push_back(Channel(channelLabel));
 
-  Session dummySession(new JsonSession(auth_token, QDateTime::currentDateTime(), common::BasicUser(NULL)));
-  m_sessionsContainer.push_back(dummySession);
-
+  m_token = auth_token;
   return true;
 }
 
@@ -115,11 +85,15 @@ QByteArray SubscribeChannelRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap request;
 
-  request.insert("auth_token", m_sessionsContainer->at(0)->getSessionToken());
-  request.insert("channel", m_channelsContainer->at(0)->getName());
+  request.insert("auth_token", m_token);
+  if(m_channels.size()>0)
+      request.insert("channel", m_channels.at(0).getName());
+  else
+  {
+      WARNING() << "No channels in object";
+  }
 
   return serializer.serialize(request);
 }
 
-#endif
 /* ===[ End of file $HeadURL$ ]=== */

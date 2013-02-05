@@ -78,10 +78,12 @@ namespace Core
 
       static void addChannel(const Channel &channel, const BasicUser &user);
       static void insertSession(const Session &session);
+      static Channel getChannel(const QString name);
 
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
       static Channel findChannel(const QString& name);
+      static bool subscribeChannel(const common::BasicUser& user, const Channel& channel);
 
       // Reloading sessions from db (used after adding session)
       static void reloadSessions();

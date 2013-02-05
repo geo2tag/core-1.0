@@ -103,6 +103,11 @@ void MetaCache::insertSession(const Session& session)
     DEBUG() << "inserted " << session << ", session count=" << s_sessions.size();
 }
 
+Channel MetaCache::getChannel(const QString name)
+{
+    return QueryExecutor::instance()->getChannel(name);
+}
+
 Session MetaCache::findSession(const BasicUser &user)
 {
     QReadLocker lock(&s_SessionsLock);
@@ -148,6 +153,11 @@ Channel MetaCache::findChannel(const QString &name)
     }
     return Channel();
 #endif
+}
+
+bool MetaCache::subscribeChannel(const BasicUser &user, const Channel &channel)
+{
+    return QueryExecutor::instance()->subscribeChannel(user,channel);
 }
 
 void MetaCache::reloadSessions()

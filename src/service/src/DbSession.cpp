@@ -106,8 +106,8 @@ DbObjectsCollection::DbObjectsCollection()
 
 
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
-//    m_processors.insert("quitSession", &DbObjectsCollection::processQuitSessionQuery);
-//    m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
+    m_processors.insert("quitSession", &DbObjectsCollection::processQuitSessionQuery);
+    m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
 //    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
 //    m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
 //    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
@@ -542,80 +542,54 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 
 
 ////TODO create function that will check validity of authkey, and channel name
-//QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &/*data*/)
-//{
-//    DEBUG() <<  "starting SubscribeQuery processing";
-//    SubscribeChannelRequestJSON request;
-//    SubscribeChannelResponseJSON response;
-//    NOT_IMPLEMENTED();
-//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-//#if 0
-//    if (!request.parseJson(data))
-//    {
-//        response.setErrno(INCORRECT_JSON_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
+{
+    DEBUG() <<  "starting SubscribeQuery processing";
+    SubscribeChannelRequestJSON request;
+    SubscribeChannelResponseJSON response;
 
-//    Session dummySession = request.getSessions()->at(0);;
-//    Session realSession = findSession(dummySession);
-//    if(realSession.isNull())
-//    {
-//        response.setErrno(WRONG_TOKEN_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-//    common::BasicUser realUser = realSession->getUser();
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    Channel dummyChannel = request.getChannels()->at(0);;
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
 
-//    Channel realChannel;// Null pointer
-//    QVector<Channel > currentChannels = Core::MetaCache::getChannels();
-//    for(int i=0; i<currentChannels.size(); i++)
-//    {
-//        if(QString::compare(currentChannels.at(i)->getName(), dummyChannel->getName(), Qt::CaseInsensitive) == 0)
-//        {
-//            realChannel = currentChannels.at(i);
-//        }
-//    }
-//    if(realChannel.isNull())
-//    {
-//        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    QList<Channel>  subscribedChannels = realUser->getSubscribedChannels();
-//    for(int i=0; i<subscribedChannels->size(); i++)
-//    {
-//        //DEBUG() << "%s is subscribed for  %s , %lld",realUser->getLogin().toStdString().c_str(),subscribedChannels->at(i)->getName().toStdString().c_str(),subscribedChannels->at(i)->getId());
-//        if(QString::compare(subscribedChannels->at(i)->getName(), realChannel->getName(),Qt::CaseInsensitive) == 0)
-//        {
-//            response.setErrno(CHANNEL_ALREADY_SUBSCRIBED_ERROR);
-//            answer.append(response.getJson());
-//            return answer;
-//        }
-//    }
-//    DEBUG() <<  "Sending sql request for SubscribeQuery";
-//    bool result = QueryExecutor::instance()->subscribeChannel(realUser,realChannel);
-//    if(!result)
-//    {
-//        response.setErrno(INTERNAL_DB_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
-//    DEBUG() << "Try to subscribe for realChannel " << realChannel->getId();
-//    realUser->subscribe(realChannel);
+    common::BasicUser user = session.getUser();
 
-//    QueryExecutor::instance()->updateSession(realSession);
+    Channel channel = request.getChannel();
+    if(!channel.isValid())
+    {
+        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    response.setErrno(SUCCESS);
-//    answer.append(response.getJson());
-//    DEBUG() << "answer: " << answer.data();
-//#endif
-//    return answer;
-//}
+    bool result = Core::MetaCache::subscribeChannel(user,channel);
+    if(!result)
+    {
+        response.setErrno(INTERNAL_DB_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+
+    return answer;
+}
 
 QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 {

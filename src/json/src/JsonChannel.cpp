@@ -42,6 +42,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
+#if 0
 qlonglong JsonChannel::globalChannelId = 0;
 
 
@@ -70,6 +71,6 @@ void JsonChannel::setId(qlonglong id)
 JsonChannel::~JsonChannel()
 {
 }
-
+#endif
 
 /* ===[ End of file ]=== */
