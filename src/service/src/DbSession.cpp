@@ -110,22 +110,22 @@ DbObjectsCollection::DbObjectsCollection()
 
     m_processors.insert("subscribe", &DbObjectsCollection::processSubscribeQuery);
     m_processors.insert("unsubscribe", &DbObjectsCollection::processUnsubscribeQuery);
-    //    m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
+    m_processors.insert("subscribed", &DbObjectsCollection::processSubscribedChannelsQuery);
 
 
-//    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
-//    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
-//    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
-//    m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
-//    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
+    //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
+    //    m_processors.insert("owned", &DbObjectsCollection::processOwnedChannelsQuery);
+    //    m_processors.insert("addUser", &DbObjectsCollection::processAddUserQuery);
+    //    m_processors.insert("deleteUser", &DbObjectsCollection::processDeleteUserQuery);
+    //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
 
-//    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
-//    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
-//    m_processors.insert("filterPolygon", &DbObjectsCollection::processFilterPolygonQuery);
-//    m_processors.insert("filterRectangle", &DbObjectsCollection::processFilterRectangleQuery);
-//    m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
-//    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
-//    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
+    //    m_processors.insert("filterCircle", &DbObjectsCollection::processFilterCircleQuery);
+    //    m_processors.insert("filterCylinder", &DbObjectsCollection::processFilterCylinderQuery);
+    //    m_processors.insert("filterPolygon", &DbObjectsCollection::processFilterPolygonQuery);
+    //    m_processors.insert("filterRectangle", &DbObjectsCollection::processFilterRectangleQuery);
+    //    m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
+    //    m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
+    //    m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
     //  Here also should be something like
     //  m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
@@ -504,43 +504,35 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 //    return answer;
 //}
 
-//QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray &data)
-//{
-//    SubscribedChannelsRequestJSON request;
-//    SubscribedChannelsResponseJSON response;
-//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray &data)
+{
+    SubscribedChannelsRequestJSON request;
+    SubscribedChannelsResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-//    if (!request.parseJson(data))
-//    {
-//        response.setErrno(INCORRECT_JSON_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
-//#if 0
-//    Session dummySession = request.getSessions()->at(0);
-//    Session realSession = findSession(dummySession);
-//    if(realSession.isNull())
-//    {
-//        response.setErrno(WRONG_TOKEN_ERROR);
-//        answer.append(response.getJson());
-//        return answer;
-//    }
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    common::BasicUser realUser = realSession->getUser();
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
 
-//    QList<Channel> channels = realUser->getSubscribedChannels();
-//    response.setChannels(channels);
+    QList<Channel> channels = Core::MetaCache::getChannels(request.getUser());
+    response.setChannels(channels);
 
-//    DEBUG() << "Updating session";
-//    QueryExecutor::instance()->updateSession(realSession);
-//    DEBUG() << "Updating session ..done";
-//#endif
-//    NOT_IMPLEMENTED();
-//    response.setErrno(SUCCESS);
-//    answer.append(response.getJson());
-//    DEBUG() << "answer: " << answer.data();
-//    return answer;
-//}
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
 
 
 ////TODO create function that will check validity of authkey, and channel name
@@ -692,9 +684,9 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
 
     if(!result)
     {
-       response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
-       answer.append(response.getJson());
-       return answer;
+        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+        answer.append(response.getJson());
+        return answer;
     }
 
     response.setErrno(SUCCESS);

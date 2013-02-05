@@ -79,6 +79,7 @@ namespace Core
       static void addChannel(const Channel &channel, const BasicUser &user);
       static void insertSession(const Session &session);
       static Channel getChannel(const QString name);
+      static QList<Channel> getChannels(const common::BasicUser& user);
 
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
