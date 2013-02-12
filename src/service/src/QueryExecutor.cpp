@@ -239,6 +239,8 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     bool result;
     QSqlQuery newUserQuery=makeQuery();
 
+    DEBUG() << "inserting user " << user;
+
     newUserQuery.prepare("insert into users (email,login,password) values(:email,:login,:password);");
     newUserQuery.bindValue(":email",user.getEmail());
     newUserQuery.bindValue(":login",user.getLogin());
