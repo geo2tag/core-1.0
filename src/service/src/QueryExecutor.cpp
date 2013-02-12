@@ -240,8 +240,7 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     QSqlQuery newUserQuery=makeQuery();
     qlonglong newId = nextUserKey();
 
-    newUserQuery.prepare("insert into users (id,email,login,password) values(:id,:email,:login,:password);");
-    newUserQuery.bindValue(":id",newId);
+    newUserQuery.prepare("insert into users (email,login,password) values(:email,:login,:password);");
     newUserQuery.bindValue(":email",user.getEmail());
     newUserQuery.bindValue(":login",user.getLogin());
     newUserQuery.bindValue(":password",user.getPassword());
