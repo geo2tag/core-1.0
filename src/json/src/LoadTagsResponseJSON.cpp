@@ -44,13 +44,8 @@
 #include "servicelogger.h"
 #include "LoadTagsResponseJSON.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
 #include "User.h"
 #include "Channel.h"
@@ -58,6 +53,8 @@
 #include "JsonUser.h"
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
+
+#include "MetaCache.h"
 
 LoadTagsResponseJSON::LoadTagsResponseJSON(const QList<Tag>&hashMap, QObject *parent):
     JsonSerializer(parent), m_tags(hashMap)
@@ -131,13 +128,6 @@ QByteArray LoadTagsResponseJSON::getJson() const
     QVariantMap obj, rss, jchannel;
 
     QList<Channel > hashKeys;
-
-#ifdef GEO2TAG_LITE
-    hashKeys << Channel("Unified","Joint channel owned by user");
-#else
-    hashKeys = m_tags.uniqueKeys();
-#endif
-
 
     QVariantList jchannels;
 

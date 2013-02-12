@@ -61,19 +61,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
             DEBUG() <<  "Session hasn't been found. Generating of new Session.";
 
-#ifdef GEO2TAG_LITE
             Core::MetaCache::insertSession(addedSession);
-#else
-            addedSession = QueryExecutor::instance()->insertNewSession(user);
-            if (!addedSession.isValid())
-            {
-                response.setErrno(INTERNAL_DB_ERROR);
-                answer.append(response.getJson());
-                DEBUG() << "answer: " <<  answer.data();
-                return answer;
-            }
-            Core::MetaCache::reloadSessions();
-#endif
             response.setSessionToken(token);
         }
         else

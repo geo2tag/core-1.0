@@ -27,7 +27,8 @@ maemo5: {
 linux: {
 #    QMAKE_CXX = g++-4.5
 #    QMAKE_LINK = g++-4.5
-    QMAKE_CXXFLAGS += -fpermissive -g3 -DREDEFINE_QT_SIGNALS -DGEO2TAG_LITE -I/usr/local/include/libxml2 -Werror
+#    -DGEO2TAG_LITE
+    QMAKE_CXXFLAGS += -fpermissive -g3 -DREDEFINE_QT_SIGNALS  -I/usr/local/include/libxml2 -Werror
     INCLUDEPATH += /usr/local/include/libxml2/ INCLUDEPATH /usr/include/libxml2/
     OBJECTS_DIR = .obj
     MOC_DIR = .moc
