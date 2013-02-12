@@ -243,7 +243,9 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 
     QString qry="insert into users (email,login,password) values('%1,'%2','%3');";
 
-    return newUserQuery.exec(qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword()));
+    qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
+    DEBUG() << "stmt=" << qry;
+    return newUserQuery.exec(qry);
 }
 
 
