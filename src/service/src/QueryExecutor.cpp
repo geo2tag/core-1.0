@@ -239,7 +239,7 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     bool result;
     QSqlQuery newUserQuery=makeQuery();
     qlonglong newId = nextUserKey();
-    //  DEBUG() << "newToken = %s",newToken.toStdString().c_str());
+
     newUserQuery.prepare("insert into users (id,email,login,password) values(:id,:email,:login,:password);");
     newUserQuery.bindValue(":id",newId);
     newUserQuery.bindValue(":email",user.getEmail());
@@ -248,7 +248,7 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     transaction();
 
     result=newUserQuery.exec();
-    common::BasicUser newUser = common::BasicUser(NULL);
+
     if(!result)
     {
         DEBUG() << "Rollback for NewUser sql query";

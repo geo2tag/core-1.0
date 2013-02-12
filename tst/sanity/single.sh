@@ -42,6 +42,14 @@ then
         exit 1
 fi
 
+response_subscribed=`curl   -d "{\"auth_token\":"$auth_token"}" http://${INSTANCE}/service/subscribed`;
+echo "Subscribe test - $response_subscribed"
+if ! echo $response_subscribe | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at subscribe test"
+        exit 1
+fi
+
 #response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
 #echo "Incorrect Json test - $response_incorrect_json_test"
 #correct_result_incorrect_json='{ "errno" : 9 }';
@@ -89,14 +97,42 @@ then
         exit 1
 fi
 
+response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
+echo "Quit session test - $response_quit_session_test"
+correct_result_quit_session='{ "errno" : 0 }';
+if ! echo $response_quit_session_test | grep -q -s -F "$correct_result_quit_session"  ; 
+then
+	echo "Fail at quitSession test"
+	exit 1
+fi
 
-#response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
-#echo "Add user test - $response_add_user_test"
-#if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
+#session_error_with_add_channel=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"description\":\"\", \"url\":\"\", \"activeRadius\":30}"  http://${INSTANCE}/service/addChannel`;
+#echo "Session error with add channel - $session_error_with_add_channel"
+#correct_result_session_error_with_add_channel='{ "errno" : 1 }';
+#echo "$response_add_channel"
+#if ! echo $session_error_with_add_channel | grep -q -s -F "$correct_result_session_error_with_add_channel"  ;
 #then
-#        echo "Fail at addUser test"
+#	echo "Fail at sessionError with addChannel test"
+#	exit 1
+#fi
+
+#session_error_with_subscribe=`curl   -d "{\"auth_token\":"$auth_token", \"channel\":\"$test_channel\"}" http://${INSTANCE}/service/subscribe`;
+#echo "Session error with subscribe - $session_error_with_subscribe"
+#correct_result_session_error_with_subscribe='{ "errno" : 1 }';
+#if ! echo $session_error_with_subscribe | grep -q -s -F "$correct_result_session_error_with_subscribe"  ;
+#then
+#        echo "Fail at sessionError with subscribe test"
 #        exit 1
 #fi
+
+
+response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
+echo "Add user test - $response_add_user_test"
+if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at addUser test"
+        exit 1
+fi
 
 #echo "$test_channel"
 #response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
@@ -113,34 +149,6 @@ fi
 #        echo "Fail at checkDelete test"
 #        exit 1
 #fi
-
-response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
-echo "Quit session test - $response_quit_session_test"
-correct_result_quit_session='{ "errno" : 0 }';
-if ! echo $response_quit_session_test | grep -q -s -F "$correct_result_quit_session"  ; 
-then
-	echo "Fail at quitSession test"
-	exit 1
-fi
-
-session_error_with_add_channel=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"description\":\"\", \"url\":\"\", \"activeRadius\":30}"  http://${INSTANCE}/service/addChannel`;
-echo "Session error with add channel - $session_error_with_add_channel"
-correct_result_session_error_with_add_channel='{ "errno" : 1 }';
-echo "$response_add_channel"
-if ! echo $session_error_with_add_channel | grep -q -s -F "$correct_result_session_error_with_add_channel"  ;
-then
-	echo "Fail at sessionError with addChannel test"
-	exit 1
-fi
-
-session_error_with_subscribe=`curl   -d "{\"auth_token\":"$auth_token", \"channel\":\"$test_channel\"}" http://${INSTANCE}/service/subscribe`;
-echo "Session error with subscribe - $session_error_with_subscribe"
-correct_result_session_error_with_subscribe='{ "errno" : 1 }';
-if ! echo $session_error_with_subscribe | grep -q -s -F "$correct_result_session_error_with_subscribe"  ;
-then
-        echo "Fail at sessionError with subscribe test"
-        exit 1
-fi
 
 #random_number=$((RANDOM%1000000));
 #rand_user=user_$random_number;
