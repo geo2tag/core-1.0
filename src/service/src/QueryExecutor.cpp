@@ -270,13 +270,14 @@ bool QueryExecutor::subscribeChannel(const common::BasicUser& user,const Channel
     QSqlQuery insertNewSubscribtion=makeQuery();
 
     qlonglong userId = getUserIdByName(user.getLogin());
+    qlonglong channelId = getChannelIdByName(channel.getName());
 
 
     insertNewSubscribtion.prepare("insert into subscribe (channel_id,user_id) values(:channel_id,:user_id);");
-    insertNewSubscribtion.bindValue(":channel_id",channel.getId());
+    insertNewSubscribtion.bindValue(":channel_id",channelId);
     insertNewSubscribtion.bindValue(":user_id",userId);
     DEBUG() << "Subscribing "<<user.getLogin()<<" (Id = "<<userId
-            <<") for "<<channel.getName()<<" (Id = "<<channel.getId() <<")";
+            <<") for "<<channel.getName()<<" (Id = "<<channelId <<")";
 
     transaction();
     result=insertNewSubscribtion.exec();
@@ -299,12 +300,13 @@ bool QueryExecutor::unsubscribeChannel(const common::BasicUser& user,const Chann
     bool result;
     QSqlQuery deleteSubscribtion=makeQuery();
     qlonglong userId = getUserIdByName(user.getLogin());
+    qlonglong channelId = getChannelIdByName(channel.getName());
 
     deleteSubscribtion.prepare("delete from subscribe where channel_id = :channel_id AND user_id = :user_id;");
-    deleteSubscribtion.bindValue(":channel_id",channel.getId());
+    deleteSubscribtion.bindValue(":channel_id",channelId);
     deleteSubscribtion.bindValue(":user_id",userId);
     DEBUG() << "Unsubscribing " << user.getLogin() << " (Id = " << userId
-            << ") for " << channel.getName() << " (Id = " << channel.getId() <<")";
+            << ") for " << channel.getName() << " (Id = " << channelId <<")";
 
     transaction();
 

@@ -71,14 +71,6 @@ Channel &Channel::operator =(const Channel &obj)
     return *this;
 }
 
-
-qlonglong Channel::getId() const
-{
-  // Database doesn't contain 0 in sequences, see scripts/base.sql
-  return 0;
-}
-
-
 const QString& Channel::getDescription() const
 {
   return m_description;

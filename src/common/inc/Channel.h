@@ -66,8 +66,6 @@ public:
     Channel(const Channel& channel);
     Channel& operator=(const Channel& obj);
 
-    virtual qlonglong getId() const;
-
     const QString& getDescription() const;
 
     const QString& getName() const;
