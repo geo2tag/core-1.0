@@ -37,13 +37,9 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
+
 
 LoadTagsRequestJSON::LoadTagsRequestJSON(const Session& session,
 double latitude,
@@ -70,9 +66,16 @@ bool LoadTagsRequestJSON::parseJson(const QByteArray &data)
 
   QJson::Parser parser;
   bool ok;
-  QVariantMap result = parser.parse(data, &ok).toMap();
 
-  if (!ok) return false;
+  QVariant var=parser.parse(data, &ok);
+
+  if (!ok)
+  {
+      return false;
+  }
+
+  QVariantMap result = var.toMap();
+
 
   QString auth_token = result["auth_token"].toString();
   m_token = auth_token;

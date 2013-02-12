@@ -789,6 +789,32 @@ Channel QueryExecutor::getChannel(const QString &name)
     }
 }
 
+bool QueryExecutor::isSubscribed(const common::BasicUser &user, const Channel &channel)
+{
+    DEBUG() << "Check subscribtion " << user.getLogin() << " to " << channel;
+
+    QSqlQuery query=makeQuery();
+
+    qlonglong userId = getUserIdByName(user.getLogin());
+    qlonglong channelId = getChannelIdByName(channel.getName());
+
+    QString qry("select * from subscribe where channel_id=%1 and user_id=%2;");
+
+    query.exec(qry.arg(channelId).arg(userId));
+
+
+    if(query.size()>0)
+    {
+        DEBUG() << "... -> SUBSCRIBED";
+        return true;
+    }
+    else
+    {
+        DEBUG() << "... -> NOT SUBSCRIBED";
+        return false;
+    }
+}
+
 
 qlonglong QueryExecutor::getFactTransactionNumber()
 {

@@ -100,6 +100,7 @@ public:
     qlonglong getUserIdByName(const QString& name);
     qlonglong getChannelIdByName(const QString& name);
     Channel getChannel(const QString& name);
+    bool isSubscribed(const common::BasicUser& user, const Channel &channel);
 
 
     qlonglong getFactTransactionNumber();

@@ -208,8 +208,7 @@ bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 {
     DEBUG() << "check channel " << channel.getName() << " for " << user.getLogin();
 
-    Channel ch = Core::MetaCache::findChannel(channel.getName());
-    if(!ch.isValid())
+    if(!channel.isValid())
     {
         WARNING() << "Channel " << channel << " is invalid";
         return false;
@@ -218,9 +217,7 @@ bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 #ifdef GEO2TAG_LITE
     return true;
 #else
-    //TODO check user rights
-    NOT_IMPLEMENTED();
-    return true;
+    return QueryExecutor::instance()->isSubscribed(user,channel);
 #endif
 }
 

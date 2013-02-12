@@ -128,10 +128,6 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
-    DEBUG() << "Updating session";
-    QueryExecutor::instance()->updateSession(session);
-    DEBUG() << "Updating session ..done";
-
     response.setErrno(SUCCESS);
     response.addTag(tag);
 

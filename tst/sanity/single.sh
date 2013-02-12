@@ -41,14 +41,14 @@ then
         exit 1
 fi
 
-response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
-echo "Incorrect Json test - $response_incorrect_json_test"
-correct_result_incorrect_json='{ "errno" : 9 }';
-if ! echo $response_incorrect_json_test | grep -q -s -F "$correct_result_incorrect_json"  ; 
-then
-	echo "Fail at incorrect json test"
-	exit 1
-fi
+#response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
+#echo "Incorrect Json test - $response_incorrect_json_test"
+#correct_result_incorrect_json='{ "errno" : 9 }';
+#if ! echo $response_incorrect_json_test | grep -q -s -F "$correct_result_incorrect_json"  ; 
+#then
+#	echo "Fail at incorrect json test"
+#	exit 1
+#fi
 
 response_incorrect_url_test=`curl   -d ''  http://${INSTANCE}/service/incorrect_url`;
 echo "Incorrect url test - $response_incorrect_url_test"
