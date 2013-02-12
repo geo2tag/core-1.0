@@ -54,11 +54,6 @@ namespace common
               obj.m_password == m_password;
   }
 
-  qlonglong BasicUser::getId() const
-  {
-    return 0;
-  }
-
   const QString& BasicUser::getPassword() const
   {
     return m_password;

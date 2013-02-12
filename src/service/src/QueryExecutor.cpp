@@ -268,11 +268,15 @@ bool QueryExecutor::subscribeChannel(const common::BasicUser& user,const Channel
     PerformanceCounter counter("QueryExecutor::subscribeChannel");
     bool result;
     QSqlQuery insertNewSubscribtion=makeQuery();
+
+    qlonglong userId = getUserIdByName(user.getLogin());
+
+
     insertNewSubscribtion.prepare("insert into subscribe (channel_id,user_id) values(:channel_id,:user_id);");
     insertNewSubscribtion.bindValue(":channel_id",channel.getId());
-    insertNewSubscribtion.bindValue(":user_id",user.getId());
-    DEBUG() << "Subscribing "<<user.getLogin()<<" (Id = "<<user.getId()
-             <<") for "<<channel.getName()<<" (Id = "<<channel.getId() <<")";
+    insertNewSubscribtion.bindValue(":user_id",userId);
+    DEBUG() << "Subscribing "<<user.getLogin()<<" (Id = "<<userId
+            <<") for "<<channel.getName()<<" (Id = "<<channel.getId() <<")";
 
     transaction();
     result=insertNewSubscribtion.exec();
@@ -294,11 +298,13 @@ bool QueryExecutor::unsubscribeChannel(const common::BasicUser& user,const Chann
     PerformanceCounter counter("QueryExecutor::unsubscribeChannel");
     bool result;
     QSqlQuery deleteSubscribtion=makeQuery();
+    qlonglong userId = getUserIdByName(user.getLogin());
+
     deleteSubscribtion.prepare("delete from subscribe where channel_id = :channel_id AND user_id = :user_id;");
     deleteSubscribtion.bindValue(":channel_id",channel.getId());
-    deleteSubscribtion.bindValue(":user_id",user.getId());
-    DEBUG() << "Unsubscribing " << user.getLogin() << " (Id = " << user.getId()
-             << ") for " << channel.getName() << " (Id = " << channel.getId() <<")";
+    deleteSubscribtion.bindValue(":user_id",userId);
+    DEBUG() << "Unsubscribing " << user.getLogin() << " (Id = " << userId
+            << ") for " << channel.getName() << " (Id = " << channel.getId() <<")";
 
     transaction();
 
@@ -321,9 +327,11 @@ bool QueryExecutor::deleteUser(const common::BasicUser &user)
     PerformanceCounter counter("QueryExecutor::deleteUser");
     bool result;
     QSqlQuery deleteUserQuery=makeQuery();
-    DEBUG() << "Deleting: id = " << user.getId();
+    qlonglong userId = getUserIdByName(user.getLogin());
+
+    DEBUG() << "Deleting: id = " << userId;
     deleteUserQuery.prepare("delete from users where id = :id;");
-    deleteUserQuery.bindValue(":id",user.getId() );
+    deleteUserQuery.bindValue(":id",userId);
 
     transaction();
 
@@ -345,10 +353,12 @@ bool QueryExecutor::deleteUser(const common::BasicUser &user)
 common::BasicUser QueryExecutor::updateUserPassword(common::BasicUser& user, const QString& password)
 {
     QSqlQuery query=makeQuery();
-    DEBUG() <<  "Updating password for user with id:" << user.getId();
+    qlonglong userId = getUserIdByName(user.getLogin());
+
+    DEBUG() <<  "Updating password for user with id:" << userId;
     query.prepare("update users set password = :pwd where id = :id;");
     query.bindValue(":pwd", password);
-    query.bindValue(":id", user.getId());
+    query.bindValue(":id", userId);
 
     transaction();
 

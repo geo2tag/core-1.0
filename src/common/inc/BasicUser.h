@@ -55,8 +55,6 @@ public:
     BasicUser(const QString & name="", const QString & passw="", const QString & email="");
     bool operator==(const BasicUser& obj);
 
-    virtual qlonglong getId() const;
-
     const QString& getLogin() const;
     const QString& getPassword() const;
     const QString& getEmail() const;
