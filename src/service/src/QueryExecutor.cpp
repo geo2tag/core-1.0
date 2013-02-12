@@ -256,7 +256,6 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     }else
     {
         DEBUG() << "Commit for NewUser sql query";
-        newUser = common::BasicUser(user.getLogin(),user.getPassword(),user.getEmail());
         commit();
     }
     return true;
