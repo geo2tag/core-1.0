@@ -236,29 +236,14 @@ bool QueryExecutor::doesRegistrationTokenExist(const QString &token)
 bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 {
     PerformanceCounter counter("QueryExecutor::insertNewUser");
-    bool result;
+
     QSqlQuery newUserQuery=makeQuery();
 
     DEBUG() << "inserting user " << user;
 
-    newUserQuery.prepare("insert into users (email,login,password) values(:email,:login,:password);");
-    newUserQuery.bindValue(":email",user.getEmail());
-    newUserQuery.bindValue(":login",user.getLogin());
-    newUserQuery.bindValue(":password",user.getPassword());
-    transaction();
+    QString qry="insert into users (email,login,password) values('%1,'%2','%3');";
 
-    result=newUserQuery.exec();
-
-    if(!result)
-    {
-        DEBUG() << "Rollback for NewUser sql query";
-        rollback();
-    }else
-    {
-        DEBUG() << "Commit for NewUser sql query";
-        commit();
-    }
-    return true;
+    return newUserQuery.exec(qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword()));
 }
 
 
