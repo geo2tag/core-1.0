@@ -238,7 +238,6 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
     PerformanceCounter counter("QueryExecutor::insertNewUser");
     bool result;
     QSqlQuery newUserQuery=makeQuery();
-    qlonglong newId = nextUserKey();
 
     newUserQuery.prepare("insert into users (email,login,password) values(:email,:login,:password);");
     newUserQuery.bindValue(":email",user.getEmail());
