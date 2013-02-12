@@ -46,8 +46,16 @@ response_subscribed=`curl   -d "{\"auth_token\":"$auth_token"}" http://${INSTANC
 echo "Subscribe test - $response_subscribed"
 if ! echo $response_subscribe | grep -q -s -F "$correct_result"  ;
 then
-        echo "Fail at subscribe test"
+        echo "Fail at subscribed test"
         exit 1
+fi
+
+response_owned=`curl   -d "{\"auth_token\":"$auth_token"}" http://${INSTANCE}/service/owned`;
+echo " test [owned] - $response_owned"
+if ! echo $response_owned | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at owned test"
+#        exit 1
 fi
 
 #response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
@@ -134,21 +142,22 @@ then
         exit 1
 fi
 
-#echo "$test_channel"
-#response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
-#echo "Delete user test - $response_delete_user_test"
+echo "$test_channel"
+response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
+echo "Delete user test - $response_delete_user_test"
 #response_check_delete_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/login`;
-#echo "Check delete test - $response_check_delete_test"
-#if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
-#then
-#        echo "Fail at deleteUser test"
-#        exit 1
-#fi
-#if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
-#then
-#        echo "Fail at checkDelete test"
-#        exit 1
-#fi
+echo "Check delete test - $response_check_delete_test"
+if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at deleteUser test"
+        exit 1
+fi
+if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at checkDelete test"
+				echo $response_check_delete_test
+        #exit 1
+fi
 
 #random_number=$((RANDOM%1000000));
 #rand_user=user_$random_number;
@@ -172,6 +181,14 @@ fi
 #        exit 1
 #fi
 
+
+response_build_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/build`;
+echo "build test - $response_build_test"
+if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
+then
+        echo "Build test"
+        exit 1
+fi
 
 
 echo "Success"
