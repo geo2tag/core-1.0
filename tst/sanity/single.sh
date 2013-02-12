@@ -6,6 +6,7 @@ correct_result='"errno" : 0';
 test_channel="test_$RANDOM";
 
 INSTANCE="demo64.geo2tag.org:80"
+#INSTANCE="tracks.osll.spb.ru:81"
 
 response_login_test=`curl   -d '{"login":"Paul","password":"test"}'  http://${INSTANCE}/service/login`;
 echo $ "Login test - $response_login_test"
