@@ -166,7 +166,7 @@ DbObjectsCollection::~DbObjectsCollection()
 
 QString DbObjectsCollection::getPlatformVersion()
 {
-    QString version = SettingsStorage::getValue("general/version",QString("UNKNOWN VERSION")).toString();
+    QString version = SettingsStorage::getValue("database/password",QString("UNKNOWN VERSION")).toString();
     return version;
 }
 
