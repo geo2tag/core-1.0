@@ -56,6 +56,7 @@
 
 namespace common
 {
+
   /*!
    * \brief session with database
    */
@@ -131,6 +132,9 @@ namespace common
       QByteArray process(const QString& queryType, const QByteArray& body);
 
       ~DbObjectsCollection();
+
+      static QString getPlatformVersion();
+      static QString getPlatformBuildInfo();
 
     private:
       DbObjectsCollection(const DbObjectsCollection& obj);
