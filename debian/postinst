@@ -1,9 +1,11 @@
 #!/bin/bash
 
 TIME=`date +%Y%m%d%H%M%S`;
-VERSION=`cat ./opt/geo2tag/VERSION`
-GIT=`cat ./opt/geo2tag/HEAD`
+VERSION=`cat /opt/geo2tag/VERSION`
+GIT=`cat /opt/geo2tag/HEAD`
 
+create_db_user()
+{
 	sudo -u postgres createuser -s geo2tag
 	pg_hba_pos=`find /etc/postgresql -name pg_hba.conf`;
 	pg_hba_us="/opt/geo2tag/etc/pg_hba.conf";
