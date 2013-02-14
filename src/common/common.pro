@@ -7,7 +7,7 @@ target.path = /usr/lib
 
 INSTALLS += target geo2tag_conf
 
-geo2tag_conf.files=../conf/geo2tag.conf.template ../../VERSION ../../HEAD
+geo2tag_conf.files=../../conf/geo2tag.conf.template ../../VERSION ../../HEAD
 geo2tag_conf.path=/opt/geo2tag/
 
 DEPENDPATH += . \
