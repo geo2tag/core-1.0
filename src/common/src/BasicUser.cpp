@@ -47,9 +47,11 @@ namespace common
   {
   }
 
-  qlonglong BasicUser::getId() const
+  bool BasicUser::operator ==(const BasicUser &obj)
   {
-    return 0;
+      return  obj.m_email == m_email &&
+              obj.m_login == m_login &&
+              obj.m_password == m_password;
   }
 
   const QString& BasicUser::getPassword() const
@@ -74,6 +76,12 @@ namespace common
 
   BasicUser::~BasicUser()
   {
+  }
+
+  QDebug& operator<<(QDebug& dbg,const BasicUser& obj)
+  {
+      dbg << "{login:" << obj.getLogin() << ",passw:" << obj.getPassword() << "email:" << obj.getEmail() << "}";
+      return dbg;
   }
 
 }                                       //namespace common

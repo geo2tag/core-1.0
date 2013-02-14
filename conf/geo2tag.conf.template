@@ -5,11 +5,11 @@ restore_pwd_subject=Geo2tag Password Restoring
 restore_pwd_body=New password:
 
 
-[general]
-server_url=http://tracks.osll.spb.ru:81/
-server_port=81
-geo2tag_version=0.21-bugfix
-geo2tag_build=
+[common]
+#server_url=http://tracks.osll.spb.ru:81/
+#server_port=81
+version="${VERSION}"
+build="Database: ${DB_NAME}, git: ${GIT}"
 session_timelife=3
 config_file=/usr/share/wikigps/wikigps.conf
 transaction_diff=0
@@ -19,17 +19,18 @@ db_update_interval=12000
 tmp_user_timelife=2 days
 
 [database]
-name=geo2tag
+name=${DB_NAME}
 user=geo2tag
 password=geo2tag
 host=localhost
-autoinit=true
+#autoinit=true
 
 
 [Tracker_Settings]
 tracker_tag_label=tracker's tag
 tracker_msecs_timeout=500
 
-[Security_Settings]
+[security]
 password_quality_check=false
 password_length=12
+enable=false

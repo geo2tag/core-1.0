@@ -42,13 +42,13 @@
 #include "User.h"
 #include <syslog.h>
 #include <algorithm>
+#include "defines.h"
 
 namespace common
 {
 
   User::User(const QString &name, const QString &passw, const QString &email)
-    : BasicUser(name, passw, email),
-    m_channels(new Channels())
+    : BasicUser(name, passw, email)
   {
   }
 
@@ -58,35 +58,45 @@ namespace common
     return 0;
   }
 
-  void User::subscribe(const QSharedPointer<Channel>& channel)
+  void User::subscribe(const Channel& channel)
   {
-    //    qDebug() << "Trying subscribed %lld for %lld",getId(),channel->getId());
+    //    DEBUG() << "Trying subscribed %lld for %lld",getId(),channel->getId());
     //   if(!m_channels->exist(channel->getId()))
     //   {
-    //qDebug() <<  "User->Subscribe: Num of channels before: %d", m_channels->size());
-    m_channels->push_back(channel);
-    //qDebug() <<  "User->Subscribe: Num of channels after: %d", m_channels->size());
-    //qDebug() << "Success subscription");
+    //DEBUG() <<  "User->Subscribe: Num of channels before: %d", m_channels->size());
+    m_channels.push_back(channel);
+    //DEBUG() <<  "User->Subscribe: Num of channels after: %d", m_channels->size());
+    //DEBUG() << "Success subscription");
     //    }else
     //    {
-    //      qDebug() << "Unsuccess subscription");
+    //      DEBUG() << "Unsuccess subscription");
     //    }
   }
 
-  void User::unsubscribe(const QSharedPointer<Channel>& channel)
+  void User::unsubscribe(const Channel& /*channel*/)
   {
-    //qDebug() <<  "User->Unsubscribe: Num of channels before: %d", m_channels->size());
-    m_channels->erase(channel);
-    //qDebug() <<  "User->Unsubscribe: Num of channels after: %d", m_channels->size());
+    //m_channels.erase(channel);
+      NOT_IMPLEMENTED();
   }
 
-  const QSharedPointer<Channels> User::getSubscribedChannels() const
+  const QList<Channel> User::getSubscribedChannels() const
   {
-    return m_channels;
+      return m_channels;
   }
+
+//  User &User::operator =(const User &obj)
+//  {
+//      m_
+//      return this;
+//  }
 
   User::~User()
   {
+  }
+
+  bool User::isValid() const
+  {
+      return !BasicUser::getLogin().isEmpty();
   }
 
 }                                       // namespace common

@@ -51,15 +51,15 @@ WriteTagRequestJSON::WriteTagRequestJSON(QObject *parent) : JsonSerializer(paren
 }
 
 
-WriteTagRequestJSON::WriteTagRequestJSON(const QSharedPointer<Session> &session,
-const QSharedPointer<Channel> &channel,
-const QSharedPointer<DataMark> &tag,
+WriteTagRequestJSON::WriteTagRequestJSON(const Session &session,
+const Channel &channel,
+const Tag &tag,
 QObject *parent)
 : JsonSerializer(parent)
 {
-  m_sessionsContainer->push_back(session);
-  m_channelsContainer->push_back(channel);
-  m_tagsContainer->push_back(tag);
+  m_token = session.getSessionToken();
+  m_channels.push_back(channel);
+  m_tags.push_back(tag);
 }
 
 
@@ -86,15 +86,15 @@ bool WriteTagRequestJSON::parseJson(const QByteArray &data)
 
   QDateTime time = QDateTime::fromString(result["time"].toString(), "dd MM yyyy HH:mm:ss.zzz");
 
-  QSharedPointer<Session> session(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL)));
-  QSharedPointer<Channel> channel(new JsonChannel(channel_name, "unknown"));
+  Session session(auth_token, QDateTime::currentDateTime(), common::BasicUser());
+  Channel channel(channel_name, "unknown");
 
-  QSharedPointer<DataMark> tag(new JsonDataMark(altitude, latitude, longitude, title, description, link, time));
-  //tag->setChannel(channel);
-  //tag->setSession(session);
-  m_channelsContainer->push_back(channel);
-  m_sessionsContainer->push_back(session);
-  m_tagsContainer->push_back(tag);
+  Tag tag(altitude, latitude, longitude, title, description, link, time);
+  tag.setChannel(channel);
+  //tag.setSession(session);
+  m_channels.push_back(channel);
+  m_token = auth_token;
+  m_tags.push_back(tag);
 
   return true;
 }
@@ -104,17 +104,18 @@ QByteArray WriteTagRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap request;
-  QSharedPointer<DataMark> mark = m_tagsContainer->at(0);
-  QSharedPointer<Session> session = m_sessionsContainer->at(0);
-  QSharedPointer<Channel> channel = m_channelsContainer->at(0);
-  request.insert("auth_token", session->getSessionToken());
-  request.insert("channel", channel->getName());
-  request.insert("title", mark->getLabel().isEmpty()? "New mark":mark->getLabel());
-  request.insert("link", mark->getUrl());
-  request.insert("description", mark->getDescription());
-  request.insert("latitude", mark->getLatitude());
-  request.insert("altitude", mark->getAltitude());
-  request.insert("longitude", mark->getLongitude());
-  request.insert("time", mark->getTime().toString("dd MM yyyy HH:mm:ss.zzz"));
+
+  Tag mark = m_tags.at(0);
+
+  Channel channel = m_channels.at(0);
+  request.insert("auth_token", m_token);
+  request.insert("channel", channel.getName());
+  request.insert("title", mark.getLabel().isEmpty()? "New mark":mark.getLabel());
+  request.insert("link", mark.getUrl());
+  request.insert("description", mark.getDescription());
+  request.insert("latitude", mark.getLatitude());
+  request.insert("altitude", mark.getAltitude());
+  request.insert("longitude", mark.getLongitude());
+  request.insert("time", mark.getTime().toString("dd MM yyyy HH:mm:ss.zzz"));
   return serializer.serialize(request);
 }

@@ -69,7 +69,7 @@ bool MarksHistory::isEmpty()
 }
 
 
-void MarksHistory::pushMark(QSharedPointer<DataMark> mark)
+void MarksHistory::pushMark(QSharedPointer<Tag> mark)
 {
   // if vector size < m_historyLimit, than add new mark
   // if it is equal than emit isFull
@@ -89,11 +89,11 @@ void MarksHistory::pushMark(QSharedPointer<DataMark> mark)
 }
 
 
-QSharedPointer<DataMark> MarksHistory::popMark()
+QSharedPointer<Tag> MarksHistory::popMark()
 {
   //return and remove the last element from vector
   qDebug() << "Accessing to "<< m_marks.size();
-  QSharedPointer<DataMark> mark(m_marks.at(m_marks.size()-1));
+  QSharedPointer<Tag> mark(m_marks.at(m_marks.size()-1));
   m_marks.remove(m_marks.size()-1);
   return mark;
 }

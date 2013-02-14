@@ -45,7 +45,7 @@
 /*!
  *
  */
-class DbUser: public common::User
+class DbUser: public common::BasicUser
 {
   qlonglong m_id;
 

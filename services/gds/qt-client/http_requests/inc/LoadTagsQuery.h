@@ -67,7 +67,7 @@ class LoadTagsQuery : public DefaultQuery
   double m_longitude;
   double m_radius;
 
-  DataChannels m_hashMap;
+  QList<Tag> m_hashMap;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -93,7 +93,7 @@ class LoadTagsQuery : public DefaultQuery
 
     ~LoadTagsQuery();
 
-    const DataChannels& getData() const;
+    const QList<Tag>& getData() const;
 
     Q_SIGNALS:
 

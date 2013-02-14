@@ -41,7 +41,7 @@
 #include <QDateTime>
 #include <QThread>
 #include <QFile>
-#include <QDebug>
+#include "servicelogger.h"
 
 #include <iostream>
 #include <sstream>
@@ -58,6 +58,7 @@
 #define DEFAULT_LATITUDE 60
 #endif
 
+
 #ifdef SIMULATE_GPS
 
 namespace common
@@ -70,7 +71,7 @@ namespace common
 
     if( !QFile::exists(gpxFile) )
     {
-      qDebug() << "File `"<<gpxFile<<"' does not exists";
+      DEBUG() << "File `"<<gpxFile<<"' does not exists";
     }
     else
     {

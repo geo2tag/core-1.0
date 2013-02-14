@@ -41,16 +41,11 @@
  * ---------------------------------------------------------------- */
 
 #include <QVariant>
-#include <QDebug>
+#include "servicelogger.h"
 #include "LoadTagsResponseJSON.h"
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
 #include "User.h"
 #include "Channel.h"
@@ -59,8 +54,10 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
-LoadTagsResponseJSON::LoadTagsResponseJSON(const DataChannels &hashMap, QObject *parent):
-JsonSerializer(parent), m_hashMap(hashMap)
+#include "MetaCache.h"
+
+LoadTagsResponseJSON::LoadTagsResponseJSON(const QList<Tag>&hashMap, QObject *parent):
+    JsonSerializer(parent), m_tags(hashMap)
 {
 }
 
@@ -72,116 +69,105 @@ LoadTagsResponseJSON::LoadTagsResponseJSON(QObject *parent) : JsonSerializer(par
 
 bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
 {
-  clearContainers();
+    clearContainers();
 
-  QJson::Parser parser;
-  bool ok;
-  QVariantMap result = parser.parse(data, &ok).toMap();
+    QJson::Parser parser;
+    bool ok;
+    QVariantMap result = parser.parse(data, &ok).toMap();
 
-  if (!ok) return false;
+    if (!ok) return false;
 
-  result["errno"].toInt(&ok);
-  if (!ok) return false;
-  m_errno = result["errno"].toInt(&ok);
+    result["errno"].toInt(&ok);
+    if (!ok) return false;
+    m_errno = result["errno"].toInt(&ok);
 
-  QVariantMap channelVariant = result["channels"].toMap();
-  QVariantList channelsList = channelVariant["items"].toList();
-  int size = channelsList.size();
+    QVariantMap channelVariant = result["channels"].toMap();
+    QVariantList channelsList = channelVariant["items"].toList();
+    int size = channelsList.size();
 
-  for (int i = 0; i < size; i++)
-  {
-    QVariantMap channelDesc = channelsList.at(i).toMap();
-    QVariantList markList = channelDesc["items"].toList();
-    QString channelName = channelDesc["name"].toString();
-
-    QSharedPointer<Channel> channel(new JsonChannel(channelName,"dummy channel[LoadTagsResponse]"));
-
-    for(int j=0; j<markList.size(); j++)
+    for (int i = 0; i < size; i++)
     {
-      QVariantMap markMap = markList.at(j).toMap();
+        QVariantMap channelDesc = channelsList.at(i).toMap();
+        QVariantList markList = channelDesc["items"].toList();
+        QString channelName = channelDesc["name"].toString();
 
-      QString title = markMap["title"].toString();
-      QString link = markMap["link"].toString();
-      QString description = markMap["description"].toString();
-      double altitude = markMap["altitude"].toString().toDouble(&ok);
-      if (!ok) return false;
-      double latitude = markMap["latitude"].toString().toDouble(&ok);
-      if (!ok) return false;
-      double longitude = markMap["longitude"].toString().toDouble(&ok);
-      if (!ok) return false;
+        Channel channel(channelName,"dummy channel[LoadTagsResponse]");
 
-      QString userName = markMap["user"].toString();
-      QString timeStr =  markMap["pubDate"].toString();
-      QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
+        for(int j=0; j<markList.size(); j++)
+        {
+            QVariantMap markMap = markList.at(j).toMap();
 
-      QVector<QSharedPointer<common::User> > v = m_usersContainer->vector();
-      QSharedPointer<common::User> user(new JsonUser(userName));
-      m_usersContainer->push_back(user);
+            QString title = markMap["title"].toString();
+            QString link = markMap["link"].toString();
+            QString description = markMap["description"].toString();
+            double altitude = markMap["altitude"].toString().toDouble(&ok);
+            if (!ok) return false;
+            double latitude = markMap["latitude"].toString().toDouble(&ok);
+            if (!ok) return false;
+            double longitude = markMap["longitude"].toString().toDouble(&ok);
+            if (!ok) return false;
 
-      QSharedPointer<JsonDataMark> newMark(new JsonDataMark(altitude,
-        latitude,
-        longitude,
-        title,
-        description,
-        link,
-        time));
-      newMark->setUser(user);
-      m_hashMap.insert(channel, newMark);
+            QString userName = markMap["user"].toString();
+            QString timeStr =  markMap["pubDate"].toString();
+            QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
+
+            m_users.push_back(common::BasicUser(userName));
+
+            Tag tag(altitude, latitude, longitude, title,  description, link,  time);
+            DEBUG() << "Tag:" << tag;
+            m_tags << tag;
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 
 QByteArray LoadTagsResponseJSON::getJson() const
 {
-  QJson::Serializer serializer;
-  QVariantMap obj, rss, jchannel;
+    QJson::Serializer serializer;
+    QVariantMap obj, rss, jchannel;
 
-  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
-  QVariantList jchannels;
+    QVariantList jchannels;
 
-  for(int i=0; i<hashKeys.size(); i++)
-  {
-    QList<QSharedPointer<DataMark> > tags = m_hashMap.values(hashKeys.at(i));
     QVariantList jtags;
     QVariantMap channel;
 
-    for(int j=0; j<tags.size(); j++)
+    for(int j=0; j<m_tags.size(); j++)
     {
-      QSharedPointer<DataMark> tag = tags.at(j);
-      QVariantMap jtag;
-      jtag["title"] = tag->getLabel();
-      jtag["link"] = tag->getUrl();
-      jtag["description"] = tag->getDescription();
-      jtag["latitude"] = tag->getLatitude();
-      jtag["altitude"] = tag->getAltitude();
-      jtag["longitude"] = tag->getLongitude();
-      jtag["user"] = tag->getUser()->getLogin();
-      jtag["pubDate"] = tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz");
-      jtags.append(jtag);
+        Tag tag = m_tags.at(j);
+        QVariantMap jtag;
+        jtag["title"] = tag.getLabel();
+        jtag["link"] = tag.getUrl();
+        jtag["description"] = tag.getDescription();
+        jtag["latitude"] = tag.getLatitude();
+        jtag["altitude"] = tag.getAltitude();
+        jtag["longitude"] = tag.getLongitude();
+        jtag["user"] = tag.getUser().getLogin();
+        jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
+        jtags.append(jtag);
     }
     channel["items"] = jtags;
-    channel["name"] = hashKeys.at(i)->getName();
+//    channel["name"] = m_channels.at(i).getName();
     jchannels.append(channel);
-  }
-  jchannel["items"] = jchannels;
-  rss["channels"] = jchannel;
-  obj["rss"] = rss;
-  obj["errno"]= m_errno;
-  return serializer.serialize(obj);
+
+    jchannel["items"] = jchannels;
+    rss["channels"] = jchannel;
+    obj["rss"] = rss;
+    obj["errno"]= m_errno;
+    return serializer.serialize(obj);
 }
 
 
-const DataChannels& LoadTagsResponseJSON::getData() const
+const QList<Tag> &LoadTagsResponseJSON::getData() const
 {
-  return m_hashMap;
+    return m_tags;
 }
 
 
-void LoadTagsResponseJSON::setData(const DataChannels& d)
+void LoadTagsResponseJSON::setData(const QList<Tag>& d)
 {
-  m_hashMap = d ;
+    DEBUG() << "set data " << d;
+    m_tags = d ;
 }
 
 

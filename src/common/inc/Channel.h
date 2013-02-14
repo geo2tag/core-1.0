@@ -42,30 +42,29 @@
 
 #include <QString>
 #include <QVector>
+#include <QDebug>
 #include <QSharedPointer>
 
 #include "ConcurrentVector.h"
 #include "BasicUser.h"
 
-class Channel: public QObject
+class Channel
 {
-  Q_OBJECT                              //!< channel name
+                         //!< channel name
     QString m_name;                     //!< Description for channel
-  QString m_description;                //!< URL for mark
-  QString m_url;                        //!< Radius for visible marks
-                                        //!< Owner of the channel
-  QSharedPointer<common::BasicUser> m_owner;
-  double m_activeRadius;                //!< Displayed on the UI
-  bool m_isDisplayed;
+    QString m_description;                //!< URL for mark
+    QString m_url;                        //!< Radius for visible marks
 
-  public:
+    double m_activeRadius;                //!< Displayed on the UI
+    bool m_isDisplayed;
+
+public:
 
     static const qulonglong DEFAULT_TIME_SLOT_VALUE_MIN;
 
-    Channel(const QString &name, const QString &description, const QString& url = "",
-      const QSharedPointer<common::BasicUser>& owner = QSharedPointer<common::BasicUser>(0));
-
-    virtual qlonglong getId() const;
+    Channel(const QString &name="", const QString &description="", const QString& url = "");
+    Channel(const Channel& channel);
+    Channel& operator=(const Channel& obj);
 
     const QString& getDescription() const;
 
@@ -73,13 +72,9 @@ class Channel: public QObject
 
     const QString& getUrl() const;
 
-    const QSharedPointer<common::BasicUser>& getOwner() const;
-
     void setDescription(const QString& description);
 
     void setUrl(const QString& url);
-
-    void setOwner(const QSharedPointer<common::BasicUser>& owner);
 
     void setRadius(const double &radius);
     double getRadius() const;
@@ -87,9 +82,13 @@ class Channel: public QObject
     bool isDisplayed() const;
     void setDisplayed(bool);
 
+    bool isValid() const;
+
     virtual ~Channel();
     // class Channel
 };
+
+QDebug operator<<(QDebug& dbg, const Channel& channel);
 
 typedef ConcurrentVector<Channel> Channels;
 //_Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_

@@ -40,7 +40,7 @@
 DbUser::DbUser(const QString& login,
 const QString& pass,
 qlonglong id)
-: User(login,pass), m_id(id)
+: BasicUser(login,pass), m_id(id)
 {
 }
 
@@ -54,7 +54,7 @@ DbUser::DbUser(const QString& login,
 const QString& pass,
 const QString& email,
 qlonglong id)
-: User(login, pass, email), m_id(id)
+: BasicUser(login, pass, email), m_id(id)
 {
 }
 

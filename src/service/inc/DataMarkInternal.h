@@ -44,7 +44,7 @@
 #include "ChannelInternal.h"
 #include "UserInternal.h"
 
-class DbDataMark: public DataMark
+class DbDataMark: public Tag
 {
 
   //!< Tag's identifier

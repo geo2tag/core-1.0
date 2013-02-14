@@ -33,14 +33,15 @@
  * ---------------------------------------------------------------- */
 
 #include "JsonSerializer.h"
+#include "MetaCache.h"
 
 JsonSerializer::JsonSerializer(QObject * parent)
-: QObject(parent),
-m_channelsContainer(new Channels),
-m_tagsContainer(new DataMarks),
-m_usersContainer(new common::Users),
-m_sessionsContainer(new Sessions)
+    : QObject(parent)
 {
+#ifdef GEO2TAG_LITE
+    m_channels << Channel("default","joint channel for all owned by user");
+#else
+#endif
 }
 
 
@@ -50,93 +51,110 @@ JsonSerializer::~JsonSerializer()
 }
 
 
-QSharedPointer<common::Users> JsonSerializer::getUsers() const
+QList<common::BasicUser> JsonSerializer::getUsers() const
 {
-  return m_usersContainer;
+    return m_users;
+}
+
+common::BasicUser JsonSerializer::getUser() const
+{
+    return
+            m_users.size()>0
+                ? m_users.at(0)
+                : common::BasicUser();
 }
 
 
-QSharedPointer<Channels> JsonSerializer::getChannels() const
+QList<Channel> JsonSerializer::getChannels() const
 {
-  return m_channelsContainer;
+    return m_channels;
+}
+
+QList<Tag> JsonSerializer::getTags() const
+{
+    return m_tags;
+}
+
+Tag JsonSerializer::getTag() const
+{
+
+    return m_tags.isEmpty() ? Tag() : m_tags.at(0);
+}
+
+QString JsonSerializer::getSessionToken() const
+{
+    return m_token;
+}
+
+Channel JsonSerializer::getChannel() const
+{
+    return m_channels.isEmpty() ? Channel() : m_channels.at(0);
 }
 
 
-QSharedPointer<DataMarks> JsonSerializer::getTags() const
+void JsonSerializer::addChannel(const Channel &channel)
 {
-  return m_tagsContainer;
+    m_channels.push_back(channel);
 }
 
 
-QSharedPointer<Sessions> JsonSerializer::getSessions() const
+void JsonSerializer::addTag(const Tag &tag)
 {
-  return m_sessionsContainer;
+    m_tags.push_back(tag);
 }
 
 
-void JsonSerializer::addChannel(const QSharedPointer<Channel> &channel)
+void JsonSerializer::addUser(const common::BasicUser &user)
 {
-  m_channelsContainer->push_back(channel);
+    m_users.push_back(user);
 }
 
 
-void JsonSerializer::addTag(const QSharedPointer<DataMark> &tag)
+void JsonSerializer::setSessionToken(const QString& token)
 {
-  m_tagsContainer->push_back(tag);
-}
-
-
-void JsonSerializer::addUser(const QSharedPointer<common::User> &user)
-{
-  m_usersContainer->push_back(user);
-}
-
-
-void JsonSerializer::addSession(const QSharedPointer<Session> &session)
-{
-  m_sessionsContainer->push_back(session);
+    m_token=token;
 }
 
 
 void JsonSerializer::clearContainers()
 {
-  m_usersContainer->clear();
-  m_tagsContainer->clear();
-  m_channelsContainer->clear();
+    m_users.clear();
+    m_tags.clear();
+    m_channels.clear();
 }
 
 
 const QString& JsonSerializer::getStatus() const
 {
-  return m_status;
+    return m_status;
 }
 
 
 const QString& JsonSerializer::getStatusMessage() const
 {
-  return m_statusMessage;
+    return m_statusMessage;
 }
 
 
 void JsonSerializer::setStatus(const QString &s)
 {
-  m_status = s;
+    m_status = s;
 }
 
 
 void JsonSerializer::setStatusMessage(const QString &s)
 {
-  m_statusMessage = s;
+    m_statusMessage = s;
 }
 
 
 const int& JsonSerializer::getErrno() const
 {
-  return m_errno;
+    return m_errno;
 }
 
 
 void JsonSerializer::setErrno(const int &s)
 {
-  m_errno = s;
+    m_errno = s;
 }

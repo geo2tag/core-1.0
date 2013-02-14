@@ -43,22 +43,21 @@
 
 #include "Channel.h"
 
-class DbChannel: public Channel
-{
-  qlonglong m_id;
+//class DbChannel: public Channel
+//{
+//  qlonglong m_id;
 
-  public:
-    DbChannel(qlonglong id,
-      const QString &name,
-      const QString &description,
-      const QString &url,
-      const QSharedPointer<common::BasicUser>& owner = QSharedPointer<common::BasicUser>(0));
-    qlonglong getId() const;
+//  public:
+//    DbChannel(qlonglong id,
+//      const QString &name,
+//      const QString &description,
+//      const QString &urlr);
+//    qlonglong getId() const;
 
-    void setId(qlonglong id);
+//    void setId(qlonglong id);
 
-    virtual ~DbChannel();
-};
+//    virtual ~DbChannel();
+//};
 //_ChannelInternal_H_F613BD25_03A0_4229_9305_260275C911A1_INCLUDED_
 #endif
 

@@ -47,29 +47,29 @@ class WriteTagQuery: public DefaultQuery
 {
   Q_OBJECT
 
-    QSharedPointer<Session> m_session;
-  QSharedPointer<Channel> m_channel;
-  QSharedPointer<DataMark> m_tag;
+  Session m_session;
+  Channel m_channel;
+  Tag m_tag;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
 
   public:
-    WriteTagQuery(const QSharedPointer<Session>& session,
-      const QSharedPointer<Channel>& channel,
-      const QSharedPointer<DataMark>& tag, QObject *parent = 0);
+    WriteTagQuery(const Session &session,
+      const Channel &channel,
+      const Tag &tag, QObject *parent = 0);
     WriteTagQuery(QObject *parent = 0);
 
     ~WriteTagQuery();
-    void setTag(const QSharedPointer<DataMark> &tag);
-    QSharedPointer<DataMark> getTag();
-    const QSharedPointer<DataMark>& getTag() const;
+    void setTag(const Tag &tag);
+    Tag getTag();
+    Tag getTag() const;
 
-    void setSession(const QSharedPointer<Session>& session);
-    const QSharedPointer<Session>& getSession() const;
+    void setSession(const Session &session);
+    Session getSession() const;
 
-    void setChannel(const QSharedPointer<Channel>& channel);
-    const QSharedPointer<Channel>& getChannel() const;
+    void setChannel(const Channel &channel);
+    Channel getChannel() const;
 
 };
 // ADDNEWMARKQUERY_H

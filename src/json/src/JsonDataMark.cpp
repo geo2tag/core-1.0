@@ -50,7 +50,7 @@ QString label,
 QString description,
 const QString &url,
 const QDateTime &time):
-DataMark(altitude, latitude, longitude, label, description, url, time),
+Tag(altitude, latitude, longitude, label, description, url, time),
 m_id(globalTagId++)
 {
 }

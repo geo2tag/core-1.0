@@ -45,7 +45,7 @@ class DbSession: public Session
   qlonglong m_id;
 
   public:
-    DbSession(qlonglong id, const QString& sessionToken, const QDateTime& lastAccessTime, const QSharedPointer<common::User>& user);
+    DbSession(qlonglong id, const QString& sessionToken, const QDateTime& lastAccessTime, const common::BasicUser& user);
 
     qlonglong getId() const;
     void setId(qlonglong);

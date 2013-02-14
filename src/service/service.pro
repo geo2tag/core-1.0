@@ -18,7 +18,7 @@ db_content.path = /opt/geo2tag/
 odbc_configs.files = ../../scripts/odbc.ini ../../scripts/odbcinst.ini
 odbc_configs.path = /opt/geo2tag/
 
-database.files=../../scripts/*  ../../scripts/watchdog.sh
+database.files=../../scripts/*
 database.path=/opt/geo2tag/db/
 
 
@@ -40,13 +40,15 @@ DEPENDPATH += . \
 INCLUDEPATH += \
                . \
                inc \
+               ../inc/ \
                ../common/inc \
                ../common/odbc/inc \
                ../common/common/inc \
                ../common/exception/inc \
                ../common/thread/inc \
                ../fcgiio/inc \
-               ../json/inc
+               ../json/inc \
+
 
 # Input
 HEADERS += \
@@ -55,12 +57,12 @@ HEADERS += \
            inc/ChannelInternal.h \
            inc/DataMarkInternal.h \
            inc/UserInternal.h \
-           inc/DbSession.h \
-      	   inc/UpdateThread.h \
            inc/QueryExecutor.h \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
-    src/servicelogger.h
+    src/servicelogger.h \
+    inc/DbSession.h \
+    inc/MetaCache.h
 
 
 SOURCES += src/main.cpp \
@@ -70,11 +72,13 @@ SOURCES += src/main.cpp \
            src/DynamicCastFailure.cpp \
            src/UserInternal.cpp \
            src/DbSession.cpp \
-           src/UpdateThread.cpp \
            src/QueryExecutor.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \
-    src/servicelogger.cpp
+    src/servicelogger.cpp \
+    processors/ProcessorsCore.cpp \
+    processors/ProcessorsFilters.cpp \
+    src/MetaCache.cpp
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
 OBJECTS_DIR = .obj

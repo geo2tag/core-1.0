@@ -42,7 +42,7 @@
 
 #include "DataMarks.h"
 
-class JsonDataMark: public DataMark
+class JsonDataMark: public Tag
 {
 
   static qlonglong globalTagId;

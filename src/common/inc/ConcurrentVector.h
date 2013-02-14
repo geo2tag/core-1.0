@@ -42,8 +42,7 @@
 #include <QMap>
 #include <syslog.h>
 
-template<typename T>
-class ConcurrentVector
+template<typename T> class ConcurrentVector
 {
   mutable QMutex m_lock;
 

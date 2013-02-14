@@ -54,7 +54,7 @@ class FilterCircleQuery : public DefaultQuery
   QDateTime m_timeTo;
   QSharedPointer<Channel> m_channel;
 
-  DataChannels m_hashMap;
+  QList<Tag> m_hashMap;
 
   virtual QString getUrl() const;
   virtual QByteArray getRequestBody() const;
@@ -86,7 +86,7 @@ class FilterCircleQuery : public DefaultQuery
 
     ~FilterCircleQuery();
 
-    const DataChannels& getData() const;
+    const QList<Tag>& getData() const;
 
     signals:
 

@@ -81,7 +81,7 @@ namespace Test
         QSharedPointer<Channel> channel(new JsonChannel("dummy channel","dummy channel"));
         for (int i=0;i<TEST_OBJECT_SIZE;i++)
         {
-          QSharedPointer<DataMark> mark(new JsonDataMark(0,i,i,"","","",QDateTime::currentDateTime()));
+          QSharedPointer<Tag> mark(new JsonDataMark(0,i,i,"","","",QDateTime::currentDateTime()));
           mark->setChannel(channel);
           m_history->pushMark(mark);
         }
@@ -90,7 +90,7 @@ namespace Test
         for (int i=TEST_OBJECT_SIZE/2;i<TEST_OBJECT_SIZE;i++)
         {
           //		qDebug() << m_history->popMark()->getLatitude();
-          QSharedPointer<DataMark> mark(m_history->popMark());
+          QSharedPointer<Tag> mark(m_history->popMark());
           int lat = mark->getLatitude();
           int lon = mark->getLongitude();
           qDebug() << lat << i;

@@ -45,24 +45,31 @@ const qulonglong Channel::DEFAULT_TIME_SLOT_VALUE_MIN = 525600;
 
 Channel::Channel(const QString &name,
 const QString &description,
-const QString &url,
-const QSharedPointer<common::BasicUser>& owner):
+const QString &url):
 m_name(name),
 m_description(description),
 m_url(url),
-m_owner(owner),
 m_isDisplayed(true)
 {
-  m_activeRadius = 5.0;                 // 5 km
+    m_activeRadius = 5.0;                 // 5 km
 }
 
-
-qlonglong Channel::getId() const
+Channel::Channel(const Channel &obj) : m_name(obj.m_name),
+    m_description(obj.m_description),
+    m_url(obj.m_url),
+    m_isDisplayed(true)
 {
-  // Database doesn't contain 0 in sequences, see scripts/base.sql
-  return 0;
 }
 
+Channel &Channel::operator =(const Channel &obj)
+{
+    m_activeRadius=obj.m_activeRadius;
+    m_description=obj.m_description;
+    m_isDisplayed=obj.m_isDisplayed;
+    m_name=obj.m_name;
+    m_url=obj.m_url;
+    return *this;
+}
 
 const QString& Channel::getDescription() const
 {
@@ -88,21 +95,10 @@ const QString& Channel::getUrl() const
 }
 
 
-const QSharedPointer<common::BasicUser>& Channel::getOwner() const
-{
-  return m_owner;
-}
-
 
 void Channel::setUrl(const QString& url)
 {
   m_url = url;
-}
-
-
-void Channel::setOwner(const QSharedPointer<common::BasicUser> &owner)
-{
-  m_owner = owner;
 }
 
 
@@ -114,7 +110,12 @@ bool Channel::isDisplayed() const
 
 void Channel::setDisplayed(bool fl)
 {
-  m_isDisplayed = fl;
+    m_isDisplayed = fl;
+}
+
+bool Channel::isValid() const
+{
+    return !m_name.isEmpty();
 }
 
 
@@ -132,6 +133,13 @@ double Channel::getRadius() const
 
 Channel::~Channel()
 {
+}
+
+QDebug operator<<(QDebug& dbg, const Channel& channel)
+{
+    dbg << "[" << channel.getName() << "," << channel.getDescription() <<
+           ", radius=" << channel.getRadius() << ", url=" << channel.getUrl() << ")";
+    return dbg;
 }
 
 

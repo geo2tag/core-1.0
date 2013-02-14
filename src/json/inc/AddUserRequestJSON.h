@@ -46,7 +46,7 @@ class AddUserRequestJSON : public JsonSerializer
   public:
     AddUserRequestJSON(QObject *parent=0);
 
-    AddUserRequestJSON(const QSharedPointer<common::User>& user, QObject *parent = 0);
+    AddUserRequestJSON(const common::BasicUser& user, QObject *parent = 0);
 
     QByteArray getJson() const;
 

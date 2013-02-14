@@ -47,15 +47,13 @@
 #include "JsonSerializer.h"
 #include "Channel.h"
 #include "DataMarks.h"
-#include "DataChannel.h"
 
 class LoadTagsResponseJSON: public JsonSerializer
 {
-  // map will contain channels and marks which should be serialized to JSON
-  DataChannels m_hashMap;
+  QList<Tag> m_tags;
 
   public:
-    LoadTagsResponseJSON(const DataChannels &, QObject *parent=0);
+    LoadTagsResponseJSON(const QList<Tag> &, QObject *parent=0);
 
     LoadTagsResponseJSON(QObject *parent=0);
 
@@ -63,8 +61,8 @@ class LoadTagsResponseJSON: public JsonSerializer
 
     virtual bool parseJson(const QByteArray&);
 
-    const DataChannels& getData() const;
-    void setData(const DataChannels&);
+    const QList<Tag>& getData() const;
+    void setData(const QList<Tag> &);
 
     ~LoadTagsResponseJSON();
 

@@ -36,7 +36,6 @@ HEADERS += MeegoClient.h \
 ../../../../common/inc/Channel.h \
 ../../../../common/inc/ConcurrentVector.h \
 ../../../../common/inc/defines.h \
-../../../../common/inc/DataChannel.h \
 ../../../../common/inc/GpsInfo.h \
 ../../../../common/inc/MobilityGps.h \ 
 ../../../../../3rdparty/qjson-0.7.1/src/parser.h \

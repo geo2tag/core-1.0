@@ -52,6 +52,7 @@
 #include "serializer.h"
 #endif
 
+
 FilterPolygonRequestJSON::FilterPolygonRequestJSON(QObject *parent) : FilterRequestJSON(parent)
 {
 }
@@ -62,7 +63,7 @@ QByteArray FilterPolygonRequestJSON::getJson() const
   // TODO it's necessary for symbian client
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("auth_token", m_sessionsContainer->at(0)->getSessionToken());
+  obj.insert("auth_token", m_token);
   return serializer.serialize(obj);
 }
 
@@ -98,6 +99,7 @@ bool FilterPolygonRequestJSON::parseJson(const QByteArray&data)
     shape->addPoint(number, lat, lon);
   }
   setShape(QSharedPointer<FShape>(shape));
-  m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
+  //m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
   return true;
 }
+

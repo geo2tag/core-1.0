@@ -53,7 +53,7 @@ void FShapePolygon::addPoint(int idx, double lat, double lon)
 }
 
 
-bool FShapePolygon::filtrate(const QSharedPointer<DataMark> &mark)
+bool FShapePolygon::filtrate(const Tag &mark)
 {
   if (m_points.size() == 0) return false;
 
@@ -63,5 +63,5 @@ bool FShapePolygon::filtrate(const QSharedPointer<DataMark> &mark)
     polygon << m_points.at(i);
   }
   polygon << m_points.at(0);
-  return polygon.containsPoint(QPointF(mark->getLatitude(), mark->getLongitude()), Qt::OddEvenFill);
+  return polygon.containsPoint(QPointF(mark.getLatitude(), mark.getLongitude()), Qt::OddEvenFill);
 }

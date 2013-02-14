@@ -54,7 +54,6 @@ HEADERS += MainWindow.h \
 ../../../../common/inc/Channel.h \
 ../../../../common/inc/ConcurrentVector.h \
 ../../../../common/inc/defines.h \
-../../../../common/inc/DataChannel.h \
 ../../../../common/inc/symbian.h \
 ../../../../common/inc/GpsInfo.h \
 ../../../../common/inc/MobilityGps.h \

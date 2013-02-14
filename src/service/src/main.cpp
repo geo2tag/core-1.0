@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
   Log::init();
   SettingsStorage::init();
 
-  common::DbObjectsCollection::getInstance();
+  common::DbObjectsCollection::init();
 
   Server s;
   s.serve();

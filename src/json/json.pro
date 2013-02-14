@@ -7,8 +7,10 @@ DEPENDPATH += . inc src
 target.path = /usr/lib
 INSTALLS += target
 
-INCLUDEPATH += . inc \
-                 ../common/inc/
+INCLUDEPATH += . ./inc \
+                 ../common/inc \
+                 ../service/inc
+
 
 # Input
 HEADERS += \
@@ -37,7 +39,7 @@ HEADERS += \
            inc/DefaultResponseJSON.h \
            inc/FilterRequestJSON.h \
            inc/FilterDefaultResponseJSON.h \
-           inc/FilterCircleRequestJSON.h \ 
+           inc/FilterCircleRequestJSON.h \
            inc/FilterCylinderRequestJSON.h \
            inc/FilterPolygonRequestJSON.h \
            inc/FilterRectangleRequestJSON.h \
@@ -47,8 +49,8 @@ HEADERS += \
            inc/RegisterUserResponseJSON.h \
            inc/ErrnoInfoResponseJSON.h \
            inc/VersionResponseJSON.h \
-           inc/FilterChannelRequestJSON.h \
-           inc/FilterChannelResponseJSON.h \
+          inc/FilterChannelRequestJSON.h \
+          inc/FilterChannelResponseJSON.h \
 	   inc/DeleteUserRequestJSON.h \
 	   inc/DeleteUserResponseJSON.h \
 	   inc/BuildResponseJSON.h \ 
@@ -58,7 +60,8 @@ HEADERS += \
     inc/OwnedChannelsRequest.h \
     inc/OwnedChannelsResponse.h \
     inc/RestorePasswordRequestJSON.h \
-    inc/RestorePasswordResponseJSON.h
+    inc/RestorePasswordResponseJSON.h \
+    ../service/inc/MetaCache.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -90,11 +93,12 @@ SOURCES += \
            src/VersionResponseJSON.cpp \
            src/AddUserRequestJSON.cpp \
            src/FilterChannelRequestJSON.cpp \
-           src/FilterChannelResponseJSON.cpp \             
+           src/FilterChannelResponseJSON.cpp \
     src/QuitSessionRequestJSON.cpp \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \
-    src/RestorePasswordRequestJSON.cpp
+    src/RestorePasswordRequestJSON.cpp \
+    ../service/src/MetaCache.cpp
            
 
 LIBS    +=  -lcommon -lqjson
@@ -103,5 +107,5 @@ linux: {
     DEFINES += DESKTOP_STYLE
 }
 
-QT += core
+QT += core sql
 QT -= gui

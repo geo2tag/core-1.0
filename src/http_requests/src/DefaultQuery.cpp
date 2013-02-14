@@ -32,7 +32,7 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include <QDebug>
+#include "servicelogger.h"
 #include <QNetworkConfiguration>
 #include "DefaultQuery.h"
 #include "defines.h"
@@ -67,8 +67,8 @@ void DefaultQuery::doRequest()
   url.setPort(getServerPort());
   request.setUrl(url);
 
-  //  qDebug() << "doing post to" << url << " with body: " << getRequestBody();
-  qDebug() << "posting http request to "<<url.toString()<<" with body "<<getRequestBody();
+  //  DEBUG() << "doing post to" << url << " with body: " << getRequestBody();
+  DEBUG() << "posting http request to "<<url.toString()<<" with body "<<getRequestBody();
   QNetworkReply *reply = m_manager->post(request, getRequestBody());
   m_sendTime = QDateTime::currentDateTime();
   connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(handleError()));
@@ -108,7 +108,7 @@ int DefaultQuery::getErrno() const
 
 void DefaultQuery::handleError()
 {
-  qDebug() << "Network error occured while sending request";
+  DEBUG() << "Network error occured while sending request";
   m_errno = NETWORK_ERROR;
   Q_EMIT errorOccured("network error occcured");
 }

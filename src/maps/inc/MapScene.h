@@ -47,6 +47,7 @@
 
 #include "DataChannel.h"
 
+#if 0
 class MapScene : public QGraphicsScene
 {
   Q_OBJECT
@@ -71,7 +72,7 @@ class MapScene : public QGraphicsScene
     void addMark(qreal x, qreal y, QVariant data);
     void addMark(qreal x, qreal y, QVariant data, QWidget * widget);
     void removeMark(QGraphicsItem * mark);
-    void setMarks(DataChannels marks);
+    void setMarks(QList<Tag> marks);
 
     int maxThreads() const;
     void setMaxThreads(const int & max_threads);
@@ -86,7 +87,7 @@ class MapScene : public QGraphicsScene
     void update_state();
 
   private:
-    void add_mark(QPointF pos,QSharedPointer<DataMark> mark,QSharedPointer<Channel> channel);
+    void add_mark(QPointF pos,Tag mark,Channel channel);
     QPair<QPoint, QPoint> getBorders();
 
     signals:
@@ -98,4 +99,5 @@ class MapScene : public QGraphicsScene
 
 };
 // MAPSCENE_H
+#endif
 #endif

@@ -58,9 +58,9 @@ class LightMap: public QWidget
   bool invert;
 
   void drawMarks(QPainter& painter);
-  void drawMarkIco(QPainter& painter, QPointF& position, QSharedPointer<DataMark> mark, QSharedPointer<Channel> channel);
+  void drawMarkIco(QPainter& painter, QPointF& position, QSharedPointer<Tag> mark, QSharedPointer<Channel> channel);
 
-  DataChannels m_marks;
+  QList<Tag> m_marks;
   private slots:
     void updateMap(const QRect &r);
 
@@ -87,7 +87,7 @@ class LightMap: public QWidget
   public:
     LightMap(QWidget *parent = 0);
 
-    void setMarks(DataChannels marks);
+    void setMarks(QList<Tag> marks);
 
     void setCenter(qreal lat, qreal lng);
 

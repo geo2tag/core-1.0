@@ -114,9 +114,9 @@ double FilterRequestJSON::getAltitude1() const
 }
 
 
-void FilterRequestJSON::setChannel(const QSharedPointer<Channel> &channel)
+void FilterRequestJSON::setChannel(const Channel &channel)
 {
-  m_channelsContainer->push_back(channel);
+  m_channels.push_back(channel);
 }
 
 
@@ -138,8 +138,8 @@ bool FilterRequestJSON::parseJson(const QByteArray& data)
   QString name = result["channel"].toString();
   if (!name.isEmpty())
   {
-    Channel * ch = new JsonChannel(name,"n/a","n/a");
-    m_channelsContainer->push_back(QSharedPointer<Channel>(ch));
+    Channel ch(name,"n/a","n/a");
+    m_channels.push_back(ch);
   }
   return true;
 }

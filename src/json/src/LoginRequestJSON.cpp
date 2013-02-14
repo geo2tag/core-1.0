@@ -48,10 +48,10 @@ LoginRequestJSON::LoginRequestJSON(QObject *parent) : JsonSerializer(parent)
 }
 
 
-LoginRequestJSON::LoginRequestJSON(const QSharedPointer<common::User>& user, QObject *parent)
+LoginRequestJSON::LoginRequestJSON(const common::BasicUser& user, QObject *parent)
 : JsonSerializer(parent)
 {
-  m_usersContainer->push_back(user);
+  m_users.push_back(user);
 }
 
 
@@ -59,8 +59,11 @@ QByteArray LoginRequestJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("login", m_usersContainer->at(0)->getLogin());
-  obj.insert("password", m_usersContainer->at(0)->getPassword());
+
+  Q_ASSERT(m_users.size()>0);
+
+  obj.insert("login", m_users.at(0).getLogin());
+  obj.insert("password", m_users.at(0).getPassword());
   return serializer.serialize(obj);
 }
 
@@ -76,6 +79,6 @@ bool LoginRequestJSON::parseJson(const QByteArray&data)
 
   QString login = result["login"].toString();
   QString password = result["password"].toString();
-  m_usersContainer->push_back(QSharedPointer<common::User>(new JsonUser(login,password)));
+  m_users.push_back(common::BasicUser(login,password));
   return true;
 }

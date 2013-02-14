@@ -59,7 +59,7 @@ namespace Test
     tag.setSession(session);
     query.setSession(session);
     query.setChannel(channel);
-    query.setTag(QSharedPointer<DataMark>(&tag));
+    query.setTag(QSharedPointer<Tag>(&tag));
     query.doRequest();
     //connect(&query, SIGNAL(errorOccured(QString)), this, SLOT(ok()));
     QVERIFY(waitForSignal(&query, SIGNAL(errorOccured(int)), 5000));

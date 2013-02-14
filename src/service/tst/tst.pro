@@ -18,8 +18,9 @@ SOURCES += ../src/QueryExecutor.cpp \
            ../src/DataMarkInternal.cpp \
            ../src/SessionInternal.cpp \
            ../src/ChannelInternal.cpp \
-           main.cpp \
-           Test_QueryExecutor.cpp
+           main.cpp
+
+#          Test_QueryExecutor.cpp
 
 HEADERS += ../inc/QueryExecutor.h \
            ../inc/Geo2tagDatabase.h \
@@ -28,8 +29,9 @@ HEADERS += ../inc/QueryExecutor.h \
            ../inc/DataMarkInternal.h \
            ../inc/SessionInternal.h \
            ../inc/ChannelInternal.h \
-           Test_QueryExecutor.h \ 
 	   UpdateThread_Test.h	   
+
+#            Test_QueryExecutor.h \
 
 CONFIG   += qtestlib
 

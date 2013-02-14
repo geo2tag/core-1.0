@@ -48,7 +48,7 @@
 class FShape
 {
   public:
-    virtual bool filtrate(const QSharedPointer<DataMark> &mark) = 0;
+    virtual bool filtrate(const Tag &mark) = 0;
     virtual ~FShape() {}
 };                                      // class Filter
 #endif                                  //_FShape_H_2055D9DC_F9B0_419F_A486_DF9A5459E64B_INCLUDED_

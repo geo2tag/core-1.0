@@ -44,19 +44,19 @@
 
 #include "DataMarks.h"
 
-void DataMark::setDescription(const QString& s)
+void Tag::setDescription(const QString& s)
 {
   m_description = s;
 }
 
 
-const QString& DataMark::getDescription() const
+const QString& Tag::getDescription() const
 {
   return m_description;
 }
 
 
-DataMark::DataMark(double altitude, double latitude, double longitude, QString label,
+Tag::Tag(double altitude, double latitude, double longitude, QString label,
 QString description, QString url, QDateTime time):
 m_altitude(altitude),
 m_latitude(latitude),
@@ -66,132 +66,150 @@ m_description(description),
 m_url(url),
 m_time(time)
 {
-  m_user = QSharedPointer<common::User>(NULL);
-  m_session = QSharedPointer<Session>(NULL);
-  m_channel = QSharedPointer<Channel>(NULL);
-  if (m_label.isEmpty())
-    m_label = "New mark";
 
 }
 
-
-qlonglong DataMark::getId() const
+Tag::Tag(const Tag &tag)
 {
-  // Database doesn't contain 0 in sequences, see scripts/base.sql
-  return 0;
+    copyFrom(tag);
+}
+
+Tag &Tag::operator=(const Tag &obj)
+{
+    copyFrom(obj);
+    return *this;
 }
 
 
-void DataMark::setUser(QSharedPointer<common::User> user)
+//qlonglong Tag::getId() const
+//{
+//  // Database doesn't contain 0 in sequences, see scripts/base.sql
+//  return 0;
+//}
+
+
+void Tag::setUser(const common::BasicUser &user)
 {
   m_user=user;
 }
 
 
-void DataMark::setSession(QSharedPointer<Session> session)
+//void Tag::setSession(const Session& session)
+//{
+//  m_session=session;
+//}
+
+
+void Tag::setChannel(const Channel& channel)
 {
-  m_session=session;
+    m_channel=channel;
+}
+
+void Tag::copyFrom(const Tag &obj)
+{
+    m_altitude = obj.m_altitude;
+    m_latitude = obj.m_latitude;
+    m_longitude = obj.m_longitude;
+    m_label = obj.m_label;
+    m_description = obj.m_description;
+    m_url = obj.m_url;
+    m_time = obj.m_time;
+    m_user = obj.m_user;
+    m_channel = obj.m_channel;
 }
 
 
-void DataMark::setChannel(QSharedPointer<Channel> channel)
-{
-  m_channel=channel;
-}
-
-
-DataMark::~DataMark()
+Tag::~Tag()
 {
 
 }
 
 
-double DataMark::getLatitude() const
+double Tag::getLatitude() const
 {
   return m_latitude;
 }
 
 
-void DataMark::setLatitude(const double& lat)
+void Tag::setLatitude(const double& lat)
 {
   m_latitude = lat;
 }
 
 
-double DataMark::getLongitude() const
+double Tag::getLongitude() const
 {
   return m_longitude;
 }
 
 
-void DataMark::setLongitude(const double &lon)
+void Tag::setLongitude(const double &lon)
 {
   m_longitude = lon;
 }
 
 
-double DataMark::getAltitude() const
+double Tag::getAltitude() const
 {
   // TODO
   return m_altitude;
 }
 
 
-void DataMark::setAltitude(const double& alt)
+void Tag::setAltitude(const double& alt)
 {
   m_altitude = alt;
 }
 
 
-const QString& DataMark::getLabel() const
+const QString& Tag::getLabel() const
 {
   return m_label;
 }
 
 
-void DataMark::setLabel(const QString& label)
+void Tag::setLabel(const QString& label)
 {
   m_label = label;
 }
 
 
-const QString& DataMark::getUrl() const
+const QString& Tag::getUrl() const
 {
   return m_url;
 }
 
 
-void DataMark::setUrl(const QString& url)
+void Tag::setUrl(const QString& url)
 {
   m_url = url;
 }
 
 
-const QDateTime& DataMark::getTime() const
+const QDateTime& Tag::getTime() const
 {
   return m_time;
 }
 
 
-void DataMark::setTime(const QDateTime& time)
+void Tag::setTime(const QDateTime& time)
 {
   m_time = time;
 }
 
 
-QSharedPointer<common::User> DataMark::getUser() const
+common::BasicUser Tag::getUser() const
 {
   return m_user;
 }
 
+//Session Tag::getSession() const
+//{
+//  return m_session;
+//}
 
-QSharedPointer<Session> DataMark::getSession() const
-{
-  return m_session;
-}
 
-
-QSharedPointer<Channel> DataMark::getChannel() const
+Channel Tag::getChannel() const
 {
   return m_channel;
 }
@@ -209,7 +227,7 @@ double rad2deg(double rad)
 }
 
 
-double DataMark::getDistance(double lat1, double lon1, double lat2, double lon2)
+double Tag::getDistance(double lat1, double lon1, double lat2, double lon2)
 {
   double theta, dist;
   theta = lon1 - lon2;
@@ -222,9 +240,16 @@ double DataMark::getDistance(double lat1, double lon1, double lat2, double lon2)
 }
 
 
-bool operator<(const QSharedPointer<DataMark> &a, const QSharedPointer<DataMark> &b)
+bool operator<(const Tag &a, const Tag &b)
 {
-  return a->getTime() < b->getTime();
+  return a.getTime() < b.getTime();
+}
+
+QDebug& operator<<(QDebug& dbg, const Tag& tag)
+{
+    dbg << "[" << tag.getTime().toString() << tag.getAltitude() << "," << tag.getLongitude() << "]:"
+        << tag.getLabel() << "->" << tag.getUrl();
+    return dbg;
 }
 
 

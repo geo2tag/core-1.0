@@ -47,8 +47,8 @@ class JsonSession: public Session
 
   public:
     JsonSession(const QString& sessionToken,
-      const QDateTime& lastAccessTime,
-      const QSharedPointer<common::User>& user);
+      const QDateTime& lastAccessTime = QDateTime::currentDateTime(),
+                const common::BasicUser &user = common::BasicUser());
 
     qlonglong getId() const;
     void setId(qlonglong);

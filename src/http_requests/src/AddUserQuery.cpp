@@ -36,9 +36,9 @@ QString AddUserQuery::getUrl() const
 
 QByteArray AddUserQuery::getRequestBody() const
 {
-  QSharedPointer<common::User> dummyUser(new JsonUser(m_login, m_password, m_email));
+  common::BasicUser user(m_login, m_password, m_email);
   AddUserRequestJSON request;
-  request.addUser(dummyUser);
+  request.addUser(user);
   return request.getJson();
 }
 
@@ -49,8 +49,8 @@ void AddUserQuery::processResponse(const QByteArray &data)
   AddUserResponseJSON response;
   response.parseJson(data);
 
-  m_session = response.getSessions()->at(0);
-  m_user = QSharedPointer<common::User>(new JsonUser(m_login, m_password, m_email));
+  //GT-834 m_session = response.getSession();
+  m_user = common::BasicUser(m_login, m_password, m_email);
   #endif
 }
 
@@ -70,13 +70,13 @@ void AddUserQuery::setQuery(const QString& login, const QString& password, const
 }
 
 
-QSharedPointer<common::User> AddUserQuery::getUser() const
+common::BasicUser AddUserQuery::getUser() const
 {
   return m_user;
 }
 
 
-QSharedPointer<Session> AddUserQuery::getSession() const
+Session AddUserQuery::getSession() const
 {
   return m_session;
 }

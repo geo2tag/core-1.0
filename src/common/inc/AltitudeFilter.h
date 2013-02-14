@@ -54,7 +54,7 @@ class AltitudeFilter : public Filter
 
     ~AltitudeFilter();
 
-    bool filtrate(const QSharedPointer<DataMark> &mark);
+    bool filtrate(const Tag &mark);
 
 };                                      // class AltitudeFilter
 #endif                                  //_AltitudeFilter_H_89C1C268_7B22_4E8A_B078_B4C7EC6FA5D6_INCLUDED_

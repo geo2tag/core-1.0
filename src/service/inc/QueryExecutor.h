@@ -42,23 +42,20 @@
 #include "DataMarks.h"
 #include "Session.h"
 #include "Geo2tagDatabase.h"
+#include <QList>
+#include <QSqlQuery>
 
 class QueryExecutor : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-    Geo2tagDatabase m_database;
+    //Geo2tagDatabase m_database;
 
-  qlonglong nextKey(const QString& sequence) const;
+    qlonglong nextKey(const QString& sequence) const;
+    QueryExecutor();
 
-  public:
+public:
 
-    QueryExecutor(const Geo2tagDatabase& db, QObject* parent = 0);
-
-    bool isConnected();
-    bool connect();
-    void disconnect();
-    QSqlError lastError();
 
     qlonglong nextUserKey() const;
     qlonglong nextChannelKey() const;
@@ -68,39 +65,55 @@ class QueryExecutor : public QObject
     const QString generateNewToken(const QString& email, const QString& login,const QString& password) const;
     const QString generateNewToken(const QString& accessTime, const QString& email, const QString& login,const QString& password) const;
 
-    bool                     subscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
-    bool                     unsubscribeChannel(const QSharedPointer<common::User>& user,const QSharedPointer<Channel>& channel);
-    bool                 doesTmpUserExist(const QSharedPointer<common::User> &user);
-    bool                     doesUserWithGivenEmailExist(const QSharedPointer<common::User> &user);
-    bool                     deleteTmpUser(const QSharedPointer<common::User> &user);
-    const QString  insertNewTmpUser(const QSharedPointer<common::User> &user);
+    bool                     subscribeChannel(const common::BasicUser& user,const Channel& channel);
+    bool                     unsubscribeChannel(const common::BasicUser& user,const Channel& channel);
+    bool                 doesTmpUserExist(const common::BasicUser &user);
+    bool                     doesUserWithGivenEmailExist(const common::BasicUser &user);
+    bool                     deleteTmpUser(const common::BasicUser &user);
+    bool  insertNewTmpUser(const common::BasicUser &user);
     bool                     doesRegistrationTokenExist(const QString &token);
-    QSharedPointer<common::User> insertTmpUserIntoUsers(const QString &token);
+    common::BasicUser insertTmpUserIntoUsers(const QString &token);
     bool                     deleteTmpUser(const QString &token);
-    QSharedPointer<DataMark> insertNewTag(const QSharedPointer<DataMark>&);
-    QSharedPointer<common::User>    insertNewUser(const QSharedPointer<common::User>&);
-    QSharedPointer<Channel>  insertNewChannel(const QSharedPointer<Channel>&);
-    bool                     deleteUser(const QSharedPointer<common::User> &user);
-    QSharedPointer<common::User>  updateUserPassword(const QSharedPointer<common::User>& user, const QString& password);
+    bool insertNewTag(const Tag& tag);
+    bool insertNewUser(const common::BasicUser&);
+    bool  insertNewChannel(const Channel &, const common::BasicUser& user);
+    bool                     deleteUser(const common::BasicUser &user);
+    common::BasicUser  updateUserPassword(common::BasicUser &user, const QString& password);
     // Sessions
-    QSharedPointer<Session>  insertNewSession(const QSharedPointer<Session>& session);
-    bool                     updateSession(const QSharedPointer<Session>& session);
-    bool                     deleteSession(const QSharedPointer<Session>& session);
+    bool insertNewSession(const Session &session);
+
+    bool                     updateSession(Session& session);
+    bool                     deleteSession(const Session& session);
 
     void checkTmpUsers();
-    void checkSessions(UpdateThread* thread);
+    //void checkSessions(UpdateThread* thread);
 
-    void loadUsers(common::Users &);
-    void loadTags(DataMarks &);
-    void loadChannels(Channels &);
-    void loadSessions(Sessions &);
-    void updateReflections(DataMarks&, common::Users&, Channels&, Sessions&);
+    QList<common::BasicUser> loadUsers();
+    QList<Channel> getChannelsByOwner(const common::BasicUser& user );
+    QList<Channel> getSubscribedChannels(const common::BasicUser& user );
+    QList<Tag> loadTags();
+    QList<Tag> loadTags(const Channel &channel);
+
+    QList<Channel> loadChannels();
+    QList<Session> loadSessions();
+    void updateReflections(DataMarks&, QList<common::BasicUser>&, Channels&, Sessions&);
+    qlonglong getUserIdByName(const QString& name);
+    qlonglong getChannelIdByName(const QString& name);
+    Channel getChannel(const QString& name);
+    bool isSubscribed(const common::BasicUser& user, const Channel &channel);
+
 
     qlonglong getFactTransactionNumber();
 
-    signals:
+    static QSqlQuery makeQuery();
+    static void transaction();
+    static void rollback();
+    static void commit();
+    static QueryExecutor* instance();
 
-  public slots:
+signals:
+
+public slots:
 
 };
 #endif                                  // QUERYEXECUTOR_H

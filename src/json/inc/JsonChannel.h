@@ -43,6 +43,7 @@
 
 #include "Channel.h"
 
+#if 0
 class JsonChannel: public Channel
 {
   static qlonglong globalChannelId;
@@ -51,8 +52,7 @@ class JsonChannel: public Channel
   public:
     JsonChannel(const QString &name,
       const QString &description,
-      const QString &url = "",
-      const QSharedPointer<common::BasicUser>& owner = QSharedPointer<common::BasicUser>(0));
+      const QString &url = "");
 
     qlonglong getId() const;
 
@@ -60,6 +60,7 @@ class JsonChannel: public Channel
 
     virtual ~JsonChannel();
 };
+#endif
 //_JsonChannel_H_F613BD25_03A0_4229_9305_260275C911A1_INCLUDED_
 #endif
 

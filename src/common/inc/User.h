@@ -49,33 +49,33 @@
 namespace common
 {
 
-  class User: public QObject, public BasicUser
-  {
+class User: public QObject, public BasicUser
+{
     Q_OBJECT
 
-      QString m_result;
+    QString m_result;
     QString m_token;
-    // list of subscribed channels
-    QSharedPointer<Channels> m_channels;
+    QList<Channel> m_channels;
 
-    public:
+public:
 
-      User(const QString & name="", const QString & passw="", const QString & email="");
+    // chech if user attrs is set
+    bool isValid() const;
 
-      virtual qlonglong getId() const;
+    User(const QString & name="", const QString & passw="", const QString & email="");
+    virtual qlonglong getId() const;
+    void subscribe(const Channel& channel);
+    void unsubscribe(const Channel& channel);
+    const QList<Channel> getSubscribedChannels() const;
 
-      void subscribe(const QSharedPointer<Channel>& channel);
+    User& operator=(const User& obj);
 
-      void unsubscribe(const QSharedPointer<Channel>& channel);
+    virtual ~User();
+    // class User
+};
 
-      const QSharedPointer<Channels> getSubscribedChannels() const;
-
-      virtual ~User();
-      // class User
-  };
-
-  typedef ConcurrentVector<User> Users;
-
+typedef ConcurrentVector<User> Users;
+typedef QList<User> UserList;
 }                                       //namespace common
 
 

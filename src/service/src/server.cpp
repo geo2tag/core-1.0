@@ -48,138 +48,140 @@
 
 Server::Server()
 {
-  int err = FCGX_Init();                // call before Accept in multithreaded apps
+    int err = FCGX_Init();                // call before Accept in multithreaded apps
 
-  if (err)
-  {
-    qDebug() <<  QString("FCGX_Init failed, errcode=%1").arg(err);
-  }
+    if (err)
+    {
+        DEBUG() <<  QString("FCGX_Init failed, errcode=%1").arg(err);
+    }
 
-  err = FCGX_InitRequest(&m_cgi,LISTENSOCK_FILENO, LISTENSOCK_FLAGS);
+    err = FCGX_InitRequest(&m_cgi,LISTENSOCK_FILENO, LISTENSOCK_FLAGS);
 
-  if (err)
-  {
-      qDebug() <<  QString("FCGX_InitRequest failed, errcode=%1").arg(err);
-  }
+    if (err)
+    {
+        DEBUG() <<  QString("FCGX_InitRequest failed, errcode=%1").arg(err);
+    }
 }
 
 
 QMap<QString, QString> parseQuery(const QString& string)
 {
-  QMap<QString, QString> map;
-  enum States
-  {
-    READ_NAME,
-    READ_VALUE
-  } state;
+    QMap<QString, QString> map;
+    enum States
+    {
+        READ_NAME,
+        READ_VALUE
+    } state;
 
-  size_t j = 0;
-  std::string paramName(""), paramValue(""), s = string.toStdString();
-  state = READ_NAME;
-  for (size_t i = 0; i < s.size(); ++i)
-  {
-    if (s[i] == '=')
+    size_t j = 0;
+    std::string paramName(""), paramValue(""), s = string.toStdString();
+    state = READ_NAME;
+    for (size_t i = 0; i < s.size(); ++i)
     {
-      paramName = s.substr(j, i - j);
-      j = i + 1;
-      state=READ_VALUE;
+        if (s[i] == '=')
+        {
+            paramName = s.substr(j, i - j);
+            j = i + 1;
+            state=READ_VALUE;
+        }
+        if (s[i] == '&')
+        {
+            if (state == READ_NAME)
+            {
+                // variable without value
+                map.insert(QString::fromStdString(s.substr(j, i - j)), "");
+                j = i + 1;
+                continue;
+            }
+            paramValue = s.substr(j, i - j );
+            j = i + 1;
+            map.insert(QString::fromStdString(paramName), QString::fromStdString(paramValue));
+            state=READ_NAME;
+        }
     }
-    if (s[i] == '&')
+    if (paramName.size())
     {
-      if (state == READ_NAME)
-      {
-        // variable without value
-        map.insert(QString::fromStdString(s.substr(j, i - j)), "");
-        j = i + 1;
-        continue;
-      }
-      paramValue = s.substr(j, i - j );
-      j = i + 1;
-      map.insert(QString::fromStdString(paramName), QString::fromStdString(paramValue));
-      state=READ_NAME;
+        paramValue = s.substr(j, s.size() - j);
+        map.insert(QString::fromStdString(paramName), QString::fromStdString(paramValue));
     }
-  }
-  if (paramName.size())
-  {
-    paramValue = s.substr(j, s.size() - j);
-    map.insert(QString::fromStdString(paramName), QString::fromStdString(paramValue));
-  }
-  return map;
+    return map;
 }
 
 
 QString Server::extractRESTQuery()
 {
-  QString query_string(FCGX_GetParam("PATH_INFO", m_cgi.envp));
-  // remove first simbol - slash
-  return query_string.right(query_string.size()-1);
+    QString query_string(FCGX_GetParam("PATH_INFO", m_cgi.envp));
+    // remove first simbol - slash
+    return query_string.right(query_string.size()-1);
 }
 
 
 QByteArray Server::process( const QByteArray &data)
 {
-  common::DbObjectsCollection &dboc = common::DbObjectsCollection::getInstance();
-  QByteArray result = dboc.process(extractRESTQuery(), data);
-  return result;
+    common::DbObjectsCollection &dboc = common::DbObjectsCollection::getInstance();
+    QByteArray result = dboc.process(extractRESTQuery(), data);
+    return result;
 }
 
 
 void Server::extractIncomingData(const FCGX_Request& request, QString& queryString, QByteArray& queryBody)
 {
-  queryString.clear();
-  queryBody.clear();
-  queryString = FCGX_GetParam("QUERY_STRING", m_cgi.envp);
-  for(;;)
-  {
-    char ch = FCGX_GetChar(request.in);
-    if(ch != -1)
-      queryBody.append(ch);
-    else
-      break;
-  }
+    queryString.clear();
+    queryBody.clear();
+    queryString = FCGX_GetParam("QUERY_STRING", m_cgi.envp);
+    for(;;)
+    {
+        char ch = FCGX_GetChar(request.in);
+        if(ch != -1)
+            queryBody.append(ch);
+        else
+            break;
+    }
 }
 
 
 void Server::run()
 {
-  qDebug() << "Starting server thread...";
-  for(;;)
-  {
-    int err = FCGX_Accept_r(&m_cgi);
-    if (err)
+    DEBUG() << "Starting server thread...";
+    for(;;)
     {
-        qDebug() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
-      break;
+        int err = FCGX_Accept_r(&m_cgi);
+        DEBUG() << "=========== ACCEPTED: err = " << err << " =========== ";
+        if (err)
+        {
+            DEBUG() <<  QString("FCGX_Accept_r stopped: %1").arg(err);
+            break;
+        }
+
+        QString queryString;
+        QByteArray queryBody, response;
+        extractIncomingData(m_cgi,queryString,queryBody);
+
+        DEBUG() << "extracted: "   << queryBody;
+
+        response = process(queryBody);
+
+        int written = FCGX_PutStr(response.data(), response.size(), m_cgi.out);
+
+        if(written != response.size())
+        {
+            DEBUG() << "some data was loast during writing to the pipe";
+        }
+
+        FCGX_Finish_r(&m_cgi);
+        DEBUG() << "=========== FINISHED =========== ";
     }
-
-    QString queryString;
-    QByteArray queryBody, response;
-    extractIncomingData(m_cgi,queryString,queryBody);
-
-    qDebug() <<  QString("query: %1").arg(queryString);
-
-    response = process(queryBody);
-
-    int written = FCGX_PutStr(response.data(), response.size(), m_cgi.out);
-
-    if(written != response.size())
-    {
-      qDebug() << "some data was loast during writing to the pipe";
-    }
-
-    FCGX_Finish_r(&m_cgi);
-  }
 }
 
 
 void Server::serve()
 {
-  start();
+    start();
 }
 
 
 Server::~Server()
 {
-  wait();
-  FCGX_ShutdownPending();
+    wait();
+    FCGX_ShutdownPending();
 }

@@ -35,6 +35,7 @@
 #ifndef UPDATETHREAD_H
 #define UPDATETHREAD_H
 
+#if 0
 #include <QtSql>
 #include <QThread>
 #include <QReadWriteLock>
@@ -51,10 +52,10 @@ class UpdateThread: public QThread
 {
   Q_OBJECT
 
-    QSharedPointer<Channels>     m_channelsContainer;
-  QSharedPointer<DataMarks>    m_tagsContainer;
-  QSharedPointer<common::Users>        m_usersContainer;
-  QSharedPointer<DataChannels> m_dataChannelsMap;
+    QList<Channel>     m_channelsContainer;
+  QList<Tag>    m_tagsContainer;
+  QList<common::BasicUser>        m_usersContainer;
+  QSharedPointer<QList<Tag>> m_QList<Tag>Map;
   QSharedPointer<Sessions>     m_sessionsContainer;
 
   QueryExecutor* m_queryExecutor;
@@ -71,27 +72,25 @@ class UpdateThread: public QThread
   public:
 
     UpdateThread(
-      const QSharedPointer<DataMarks>& tags,
-      const QSharedPointer<common::Users>& users,
-      const QSharedPointer<Channels>& channels,
-      const QSharedPointer<DataChannels>& dataChannelsMap,
+      const QList<Tag>& tags,
+      const QList<common::BasicUser>& users,
+      const QList<Channel>& channels,
+      const QSharedPointer<QList<Tag>>& QList<Tag>Map,
       const QSharedPointer<Sessions>& sessions,
       QObject *parent = 0);
 
     UpdateThread(
-      const QSharedPointer<DataMarks>& tags,
-      const QSharedPointer<common::Users>& users,
-      const QSharedPointer<Channels>& channels,
-      const QSharedPointer<DataChannels>& dataChannelsMap,
+      const QList<Tag>& tags,
+      const QList<common::BasicUser>& users,
+      const QList<Channel>& channels,
+      const QSharedPointer<QList<Tag>>& QList<Tag>Map,
       const QSharedPointer<Sessions>& sessions,
       QueryExecutor* queryExecutor,
       QObject *parent = 0);
 
     void incrementTransactionCount(int i = 1);
 
-    void lockWriting();
-
-    void unlockWriting();
+    QReadWriteLock* getLock();
 
     void setQueryExecutor(QueryExecutor* queryExecutor);
     QSharedPointer<Sessions> getSessionsContainer() const;
@@ -105,4 +104,5 @@ class UpdateThread: public QThread
 
 };
 // UPDATETHREAD_H
+#endif
 #endif

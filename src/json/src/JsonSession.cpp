@@ -39,7 +39,7 @@
 
 qlonglong JsonSession::globalSessionId = 0;
 
-JsonSession::JsonSession(const QString &sessionToken, const QDateTime &lastAccessTime, const QSharedPointer<common::User> &user)
+JsonSession::JsonSession(const QString &sessionToken, const QDateTime &lastAccessTime, const common::BasicUser &user)
 : Session(sessionToken, lastAccessTime, user),
 m_id(globalSessionId++)
 {

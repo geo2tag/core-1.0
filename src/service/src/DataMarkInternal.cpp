@@ -41,50 +41,50 @@
 
 #include "DataMarkInternal.h"
 
-DbDataMark::DbDataMark(qlonglong id,
-double altitude,
-double latitude,
-double longitude,
-QString label,
-QString description,
-const QString &url,
-const QDateTime &time,
-qlonglong userId, qlonglong channelId):
-DataMark(altitude,latitude, longitude, label, description, url, time),
-m_id(id),
-m_userId(userId),
-m_channelId(channelId)
-{
-}
+//DbDataMark::DbDataMark(qlonglong id,
+//double altitude,
+//double latitude,
+//double longitude,
+//QString label,
+//QString description,
+//const QString &url,
+//const QDateTime &time,
+//qlonglong userId, qlonglong channelId):
+//Tag(altitude,latitude, longitude, label, description, url, time),
+//m_id(id),
+//m_userId(userId),
+//m_channelId(channelId)
+//{
+//}
 
 
-qlonglong DbDataMark::getId() const
-{
-  return m_id;
-}
+//qlonglong DbDataMark::getId() const
+//{
+//  return m_id;
+//}
 
 
-qlonglong DbDataMark::getUserId() const
-{
-  return m_userId;
-}
+//qlonglong DbDataMark::getUserId() const
+//{
+//  return m_userId;
+//}
 
 
-qlonglong DbDataMark::getChannelId() const
-{
-  return m_channelId;
-}
+//qlonglong DbDataMark::getChannelId() const
+//{
+//  return m_channelId;
+//}
 
 
-void DbDataMark::setId(qlonglong id)
-{
-  m_id=id;
-}
+//void DbDataMark::setId(qlonglong id)
+//{
+//  m_id=id;
+//}
 
 
-DbDataMark::~DbDataMark()
-{
-}
+//DbDataMark::~DbDataMark()
+//{
+//}
 
 
 /* ===[ End of file ]=== */

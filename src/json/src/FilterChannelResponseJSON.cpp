@@ -51,6 +51,8 @@
 #include "serializer.h"
 #endif
 
+#if 0
+
 FilterChannelResponseJSON::FilterChannelResponseJSON(QObject *parent) : JsonSerializer(parent)
 {
 }
@@ -67,7 +69,7 @@ QByteArray FilterChannelResponseJSON::getJson() const
 
   for(int i = 0; i < m_tags.size(); i++)
   {
-    QSharedPointer<DataMark> tag = m_tags.at(i);
+    QSharedPointer<Tag> tag = m_tags.at(i);
     QVariantMap jtag;
     jtag["id"] = tag->getId();
     jtag["title"] = tag->getLabel();
@@ -97,8 +99,9 @@ bool FilterChannelResponseJSON::parseJson(const QByteArray&)
 
 
 void FilterChannelResponseJSON::setData(QSharedPointer<Channel> channel,
-QList<QSharedPointer<DataMark> > tags)
+QList<QSharedPointer<Tag> > tags)
 {
   m_channel = channel;
   m_tags = tags;
 }
+#endif

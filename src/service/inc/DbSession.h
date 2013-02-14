@@ -48,7 +48,6 @@
 #include <QMap>
 #include "DataMarks.h"
 #include "Channel.h"
-#include "DataChannel.h"
 #include "User.h"
 #include "UpdateThread.h"
 #include "QueryExecutor.h"
@@ -57,26 +56,21 @@
 
 namespace common
 {
+
   /*!
    * \brief session with database
    */
   class DbObjectsCollection
   {
 
-    QSharedPointer<Channels>     m_channelsContainer;
-    QSharedPointer<DataMarks>    m_tagsContainer;
-    QSharedPointer<Users>        m_usersContainer;
-    QSharedPointer<DataChannels> m_dataChannelsMap;
-    QSharedPointer<Sessions>     m_sessionsContainer;
-
-    UpdateThread *              m_updateThread;
+    QList<Channel>     m_channelsContainer;
+    QList<Tag>    m_tagsContainer;
+//    QSharedPointer<QList<tag>> m_QList<Tag>Map;
 
     typedef QByteArray (DbObjectsCollection::*ProcessMethod)(const QByteArray&);
     typedef QByteArray (DbObjectsCollection::*ProcessMethodWithStr)(const QString&);
 
     QMap<QString, ProcessMethod> m_processors;
-
-    QueryExecutor *             m_queryExecutor;
 
     static const QString error;
     static const QString ok;
@@ -87,16 +81,13 @@ namespace common
     void autoInitdatabase();
 
     const QString getPasswordHash(const QString & login, const QString & pasword) const;
-    const QString getPasswordHash(const QSharedPointer<User>& user)  const;
+    const QString getPasswordHash(const common::BasicUser& user)  const;
 
     bool checkPasswordQuality(const QString& password) const;
 
-    const QString generateNewPassword(const QSharedPointer<common::User>& user) const;
+    const QString generateNewPassword(const common::BasicUser& user) const;
 
-    QSharedPointer<User> findUser(const QSharedPointer<User>&) const;
-    QSharedPointer<User> findUser(const QString&) const;
-    QSharedPointer<Session> findSession(const QSharedPointer<Session>&) const;
-    QSharedPointer<Session> findSessionForUser(const QSharedPointer<User>&) const;
+    common::BasicUser findUser(const common::BasicUser &dummyUser) const;
 
     QByteArray processRegisterUserQuery(const QByteArray&);
     QByteArray processConfirmRegistrationQuery(const QString&);
@@ -136,10 +127,14 @@ namespace common
     public:
 
       static DbObjectsCollection& getInstance();
+      static void init();
 
       QByteArray process(const QString& queryType, const QByteArray& body);
 
       ~DbObjectsCollection();
+
+      static QString getPlatformVersion();
+      static QString getPlatformBuildInfo();
 
     private:
       DbObjectsCollection(const DbObjectsCollection& obj);

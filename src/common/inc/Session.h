@@ -41,31 +41,42 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QDateTime>
+#include <QDebug>
 
 #include "User.h"
 
-class Session : public QObject
+class Session
 {
   private:
-    QString      m_sessionToken;
-    QDateTime    m_lastAccessTime;
-    QSharedPointer<common::User> m_user;
+    QString             m_token;
+    QDateTime           m_accessTime;
+    common::BasicUser   m_user;
 
   public:
-    Session(const QString& sessionToken, const QDateTime& lastAccessTime, const QSharedPointer<common::User>& user);
+
+    Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
+            const common::BasicUser& user=common::BasicUser());
+    Session(const Session& obj);
+    Session();
+    Session& operator=(const Session& obj);
 
     void setSessionToken(const QString& sessionToken);
-    void setLastAccessTime(const QDateTime lastAccessTime);
-    void setUser(const QSharedPointer<common::User>& user);
+    void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
+    void setUser(const common::BasicUser& user);
+
+    bool isValid() const { return !m_token.isEmpty(); }
 
     const QString& getSessionToken() const;
     const QDateTime& getLastAccessTime() const;
-    const QSharedPointer<common::User>& getUser() const;
+    common::BasicUser getUser() const;
 
-    virtual qlonglong getId() const;
+    static QString generateToken(const common::BasicUser& user);
 
-    ~Session();
+    virtual ~Session();
 };
+
+QDebug& operator<<(QDebug &dbg, Session const& session);
+
 
 typedef ConcurrentVector<Session> Sessions;
 #endif                                  // SESSION_H

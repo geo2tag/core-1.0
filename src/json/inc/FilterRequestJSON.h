@@ -71,7 +71,7 @@ class FilterRequestJSON : public JsonSerializer
     double getAltitude1() const;
     double getAltitude2() const;
 
-    void setChannel(const QSharedPointer<Channel> &channel);
+    void setChannel(const Channel &channel);
 
     bool parseJson(const QByteArray&);
 };                                      // class FilterRequestJSON

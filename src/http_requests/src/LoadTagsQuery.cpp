@@ -49,7 +49,7 @@
 #include "JsonUser.h"
 #include "JsonSession.h"
 
-LoadTagsQuery::LoadTagsQuery(QSharedPointer<Session> &session,
+LoadTagsQuery::LoadTagsQuery(const Session &session,
 double latitude,
 double longitude,
 double radius,
@@ -67,7 +67,7 @@ LoadTagsQuery::LoadTagsQuery(QObject *parent): DefaultQuery(parent)
 }
 
 
-void LoadTagsQuery::setQuery(QSharedPointer<Session> &session,
+void LoadTagsQuery::setQuery(const Session &session,
 double latitude,
 double longitude,
 double radius)
@@ -96,13 +96,13 @@ void LoadTagsQuery::processResponse(const QByteArray &data)
 {
   LoadTagsResponseJSON response;
   response.parseJson(data);
-  m_hashMap = response.getData();
+  m_tag = response.getData();
 }
 
 
-const DataChannels& LoadTagsQuery::getData() const
+QList<Tag> LoadTagsQuery::getData() const
 {
-  return m_hashMap;
+  return m_tag;
 }
 
 

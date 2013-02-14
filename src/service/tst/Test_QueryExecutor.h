@@ -51,7 +51,6 @@ namespace Test
     Q_OBJECT
 
       QSharedPointer<QueryExecutor> m_queryExecutor;
-    Geo2tagDatabase m_database;
 
     private:
       QSharedPointer<common::User> createTestUser(const QString& login,
@@ -65,7 +64,7 @@ namespace Test
         const QSharedPointer<common::User>& user);
       QSharedPointer<Channel> createTestChannel(const QString& name, const QString& description, const QString& url,
         const QSharedPointer<common::User>& owner);
-      QSharedPointer<DataMark> createTestTag(double altitude, double latitude, double longitude,
+      QSharedPointer<Tag> createTestTag(double altitude, double latitude, double longitude,
         const QString& label, const QString& description, const QString& url, const QDateTime& time,
         const QSharedPointer<common::User>& user,
         const QSharedPointer<Channel>& channel);
@@ -73,7 +72,7 @@ namespace Test
       bool deleteTestTmpUser(const QSharedPointer<common::User>& user);
       bool deleteTestSession(const QSharedPointer<Session>& session);
       bool deleteTestChannel(const QSharedPointer<Channel>& channel);
-      bool deleteTestTag(const QSharedPointer<DataMark>& tag);
+      bool deleteTestTag(const QSharedPointer<Tag>& tag);
 
     private slots:
       void subscribeChannel();

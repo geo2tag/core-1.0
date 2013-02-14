@@ -52,7 +52,7 @@ ShapeFilter::~ShapeFilter()
 }
 
 
-bool ShapeFilter::filtrate(const QSharedPointer<DataMark> &mark)
+bool ShapeFilter::filtrate(const Tag &mark)
 {
   return m_shape->filtrate(mark);
 }

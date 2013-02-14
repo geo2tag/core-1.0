@@ -27,7 +27,6 @@ MarksHistory_TestObj.h \
 ../../../../common/inc/ConcurrentVector.h \
 ../../../../common/inc/defines.h \
 ../../../../common/inc/SettingsStorage.h \
-../../../../common/inc/DataChannel.h
 
 SOURCES += main.cpp \
 ../lib-meego-client/markshistory.cpp \

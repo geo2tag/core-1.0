@@ -51,39 +51,40 @@
 #include "ConcurrentVector.h"
 //#include "Channel.h"
 
-class DataMark: public QObject
+class Tag
 {
-  Q_OBJECT
+
     double m_altitude;
-  double m_latitude;
-  double m_longitude;
+    double m_latitude;
+    double m_longitude;
 
-  QString m_label;
-  QString m_description;
-  QString m_url;
-  QDateTime m_time;
+    QString m_label;
+    QString m_description;
+    QString m_url;
+    QDateTime m_time;
 
-  QSharedPointer<common::User> m_user;
+    common::BasicUser m_user;
+    Channel           m_channel;
 
-  QSharedPointer<Session> m_session;
+public:
 
-  QSharedPointer<Channel> m_channel;
+    Tag(double altitude =0.0,
+        double latitude =0.0,
+        double longitude =0.0,
+        QString label="",
+        QString description="",
+        QString url="",
+        QDateTime time=QDateTime::currentDateTime());
+    Tag(const Tag& tag);
+    Tag& operator=(const Tag& obj);
 
-  public:
 
-    DataMark(double altitude, double latitude, double longitude, QString label,
-                                        // TODO add altitude to constructor
-      QString description, QString url, QDateTime time);
+    void setUser(const common::BasicUser& user);
+    void setChannel(const Channel& channel);
 
-    void setUser(QSharedPointer<common::User> user);
+    void copyFrom(const Tag& obj);
 
-    void setSession(QSharedPointer<Session> session);
-
-    void setChannel(QSharedPointer<Channel> channel);
-
-  public:
-
-    virtual qlonglong getId() const;
+public:
 
     void setDescription(const QString&);
     const QString& getDescription() const;
@@ -106,19 +107,20 @@ class DataMark: public QObject
     const QDateTime& getTime() const;
     void setTime(const QDateTime& time=QDateTime::currentDateTime().toUTC());
 
-    QSharedPointer<common::User> getUser() const;
+    common::BasicUser getUser() const;
 
-    QSharedPointer<Session> getSession() const;
+    Channel getChannel() const;
 
-    QSharedPointer<Channel> getChannel() const;
     static double getDistance(double lat1, double lon1, double lat2, double lon2);
 
-    virtual ~DataMark();
+    virtual ~Tag();
 };
 
-bool operator<(const QSharedPointer<DataMark> &a, const QSharedPointer<DataMark> &b);
+QDebug& operator<<(QDebug& dbg, const Tag& tag);
 
-typedef ConcurrentVector<DataMark> DataMarks;
+bool operator<(const Tag &a, const Tag &b);
+
+typedef ConcurrentVector<Tag> DataMarks;
 //_DataMarks_H_E8A2619E_0BF6_4AE8_BB61_F09B92F73637_INCLUDED_
 #endif
 
