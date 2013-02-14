@@ -95,7 +95,7 @@ void EmailMessage::send() const
 
 void EmailMessage::sendAsRegistrationLetter(const QString& info)
 {
-  QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
+  QString serverUrl = SettingsStorage::getValue("common/server_url", QVariant(DEFAULT_SERVER)).toString();
   QString subject = SettingsStorage::getValue("mail/subject", QVariant(DEFAULT_REGISTRATION_EMAIL_SUBJECT)).toString();
   QString body = SettingsStorage::getValue("mail/body", QVariant(DEFAULT_REGISTRATION_EMAIL_BODY)).toString();
 

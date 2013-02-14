@@ -166,13 +166,13 @@ DbObjectsCollection::~DbObjectsCollection()
 
 QString DbObjectsCollection::getPlatformVersion()
 {
-    QString version = SettingsStorage::getValue("database/password",QString("UNKNOWN VERSION")).toString();
+    QString version = SettingsStorage::getValue("common/version",QString("UNKNOWN VERSION")).toString();
     return version;
 }
 
 QString DbObjectsCollection::getPlatformBuildInfo()
 {
-    QString build = SettingsStorage::getValue("general/build",QString("UNKNOWN BUILD")).toString();
+    QString build = SettingsStorage::getValue("common/build",QString("UNKNOWN BUILD")).toString();
     return build;
 }
 
@@ -383,7 +383,7 @@ const QString DbObjectsCollection::generateNewPassword(const common::BasicUser& 
 
 //    //    response.setErrno(SUCCESS);
 
-//    //    QString serverUrl = SettingsStorage::getValue("general/server_url", QVariant(DEFAULT_SERVER)).toString();
+//    //    QString serverUrl = SettingsStorage::getValue("common/server_url", QVariant(DEFAULT_SERVER)).toString();
 //    //    response.setConfirmUrl(serverUrl+QString("service/confirmRegistration-")+confirmToken);
 //    //    answer.append(response.getJson());
 //    //    DEBUG() << "answer: " <<  answer.data();

@@ -91,7 +91,7 @@ public:
         m_database.setUserName("test_user");
         m_database.open();
 
-        m_updateInterval = SettingsStorage::getValue("general/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
+        m_updateInterval = SettingsStorage::getValue("common/db_update_interval", QVariant(DEFAULT_DB_UPDATE_INTERVAL)).toLongLong();
 
     }
 

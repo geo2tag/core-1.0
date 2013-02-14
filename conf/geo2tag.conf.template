@@ -5,11 +5,11 @@ restore_pwd_subject=Geo2tag Password Restoring
 restore_pwd_body=New password:
 
 
-[general]
+[common]
 #server_url=http://tracks.osll.spb.ru:81/
 #server_port=81
 version=${VERSION}
-build=Database: ${DB_NAME}, git ${GIT}
+build=Database: ${DB_NAME}, git: ${GIT}
 session_timelife=3
 config_file=/usr/share/wikigps/wikigps.conf
 transaction_diff=0
