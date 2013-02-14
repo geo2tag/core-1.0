@@ -8,8 +8,8 @@ restore_pwd_body=New password:
 [general]
 #server_url=http://tracks.osll.spb.ru:81/
 #server_port=81
-geo2tag_version=${VERSION}
-geo2tag_build=Database: ${DB_NAME}, git ${GIT}
+version=${VERSION}
+build=Database: ${DB_NAME}, git ${GIT}
 session_timelife=3
 config_file=/usr/share/wikigps/wikigps.conf
 transaction_diff=0
