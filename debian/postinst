@@ -4,9 +4,9 @@ TIME=`date +%Y%m%d%H%M%S`;
 VERSION=`cat /opt/geo2tag/VERSION`
 GIT=`cat /opt/geo2tag/HEAD`
 
-create_db_user()
+
+update_pg_config()
 {
-	sudo -u postgres createuser -s geo2tag
 	pg_hba_pos=`find /etc/postgresql -name pg_hba.conf`;
 	pg_hba_us="/opt/geo2tag/conf/pg_hba.conf";
 
@@ -37,6 +37,12 @@ create_db_user()
 			echo "Use $pg_hba_us as example to configure your pg_hba.conf" 
 		fi
 	fi
+}
+
+create_db_user()
+{
+	sudo -u postgres createuser -s geo2tag
+
 	sudo -u postgres psql --command="ALTER USER geo2tag WITH PASSWORD 'geo2tag';"
 }
 
@@ -57,6 +63,9 @@ EOF"
 
 
 /etc/init.d/lighttpd stop
+
+update_pg_config
+
 /etc/init.d/postgresql restart
 
 # down will be DB initialization
