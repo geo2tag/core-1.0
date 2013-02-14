@@ -132,6 +132,10 @@ DbObjectsCollection::DbObjectsCollection()
 //    m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
 
 
+    WARNING() << "Platform version: " << getPlatformVersion();
+    WARNING() << "Platform build info: " << getPlatformBuildInfo();
+
+
     //GT-817 Now is only QPSQL base is supported
     QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
 
