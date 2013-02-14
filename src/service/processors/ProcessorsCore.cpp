@@ -275,10 +275,8 @@ QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
     VersionResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    QString version = SettingsStorage::getValue("general/version").toString();
-
     response.setErrno(SUCCESS);
-    response.setVersion(version);
+    response.setVersion(getPlatformVersion());
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
