@@ -1,4 +1,4 @@
-geo2tag-core (0.21-rc1) precise; urgency=low
+geo2tag-core (0.25-rc2) precise; urgency=low
 
   * [GT-566] - Implement new type of filters 
   * [GT-763] - Geo2tag continuous integration
