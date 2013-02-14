@@ -804,15 +804,18 @@ bool QueryExecutor::isSubscribed(const common::BasicUser &user, const Channel &c
 
 qlonglong QueryExecutor::getFactTransactionNumber()
 {
-    QSqlQuery query=makeQuery();
+    NOT_IMPLEMENTED();
 
-    query.exec("select tup_inserted ,tup_updated ,tup_deleted from  pg_stat_database where datname='geo2tag';");
-    query.next();
-    qlonglong factCount = query.record().value("tup_inserted").toLongLong() +
-            query.record().value("tup_updated").toLongLong() +
-            query.record().value("tup_deleted").toLongLong();
+//    QSqlQuery query=makeQuery();
 
-    return factCount;
+//    query.exec("select tup_inserted ,tup_updated ,tup_deleted from  pg_stat_database where datname='geo2tag';");
+//    query.next();
+//    qlonglong factCount = query.record().value("tup_inserted").toLongLong() +
+//            query.record().value("tup_updated").toLongLong() +
+//            query.record().value("tup_deleted").toLongLong();
+
+//    return factCount;
+    return 0;
 }
 
 QSqlQuery QueryExecutor::makeQuery()
