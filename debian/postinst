@@ -10,6 +10,8 @@ create_db_user()
 	pg_hba_pos=`find /etc/postgresql -name pg_hba.conf`;
 	pg_hba_us="/opt/geo2tag/conf/pg_hba.conf";
 
+	echo "Replace ${pg_hba_pos} <- ${pg_hba_us}"
+
 	echo "sudo -u postgres psql --command=\"ALTER USER"
 
 	# if more than one pg_hba.conf found
@@ -28,9 +30,9 @@ create_db_user()
 		echo "Answer is $answ"
 		if [[ "$answ" == "y" ]] || [[ "$answ" == "Y" ]]
 		then
-			sudo cp "$pg_hba_pos" "$pg_hba_pos.backup"
-			sudo cp "$pg_hba_us" "$pg_hba_pos"
-			sudo /etc/init.d/postgresql restart
+			mv "$pg_hba_pos" "$pg_hba_pos.backup"
+			mv "$pg_hba_us" "$pg_hba_pos"
+			 /etc/init.d/postgresql restart
 		else
 			echo "Use $pg_hba_us as example to configure your pg_hba.conf" 
 		fi
@@ -68,7 +70,7 @@ then
 	if [[ -n "$isDbExists" ]] 
 	then
 
-    DB_NAME="geo2tag-${TIME}"
+    DB_NAME="geo2tag${TIME}"
 		echo "Db exists. Generated name ${DB_NAME}"
 		create_db
 	else
