@@ -44,42 +44,49 @@
 #endif
 
 #if 0
-RegisterUserRequestJSON::RegisterUserRequestJSON(QObject *parent) : JsonSerializer(parent)
+RegisterUserRequestJSON::RegisterUserRequestJSON (QObject * parent):JsonSerializer
+  (parent)
 {
 }
 
 
-RegisterUserRequestJSON::RegisterUserRequestJSON(const common::BasicUser &user, QObject *parent)
-: JsonSerializer(parent)
+RegisterUserRequestJSON::RegisterUserRequestJSON (const common::
+						  BasicUser & user,
+						  QObject * parent):
+JsonSerializer (parent)
 {
-  m_usersContainer->push_back(user);
+  m_usersContainer->push_back (user);
 }
 
 
-QByteArray RegisterUserRequestJSON::getJson() const
+QByteArray
+RegisterUserRequestJSON::getJson () const const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert("email", m_usersContainer->at(0)->getEmail());
-  obj.insert("login", m_usersContainer->at(0)->getLogin());
-  obj.insert("password", m_usersContainer->at(0)->getPassword());
-  return serializer.serialize(obj);
+  obj.insert ("email", m_usersContainer->at (0)->getEmail ());
+  obj.insert ("login", m_usersContainer->at (0)->getLogin ());
+  obj.insert ("password", m_usersContainer->at (0)->getPassword ());
+  return serializer.serialize (obj);
 }
 
 
-bool RegisterUserRequestJSON::parseJson(const QByteArray &data)
+bool
+RegisterUserRequestJSON::parseJson (const QByteArray & data)
 {
-  clearContainers();
+  clearContainers ();
 
   QJson::Parser parser;
   bool ok;
-  QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
+  QVariantMap result = parser.parse (data, &ok).toMap ();
+  if (!ok)
+    return false;
 
-  QString email = result["email"].toString();
-  QString login = result["login"].toString();
-  QString password = result["password"].toString();
-  m_usersContainer->push_back(common::BasicUser(new JsonUser(login, password,email)));
+  QString email = result["email"].toString ();
+  QString login = result["login"].toString ();
+  QString password = result["password"].toString ();
+  m_usersContainer->
+    push_back (common::BasicUser (new JsonUser (login, password, email)));
   return true;
 }
 #endif

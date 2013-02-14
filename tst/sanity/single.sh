@@ -58,6 +58,9 @@ then
 #        exit 1
 fi
 
+response_errno=`curl   -d "{\"auth_token\":"$auth_token"}" http://${INSTANCE}/service/errnoInfo`;
+echo " test [ErrnoInfo] - $response_errno"
+
 #response_incorrect_json_test=`curl   -d '{"login":"Markpassword":"test"}'  http://${INSTANCE}/service/login`;
 #echo "Incorrect Json test - $response_incorrect_json_test"
 #correct_result_incorrect_json='{ "errno" : 9 }';

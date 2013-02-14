@@ -663,7 +663,7 @@ QByteArray DbObjectsCollection::processBuildQuery(const QByteArray&)
     BuildResponseJSON response;
     QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
-    QString version = SettingsStorage::getValue("general/geo2tag_build",QString("UNKNOWN, non-official release")).toString();
+    QString version = SettingsStorage::getValue("general/build",QString("UNKNOWN, non-official release")).toString();
 
     response.setErrno(SUCCESS);
     response.setVersion(version);

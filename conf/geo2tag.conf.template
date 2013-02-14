@@ -6,8 +6,8 @@ restore_pwd_body=New password:
 
 
 [general]
-server_url=http://tracks.osll.spb.ru:81/
-server_port=81
+#server_url=http://tracks.osll.spb.ru:81/
+#server_port=81
 geo2tag_version=0.21-bugfix
 geo2tag_build=
 session_timelife=3
@@ -19,11 +19,11 @@ db_update_interval=12000
 tmp_user_timelife=2 days
 
 [database]
-name=geo2tag
+name=${DB_NAME}
 user=geo2tag
 password=geo2tag
 host=localhost
-autoinit=true
+#autoinit=true
 
 
 [Tracker_Settings]
