@@ -193,17 +193,12 @@ void MetaCache::reloadSessions()
 
 bool MetaCache::checkUser(BasicUser &user)
 {
-    QueryExecutor::instance()->lo
-    !!
-    QReadLocker lock(&s_usersLock);
 
-    common::BasicUser u;
-    foreach(u,s_users)
-    {
-        if(u==user)
-            return true;
-    }
-    return false;
+    BasicUser bu = QueryExecutor::instance()->getUser(user.getLogin());
+
+    DEBUG() << "Checking " << user << " ->" << bu.isValid();
+
+    return bu.isValid();
 }
 
 bool MetaCache::testChannel(BasicUser &user, const Channel& channel)

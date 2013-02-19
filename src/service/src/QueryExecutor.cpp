@@ -452,72 +452,6 @@ bool QueryExecutor::deleteSession(const Session &session)
 }
 
 
-void QueryExecutor::checkTmpUsers()
-{
-    QSqlQuery checkQuery=makeQuery();
-    QSqlQuery deleteQuery=makeQuery();
-    DEBUG() << "checkTmpUsers query is running now...";
-    // Sending emails to new users
-    checkQuery.exec("select id, email, registration_token from signups where sent = false;");
-    while (checkQuery.next())
-    {
-        qlonglong id = checkQuery.value(0).toLongLong();
-        QString email = checkQuery.value(1).toString();
-        QString token = checkQuery.value(2).toString();
-
-        DEBUG() <<  "Process registration confirmation is started... ";
-        EmailMessage message(email);
-        message.sendAsRegistrationLetter(token);
-        DEBUG() <<  "Process registration confirmation finished... ";
-
-        QSqlQuery updateQuery=makeQuery();
-        updateQuery.prepare("update signups set sent = true where id = :id;");
-        updateQuery.bindValue(":id", id);
-        bool result = updateQuery.exec();
-        transaction();
-        if(!result)
-        {
-            DEBUG() << "Rollback for CheckTmpUser sql query";
-            rollback();
-        }
-        else
-        {
-            DEBUG() << "Commit for CheckTmpUser sql query";
-            commit();
-        }
-    }
-
-    // Deleting old signups
-    QString strQuery;
-
-    QString timelife = SettingsStorage::getValue("registration/tmp_user_timelife", QVariant(DEFAULT_TMP_USER_TIMELIFE)).toString();
-
-    strQuery.append("select id from signups where (now() - datetime) >= INTERVAL '");
-    strQuery.append(timelife);
-    strQuery.append("';");
-    checkQuery.exec(strQuery.toStdString().c_str());
-    while (checkQuery.next())
-    {
-        qlonglong id = checkQuery.value(0).toLongLong();
-        deleteQuery.prepare("delete from signups where id = :id;");
-        deleteQuery.bindValue(":id", id);
-        DEBUG() << "Deleting: " << deleteQuery.lastQuery();
-        transaction();
-        bool result = deleteQuery.exec();
-        if(!result)
-        {
-            DEBUG() << "Rollback for DeleteTmpUser sql query";
-            rollback();
-        }
-        else
-        {
-            DEBUG() << "Commit for DeleteTmpUser sql query";
-            commit();
-        }
-    }
-}
-
-
 
 QList<common::BasicUser> QueryExecutor::loadUsers()
 {
@@ -536,18 +470,18 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
 
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
-    common::BasicUser result;
     QSqlQuery query=makeQuery();
     QString qry("select id, login, password, email from users order by id where login='%1';");
-    query.exec(qry.arg(login);
+
+    query.exec(qry.arg(login));
     if (query.next())
     {
         QString login = query.record().value("login").toString();
         QString password = query.record().value("password").toString();
         QString email = query.record().value("email").toString();
-        result.push_back(common::BasicUser(login,password,email));
+        return common::BasicUser(login,password,email);
     }
-    return result;
+    return common::BasicUser();
 }
 
 QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
