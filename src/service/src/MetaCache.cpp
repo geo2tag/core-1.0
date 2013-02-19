@@ -193,6 +193,8 @@ void MetaCache::reloadSessions()
 
 bool MetaCache::checkUser(BasicUser &user)
 {
+    QueryExecutor::instance()->lo
+    !!
     QReadLocker lock(&s_usersLock);
 
     common::BasicUser u;

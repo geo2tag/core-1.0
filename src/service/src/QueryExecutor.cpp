@@ -534,6 +534,22 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
     return result;
 }
 
+common::BasicUser QueryExecutor::getUser(const QString &login)
+{
+    common::BasicUser result;
+    QSqlQuery query=makeQuery();
+    QString qry("select id, login, password, email from users order by id where login='%1';");
+    query.exec(qry.arg(login);
+    if (query.next())
+    {
+        QString login = query.record().value("login").toString();
+        QString password = query.record().value("password").toString();
+        QString email = query.record().value("email").toString();
+        result.push_back(common::BasicUser(login,password,email));
+    }
+    return result;
+}
+
 QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
 {
     QList<Channel> container;

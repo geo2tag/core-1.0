@@ -85,10 +85,11 @@ public:
     bool                     updateSession(Session& session);
     bool                     deleteSession(const Session& session);
 
-    void checkTmpUsers();
-    //void checkSessions(UpdateThread* thread);
-
     QList<common::BasicUser> loadUsers();
+
+    common::BasicUser getUser(const QString& login);
+
+
     QList<Channel> getChannelsByOwner(const common::BasicUser& user );
     QList<Channel> getSubscribedChannels(const common::BasicUser& user );
     QList<Tag> loadTags();
