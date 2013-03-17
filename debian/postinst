@@ -59,6 +59,11 @@ make_default_config()
 `cat /opt/geo2tag/geo2tag.conf.template`
 EOF"
  eval "$CONFIG" > /opt/geo2tag/geo2tag.conf
+
+ # Log file creation and permission setting
+ touch /var/log/geo2tag.log
+ chown www-data /var/log/geo2tag.log
+ chmod 744 /var/log/geo2tag.log
 }
 
 
