@@ -99,12 +99,35 @@ void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user
 
 bool MetaCache::addUser(const common::BasicUser &user)
 {
-    return QueryExecutor::instance()->insertNewUser(user);
+    bool result = QueryExecutor::instance()->insertNewUser(user);
+    if (result)
+    {
+        QWriteLocker lock(&s_usersLock);
+	s_users.push_back(user);
+    }
+    return result;
 }
 
 bool MetaCache::deleteUser(const BasicUser &user)
 {
-    return QueryExecutor::instance()->deleteUser(user);
+    bool result = QueryExecutor::instance()->deleteUser(user);
+
+    if (result)
+    {
+      BasicUser u;
+      foreach (u, s_users)
+      {
+        if (u.getLogin() == user.getLogin())
+	{
+          QWriteLocker lock(&s_usersLock);
+          s_users.removeOne(u);
+	  break;
+        }
+
+      }
+    }   
+
+    return result;
 }
 
 void MetaCache::insertSession(const Session& session)
@@ -235,6 +258,19 @@ void MetaCache::initUsers()
     DEBUG() << "Initializing Users";
     s_users=QueryExecutor::instance()->loadUsers();
     DEBUG() << "Loaded " << s_users.size() << "users";
+}
+
+BasicUser MetaCache::findUserByName(const QString& name){
+    BasicUser u;
+ 
+    foreach(u,s_users)
+    {
+        if(u.getLogin() == name)
+            return u;
+    }
+
+    return BasicUser();
+
 }
 
 void MetaCache::initSessions()

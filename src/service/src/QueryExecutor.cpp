@@ -245,7 +245,24 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 
     qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
     DEBUG() << "stmt=" << qry;
-    return newUserQuery.exec(qry);
+
+    transaction();
+    bool result = newUserQuery.exec(qry);
+
+    if  (result ){
+
+	commit();
+	DEBUG() << "insertNewUser commit";
+	return true;	
+    }else {
+
+	rollback();
+	DEBUG() << "insertNewUser rollback";
+	return false;	
+	
+    }	
+
+
 }
 
 
@@ -471,7 +488,10 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select id, login, password, email from users order by id where login='%1';");
+    QString qry("select id, login, password, email from users where login='%1';");
+    
+
+    DEBUG() << "QueryExecutor::getUser " << login;
 
     query.exec(qry.arg(login));
     if (query.next())

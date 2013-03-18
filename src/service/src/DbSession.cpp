@@ -604,7 +604,6 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
             return answer;
     }
 
-    ;
 
     if(!Core::MetaCache::addUser(user))
     {
@@ -616,6 +615,8 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 
     response.addUser(user);
     response.setErrno(SUCCESS);
+
+
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;

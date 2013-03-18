@@ -104,6 +104,8 @@ namespace Core
       static bool writeTag(const Tag& tag);
       static QList<Tag> loadTagsFromChannel(const Channel& channel);
 
+      static BasicUser findUserByName(const QString& name);
+
   protected:
 
       static void initUsers();

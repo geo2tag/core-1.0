@@ -40,11 +40,13 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     }
 
     common::BasicUser user = request.getUser();
+    common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
     DEBUG() << "user=" << user;
 
     bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
+    bool passwordMatches = (user.getPassword() == realUser.getPassword());
 
-    if(user.isValid() && secirutyEnabled)
+    if(realUser.isValid() && !passwordMatches && secirutyEnabled)
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
         DEBUG() << "Incorrect credentilas, security/enabled=" << secirutyEnabled;
