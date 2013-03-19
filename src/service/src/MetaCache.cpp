@@ -91,10 +91,15 @@ QList<Channel> MetaCache::getChannels()
     return   s_channels;
 }
 
-void MetaCache::addChannel(const Channel &channel, const common::BasicUser& user)
+bool MetaCache::addChannel(const Channel &channel, const common::BasicUser& user)
 {
-    QueryExecutor::instance()->insertNewChannel(channel, user);
-    s_channels.push_back(Channel(channel));
+    bool result = QueryExecutor::instance()->insertNewChannel(channel, user);
+    
+    if (result){
+      DEBUG() << "Adding to memory channel " << channel.getName();
+      s_channels.push_back(Channel(channel));
+    }
+    return result;
 }
 
 bool MetaCache::addUser(const common::BasicUser &user)
@@ -186,6 +191,7 @@ Channel MetaCache::findChannel(const QString &name)
     QReadLocker lock(&s_channelsLock);
     foreach(ch,s_channels)
     {
+	DEBUG() << "Checking channel " << ch.getName(); 
         if(ch.getName() == name)
             return ch;
     }
@@ -288,7 +294,11 @@ void MetaCache::initChannels()
 #ifdef GEO2TAG_LITE
     // initialization is not supported;
 #else
-    NOT_IMPLEMENTED();
+    QWriteLocker lock(&s_cacheLock);
+
+    DEBUG() << "Initializing Channels";
+    s_channels=QueryExecutor::instance()->loadChannels();
+    DEBUG() << "Loaded " << s_users.size() << "channels";
 #endif
 }
 

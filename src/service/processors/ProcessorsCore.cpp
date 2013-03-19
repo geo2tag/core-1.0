@@ -223,8 +223,18 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
     }
 
     Channel channel = request.getChannel();
+    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
 
-    if(!QueryExecutor::instance()->insertNewChannel(channel,session.getUser()))
+    if(realChannel.isValid())
+    {
+        qWarning() << "CHANNEL_ALREADY_EXIST_ERROR";
+        response.setErrno(CHANNEL_ALREADY_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+
+    }
+
+    if(!Core::MetaCache::addChannel(channel,session.getUser()))
     {
         qWarning() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);

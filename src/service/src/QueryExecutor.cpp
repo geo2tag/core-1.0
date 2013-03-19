@@ -176,14 +176,12 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     {
         DEBUG() << "Rollback for NewChannel sql query";
         rollback();
-        return false;
-    }else
+    }else{
         DEBUG() << "Commit for NewChannel sql query - insert in table channel";
-
-    commit();
-
+        commit();
+    }
     //QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel.getName(),channel.getDescription(),channel.getUrl(),channel.getOwner()));
-    return true;
+    return result;
 }
 
 bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
