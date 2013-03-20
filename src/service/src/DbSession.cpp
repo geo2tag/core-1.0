@@ -488,7 +488,7 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
         return answer;
     }
 
-    BasicUser user = request.getUser();
+    BasicUser user = session.getUser();
     QList<Channel> channels = Core::MetaCache::getChannelsByOwner(user);
 
     response.setChannels(channels);
@@ -519,7 +519,7 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
         return answer;
     }
 
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(request.getUser());
+    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(session.getUser());
     response.setChannels(channels);
 
     response.setErrno(SUCCESS);
