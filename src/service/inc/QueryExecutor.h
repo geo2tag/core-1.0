@@ -88,6 +88,7 @@ public:
     QList<common::BasicUser> loadUsers();
 
     common::BasicUser getUser(const QString& login);
+    common::BasicUser getUserById(qlonglong id);
 
 
     QList<Channel> getChannelsByOwner(const common::BasicUser& user );

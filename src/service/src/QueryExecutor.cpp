@@ -502,6 +502,25 @@ common::BasicUser QueryExecutor::getUser(const QString &login)
     return common::BasicUser();
 }
 
+common::BasicUser QueryExecutor::getUserById(qlonglong id)
+{
+    QSqlQuery query=makeQuery();
+    QString qry("select login, password, email from users where id='%1';");
+    qry = qry.arg(id);
+
+    DEBUG() << "QueryExecutor::getUserById " << qry;
+
+    query.exec(qry);
+    if (query.next())
+    {
+        QString login = query.record().value("login").toString();
+        QString password = query.record().value("password").toString();
+        QString email = query.record().value("email").toString();
+        return common::BasicUser(login,password,email);
+    }
+    return common::BasicUser();
+}
+
 QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
 {
     QList<Channel> container;
@@ -605,8 +624,11 @@ QList<Tag> QueryExecutor::loadTags()
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
+	qlonglong userId = query.record().value("user_id").toLongLong();
+	common::BasicUser user = getUserById(userId);
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
+	tag.setUser(user);
         container.push_back(tag);
     }
     return container;
@@ -632,10 +654,12 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
-        //        qlonglong userId = query.record().value("user_id").toLongLong();
+        qlonglong userId = query.record().value("user_id").toLongLong();
+	common::BasicUser user = getUserById(userId);
         //        qlonglong channelId = query.record().value("channel_id").toLongLong();
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
+	tag.setUser(user);
         container.push_back(tag);
     }
     DEBUG() << ".... done, amount = " << container.size();
