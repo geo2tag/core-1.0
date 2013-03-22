@@ -561,7 +561,7 @@ QList<Channel> QueryExecutor::getSubscribedChannels(const common::BasicUser &use
     QList<Channel> container;
     qlonglong userId = QueryExecutor::instance()->getUserIdByName(user.getLogin());
 
-    QString qry("select channel.name, channel.description, channel.url from channel, users, subscribe where subscribe.channel_id=channel.id and users.id =%1;");
+    QString qry("select channel.name, channel.id, channel.description, channel.url from channel inner join subscribe on channel.id = subscribe.channel_id inner join users on subscribe.user_id = users.id where users.id=%1;");
 
     query.exec(qry.arg(userId));
 
