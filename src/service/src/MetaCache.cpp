@@ -264,6 +264,11 @@ void MetaCache::initUsers()
     DEBUG() << "Initializing Users";
     s_users=QueryExecutor::instance()->loadUsers();
     DEBUG() << "Loaded " << s_users.size() << "users";
+    BasicUser u;
+    foreach(u, s_users)
+    {
+       DEBUG() << u;
+    }
 }
 
 BasicUser MetaCache::findUserByName(const QString& name){

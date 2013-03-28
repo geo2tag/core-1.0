@@ -89,6 +89,8 @@ namespace common
 
     common::BasicUser findUser(const common::BasicUser &dummyUser) const;
 
+    bool areCredentialsIncorrect(const BasicUser& realUser, const BasicUser& user) const;
+
     QByteArray processRegisterUserQuery(const QByteArray&);
     QByteArray processConfirmRegistrationQuery(const QString&);
     QByteArray processLoginQuery(const QByteArray&);

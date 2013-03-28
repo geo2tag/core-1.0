@@ -79,6 +79,12 @@ bool LoginRequestJSON::parseJson(const QByteArray&data)
 
   QString login = result["login"].toString();
   QString password = result["password"].toString();
+
+  if (login.isEmpty() || password.isEmpty())
+  {
+    return false;
+  }
+
   m_users.push_back(common::BasicUser(login,password));
   return true;
 }

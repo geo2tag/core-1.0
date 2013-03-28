@@ -26,6 +26,16 @@
 namespace common
 {
 
+  // Return true, if credentials are incorrect
+  bool DbObjectsCollection::areCredentialsIncorrect(const BasicUser& realUser, const BasicUser& user) const
+  {
+
+    bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
+    bool passwordMatches = (user.getPassword() == realUser.getPassword());
+
+    return !realUser.isValid() || ( realUser.isValid() && !passwordMatches && secirutyEnabled );
+  }
+
 QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 {
     LoginRequestJSON request;
@@ -41,15 +51,14 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
     common::BasicUser user = request.getUser();
     common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
-    DEBUG() << "user=" << user;
+    DEBUG() << "user=" << realUser;
 
-    bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
-    bool passwordMatches = (user.getPassword() == realUser.getPassword());
 
-    if(realUser.isValid() && !passwordMatches && secirutyEnabled)
+    if( areCredentialsIncorrect(realUser, user) )
     {
+	
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
-        DEBUG() << "Incorrect credentilas, security/enabled=" << secirutyEnabled;
+        DEBUG() << "Incorrect credentilas" ;
     }
 
     else
