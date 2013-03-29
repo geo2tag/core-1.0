@@ -79,7 +79,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         {
             DEBUG() <<  "Session has been found. Session's token:" << session.getSessionToken();
             DEBUG() <<  "Updating session";
-            QueryExecutor::instance()->updateSession(session);
+            Core::MetaCache::updateSession(session);
             response.setSessionToken(session.getSessionToken());
         }
         response.setErrno(SUCCESS);
@@ -194,7 +194,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     response.setData(feed);
 
     DEBUG() << "Updating session";
-    QueryExecutor::instance()->updateSession(session);
+    Core::MetaCache::updateSession(session);
     DEBUG() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
@@ -252,7 +252,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    QueryExecutor::instance()->updateSession(session);
+    Core::MetaCache::updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -282,7 +282,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
         return answer;
     }
 
-    QueryExecutor::instance()->updateSession(session);
+    Core::MetaCache::updateSession(session);
 
     response.setChannels(Core::MetaCache::getChannels());
     response.setErrno(SUCCESS);

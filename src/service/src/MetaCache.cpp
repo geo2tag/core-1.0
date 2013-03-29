@@ -284,6 +284,12 @@ BasicUser MetaCache::findUserByName(const QString& name){
 
 }
 
+void MetaCache::updateSession(Session &session)
+{
+    QDateTime currentTime = QDateTime::currentDateTime();
+    session.setLastAccessTime(currentTime);
+}
+
 void MetaCache::initSessions()
 {
 #if GEO2TAG_LITE

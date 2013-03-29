@@ -84,6 +84,8 @@ namespace Core
       static QList<Channel> getChannels(const common::BasicUser& user);
       static QList<Channel> getChannelsByOwner(const BasicUser &user);
 
+      static void updateSession(Session &session);
+
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
       static Channel findChannel(const QString& name);
