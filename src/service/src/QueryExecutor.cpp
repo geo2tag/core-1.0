@@ -626,9 +626,12 @@ QList<Tag> QueryExecutor::loadTags()
 
 	qlonglong userId = query.record().value("user_id").toLongLong();
 	common::BasicUser user = getUserById(userId);
+        qlonglong channelId = query.record().value("channel_id").toLongLong();
+	Channel channel = getChannelById(channelId); 
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
 	tag.setUser(user);
+	tag.setChannel(channel);
         container.push_back(tag);
     }
     return container;
@@ -656,16 +659,38 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
 
         qlonglong userId = query.record().value("user_id").toLongLong();
 	common::BasicUser user = getUserById(userId);
-        //        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        qlonglong channelId = query.record().value("channel_id").toLongLong();
+	Channel channel = getChannelById(channelId); 
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
 	tag.setUser(user);
+	tag.setChannel(channel);
+
         container.push_back(tag);
     }
     DEBUG() << ".... done, amount = " << container.size();
     return container;
 }
 
+Channel QueryExecutor::getChannelById(qlonglong id)
+{
+    QSqlQuery query=makeQuery();
+    QString qry("select name, description, url from channel where id='%1';");
+    qry = qry.arg(id);
+
+    DEBUG() << "QueryExecutor::getChannelById " << qry;
+
+    query.exec(qry);
+    if (query.next())
+    {
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        return Channel(name, description, url);
+    }
+    return Channel();
+
+}
 
 QList<Session> QueryExecutor::loadSessions()
 {

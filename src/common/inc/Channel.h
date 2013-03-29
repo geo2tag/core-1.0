@@ -90,6 +90,10 @@ public:
 
 QDebug operator<<(QDebug& dbg, const Channel& channel);
 
+bool operator<(const Channel &a, const Channel &b);
+uint qHash ( const Channel& ch);
+bool operator==(const Channel &a, const Channel &b);
+
 typedef ConcurrentVector<Channel> Channels;
 //_Channel_H_480D4E41_537B_41D1_A67C_326A700DDC2D_INCLUDED_
 #endif

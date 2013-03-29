@@ -80,7 +80,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
 
     Session session = Core::MetaCache::findSession(request.getSessionToken());
 
-    if(session.isValid())
+    if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
@@ -135,6 +135,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
             QList<Tag > filteredTags = filtration.filtrate(tags);
                 feed << filteredTags;
         }
+	DEBUG() << "Filtred tags number " << feed.size();
+
         response.setErrno(SUCCESS);
     }
     response.setTags(feed);

@@ -142,5 +142,19 @@ QDebug operator<<(QDebug& dbg, const Channel& channel)
     return dbg;
 }
 
+bool operator<(const Channel &a, const Channel &b)
+{
+	return a.getName() < b.getName();
+}
+
+bool operator==(const Channel &a, const Channel &b)
+{
+	return a.getName() == b.getName();
+}
+
+uint qHash ( const Channel& ch)
+{
+	return qHash(ch.getName());
+}
 
 /* ===[ End of file ]=== */

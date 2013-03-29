@@ -90,6 +90,8 @@ public:
     common::BasicUser getUser(const QString& login);
     common::BasicUser getUserById(qlonglong id);
 
+    Channel getChannelById(qlonglong id);
+
 
     QList<Channel> getChannelsByOwner(const common::BasicUser& user );
     QList<Channel> getSubscribedChannels(const common::BasicUser& user );

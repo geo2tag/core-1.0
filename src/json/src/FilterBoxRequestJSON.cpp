@@ -69,6 +69,10 @@ bool FilterBoxRequestJSON::parseJson(const QByteArray& data)
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok) return false;
+
+  m_token = result["auth_token"].toString();
+  if (m_token.isEmpty()) return false;
+
   QVariantMap altitudeShift = result["altitude_shift"].toMap();
   double alt = altitudeShift["altitude1"].toDouble(&ok);
   if (!ok)    return false;

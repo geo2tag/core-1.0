@@ -70,6 +70,10 @@ bool FilterCylinderRequestJSON::parseJson(const QByteArray& data)
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok)    return false;
 
+  QString auth_token = result["auth_token"].toString();
+  if (auth_token.isEmpty()) return false;
+  m_token = auth_token;
+
   QVariantMap altitudeShift = result["altitude_shift"].toMap();
   double alt = altitudeShift["altitude1"].toDouble(&ok);
   if (!ok)    return false;

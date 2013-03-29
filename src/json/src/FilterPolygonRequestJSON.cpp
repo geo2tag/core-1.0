@@ -79,6 +79,9 @@ bool FilterPolygonRequestJSON::parseJson(const QByteArray&data)
   if (!ok) return false;
 
   QString auth_token = result["auth_token"].toString();
+  if (auth_token.isEmpty()) return false;
+  m_token = auth_token;
+
   setTimeFrom(QDateTime::fromString(result["time_from"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
   setTimeTo(QDateTime::fromString(result["time_to"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
 
