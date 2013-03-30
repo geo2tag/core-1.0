@@ -557,14 +557,23 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
     common::BasicUser user = session.getUser();
 
     Channel channel = request.getChannel();
-    if(!channel.isValid())
+    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
+    if(!realChannel.isValid())
     {
         response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    bool result = Core::MetaCache::subscribeChannel(user,channel);
+    bool isSubscribed = Core::MetaCache::testChannel(user, realChannel);
+    if (isSubscribed)
+    {
+        response.setErrno(CHANNEL_ALREADY_SUBSCRIBED_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    bool result = Core::MetaCache::subscribeChannel(user,realChannel);
     if(!result)
     {
         response.setErrno(INTERNAL_DB_ERROR);
@@ -647,11 +656,31 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
     }
 
     common::BasicUser user = session.getUser();
-    bool result = Core::MetaCache::unsubscribeChannel(user,request.getChannel());
+ 
+
+    Channel channel = request.getChannel();
+    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
+    if(!realChannel.isValid())
+    {
+        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    bool isSubscribed = Core::MetaCache::testChannel(user, realChannel);
+    if (!isSubscribed)
+    {
+        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+
+    bool result = Core::MetaCache::unsubscribeChannel(user, realChannel);
 
     if(!result)
     {
-        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+        response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         return answer;
     }
