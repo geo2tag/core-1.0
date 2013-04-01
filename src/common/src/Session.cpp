@@ -101,7 +101,7 @@ common::BasicUser Session::getUser() const
 
 QString Session::generateToken(const common::BasicUser &user)
 {
-    QString token=user.getLogin()+user.getPassword()+user.getEmail();
+    QString token=user.getLogin()+user.getPassword()+user.getEmail()+QDateTime::currentDateTime().toString();
     QByteArray toHash(token.toUtf8());
     toHash=QCryptographicHash::hash(token.toUtf8(),QCryptographicHash::Md5);
     QString result(toHash.toHex());
