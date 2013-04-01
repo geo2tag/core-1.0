@@ -50,7 +50,7 @@ namespace common
   bool BasicUser::operator ==(const BasicUser &obj)
   {
       return  obj.m_email == m_email &&
-              obj.m_login == m_login &&
+              (QString::compare(obj.m_login, m_login, Qt::CaseInsensitive) == 0 )&&
               obj.m_password == m_password;
   }
 

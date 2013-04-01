@@ -192,7 +192,7 @@ Channel MetaCache::findChannel(const QString &name)
     foreach(ch,s_channels)
     {
 	DEBUG() << "Checking channel " << ch.getName(); 
-        if(ch.getName() == name)
+        if(QString::compare(ch.getName(), name, Qt::CaseInsensitive) == 0)
             return ch;
     }
     return Channel();
@@ -276,7 +276,7 @@ BasicUser MetaCache::findUserByName(const QString& name){
  
     foreach(u,s_users)
     {
-        if(u.getLogin() == name)
+        if(QString::compare(u.getLogin(), name, Qt::CaseInsensitive) == 0 )
             return u;
     }
 
