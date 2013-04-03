@@ -34,3 +34,4 @@ tracker_msecs_timeout=500
 password_quality_check=false
 password_length=12
 enable=false
+session_life_time=0

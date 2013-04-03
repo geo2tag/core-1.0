@@ -66,6 +66,7 @@ class Session
     void setUser(const common::BasicUser& user);
 
     bool isValid() const { return !m_token.isEmpty(); }
+    bool isExpired() const;
 
     const QString& getSessionToken() const;
     const QDateTime& getLastAccessTime() const;

@@ -158,8 +158,18 @@ Session MetaCache::findSession(const BasicUser &user)
     Session s;
     foreach(s,s_sessions)
     {
-        if(s.getUser() == user)
-            return s;
+        if(s.getUser() == user )
+        {
+	    if (!s.isExpired())
+	    {
+              return s;
+            }
+	    else{
+	      removeSession(s);
+              continue;
+            }
+        }
+
     }
     return Session();
 }
@@ -167,6 +177,7 @@ Session MetaCache::findSession(const BasicUser &user)
 void MetaCache::removeSession(const Session& session){
   s_sessions.removeOne(session);
 }
+
 
 Session MetaCache::findSession(const QString &token)
 {
@@ -177,9 +188,16 @@ Session MetaCache::findSession(const QString &token)
         DEBUG() << "test:" << s;
         if(s.getSessionToken() == token )
         {
+	    if (!s.isExpired())
+	    {
+              DEBUG() << "...found " << s;
+              return s;
+            }
+	    else{
+	      removeSession(s);
+              break;
+            }
 
-            DEBUG() << "...found " << s;
-            return s;
         }
     }
     DEBUG() << "...not found ";

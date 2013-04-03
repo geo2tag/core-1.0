@@ -38,6 +38,7 @@
 #include "Session.h"
 #include <QCryptographicHash>
 #include "servicelogger.h"
+#include "SettingsStorage.h"
 
 Session::Session(const QString &token, const QDateTime &accessTime, const common::BasicUser &user)
     : m_token(token), m_accessTime(accessTime), m_user(user)
@@ -117,6 +118,35 @@ Session::~Session()
 {
 }
 
+bool Session::isExpired() const
+{
+  // Check session_life_time parameter (hours)
+  // if it is 0 - return true - session could live forever
+  // else compare current lifetime with parameter
+  int sessionLifeTime = SettingsStorage::getValue("security/session_life_time",QVariant(0)).toInt();
+  
+  if (sessionLifeTime == 0) 
+  {
+    DEBUG() << "sessionLifeTime == 0, Sessions live forever";
+    return false;
+  }
+ 
+  QDateTime currentDateTime = QDateTime::currentDateTime();
+  int actualLifeTime = currentDateTime.secsTo(getLastAccessTime()) / 3600;
+  DEBUG() << "Session life time is " << actualLifeTime << " hours, value from settings " << sessionLifeTime << " hours";
+  if (actualLifeTime >= sessionLifeTime)
+  {
+    DEBUG() << "Session life time is too big, sessions is expired";
+    return true;
+  }
+
+  DEBUG() << "Session life time is less then session_life_time, sessions is not expired";
+  return false;
+
+ 
+ 
+}
+
 QDebug& operator<<(QDebug &dbg, Session const& session)
 {
     dbg << session.getSessionToken() << " user:"
@@ -124,3 +154,4 @@ QDebug& operator<<(QDebug &dbg, Session const& session)
         << session.getLastAccessTime() << ", valid=" << session.isValid();
     return dbg;
 }
+
