@@ -164,6 +164,10 @@ Session MetaCache::findSession(const BasicUser &user)
     return Session();
 }
 
+void MetaCache::removeSession(const Session& session){
+  s_sessions.removeOne(session);
+}
+
 Session MetaCache::findSession(const QString &token)
 {
     DEBUG() << "Looking op for a session, token " << token;

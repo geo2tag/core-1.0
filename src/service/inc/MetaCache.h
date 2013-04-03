@@ -86,6 +86,8 @@ namespace Core
 
       static void updateSession(Session &session);
 
+      static void removeSession(const Session& session);
+
       static Session findSession(const common::BasicUser& user);
       static Session findSession(const QString& token);
       static Channel findChannel(const QString& name);

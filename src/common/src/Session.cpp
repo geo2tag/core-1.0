@@ -63,6 +63,10 @@ Session &Session::operator =(const Session &obj)
     return *this;
 }
 
+bool Session::operator ==(const Session &obj)
+{ 
+   return obj.getSessionToken() == this->getSessionToken();
+}
 
 void Session::setSessionToken(const QString &sessionToken)
 {

@@ -418,14 +418,14 @@ QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &/
 }
 
 
-QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data*/)
+QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &data)
 {
     NOT_IMPLEMENTED();
     QuitSessionRequestJSON request;
     QuitSessionResponseJSON response;
     QByteArray answer;
     answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
-#if 0
+
 
     if (!request.parseJson(data))
     {
@@ -436,9 +436,9 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
 
     QString sessionToken = request.getSessionToken();
     DEBUG() << "Searching of session with token: " << sessionToken;
-    Session session = findSession();
+    Session session = Core::MetaCache::findSession(sessionToken);
 
-    if(session.isNull())
+    if(!session.isValid())
     {
         DEBUG() <<  "Session hasn't been found.";
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -447,18 +447,10 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &/*data
     }
 
     DEBUG() <<  "Session has been found. Deleting...";
-    DEBUG() <<  "Number of sessions before deleting: "<< m_sessionsContainer->size();
-    bool result = QueryExecutor::instance()->deleteSession(session);
-    if (!result)
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        DEBUG() << "answer: " <<  answer.data();
-        return answer;
-    }
-    m_sessionsContainer->erase(session);
-    DEBUG() << "Number of sessions after deleting: " << m_sessionsContainer->size();
-#endif
+
+    Core::MetaCache::removeSession(session);
+
+
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());

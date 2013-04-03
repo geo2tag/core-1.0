@@ -59,6 +59,7 @@ class Session
     Session(const Session& obj);
     Session();
     Session& operator=(const Session& obj);
+    bool operator==(const Session& obj);
 
     void setSessionToken(const QString& sessionToken);
     void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
