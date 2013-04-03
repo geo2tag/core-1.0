@@ -779,9 +779,10 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         return answer;
     }
 
-    common::BasicUser user=request.getUser();
+    common::BasicUser user = request.getUser();
+    common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
 
-    if(!user.isValid())
+    if( areCredentialsIncorrect(realUser, user) )
     {
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
         answer.append(response.getJson());
@@ -789,7 +790,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         return answer;
     }
 
-    if(! Core::MetaCache::deleteUser(user))
+    if(! Core::MetaCache::deleteUser(realUser))
     {
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
