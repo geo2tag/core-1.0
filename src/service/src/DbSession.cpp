@@ -74,6 +74,9 @@
 #include "DeleteUserRequestJSON.h"
 #include "DeleteUserResponseJSON.h"
 
+#include "FilterChannelRequestJSON.h"
+#include "FilterChannelResponseJSON.h"
+
 #include "ErrnoInfoResponseJSON.h"
 
 #include "BuildResponseJSON.h"
@@ -710,8 +713,6 @@ QByteArray DbObjectsCollection::processBuildQuery(const QByteArray&)
 
 QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data)
 {
-    NOT_IMPLEMENTED();
-#if 0
 
     FilterChannelRequestJSON request;
     FilterChannelResponseJSON response;
@@ -724,46 +725,45 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    Session dummySession = request.getSessions()->at(0);
-    Session realSession = findSession(dummySession);
-    if(realSession.isNull())
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    common::BasicUser realUser = realSession->getUser();
-    QList<Channel> channels = realUser->getSubscribedChannels();
-    Channel channel;
-    for(int i = 0; i<channels->size(); i++)
-    {
-        if(QString::compare(channels->at(i)->getName(), request.getChannelName(), Qt::CaseInsensitive) == 0)
-        {
-            channel = channels->at(i);
-            break;
-        }
-    }
-    if (channel.isNull())
+    common::BasicUser realUser = session.getUser();
+    Channel channel = Core::MetaCache::findChannel(request.getChannelName());
+
+    if (!channel.isValid())
     {
         response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    QList<Tag > tags = m_dataChannelsMap->values(channel);
-    int amount = request.getAmount();
-    tags = tags.count() > amount ? tags.mid(0, amount) : tags;
+    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(realUser);
 
-    QueryExecutor::instance()->updateSession(realSession);
+    if (!channels.contains(channel))
+    {
+        response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
+        answer.append(response.getJson());
+        return answer;
+		
+    }
+
+    QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
+    unsigned int amount = request.getAmount();
+    tags = (unsigned int)tags.count() > amount ? tags.mid(0, amount) : tags;
+
+    Core::MetaCache::updateSession(session);
 
     response.setData(channel, tags);
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
-#endif
-    return data;
 }
 
 QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)

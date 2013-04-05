@@ -51,7 +51,6 @@
 #include "serializer.h"
 #endif
 
-#if 0
 
 FilterChannelRequestJSON::FilterChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
@@ -61,6 +60,12 @@ FilterChannelRequestJSON::FilterChannelRequestJSON(QObject *parent) : JsonSerial
 QByteArray FilterChannelRequestJSON::getJson() const
 {
   // TODO TBD
+  QJson::Serializer serializer;
+  QVariantMap obj;
+  obj.insert("auth_token", m_token);
+  obj.insert("channel", m_token);
+  obj.insert("amount", m_token);
+  return serializer.serialize(obj);
   return NULL;
 }
 
@@ -75,11 +80,23 @@ bool FilterChannelRequestJSON::parseJson(const QByteArray&data)
   if (!ok) return false;
 
   QString auth_token = result["auth_token"].toString();
-  m_sessionsContainer->push_back(QSharedPointer<Session>(new JsonSession(auth_token, QDateTime::currentDateTime(), QSharedPointer<common::User>(NULL))));
+  if (auth_token.isEmpty()) return false;
+
+  m_token = auth_token;
 
   m_channel = result["channel"].toString();
-  m_amount = result["amount"].toInt(&ok);
+  m_amount = result["amount"].toUInt(&ok);
   return ok;
+}
+
+void FilterChannelRequestJSON::setChannelName(const QString& name)
+{
+  m_channel = name;
+}
+
+void FilterChannelRequestJSON::setAmount(unsigned int amount)
+{
+  m_amount = amount;
 }
 
 
@@ -89,8 +106,7 @@ QString FilterChannelRequestJSON::getChannelName()
 }
 
 
-int FilterChannelRequestJSON::getAmount()
+unsigned int FilterChannelRequestJSON::getAmount()
 {
   return m_amount;
 }
-#endif
