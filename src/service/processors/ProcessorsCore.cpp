@@ -139,6 +139,8 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
+    Core::MetaCache::updateSession(session);
+
     response.setErrno(SUCCESS);
     response.addTag(tag);
 

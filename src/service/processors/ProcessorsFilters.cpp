@@ -137,6 +137,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         }
 	DEBUG() << "Filtred tags number " << feed.size();
 
+	Core::MetaCache::updateSession(session);
+
         response.setErrno(SUCCESS);
     }
     response.setTags(feed);

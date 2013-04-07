@@ -486,6 +486,8 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
     BasicUser user = session.getUser();
     QList<Channel> channels = Core::MetaCache::getChannelsByOwner(user);
 
+    Core::MetaCache::updateSession(session);
+
     response.setChannels(channels);
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -516,6 +518,7 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
 
     QList<Channel> channels = Core::MetaCache::getSubscribedChannels(session.getUser());
     response.setChannels(channels);
+    Core::MetaCache::updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -575,6 +578,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
+    Core::MetaCache::updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -679,6 +683,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
+    Core::MetaCache::updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
