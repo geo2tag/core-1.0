@@ -483,6 +483,25 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
     return result;
 }
 
+
+bool QueryExecutor::checkEmail(const QString& email)
+{
+
+    QSqlQuery query=makeQuery();
+    QString qry("select email from users where email='%1';");
+    
+
+    DEBUG() << "QueryExecutor::checkEmail " << email;
+
+    query.exec(qry.arg(email));
+    if (query.next())
+    {
+	return true;
+    }
+    return false;
+
+}
+
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
     QSqlQuery query=makeQuery();

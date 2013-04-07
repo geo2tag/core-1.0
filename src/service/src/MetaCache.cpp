@@ -242,10 +242,18 @@ void MetaCache::reloadSessions()
     initSessions();
 }
 
+bool MetaCache::checkEmail(const QString& email){
+
+  bool result = QueryExecutor::instance()->checkEmail(email);
+  return result;
+
+}
+
 bool MetaCache::checkUser(BasicUser &user)
 {
 
     BasicUser bu = QueryExecutor::instance()->getUser(user.getLogin());
+
 
     DEBUG() << "Checking " << user << " ->" << bu.isValid();
 

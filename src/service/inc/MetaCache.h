@@ -99,6 +99,8 @@ namespace Core
       // Reloading sessions from db (used after adding session)
       static void reloadSessions();
 
+      static bool checkEmail(const QString& email);
+
       // returns true if user exists and loaded
       static bool checkUser(common::BasicUser &user);
 

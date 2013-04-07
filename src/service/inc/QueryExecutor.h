@@ -87,6 +87,8 @@ public:
 
     QList<common::BasicUser> loadUsers();
 
+    bool checkEmail(const QString& email);
+
     common::BasicUser getUser(const QString& login);
     common::BasicUser getUserById(qlonglong id);
 

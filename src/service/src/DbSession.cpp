@@ -604,7 +604,7 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
 
 
     common::BasicUser user = request.getUser();
-    if(Core::MetaCache::checkUser(user))
+    if(Core::MetaCache::checkUser(user) || Core::MetaCache::checkEmail(user.getEmail()))
     {
             response.setErrno(USER_ALREADY_EXIST_ERROR);
             answer.append(response.getJson());

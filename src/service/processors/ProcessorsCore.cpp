@@ -33,7 +33,22 @@ namespace common
     bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
     bool passwordMatches = (user.getPassword() == realUser.getPassword());
 
-    return !realUser.isValid() || ( realUser.isValid() && !passwordMatches && secirutyEnabled );
+    DEBUG() << "secirutyEnabled = "<< secirutyEnabled << ", passwordMatches = " << passwordMatches;
+
+    if (!realUser.isValid()){
+        DEBUG() << "Username is incorrect";
+	return true;
+
+    }else {
+       if (secirutyEnabled && !passwordMatches){
+        DEBUG() << "Security is enabled and password is incorrect";
+        DEBUG() << "password from request "<< user.getPassword() << ", real password" << realUser.getPassword();
+        return  true;
+       }
+	
+    }
+    return false;
+    //return !realUser.isValid() || ( realUser.isValid() && !passwordMatches && secirutyEnabled );
   }
 
 QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
@@ -51,7 +66,8 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
     common::BasicUser user = request.getUser();
     common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
-    DEBUG() << "user=" << realUser;
+    DEBUG() << "realUser=" << realUser;
+    DEBUG() << "user=" << user;
 
 
     if( areCredentialsIncorrect(realUser, user) )
