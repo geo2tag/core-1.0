@@ -61,6 +61,8 @@ HEADERS += \
     inc/OwnedChannelsResponse.h \
     inc/RestorePasswordRequestJSON.h \
     inc/RestorePasswordResponseJSON.h \
+    inc/SetDbRequestJSON.h \
+    inc/SetDbResponseJSON.h \
     ../service/inc/MetaCache.h
 
 SOURCES += \
@@ -98,6 +100,7 @@ SOURCES += \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \
     src/RestorePasswordRequestJSON.cpp \
+    src/SetDbRequestJSON.cpp \
     ../service/src/MetaCache.cpp
            
 

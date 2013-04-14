@@ -1,4 +1,4 @@
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "SettingsStorage.h"
 #include "MetaCache.h"
 

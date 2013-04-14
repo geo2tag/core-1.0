@@ -61,6 +61,7 @@ void MetaCache::init()
     DEBUG() << "Initializing MetaCache objects";
     initUsers();
     initChannels();
+    initSessions();
 }
 
 BasicUser MetaCache::getUserById(const QString userId)
@@ -291,6 +292,12 @@ void MetaCache::initUsers()
 {
     QWriteLocker lock(&s_cacheLock);
 
+    if (s_users.size()>0)
+    {
+	s_users.clear();
+    }
+
+
     DEBUG() << "Initializing Users";
     s_users=QueryExecutor::instance()->loadUsers();
     DEBUG() << "Loaded " << s_users.size() << "users";
@@ -325,7 +332,11 @@ void MetaCache::initSessions()
 #if GEO2TAG_LITE
     DEBUG() << "Session persistans is not supported in lite version";
 #else
-    NOT_IMPLEMENTED();
+    if (s_sessions.size() != 0)
+    {
+      s_sessions.clear();
+    }
+    //NOT_IMPLEMENTED();
 #endif
 }
 
@@ -336,6 +347,11 @@ void MetaCache::initChannels()
     // initialization is not supported;
 #else
     QWriteLocker lock(&s_cacheLock);
+
+    if (s_channels.size()>0)
+    {
+	s_channels.clear();
+    }
 
     DEBUG() << "Initializing Channels";
     s_channels=QueryExecutor::instance()->loadChannels();

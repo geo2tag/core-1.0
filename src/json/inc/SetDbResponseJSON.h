@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLLf osll@osllff.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,47 +28,15 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*! ---------------------------------------------------------------
- *
- *
- * \file ChannelInternal.cpp
- * \brief ChannelInternal implementation
- *
- * File description
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include "ChannelInternal.h"
-#include "DataMarkInternal.h"
-#include "DbObjectsCollection.h"
-#include "DynamicCastFailure.h"
-#include "servicelogger.h"
+#ifndef SETDBRESPONSEJSON_H
+#define SETDBRESPONSEJSON_H
 
-//DbChannel::DbChannel(qlonglong id,
-//const QString &name,
-//const QString &description,
-//const QString &urlr)
-//: Channel(name, description, url), m_id(id)
-//{
-//}
+#include "DefaultResponseJSON.h"
 
-
-//qlonglong DbChannel::getId() const
-//{
-//  return m_id;
-//}
-
-
-//void DbChannel::setId(qlonglong id)
-//{
-//  m_id=id;
-//}
-
-
-//DbChannel::~DbChannel()
-//{
-//}
-
-
-/* ===[ End of file ]=== */
+typedef DefaultResponseJSON SetDbResponseJSON;
+// SETDBRESPONSEJSON_H
+#endif

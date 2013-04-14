@@ -35,7 +35,7 @@
 #include <QCoreApplication>
 #include <iostream>
 #include "server.h"
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "UpdateThread.h"
 #include "UserInternal.h"
 #include "ChannelInternal.h"

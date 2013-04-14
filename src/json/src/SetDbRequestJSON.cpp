@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLLf osll@osllff.spb.ru
+ * Copyright 2010  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,47 +28,78 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
+
 /*! ---------------------------------------------------------------
+ * $Id$
  *
- *
- * \file ChannelInternal.cpp
- * \brief ChannelInternal implementation
+ * \file SetDbRequestJSON.cpp
+ * \brief SetDbRequestJSON implementation
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include "ChannelInternal.h"
-#include "DataMarkInternal.h"
-#include "DbObjectsCollection.h"
-#include "DynamicCastFailure.h"
+#include "SetDbRequestJSON.h"
+
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+
+#include <QVariant>
+#include <QVariantMap>
+#include <QDebug>
+
+#include "JsonChannel.h"
+#include "JsonDataMark.h"
+#include "JsonSession.h"
 #include "servicelogger.h"
 
-//DbChannel::DbChannel(qlonglong id,
-//const QString &name,
-//const QString &description,
-//const QString &urlr)
-//: Channel(name, description, url), m_id(id)
-//{
-//}
+
+SetDbRequestJSON::SetDbRequestJSON(QObject *parent) : JsonSerializer(parent)
+{
+  DEBUG() << "SetDbRequestJSON::SetDbRequestJSON()";
+}
+
+bool SetDbRequestJSON::parseJson(const QByteArray &data)
+{
+  clearContainers();
+
+  QJson::Parser parser;
+  bool ok;
+  QVariantMap result = parser.parse(data, &ok).toMap();
+
+  if(!ok) return false;
+
+  QString dbName = result["db_name"].toString();
+  QString auth_token = result["auth_token"].toString();
+
+  if (dbName.isEmpty() || auth_token.isEmpty()) return false;
+
+  m_dbName = dbName;
+  m_token = auth_token;
+  return true;
+}
 
 
-//qlonglong DbChannel::getId() const
-//{
-//  return m_id;
-//}
+QByteArray SetDbRequestJSON::getJson() const
+{
+  QJson::Serializer serializer;
+  QVariantMap request;
 
+  request.insert("auth_token", m_token);
+  request.insert("db_name", m_dbName);
 
-//void DbChannel::setId(qlonglong id)
-//{
-//  m_id=id;
-//}
+  return serializer.serialize(request);
+}
 
+void SetDbRequestJSON::setDbName(const QString& dbName)
+{
+  m_dbName = dbName;
+}
 
-//DbChannel::~DbChannel()
-//{
-//}
+const QString SetDbRequestJSON::getDbName() const
+{
+  return m_dbName;
+} 
 
-
-/* ===[ End of file ]=== */
+/* ===[ End of file $HeadURL$ ]=== */

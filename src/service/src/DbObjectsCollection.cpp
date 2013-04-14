@@ -31,8 +31,8 @@
 /*! ---------------------------------------------------------------
  *
  *
- * \file DbSession.cpp
- * \brief DbSession implementation
+ * \file DbObjectsCollection.cpp
+ * \brief DbObjectsCollection implementation
  *
  * File description
  *
@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include "defines.h"
 #include "SettingsStorage.h"
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "EmailMessage.h"
 
 #include "RegisterUserRequestJSON.h"
@@ -76,6 +76,9 @@
 
 #include "FilterChannelRequestJSON.h"
 #include "FilterChannelResponseJSON.h"
+
+#include "SetDbRequestJSON.h"
+#include "SetDbResponseJSON.h"
 
 #include "ErrnoInfoResponseJSON.h"
 
@@ -130,6 +133,8 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
     m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
 
+    m_processors.insert("setDb", &DbObjectsCollection::processSetDbQuery);
+
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
 //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
 //    m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
@@ -139,23 +144,79 @@ DbObjectsCollection::DbObjectsCollection()
     WARNING() << "Platform build info: " << getPlatformBuildInfo();
 
 
+}
+
+// Connect to the system DB @postgre@, perform 
+// select datname from pg_database where datname='datname'
+// if exists return true
+// otherwise return false
+bool DbObjectsCollection::checkDbExistance(const QString & dbName){
+    
+    bool connectionOpeningResult = initDatabase("postgres", "postgres");
+    if (!connectionOpeningResult) 
+    { 
+      DEBUG() << "Unable to connect to postgres!";
+      return false;
+    }
+
+
+    QSqlQuery getDbNameQuery = QSqlQuery(QSqlDatabase::database("postgres"));
+    QString q = QString("select datname from pg_database where datname='%1';").arg(dbName);
+
+    getDbNameQuery.exec(q);
+
+    if (!getDbNameQuery.next()) 
+    {
+      DEBUG() << "Database " << dbName << " does not exist on this server";
+      return false;
+    }
+   
+    DEBUG() << "Database " << dbName << " exists on this server";
+    return true;
+}
+
+
+bool DbObjectsCollection::initDatabase(){
+
+    QVariant defaultName("COULD_NOT_READ_CONFIG");
+    QString name=SettingsStorage::getValue("database/name",defaultName).toString();
+    return initDatabase(name);
+}
+
+bool DbObjectsCollection::initDatabase(const QString & dbName, const QString& connectionName){
     //GT-817 Now is only QPSQL base is supported
-    QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
+
+    QSqlDatabase oldDatabase = connectionName.isEmpty() ? QSqlDatabase::database():QSqlDatabase::database(connectionName);
+    if (oldDatabase.isOpen())
+    {
+	DEBUG() << connectionName <<" is still opened, closing";
+	oldDatabase.close();
+    }
+
+    QSqlDatabase database = connectionName.isEmpty() ?QSqlDatabase::addDatabase("QPSQL") : QSqlDatabase::addDatabase("QPSQL", connectionName);
 
     QVariant defaultName("COULD_NOT_READ_CONFIG");
     QString host=SettingsStorage::getValue("database/host",defaultName).toString();
+    /*
     QString name=SettingsStorage::getValue("database/name",defaultName).toString();
+    TODO What should we do with value in config file???
+    */
     QString user=SettingsStorage::getValue("database/user",defaultName).toString();
     QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
 
     database.setHostName(host);
-    database.setDatabaseName(name);
+    database.setDatabaseName(dbName);
     database.setUserName(user);
     database.setPassword(pass);
 
     DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
-    DEBUG() << "database.open()=" << database.open();
+    bool result = database.open();
+    DEBUG() << "database.open()=" << result;
+    
+    return result;
+
 }
+
 
 DbObjectsCollection& DbObjectsCollection::getInstance()
 {
@@ -809,6 +870,56 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
     return answer;
 }
 
+QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
+{
+    SetDbRequestJSON request;
+    SetDbResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+ 
+
+    QString dbName = request.getDbName();
+    bool doesDbExist = checkDbExistance(dbName);
+    if(!doesDbExist)
+    {
+        response.setErrno(DB_DOES_NOT_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    bool setDbResult = initDatabase(dbName);
+    
+    if(!setDbResult)
+    {
+	DEBUG() << "Errors during setting " << dbName << " returning default db from config";
+	initDatabase();
+        Core::MetaCache::init();
+        response.setErrno(INTERNAL_DB_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+    Core::MetaCache::init();
+  
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
 //QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)
 //{
 //    DEBUG() <<  "starting RestorePassword processing";
@@ -861,6 +972,7 @@ void DbObjectsCollection::init()
 {
 
     getInstance();
+    initDatabase();
     Core::MetaCache::init();
 
 }

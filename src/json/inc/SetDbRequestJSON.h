@@ -1,5 +1,5 @@
 /*
- * Copyright 2010  OSLLf osll@osllff.spb.ru
+ * Copyright 2010  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,47 +28,46 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*! ---------------------------------------------------------------
- *
- *
- * \file ChannelInternal.cpp
- * \brief ChannelInternal implementation
+
+/* $Id$ */
+/*!
+ * \file SetDbRequestJSON.h
+ * \brief Header of SetDbRequestJSON
+ * \todo add comment here
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include "ChannelInternal.h"
-#include "DataMarkInternal.h"
-#include "DbObjectsCollection.h"
-#include "DynamicCastFailure.h"
-#include "servicelogger.h"
+#ifndef _SETDBREQUESTJSON_H_
+#define _SETDBREQUESTJSON_H_
 
-//DbChannel::DbChannel(qlonglong id,
-//const QString &name,
-//const QString &description,
-//const QString &urlr)
-//: Channel(name, description, url), m_id(id)
-//{
-//}
+#include "JsonSerializer.h"
+#include "Session.h"
+#include "Channel.h"
 
+class SetDbRequestJSON: public JsonSerializer
+{
+  private:
 
-//qlonglong DbChannel::getId() const
-//{
-//  return m_id;
-//}
+     QString m_dbName;
 
+  public:
+    SetDbRequestJSON(QObject *parent = 0);
 
-//void DbChannel::setId(qlonglong id)
-//{
-//  m_id=id;
-//}
+    // Three functions below was virtual
+    QByteArray getJson() const;
 
+    bool parseJson(const QByteArray&);
 
-//DbChannel::~DbChannel()
-//{
-//}
+    void setDbName(const QString& dbName);
 
+    const QString getDbName() const;
 
-/* ===[ End of file ]=== */
+    //   ~SetDbRequestJSON();
+
+};                                      // class SetDbRequestJSON
+#endif                                  //_SetDbRequestJSON_H_
+
+/* ===[ End of file $HeadURL$ ]=== */
