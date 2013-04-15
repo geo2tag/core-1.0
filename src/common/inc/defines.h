@@ -65,7 +65,7 @@ void setServerPort(int port);
 //#define CONFIG_FILE               "/usr/share/wikigps/wikigps.conf"
 
 // Default values
-#define DEFAULT_SERVER "http://tracks.osll.spb.ru:81/"
+#define DEFAULT_SERVER "http://localhost/"
 #define DEFAULT_PORT 81
 #define PASSWORD_SALT "geo2tag_salt"
 

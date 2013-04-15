@@ -52,14 +52,13 @@
 
 #include "MapsUploadThread.h"
 #include "defines.h"
-#if 0
 //Move distance for one arrow key press
 #define KEY_MOVE_DIST 10
 
 MapScene::MapScene(QObject *parent) :
     QGraphicsScene(parent),
-    m_zoom(2),
-    m_latitude(0/*DEFAULT_LATITUDE*/),
+    m_zoom(5),
+    m_latitude(DEFAULT_LATITUDE),
     m_longitude(DEFAULT_LONGITUDE)
 {
     m_tiles = QHash<TilePoint, QGraphicsPixmapItem * >();
@@ -67,6 +66,7 @@ MapScene::MapScene(QObject *parent) :
     m_uploader = new MapsUploader(this);
     connect(this, SIGNAL(uploadTiles(QVector<TilePoint> &)), m_uploader, SLOT(uploadTiles(QVector<TilePoint> &)));
     connect(m_uploader, SIGNAL(tileUploaded(QPixmap,TilePoint)), this, SLOT(tileUploaded(QPixmap,TilePoint)));
+    set_zoom();
 }
 
 
@@ -89,6 +89,17 @@ void MapScene::tileUploaded(const QPixmap &pixmap, const TilePoint & point)
     m_tiles.insert(point, pm);
     m_tiles.value(point)->setPos(point.first.x()*256.0, point.first.y()*256.0);
     m_tiles.value(point)->setVisible(point.second == m_zoom);
+}
+
+
+void MapScene::setCenter(qreal latitude, qreal longitude)
+{
+    QPointF mark_point = OSMCoordinatesConverter::GeoToTile(latitude, longitude, this->m_zoom);
+
+    mark_point.setX(mark_point.x()*256.0);
+    mark_point.setY(mark_point.y()*256.0);
+
+    this->views()[0]->centerOn(mark_point);
 }
 
 
@@ -145,7 +156,7 @@ void MapScene::removeMark(QGraphicsItem * mark)
 }
 
 
-void MapScene::setMarks(DataChannels marks)
+void MapScene::setMarks(QList<Tag> marks)
 {
     double tdim=256.;
     QPointF pos;
@@ -165,10 +176,10 @@ void MapScene::setMarks(DataChannels marks)
     }
     m_marks.clear();
 
-    QList<Channel> channels = marks.uniqueKeys();
-    for (int j = 0; j < channels.size(); j++)
-    {
-        marks_to_show = marks.values(channels.at(j));
+//    QList<Channel> channels = marks.uniqueKeys();
+//    for (int j = 0; j < channels.size(); j++)
+//    {
+        marks_to_show = marks;//marks.values(channels.at(j));
         qSort(marks_to_show.begin(), marks_to_show.end(), qGreater<Tag >());
         for (int i = 0; i < qMin( marksCount, marks_to_show.size() ); i++)
         {
@@ -177,7 +188,7 @@ void MapScene::setMarks(DataChannels marks)
             //qDebug() << "CurrTime-4min  " << QDateTime::currentDateTime().addSecs(-60 * maxAgeOfMark).toString("dd.MM.yyyy hh:mm:ss");
             markAge=marks_to_show.at(i).getTime().toUTC().secsTo(QDateTime::currentDateTime())/60;
             qDebug() << "Mark "<< marks_to_show.at(i).getLatitude()<<" "<< marks_to_show.at(i).getLongitude()  <<" age in mins " << markAge
-                     << " from channel " << channels.at(j).getName();
+                     << " from channel " << marks_to_show.at(i).getChannel().getName();
             if(markAge<maxAgeOfMark)          //marks_to_show.at(i)->getTime().toUTC()>QDateTime::currentDateTime().addSecs(-60 * maxAgeOfMark))
             {
                 pos = OSMCoordinatesConverter::GeoToTile(
@@ -185,10 +196,10 @@ void MapScene::setMarks(DataChannels marks)
                             marks_to_show.at(i).getLongitude(),
                             m_zoom);
                 pos = pos * qreal(tdim);
-                this->add_mark(pos,marks_to_show.at(i),channels.at(j));
+                this->add_mark(pos,marks_to_show.at(i), marks_to_show.at(i).getChannel());
             }
         }
-    }
+    //}
 }
 
 
@@ -287,6 +298,7 @@ void MapScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 
 void MapScene::set_zoom()
 {
+    qDebug() << "zoom is " << m_zoom;
     foreach(TilePoint tp, m_tiles.keys())
     {
         if(tp.second != m_zoom)
@@ -319,10 +331,24 @@ void MapScene::set_zoom()
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->buttons() != Qt::LeftButton)
-        return;
 
-    m_pressed_screen_position = event->screenPos();
+    if (event->buttons() != Qt::LeftButton)
+        return;
+        
+   m_pressed_screen_position = event->screenPos();
+
+
+        QPointF cur_pos = event->scenePos();
+        cur_pos.setX(cur_pos.x()/256);
+        cur_pos.setY(cur_pos.y()/256);
+
+        GeoPoint geo_coord =
+                OSMCoordinatesConverter::TileToGeo(qMakePair(cur_pos, m_zoom));
+
+        qDebug() << cur_pos << m_pressed_screen_position << geo_coord.first << geo_coord.second;
+
+    //    addMark(geo_coord.first, geo_coord.second, QVariant());
+        //add_mark(QPointF(geo_coord.first, geo_coord.second),Tag(),Channel("channel") );
 }
 
 
@@ -535,4 +561,3 @@ void MapScene::preload()
 
     m_preloader->load(borders.first, borders.second, m_zoom);
 }
-#endif

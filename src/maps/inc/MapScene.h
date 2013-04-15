@@ -45,9 +45,9 @@
 #include "MapsUploadThread.h"
 #include "Preloading.h"
 
-#include "DataChannel.h"
+#include "Channel.h"
+#include "DataMarks.h"
 
-#if 0
 class MapScene : public QGraphicsScene
 {
   Q_OBJECT
@@ -86,6 +86,8 @@ class MapScene : public QGraphicsScene
     void set_zoom();
     void update_state();
 
+    void setCenter(qreal latitude, qreal longitude);
+
   private:
     void add_mark(QPointF pos,Tag mark,Channel channel);
     QPair<QPoint, QPoint> getBorders();
@@ -99,5 +101,5 @@ class MapScene : public QGraphicsScene
 
 };
 // MAPSCENE_H
-#endif
+
 #endif
