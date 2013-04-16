@@ -9,7 +9,6 @@
 #include <QGraphicsView>
 #include "MapScene.h"
 
-#include "DefaultQuery.h"
 #include "LoginQuery.h"
 #include "AddUserQuery.h"
 #include "AvailableChannelsQuery.h"
@@ -18,6 +17,7 @@
 #include "UnsubscribeChannelQuery.h"
 #include "LoadTagsQuery.h"
 #include "WriteTagQuery.h"
+#include "ApplyChannelQuery.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,8 +39,10 @@ class MainWindow : public QMainWindow
     UnsubscribeChannelQuery * m_unsubscribeChannelQuery;
     LoadTagsQuery * m_loadTagsQuery;
     WriteTagQuery * m_writeTagQuery;
+    ApplyChannelQuery * m_applyChannelQuery;
 
-
+    void formChannelList();
+    void refreshChannelsWidget();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -49,10 +51,20 @@ private slots:
     void onRegisterCheckboxChanged(int state);
     void onUserActionButtonPressed();
     void onTagActionButtonPressed();
-
+    void onChannelTabActivated(int index);
+    void onChannelButtonPressed();
+    void onChannelsListChanged(int index);
+    void onAddChannelButtonPressed();
 
     void onLoginSuccess();
     void onLoadTagsSuccess();
+    void onSubscribedChannelsSuccess();
+    void onAvailableChannelsSuccess();
+    void onChannelActionSuccess();
+    void onApplyChannelSuccess();
+
+
+
     void onRequestError(int errno);
 
     

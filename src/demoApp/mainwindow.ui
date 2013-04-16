@@ -54,7 +54,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="usersTab">
           <attribute name="title">
@@ -131,7 +131,7 @@
             <item>
              <widget class="QPushButton" name="userActionButton">
               <property name="text">
-               <string>Login/Register</string>
+               <string>Login</string>
               </property>
              </widget>
             </item>
@@ -166,7 +166,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="radiusEdit"/>
+             <widget class="QLineEdit" name="radiusEdit">
+              <property name="text">
+               <string>99999999</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_5">
@@ -179,7 +183,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="latitudeEdit"/>
+             <widget class="QLineEdit" name="latitudeEdit">
+              <property name="text">
+               <string>30.0</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_4">
@@ -192,7 +200,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="longitudeEdit"/>
+             <widget class="QLineEdit" name="longitudeEdit">
+              <property name="text">
+               <string>60.0</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="tagActionButton">
@@ -231,6 +243,59 @@
               </property>
               <property name="text">
                <string>Subscribe/Unsubscribe</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Channel name</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="channelNameEdit"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Description</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="channelDescriptionEdit"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Url</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="channelUrlEdit"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addChannelButton">
+              <property name="text">
+               <string>Add channel</string>
               </property>
              </widget>
             </item>

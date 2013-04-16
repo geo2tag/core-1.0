@@ -59,17 +59,17 @@ class LoginQuery: public DefaultQuery
 {
   Q_OBJECT
 
-  QString m_login;
-  QString m_password;
+    QString m_login;
+    QString m_password;
 
-  Session m_session;
+    Session m_session;
 
-  virtual QString getUrl() const;
-  virtual QByteArray getRequestBody() const;
+    virtual QString getUrl() const;
+    virtual QByteArray getRequestBody() const;
 
   private Q_SLOTS:
 
-    virtual void processResponse(QByteArray &data);
+    virtual void processResponse(const QByteArray &data);
 
   public:
 

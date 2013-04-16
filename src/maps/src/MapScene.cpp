@@ -161,12 +161,14 @@ void MapScene::setMarks(QList<Tag> marks)
     double tdim=256.;
     QPointF pos;
 
+    qDebug() << "setting marks!";
+
     //Add here time and count filter
     QSettings settings(QSettings::SystemScope, "osll", "libs");
     //int maxAgeOfMark = settings.value("timeLimit").toInt();
-    int marksCount = settings.value("marksCount").toInt();
+    int marksCount = 100;settings.value("marksCount").toInt();
     int markAge=0;
-    int maxAgeOfMark=settings.value("timeLimit").toInt();
+    //int maxAgeOfMark=settings.value("timeLimit").toInt();
     //Getting list of all channels, wich marks are in request
     QList<Tag > marks_to_show;
 
@@ -176,29 +178,27 @@ void MapScene::setMarks(QList<Tag> marks)
     }
     m_marks.clear();
 
-//    QList<Channel> channels = marks.uniqueKeys();
-//    for (int j = 0; j < channels.size(); j++)
-//    {
-        marks_to_show = marks;//marks.values(channels.at(j));
-        qSort(marks_to_show.begin(), marks_to_show.end(), qGreater<Tag >());
-        for (int i = 0; i < qMin( marksCount, marks_to_show.size() ); i++)
-        {
-            //Check, that current mark isnt older that maxAgeOfMark minutes
-            //qDebug() << "Mark time " << marks_to_show.at(i)->getTime().toString("dd.MM.yyyy hh:mm:ss");
-            //qDebug() << "CurrTime-4min  " << QDateTime::currentDateTime().addSecs(-60 * maxAgeOfMark).toString("dd.MM.yyyy hh:mm:ss");
-            markAge=marks_to_show.at(i).getTime().toUTC().secsTo(QDateTime::currentDateTime())/60;
-            qDebug() << "Mark "<< marks_to_show.at(i).getLatitude()<<" "<< marks_to_show.at(i).getLongitude()  <<" age in mins " << markAge
-                     << " from channel " << marks_to_show.at(i).getChannel().getName();
-            if(markAge<maxAgeOfMark)          //marks_to_show.at(i)->getTime().toUTC()>QDateTime::currentDateTime().addSecs(-60 * maxAgeOfMark))
-            {
-                pos = OSMCoordinatesConverter::GeoToTile(
-                            marks_to_show.at(i).getLatitude(),
-                            marks_to_show.at(i).getLongitude(),
-                            m_zoom);
-                pos = pos * qreal(tdim);
-                this->add_mark(pos,marks_to_show.at(i), marks_to_show.at(i).getChannel());
-            }
-        }
+    m_tags = marks;
+
+    marks_to_show = marks;//marks.values(channels.at(j));
+    qSort(marks_to_show.begin(), marks_to_show.end(), qGreater<Tag >());
+    for (int i = 0; i < qMin( marksCount, marks_to_show.size() ); i++)
+    {
+        //Check, that current mark isnt older that maxAgeOfMark minutes
+        //qDebug() << "Mark time " << marks_to_show.at(i)->getTime().toString("dd.MM.yyyy hh:mm:ss");
+        //qDebug() << "CurrTime-4min  " << QDateTime::currentDateTime().addSecs(-60 * maxAgeOfMark).toString("dd.MM.yyyy hh:mm:ss");
+        markAge=marks_to_show.at(i).getTime().toUTC().secsTo(QDateTime::currentDateTime())/60;
+        qDebug() << "Mark "<< marks_to_show.at(i).getLatitude()<<" "<< marks_to_show.at(i).getLongitude()  <<" age in mins " << markAge
+                 << " from channel " << marks_to_show.at(i).getChannel().getName();
+
+        pos = OSMCoordinatesConverter::GeoToTile(
+                    marks_to_show.at(i).getLatitude(),
+                    marks_to_show.at(i).getLongitude(),
+                    m_zoom);
+        pos = pos * qreal(tdim);
+        this->add_mark(pos,marks_to_show.at(i), marks_to_show.at(i).getChannel());
+
+    }
     //}
 }
 
@@ -287,7 +287,7 @@ void MapScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
     if (event->delta() > 0 && m_zoom < 18)
         m_zoom++;
-    else if (event->delta() < 0 && m_zoom > 0)
+    else if (event->delta() < 0 && m_zoom > 1)
         m_zoom--;
     else
         return;
@@ -427,7 +427,7 @@ void MapScene::keyPressEvent(QKeyEvent *event)
         m_zoom++;
         this->set_zoom();
     }
-    if(event->key() == Qt::Key_Minus && m_zoom > 0)
+    if(event->key() == Qt::Key_Minus && m_zoom > 1)
     {
         m_zoom--;
         this->set_zoom();
@@ -549,6 +549,8 @@ void MapScene::update_state()
 
     if(tiles_for_upload.size() != 0)
         emit this->uploadTiles(tiles_for_upload);
+
+    setMarks(m_tags);
 }
 
 

@@ -27,11 +27,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->userActionButton,SIGNAL(pressed()),this,SLOT(onUserActionButtonPressed()));
     connect(ui->tagActionButton,SIGNAL(pressed()),this,SLOT(onTagActionButtonPressed()));
 
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onChannelTabActivated(int)));
+    connect(ui->channelActionButton, SIGNAL(pressed()), this, SLOT(onChannelButtonPressed()));
+    connect(ui->channelsListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(onChannelsListChanged(int)));
+
+    connect(ui->addChannelButton, SIGNAL(pressed()), this, SLOT(onAddChannelButtonPressed()));
 }
 
 void MainWindow::initQueries()
 {
-    m_loginQuery = new LoginQuery();
+    m_loginQuery = new LoginQuery(this);
     m_addUserQuery = new AddUserQuery();
     m_availableChannelsQuery = new AvailableChannelsQuery();
     m_subscribedChannelsQuery = new SubscribedChannelsQuery();
@@ -39,12 +44,21 @@ void MainWindow::initQueries()
     m_unsubscribeChannelQuery = new UnsubscribeChannelQuery();
     m_loadTagsQuery = new LoadTagsQuery();
     m_writeTagQuery = new WriteTagQuery();
+    m_applyChannelQuery = new ApplyChannelQuery();
 
 
     connect(m_loginQuery,SIGNAL(success()),this, SLOT(onLoginSuccess()));
     connect(m_loginQuery,SIGNAL(errorOccured(int)),this, SLOT(onRequestError(int)));
     connect(m_addUserQuery,SIGNAL(errorOccured(int)),this, SLOT(onRequestError(int)));
     connect(m_loadTagsQuery,SIGNAL(success()),this, SLOT(onLoadTagsSuccess()));
+
+    connect(m_availableChannelsQuery,SIGNAL(success()),this, SLOT(onAvailableChannelsSuccess()));
+    connect(m_subscribedChannelsQuery,SIGNAL(success()),this, SLOT(onSubscribedChannelsSuccess()));
+
+    connect(m_subscribeChannelQuery,SIGNAL(success()),this, SLOT(onChannelActionSuccess()));
+    connect(m_unsubscribeChannelQuery,SIGNAL(success()),this, SLOT(onChannelActionSuccess()));
+
+    connect(m_applyChannelQuery,SIGNAL(success()),this, SLOT(onApplyChannelSuccess()));
 
 }
 
@@ -99,6 +113,89 @@ void MainWindow::onTagActionButtonPressed()
     }
 }
 
+void MainWindow::refreshChannelsWidget(){
+    m_availableChannelsQuery->setQuery(m_session);
+    m_availableChannelsQuery->doRequest();
+}
+
+void MainWindow::onChannelTabActivated(int index){
+    qDebug() << index;
+    // If channel tab is visible perform AvailableChannels and SubscribedChannels requests
+    if (index == 2 && m_session.isValid()){
+        refreshChannelsWidget();
+
+    }
+}
+
+void MainWindow::onChannelsListChanged(int index){
+
+
+    qDebug() << index;
+
+    if (index<0) return ;
+
+    QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
+    QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
+    bool isSubscribed = subscribedChannels.contains(availableChannels.at(index));
+    if (isSubscribed){
+        ui->channelActionButton->setText("Unsubscribe");
+    }else{
+        ui->channelActionButton->setText("Subscribe");
+    }
+
+
+}
+
+
+
+void MainWindow::onChannelButtonPressed()
+{
+    if (m_session.isValid()){
+        int index = ui->channelsListWidget->currentRow();
+        if (index < 0) return;
+        QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
+        QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
+        bool isSubscribed = subscribedChannels.contains(availableChannels.at(index));
+        if (isSubscribed){
+            //do unsubscribe
+            m_unsubscribeChannelQuery->setQuery(availableChannels.at(index),m_session);
+            m_unsubscribeChannelQuery->doRequest();
+        }else{
+            //do subscribe
+            m_subscribeChannelQuery->setQuery(availableChannels.at(index),m_session);
+            m_subscribeChannelQuery->doRequest();
+        }
+    }
+}
+
+void MainWindow::onAddChannelButtonPressed()
+{
+    if (m_session.isValid())
+    {
+        QString name = ui->channelNameEdit->text();
+        QString description = ui->channelDescriptionEdit->text();
+        QString url = ui->channelUrlEdit->text();
+
+        m_applyChannelQuery->setQuery(Channel(name,description,url),m_session);
+        m_applyChannelQuery->doRequest();
+    }
+}
+
+
+void MainWindow::onChannelActionSuccess()
+{
+    qDebug() << "Channels action success";
+    refreshChannelsWidget();
+}
+
+void MainWindow::onApplyChannelSuccess()
+{
+    if (m_session.isValid())
+    {
+        qDebug() << "Apply channel success";
+        refreshChannelsWidget();
+    }
+}
 
 void MainWindow::onLoginSuccess()
 {
@@ -115,6 +212,37 @@ void MainWindow::onLoadTagsSuccess()
 
 }
 
+
+void MainWindow::onAvailableChannelsSuccess(){
+    qDebug() <<"MainWindow::onAvailableChannelsSuccess()";
+    m_subscribedChannelsQuery->setQuery(m_session);
+    m_subscribedChannelsQuery->doRequest();
+}
+
+void MainWindow::onSubscribedChannelsSuccess(){
+    qDebug()<<"MainWindow::onSubscribedChannelsSuccess()";
+    formChannelList();
+}
+
+void MainWindow::formChannelList(){
+    QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
+    QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
+    QListWidget * listWidget = ui->channelsListWidget;
+
+    while(listWidget->count()>0)
+    {
+      listWidget->takeItem(0);
+    }
+
+    foreach (Channel s, availableChannels){
+        QListWidgetItem * item = new QListWidgetItem(s.getName());
+        if (subscribedChannels.contains(s)){
+            item->setBackgroundColor(Qt::lightGray);
+        }
+
+        listWidget->addItem(item);
+    }
+}
 
 void MainWindow::onRequestError(int errno)
 {

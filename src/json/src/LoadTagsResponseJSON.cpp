@@ -70,6 +70,7 @@ LoadTagsResponseJSON::LoadTagsResponseJSON(QObject *parent) : JsonSerializer(par
 bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
 {
     clearContainers();
+    qDebug () << "LoadTagsResponseJSON::parseJson(const QByteArray &data)";
 
     QJson::Parser parser;
     bool ok;
@@ -81,7 +82,8 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
     if (!ok) return false;
     m_errno = result["errno"].toInt(&ok);
 
-    QVariantMap channelVariant = result["channels"].toMap();
+    QVariantMap rss = result["rss"].toMap();
+    QVariantMap channelVariant = rss["channels"].toMap();
     QVariantList channelsList = channelVariant["items"].toList();
     int size = channelsList.size();
 
@@ -115,6 +117,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
 
             Tag tag(altitude, latitude, longitude, title,  description, link,  time);
             DEBUG() << "Tag:" << tag;
+            qDebug () << "LoadTagsResponseJSON::parseJson(const QByteArray &data)";
             m_tags << tag;
         }
     }

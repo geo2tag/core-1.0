@@ -24,7 +24,7 @@ HEADERS += \
            inc/RegisterUserQuery.h \
            inc/AvailableChannelsQuery.h \
            inc/SubscribedChannelsQuery.h \
-	   inc/VersionQuery.h 
+	   inc/VersionQuery.h  
 
 
 

@@ -32,3 +32,5 @@ SOURCES += main.cpp \
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES +=

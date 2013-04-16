@@ -58,6 +58,8 @@ class MapScene : public QGraphicsScene
     MapsUploader * m_uploader;
     Preloading * m_preloader;
 
+    QList<Tag> m_tags;
+
     int m_zoom;
     qreal m_latitude;
     qreal m_longitude;

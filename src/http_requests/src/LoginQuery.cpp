@@ -64,6 +64,7 @@ DefaultQuery(parent), m_login(login), m_password(password)
 LoginQuery::LoginQuery(QObject *parent):
 DefaultQuery(parent)
 {
+
 }
 
 
@@ -82,13 +83,14 @@ QByteArray LoginQuery::getRequestBody() const
 }
 
 
-void LoginQuery::processResponse(QByteArray & data)
+void LoginQuery::processResponse(const QByteArray & data)
 {
-    qDebug() << "Inside LoginQuery::processResponse(QByteArray & data)";
+  qDebug() << "LoginQuery::processResponse(QByteArray & data)";
   LoginResponseJSON response;
   response.parseJson(data);
   qDebug() << response.getSessionToken();
   m_session = Session(response.getSessionToken());
+
 }
 
 

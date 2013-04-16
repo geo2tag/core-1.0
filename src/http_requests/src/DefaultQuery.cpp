@@ -51,6 +51,8 @@
 #include "symbian.h"
 #endif
 
+#include "querycaster.h"
+
 DefaultQuery::DefaultQuery(QObject *parent): QObject(parent),
 m_manager(new QNetworkAccessManager(parent))
 {
@@ -77,6 +79,10 @@ void DefaultQuery::doRequest()
 
 void DefaultQuery::processResponse(const QByteArray &)
 {
+    qDebug() << this->metaObject()->className();
+
+    qDebug() << "DefaultQuery::processResponse(const QByteArray &)";
+
 }
 
 
@@ -92,9 +98,11 @@ void DefaultQuery::process(QNetworkReply *reply)
 
   if(m_errno == SUCCESS)
   {
-    Q_EMIT success();
-      qDebug() << data;
+
+    qDebug() << data;
     processResponse(data);
+  //  QueryCaster::processData(this,data);
+    Q_EMIT success();
   }
   else errorOccured(m_errno);
 

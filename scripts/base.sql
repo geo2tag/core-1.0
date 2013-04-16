@@ -100,7 +100,7 @@ INSERT into users (email, login, password) values ('jul@test.org', 'Jul', 'fdfd5
 INSERT into sessions (user_id, session_token, last_access_time) values (2, 'kkkkkkkkkk', now());
 INSERT into sessions (user_id, session_token, last_access_time) values (3, 'mmmmmmmmmm', now());
 
-INSERT into channel (name, description, url, owner_id) values ('St.Petersburg''s sights', 'This is free read-only tourist information channel.', '', 2);
+INSERT into channel (name, description, url, owner_id) values ('St.Petersburgs sights', 'This is free read-only tourist information channel.', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route A', '', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route B', '', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route C', '', '', 2);
