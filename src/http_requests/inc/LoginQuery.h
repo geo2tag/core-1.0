@@ -75,7 +75,7 @@ class LoginQuery: public DefaultQuery
 
     LoginQuery(const QString& login, const QString& password, QObject *parent = 0);
 
-    LoginQuery(QObject *parent = 0);
+    explicit LoginQuery(QObject *parent = 0);
 
     void setQuery(const QString& login, const QString& password);
 

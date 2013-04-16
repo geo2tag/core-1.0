@@ -82,12 +82,13 @@ QByteArray LoginQuery::getRequestBody() const
 }
 
 
-void LoginQuery::processResponse(QByteArray &)
+void LoginQuery::processResponse(QByteArray & data)
 {
-    NOT_IMPLEMENTED();
-//  LoginResponseJSON response;
-//  response.parseJson(data);
-//  m_session = response.getSession();
+    qDebug() << "Inside LoginQuery::processResponse(QByteArray & data)";
+  LoginResponseJSON response;
+  response.parseJson(data);
+  qDebug() << response.getSessionToken();
+  m_session = Session(response.getSessionToken());
 }
 
 

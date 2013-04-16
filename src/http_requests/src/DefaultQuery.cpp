@@ -93,6 +93,7 @@ void DefaultQuery::process(QNetworkReply *reply)
   if(m_errno == SUCCESS)
   {
     Q_EMIT success();
+      qDebug() << data;
     processResponse(data);
   }
   else errorOccured(m_errno);

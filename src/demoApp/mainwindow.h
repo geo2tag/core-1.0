@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow
     Ui::MainWindow *ui;
 
     MapScene * m_map;
-    QString login;
+    Session m_session;
 
     LoginQuery * m_loginQuery;
     AddUserQuery * m_addUserQuery;
@@ -48,8 +48,11 @@ public:
 private slots:
     void onRegisterCheckboxChanged(int state);
     void onUserActionButtonPressed();
+    void onTagActionButtonPressed();
+
 
     void onLoginSuccess();
+    void onLoadTagsSuccess();
     void onRequestError(int errno);
 
     

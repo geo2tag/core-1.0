@@ -61,7 +61,7 @@ class DefaultQuery : public QObject
     void handleError();
 
   public:
-    DefaultQuery(QObject *parent = 0);
+    explicit DefaultQuery(QObject *parent = 0);
 
     void doRequest();
 

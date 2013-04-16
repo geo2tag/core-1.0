@@ -66,7 +66,7 @@ void setServerPort(int port);
 
 // Default values
 #define DEFAULT_SERVER "http://localhost/"
-#define DEFAULT_PORT 81
+#define DEFAULT_PORT 80
 #define PASSWORD_SALT "geo2tag_salt"
 
 #define DEFAULT_RADIUS            30
