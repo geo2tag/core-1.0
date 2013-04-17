@@ -71,6 +71,7 @@ QByteArray WriteTagQuery::getRequestBody() const
   WriteTagRequestJSON request;
   request.addChannel(m_channel);
   request.addTag(m_tag);
+  request.setSessionToken(m_session.getSessionToken());
   return request.getJson();
 }
 

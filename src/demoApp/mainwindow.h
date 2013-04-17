@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include <QGraphicsView>
+#include <QGraphicsSceneMouseEvent>
+
 #include "MapScene.h"
 
 #include "LoginQuery.h"
@@ -43,6 +45,10 @@ class MainWindow : public QMainWindow
 
     void formChannelList();
     void refreshChannelsWidget();
+
+    GeoPoint getCoordinatesByMouseEvent(QGraphicsSceneMouseEvent* event);
+    void getSubscribedChannels();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -51,10 +57,14 @@ private slots:
     void onRegisterCheckboxChanged(int state);
     void onUserActionButtonPressed();
     void onTagActionButtonPressed();
-    void onChannelTabActivated(int index);
+    void onTabChanged(int index);
     void onChannelButtonPressed();
     void onChannelsListChanged(int index);
     void onAddChannelButtonPressed();
+    void onSettingsChanged();
+    void onMapDoubleClick(QGraphicsSceneMouseEvent* event);
+    void onMapMiddleButtonPressed(QGraphicsSceneMouseEvent* event);
+    void onWriteTagButtonPressed();
 
     void onLoginSuccess();
     void onLoadTagsSuccess();
@@ -62,7 +72,7 @@ private slots:
     void onAvailableChannelsSuccess();
     void onChannelActionSuccess();
     void onApplyChannelSuccess();
-
+    void onWriteTagSuccess();
 
 
     void onRequestError(int errno);

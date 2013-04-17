@@ -123,11 +123,11 @@ void MapScene::addMark(qreal latitude, qreal longitude, QVariant data)
 
     mark_point.setX(mark_point.x()*256.0);
     mark_point.setY(mark_point.y()*256.0);
-    mark->setX(mark_point.x());
-    mark->setY(mark_point.y());
+    mark->setX(mark_point.x()-10);
+    mark->setY(mark_point.y()-10);
     mark->setData(0,data);
 
-    this->views()[0]->centerOn(mark_point);
+    //this->views()[0]->centerOn(mark_point);
 }
 
 
@@ -145,7 +145,7 @@ void MapScene::addMark(qreal latitude, qreal longitude, QVariant data, QWidget *
     mark->setY(mark_point.y());
     mark->setData(0,data);
 
-    this->views()[0]->centerOn(mark_point);
+    //this->views()[0]->centerOn(mark_point);
 }
 
 
@@ -205,44 +205,45 @@ void MapScene::setMarks(QList<Tag> marks)
 
 void MapScene::add_mark(QPointF pos, Tag mark,Channel channel)
 {
-    QPointF posForPicture = QPointF(pos.x()-12.0, pos.y()-12.0);
+    QPointF posForPicture = QPointF(pos.x()-25.0, pos.y()-25.0);
     //QPointF posForText = QPointF(pos.x()-24.0, pos.y()+24.0);
     QGraphicsPixmapItem * pi = 0;
-    QString channel_name = channel.getName();
-    if(channel_name == "Fuel prices")
-    {
-        pi = addPixmap(QPixmap(":/img/fuel.png"));
-    }
-    else if(channel_name == "Public announcements")
-    {
-        pi = addPixmap(QPixmap(":/img/public.png"));
-    }
-    else if(channel_name == "ObsTestChannel")
-    {
-        pi = addPixmap(QPixmap(":/img/test.png"));
-        //painter.drawText(posForText, "Test text");
-    }
-    else if(channel_name.startsWith("bus_"))
-    {
-        pi = addPixmap(QPixmap(":/img/bus.png"));
-        //painter.drawText(posForText, channel_name.split('_').at(1));
-    }
-    else if(channel_name.startsWith("tram_"))
-    {
-        pi = addPixmap(QPixmap(":/img/tram.png"));
-        //painter.drawText(posForText, channel_name.split('_').at(1));
-    }
-    else if(channel_name.startsWith("troll_"))
-    {
-        pi = addPixmap(QPixmap(":/img/trolleybus.png"));
-        //painter.drawText(posForText, channel_name.split('_').at(1));
-    }
-    else if(channel_name.startsWith("user_"))
-    {
-        pi = addPixmap(QPixmap(":/img/user.png"));
-    }
-    else
-    {
+    qDebug() << channel.getName();
+//    QString channel_name = channel.getName();
+//    if(channel_name == "Fuel prices")
+//    {
+//        pi = addPixmap(QPixmap(":/img/fuel.png"));
+//    }
+//    else if(channel_name == "Public announcements")
+//    {
+//        pi = addPixmap(QPixmap(":/img/public.png"));
+//    }
+//    else if(channel_name == "ObsTestChannel")
+//    {
+//        pi = addPixmap(QPixmap(":/img/test.png"));
+//        //painter.drawText(posForText, "Test text");
+//    }
+//    else if(channel_name.startsWith("bus_"))
+//    {
+//        pi = addPixmap(QPixmap(":/img/bus.png"));
+//        //painter.drawText(posForText, channel_name.split('_').at(1));
+//    }
+//    else if(channel_name.startsWith("tram_"))
+//    {
+//        pi = addPixmap(QPixmap(":/img/tram.png"));
+//        //painter.drawText(posForText, channel_name.split('_').at(1));
+//    }
+//    else if(channel_name.startsWith("troll_"))
+//    {
+//        pi = addPixmap(QPixmap(":/img/trolleybus.png"));
+//        //painter.drawText(posForText, channel_name.split('_').at(1));
+//    }
+//    else if(channel_name.startsWith("user_"))
+//    {
+//        pi = addPixmap(QPixmap(":/img/user.png"));
+//    }
+//    else
+//    {
         QPixmap pixmap(50,50);
         pixmap.fill(Qt::transparent);
         QPoint center(pixmap.width()/2, pixmap.height()/4);
@@ -262,7 +263,7 @@ void MapScene::add_mark(QPointF pos, Tag mark,Channel channel)
         painter.end();
 
         pi = this->addPixmap(pixmap);
-    }
+ //   }
 
     pi->setX(posForPicture.x());
     pi->setY(posForPicture.y());
@@ -331,30 +332,25 @@ void MapScene::set_zoom()
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (event->buttons() == Qt::MiddleButton)
+        emit mapMiddleButtonPressed(event);
 
     if (event->buttons() != Qt::LeftButton)
         return;
-        
-   m_pressed_screen_position = event->screenPos();
 
+    m_pressed_screen_position = event->screenPos();
 
-        QPointF cur_pos = event->scenePos();
-        cur_pos.setX(cur_pos.x()/256);
-        cur_pos.setY(cur_pos.y()/256);
+}
 
-        GeoPoint geo_coord =
-                OSMCoordinatesConverter::TileToGeo(qMakePair(cur_pos, m_zoom));
-
-        qDebug() << cur_pos << m_pressed_screen_position << geo_coord.first << geo_coord.second;
-
-    //    addMark(geo_coord.first, geo_coord.second, QVariant());
-        //add_mark(QPointF(geo_coord.first, geo_coord.second),Tag(),Channel("channel") );
+void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    emit mapDoubleClick(event);
 }
 
 
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!event->buttons())
+    if (!event->buttons() )
         return;
 
     QPoint screen_delta = event->screenPos() - m_pressed_screen_position;
@@ -562,4 +558,9 @@ void MapScene::preload()
         return;
 
     m_preloader->load(borders.first, borders.second, m_zoom);
+}
+
+int MapScene::getZoom() const
+{
+    return m_zoom;
 }

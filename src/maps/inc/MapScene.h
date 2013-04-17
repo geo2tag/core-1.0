@@ -82,6 +82,7 @@ class MapScene : public QGraphicsScene
   public:
     virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
 
@@ -90,12 +91,16 @@ class MapScene : public QGraphicsScene
 
     void setCenter(qreal latitude, qreal longitude);
 
+    int getZoom() const;
+
   private:
     void add_mark(QPointF pos,Tag mark,Channel channel);
     QPair<QPoint, QPoint> getBorders();
 
-    signals:
+  signals:
     void uploadTiles(QVector<TilePoint> & tiles_to_upload);
+    void mapDoubleClick(QGraphicsSceneMouseEvent *event);
+    void mapMiddleButtonPressed(QGraphicsSceneMouseEvent *event);
 
   public slots:
     void tileUploaded(const QPixmap & pixmap, const TilePoint & point);

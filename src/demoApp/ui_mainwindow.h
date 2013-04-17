@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Apr 17 00:23:51 2013
+** Created: Thu Apr 18 01:47:52 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -25,9 +25,9 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
 #include <QtGui/QPushButton>
+#include <QtGui/QSpacerItem>
 #include <QtGui/QStatusBar>
 #include <QtGui/QTabWidget>
-#include <QtGui/QTextEdit>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
@@ -63,6 +63,7 @@ public:
     QLabel *label_4;
     QLineEdit *longitudeEdit;
     QPushButton *tagActionButton;
+    QSpacerItem *verticalSpacer_2;
     QWidget *channelsTab;
     QWidget *verticalLayoutWidget_3;
     QVBoxLayout *verticalLayout_3;
@@ -76,7 +77,28 @@ public:
     QLabel *label_9;
     QLineEdit *channelUrlEdit;
     QPushButton *addChannelButton;
-    QTextEdit *statusLog;
+    QWidget *writeTagTab;
+    QWidget *verticalLayoutWidget_6;
+    QVBoxLayout *verticalLayout_6;
+    QLabel *label_15;
+    QListWidget *subscribedListWidget;
+    QLabel *label_12;
+    QLineEdit *writeTagNameEdit;
+    QLabel *label_13;
+    QLineEdit *writeTagLatEdit;
+    QLabel *label_14;
+    QLineEdit *writeTagLonEdit;
+    QPushButton *writeTagButton;
+    QSpacerItem *verticalSpacer_3;
+    QWidget *settingsTab;
+    QWidget *verticalLayoutWidget_5;
+    QVBoxLayout *verticalLayout_5;
+    QLabel *label_10;
+    QLineEdit *serverEdit;
+    QLabel *label_11;
+    QLineEdit *portEdit;
+    QSpacerItem *verticalSpacer;
+    QListWidget *statusLog;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -92,12 +114,14 @@ public:
         verticalLayoutWidget->setGeometry(QRect(-1, -1, 801, 551));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setSizeConstraint(QLayout::SetMaximumSize);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setSizeConstraint(QLayout::SetMaximumSize);
         graphicsView = new QGraphicsView(verticalLayoutWidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
@@ -168,7 +192,7 @@ public:
         tagsTab->setEnabled(true);
         verticalLayoutWidget_4 = new QWidget(tagsTab);
         verticalLayoutWidget_4->setObjectName(QString::fromUtf8("verticalLayoutWidget_4"));
-        verticalLayoutWidget_4->setGeometry(QRect(0, 0, 291, 191));
+        verticalLayoutWidget_4->setGeometry(QRect(0, 0, 291, 301));
         verticalLayout_4 = new QVBoxLayout(verticalLayoutWidget_4);
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
         verticalLayout_4->setContentsMargins(0, 0, 0, 0);
@@ -209,6 +233,10 @@ public:
         tagActionButton->setObjectName(QString::fromUtf8("tagActionButton"));
 
         verticalLayout_4->addWidget(tagActionButton);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_4->addItem(verticalSpacer_2);
 
         tabWidget->addTab(tagsTab, QString());
         channelsTab = new QWidget();
@@ -277,14 +305,116 @@ public:
         verticalLayout_3->addWidget(addChannelButton);
 
         tabWidget->addTab(channelsTab, QString());
+        writeTagTab = new QWidget();
+        writeTagTab->setObjectName(QString::fromUtf8("writeTagTab"));
+        verticalLayoutWidget_6 = new QWidget(writeTagTab);
+        verticalLayoutWidget_6->setObjectName(QString::fromUtf8("verticalLayoutWidget_6"));
+        verticalLayoutWidget_6->setGeometry(QRect(0, 0, 291, 411));
+        verticalLayout_6 = new QVBoxLayout(verticalLayoutWidget_6);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        verticalLayout_6->setContentsMargins(0, 0, 0, 0);
+        label_15 = new QLabel(verticalLayoutWidget_6);
+        label_15->setObjectName(QString::fromUtf8("label_15"));
+        label_15->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_6->addWidget(label_15);
+
+        subscribedListWidget = new QListWidget(verticalLayoutWidget_6);
+        subscribedListWidget->setObjectName(QString::fromUtf8("subscribedListWidget"));
+
+        verticalLayout_6->addWidget(subscribedListWidget);
+
+        label_12 = new QLabel(verticalLayoutWidget_6);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+        label_12->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_6->addWidget(label_12);
+
+        writeTagNameEdit = new QLineEdit(verticalLayoutWidget_6);
+        writeTagNameEdit->setObjectName(QString::fromUtf8("writeTagNameEdit"));
+
+        verticalLayout_6->addWidget(writeTagNameEdit);
+
+        label_13 = new QLabel(verticalLayoutWidget_6);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+        label_13->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_6->addWidget(label_13);
+
+        writeTagLatEdit = new QLineEdit(verticalLayoutWidget_6);
+        writeTagLatEdit->setObjectName(QString::fromUtf8("writeTagLatEdit"));
+
+        verticalLayout_6->addWidget(writeTagLatEdit);
+
+        label_14 = new QLabel(verticalLayoutWidget_6);
+        label_14->setObjectName(QString::fromUtf8("label_14"));
+        label_14->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_6->addWidget(label_14);
+
+        writeTagLonEdit = new QLineEdit(verticalLayoutWidget_6);
+        writeTagLonEdit->setObjectName(QString::fromUtf8("writeTagLonEdit"));
+
+        verticalLayout_6->addWidget(writeTagLonEdit);
+
+        writeTagButton = new QPushButton(verticalLayoutWidget_6);
+        writeTagButton->setObjectName(QString::fromUtf8("writeTagButton"));
+
+        verticalLayout_6->addWidget(writeTagButton);
+
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_6->addItem(verticalSpacer_3);
+
+        tabWidget->addTab(writeTagTab, QString());
+        settingsTab = new QWidget();
+        settingsTab->setObjectName(QString::fromUtf8("settingsTab"));
+        verticalLayoutWidget_5 = new QWidget(settingsTab);
+        verticalLayoutWidget_5->setObjectName(QString::fromUtf8("verticalLayoutWidget_5"));
+        verticalLayoutWidget_5->setGeometry(QRect(0, 0, 291, 261));
+        verticalLayout_5 = new QVBoxLayout(verticalLayoutWidget_5);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        verticalLayout_5->setContentsMargins(0, 0, 0, 0);
+        label_10 = new QLabel(verticalLayoutWidget_5);
+        label_10->setObjectName(QString::fromUtf8("label_10"));
+        label_10->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_5->addWidget(label_10);
+
+        serverEdit = new QLineEdit(verticalLayoutWidget_5);
+        serverEdit->setObjectName(QString::fromUtf8("serverEdit"));
+
+        verticalLayout_5->addWidget(serverEdit);
+
+        label_11 = new QLabel(verticalLayoutWidget_5);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+        label_11->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_5->addWidget(label_11);
+
+        portEdit = new QLineEdit(verticalLayoutWidget_5);
+        portEdit->setObjectName(QString::fromUtf8("portEdit"));
+
+        verticalLayout_5->addWidget(portEdit);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_5->addItem(verticalSpacer);
+
+        tabWidget->addTab(settingsTab, QString());
 
         horizontalLayout->addWidget(tabWidget);
 
 
         verticalLayout->addLayout(horizontalLayout);
 
-        statusLog = new QTextEdit(verticalLayoutWidget);
+        statusLog = new QListWidget(verticalLayoutWidget);
         statusLog->setObjectName(QString::fromUtf8("statusLog"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(statusLog->sizePolicy().hasHeightForWidth());
+        statusLog->setSizePolicy(sizePolicy1);
         statusLog->setMaximumSize(QSize(16777215, 100));
 
         verticalLayout->addWidget(statusLog);
@@ -300,7 +430,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -319,9 +449,9 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(usersTab), QApplication::translate("MainWindow", "Users", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("MainWindow", "Radius", 0, QApplication::UnicodeUTF8));
         radiusEdit->setText(QApplication::translate("MainWindow", "99999999", 0, QApplication::UnicodeUTF8));
-        label_5->setText(QApplication::translate("MainWindow", "Latitude", 0, QApplication::UnicodeUTF8));
+        label_5->setText(QApplication::translate("MainWindow", "Latitude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
         latitudeEdit->setText(QApplication::translate("MainWindow", "30.0", 0, QApplication::UnicodeUTF8));
-        label_4->setText(QApplication::translate("MainWindow", "Longitude", 0, QApplication::UnicodeUTF8));
+        label_4->setText(QApplication::translate("MainWindow", "Longitude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
         longitudeEdit->setText(QApplication::translate("MainWindow", "60.0", 0, QApplication::UnicodeUTF8));
         tagActionButton->setText(QApplication::translate("MainWindow", "Filter!", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tagsTab), QApplication::translate("MainWindow", "Tags", 0, QApplication::UnicodeUTF8));
@@ -331,6 +461,15 @@ public:
         label_9->setText(QApplication::translate("MainWindow", "Url", 0, QApplication::UnicodeUTF8));
         addChannelButton->setText(QApplication::translate("MainWindow", "Add channel", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(channelsTab), QApplication::translate("MainWindow", "Channels", 0, QApplication::UnicodeUTF8));
+        label_15->setText(QApplication::translate("MainWindow", "Select channel below:", 0, QApplication::UnicodeUTF8));
+        label_12->setText(QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
+        label_13->setText(QApplication::translate("MainWindow", "Latatiude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
+        label_14->setText(QApplication::translate("MainWindow", "Longitude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
+        writeTagButton->setText(QApplication::translate("MainWindow", "WriteTag", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(writeTagTab), QApplication::translate("MainWindow", "WriteTag", 0, QApplication::UnicodeUTF8));
+        label_10->setText(QApplication::translate("MainWindow", "Server", 0, QApplication::UnicodeUTF8));
+        label_11->setText(QApplication::translate("MainWindow", "Port", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(settingsTab), QApplication::translate("MainWindow", "Settings", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
