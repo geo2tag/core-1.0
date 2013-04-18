@@ -33,6 +33,10 @@ class MainWindow : public QMainWindow
     MapScene * m_map;
     Session m_session;
 
+    QList<Channel> m_availableChannels;
+    QList<Channel> m_subscribedChannels;
+
+
     LoginQuery * m_loginQuery;
     AddUserQuery * m_addUserQuery;
     AvailableChannelsQuery * m_availableChannelsQuery;
@@ -48,6 +52,9 @@ class MainWindow : public QMainWindow
 
     GeoPoint getCoordinatesByMouseEvent(QGraphicsSceneMouseEvent* event);
     void getSubscribedChannels();
+
+    bool isSubscribed(int index);
+    bool isSubscribed(const QString& channelName);
 
 public:
     explicit MainWindow(QWidget *parent = 0);

@@ -46,6 +46,8 @@ class DefaultQuery : public QObject
   Q_OBJECT
   protected:
     QNetworkAccessManager *m_manager;
+    QNetworkReply * m_reply;
+
 
     virtual QString getUrl() const = 0;
     virtual QByteArray getRequestBody() const = 0;

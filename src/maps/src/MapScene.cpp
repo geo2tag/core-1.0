@@ -191,9 +191,11 @@ void MapScene::setMarks(QList<Tag> marks)
         qDebug() << "Mark "<< marks_to_show.at(i).getLatitude()<<" "<< marks_to_show.at(i).getLongitude()  <<" age in mins " << markAge
                  << " from channel " << marks_to_show.at(i).getChannel().getName();
 
+        /// HACK
         pos = OSMCoordinatesConverter::GeoToTile(
-                    marks_to_show.at(i).getLatitude(),
+
                     marks_to_show.at(i).getLongitude(),
+                    marks_to_show.at(i).getLatitude(),
                     m_zoom);
         pos = pos * qreal(tdim);
         this->add_mark(pos,marks_to_show.at(i), marks_to_show.at(i).getChannel());

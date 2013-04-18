@@ -80,15 +80,14 @@ bool LoadTagsRequestJSON::parseJson(const QByteArray &data)
   QString auth_token = result["auth_token"].toString();
   m_token = auth_token;
 
-  result["latitude"].toDouble(&ok);
-  if (!ok) return false;
-  m_latitude = result["latitude"].toDouble(&ok);
-  if ((m_latitude < 0) or (m_latitude > 90)) return false;
 
-  result["longitude"].toDouble(&ok);
+
+  m_latitude = result["latitude"].toDouble(&ok);
   if (!ok) return false;
+
+
   m_longitude = result["longitude"].toDouble(&ok);
-  if ((m_longitude < 0) or (m_longitude > 180)) return false;
+  if (!ok) return false;
 
   result["radius"].toDouble(&ok);
   if (!ok) return false;

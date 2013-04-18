@@ -51,7 +51,6 @@
 #include "symbian.h"
 #endif
 
-#include "querycaster.h"
 
 DefaultQuery::DefaultQuery(QObject *parent): QObject(parent),
 m_manager(new QNetworkAccessManager(parent))
@@ -71,9 +70,9 @@ void DefaultQuery::doRequest()
 
   //  DEBUG() << "doing post to" << url << " with body: " << getRequestBody();
   DEBUG() << "posting http request to "<<url.toString()<<" with body "<<getRequestBody();
-  QNetworkReply *reply = m_manager->post(request, getRequestBody());
+  m_reply = m_manager->post(request, getRequestBody());
   m_sendTime = QDateTime::currentDateTime();
-  connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(handleError()));
+  connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(handleError()));
 }
 
 
@@ -117,7 +116,7 @@ int DefaultQuery::getErrno() const
 
 void DefaultQuery::handleError()
 {
-  DEBUG() << "Network error occured while sending request";
+  DEBUG() << "Network error occured while sending request, error = " << m_reply->errorString();
   m_errno = NETWORK_ERROR;
   Q_EMIT errorOccured("network error occcured");
 }

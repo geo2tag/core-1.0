@@ -166,6 +166,17 @@ void MainWindow::onTabChanged(int index){
     }
 }
 
+bool MainWindow::isSubscribed(int index)
+{
+    QString channelName = ui->channelsListWidget->item(index)->text();
+    return isSubscribed(channelName);
+}
+
+bool MainWindow::isSubscribed(const QString& channelName)
+{
+    return m_subscribedChannels.contains(channelName);
+}
+
 void MainWindow::onChannelsListChanged(int index){
 
 
@@ -173,10 +184,7 @@ void MainWindow::onChannelsListChanged(int index){
 
     if (index<0) return ;
 
-    QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
-    QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
-    bool isSubscribed = subscribedChannels.contains(availableChannels.at(index));
-    if (isSubscribed){
+    if (isSubscribed(index)){
         ui->channelActionButton->setText("Unsubscribe");
     }else{
         ui->channelActionButton->setText("Subscribe");
@@ -192,16 +200,17 @@ void MainWindow::onChannelButtonPressed()
     if (m_session.isValid()){
         int index = ui->channelsListWidget->currentRow();
         if (index < 0) return;
-        QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
-        QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
-        bool isSubscribed = subscribedChannels.contains(availableChannels.at(index));
-        if (isSubscribed){
+
+        QString channelName = ui->channelsListWidget->item(index)->text();
+        Channel channel(channelName);
+
+        if (isSubscribed(index)){
             //do unsubscribe
-            m_unsubscribeChannelQuery->setQuery(availableChannels.at(index),m_session);
+            m_unsubscribeChannelQuery->setQuery(channel,m_session);
             m_unsubscribeChannelQuery->doRequest();
         }else{
             //do subscribe
-            m_subscribeChannelQuery->setQuery(availableChannels.at(index),m_session);
+            m_subscribeChannelQuery->setQuery(channel,m_session);
             m_subscribeChannelQuery->doRequest();
         }
     }
@@ -233,7 +242,9 @@ void MainWindow::onWriteTagButtonPressed()
     int index = ui->subscribedListWidget->currentRow();
     if (m_session.isValid() && index>=0)
     {
-        Channel channel = m_subscribedChannelsQuery->getChannels().at(index);
+        QString channelName = ui->subscribedListWidget->item(index)->text();
+
+        Channel channel(channelName);
 
         qreal lat = ui->writeTagLatEdit->text().toDouble();
         qreal lon = ui->writeTagLonEdit->text().toDouble();
@@ -344,13 +355,19 @@ void MainWindow::onWriteTagSuccess()
     writeToStatusLog("WriteTag request succeed");
 }
 
+
 void MainWindow::formChannelList(){
-    QList<Channel> availableChannels = m_availableChannelsQuery->getChannels();
-    QList<Channel> subscribedChannels = m_subscribedChannelsQuery->getChannels();
+
+    if (m_availableChannelsQuery->getChannels().size() == 0 ) return;
+    else
+    {
+        m_availableChannels = m_availableChannelsQuery->getChannels();
+    }
+
+    m_subscribedChannels = m_subscribedChannelsQuery->getChannels();
+
     QListWidget * listWidget = ui->channelsListWidget;
     QListWidget * subscribedListWidget = ui->subscribedListWidget;
-
-    if (availableChannels.size() == 0 ) return;
 
     // Tab - channels
     while(listWidget->count()>0)
@@ -358,16 +375,16 @@ void MainWindow::formChannelList(){
       listWidget->takeItem(0);
     }
 
-    foreach (Channel s, availableChannels){
+    foreach (Channel s, m_availableChannels){
         QListWidgetItem * item = new QListWidgetItem(s.getName());
-        if (subscribedChannels.contains(s)){
+        if (isSubscribed(s.getName())){
             item->setBackgroundColor(Qt::lightGray);
         }
 
         listWidget->addItem(item);
     }
 
-    if (subscribedChannels.size() == 0 ) return;
+    if (m_subscribedChannelsQuery->getChannels().size() == 0 ) return;
 
     //Tab - writeTag
     while(subscribedListWidget->count()>0)
@@ -375,7 +392,7 @@ void MainWindow::formChannelList(){
         subscribedListWidget->takeItem(0);
     }
 
-    foreach (Channel s, subscribedChannels){
+    foreach (Channel s, m_subscribedChannels){
         subscribedListWidget->addItem(s.getName());
     }
 
@@ -393,7 +410,7 @@ void MainWindow::writeToStatusLog(const QString & text)
 {
 
     ui->statusLog->addItem(QDateTime::currentDateTime().toString()+" : "+text);
-
+    ui->statusLog->scrollToBottom();
 }
 
 void MainWindow::getSubscribedChannels()
