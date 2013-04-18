@@ -92,7 +92,11 @@ void DefaultQuery::process(QNetworkReply *reply)
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
 
-  if (!ok || data.size()==0) Q_EMIT errorOccured(INCORRECT_JSON_ERROR);
+  if (!ok || data.size()==0){
+      m_errno = INCORRECT_JSON_ERROR;
+      Q_EMIT errorOccured(INCORRECT_JSON_ERROR);
+      return;
+  }
   m_errno = result["errno"].toInt();
 
   if(m_errno == SUCCESS)
