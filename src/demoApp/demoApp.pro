@@ -13,7 +13,6 @@ CONFIG += gui network
 
 LIBS += -L../lib/ -lmaps -lqjson -lcommon -lwikigpsHttp -lwikigpsJson
 
-
 # Input
 HEADERS += \
     mainwindow.h

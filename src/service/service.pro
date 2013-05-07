@@ -60,8 +60,8 @@ HEADERS += \
            inc/QueryExecutor.h \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
-    src/servicelogger.h \
     inc/DbObjectsCollection.h \
+    inc/servicelogger.h \
     inc/MetaCache.h
 
 

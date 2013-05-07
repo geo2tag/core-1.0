@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Apr 18 11:21:51 2013
+** Created: Tue Apr 23 08:43:11 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -451,7 +451,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(4);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -484,7 +484,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(channelsTab), QApplication::translate("MainWindow", "Channels", 0, QApplication::UnicodeUTF8));
         label_15->setText(QApplication::translate("MainWindow", "Select channel below:", 0, QApplication::UnicodeUTF8));
         label_12->setText(QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
-        label_13->setText(QApplication::translate("MainWindow", "Latatiude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
+        label_13->setText(QApplication::translate("MainWindow", "Latiude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
         label_14->setText(QApplication::translate("MainWindow", "Longitude (press mouse wheel on map)", 0, QApplication::UnicodeUTF8));
         writeTagButton->setText(QApplication::translate("MainWindow", "WriteTag", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(writeTagTab), QApplication::translate("MainWindow", "WriteTag", 0, QApplication::UnicodeUTF8));
