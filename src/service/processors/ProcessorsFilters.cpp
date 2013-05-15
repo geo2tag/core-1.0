@@ -141,6 +141,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
 
         response.setErrno(SUCCESS);
     }
+    //qSort(feed);
     response.setTags(feed);
 
     answer.append(response.getJson());

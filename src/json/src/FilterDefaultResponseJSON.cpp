@@ -155,6 +155,7 @@ QByteArray FilterDefaultResponseJSON::getJson() const
   for(int i=0; i<channels.size(); i++)
   {
     QList<Tag> tags = m_tagMap.values(channels.at(i));
+    qSort(tags);
     QVariantList jtags;
     QVariantMap jchannel;
     QVariantMap channel;
