@@ -87,6 +87,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         return answer;
     }
 
+    qulonglong tagNumber = request.getTagNumber();
+
     common::BasicUser user = session.getUser();
 
     filtration.addFilter(QSharedPointer<Filter>(new ShapeFilter(request.getShape())));
@@ -123,6 +125,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(targetChannel);
         QList<Tag > filteredTags = filtration.filtrate(tags);
 
+	if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
+
         feed << filteredTags;
         response.setErrno(SUCCESS);
     }
@@ -133,7 +137,10 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
             Channel channel = channels.at(i);
             QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
             QList<Tag > filteredTags = filtration.filtrate(tags);
-                feed << filteredTags;
+
+	    if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
+
+            feed << filteredTags;
         }
 	DEBUG() << "Filtred tags number " << feed.size();
 
@@ -141,6 +148,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
 
         response.setErrno(SUCCESS);
     }
+   
     response.setTags(feed);
 
     answer.append(response.getJson());
