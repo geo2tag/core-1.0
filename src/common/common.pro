@@ -70,8 +70,7 @@ SOURCES += \
     src/SettingsStorage.cpp \
     src/Session.cpp \
     src/EmailMessage.cpp \
-    src/BasicUser.cpp \
-    ../json/src/AddChannelRequestJSON.cpp
+    src/BasicUser.cpp
 
 linux: {
     HEADERS += inc/GpsModeller.h

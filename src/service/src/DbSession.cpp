@@ -77,6 +77,9 @@
 #include "FilterChannelRequestJSON.h"
 #include "FilterChannelResponseJSON.h"
 
+#include "SetDbResponseJSON.h"
+#include "SetDbRequestJSON.h"
+
 #include "ErrnoInfoResponseJSON.h"
 
 #include "BuildResponseJSON.h"
@@ -130,6 +133,8 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
     m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
 
+    m_processors.insert("setDb", &DbObjectsCollection::processSetDbQuery);
+
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
 //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
 //    m_processors.insert("confirmRegistration-*", &DbObjectsCollection::processFilterFenceQuery);
@@ -138,23 +143,8 @@ DbObjectsCollection::DbObjectsCollection()
     WARNING() << "Platform version: " << getPlatformVersion();
     WARNING() << "Platform build info: " << getPlatformBuildInfo();
 
-
-    //GT-817 Now is only QPSQL base is supported
-    QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL");
-
-    QVariant defaultName("COULD_NOT_READ_CONFIG");
-    QString host=SettingsStorage::getValue("database/host",defaultName).toString();
-    QString name=SettingsStorage::getValue("database/name",defaultName).toString();
-    QString user=SettingsStorage::getValue("database/user",defaultName).toString();
-    QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
-
-    database.setHostName(host);
-    database.setDatabaseName(name);
-    database.setUserName(user);
-    database.setPassword(pass);
-
-    DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
-    DEBUG() << "database.open()=" << database.open();
+    // Initialization of default QueryExecutor and
+    m_defaultCache = Core::MetaCache::getDefaultMetaCache();
 }
 
 DbObjectsCollection& DbObjectsCollection::getInstance()
@@ -439,7 +429,7 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &data)
 
     QString sessionToken = request.getSessionToken();
     DEBUG() << "Searching of session with token: " << sessionToken;
-    Session session = Core::MetaCache::findSession(sessionToken);
+    Session session = m_defaultCache->findSession(sessionToken);
 
     if(!session.isValid())
     {
@@ -451,7 +441,7 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &data)
 
     DEBUG() <<  "Session has been found. Deleting...";
 
-    Core::MetaCache::removeSession(session);
+    m_defaultCache->removeSession(session);
 
 
 
@@ -475,7 +465,7 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
         return answer;
     }
 
-    Session session =  Core::MetaCache::findSession(request.getSessionToken());
+    Session session =  m_defaultCache->findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -483,10 +473,12 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
         return answer;
     }
 
-    BasicUser user = session.getUser();
-    QList<Channel> channels = Core::MetaCache::getChannelsByOwner(user);
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
 
-    Core::MetaCache::updateSession(session);
+    BasicUser user = session.getUser();
+    QList<Channel> channels =cache->getChannelsByOwner(user);
+
+    m_defaultCache->updateSession(session);
 
     response.setChannels(channels);
     response.setErrno(SUCCESS);
@@ -508,17 +500,17 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
         answer.append(response.getJson());
         return answer;
     }
-
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(session.getUser());
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+    QList<Channel> channels = cache->getSubscribedChannels(session.getUser());
     response.setChannels(channels);
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -543,7 +535,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
 
     if(!session.isValid())
     {
@@ -555,7 +547,8 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
     common::BasicUser user = session.getUser();
 
     Channel channel = request.getChannel();
-    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+    Channel realChannel = cache->findChannel(channel.getName());
     if(!realChannel.isValid())
     {
         response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
@@ -563,7 +556,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    bool isSubscribed = Core::MetaCache::testChannel(user, realChannel);
+    bool isSubscribed = cache->testChannel(user, realChannel);
     if (isSubscribed)
     {
         response.setErrno(CHANNEL_ALREADY_SUBSCRIBED_ERROR);
@@ -571,14 +564,14 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    bool result = Core::MetaCache::subscribeChannel(user,realChannel);
+    bool result = cache->subscribeChannel(user,realChannel);
     if(!result)
     {
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         return answer;
     }
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -602,26 +595,28 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
         return answer;
     }
 
+// https://geo2tag.atlassian.net/browse/GT-915
 
-    common::BasicUser user = request.getUser();
-    if(Core::MetaCache::checkUser(user) || Core::MetaCache::checkEmail(user.getEmail()))
-    {
-            response.setErrno(USER_ALREADY_EXIST_ERROR);
-            answer.append(response.getJson());
-            DEBUG() << "answer: " << answer.data();
-            return answer;
-    }
+//    common::BasicUser user = request.getUser();
+//    if(Core::MetaCache::checkUser(user) || Core::MetaCache::checkEmail(user.getEmail()))
+//    {
+//            response.setErrno(USER_ALREADY_EXIST_ERROR);
+//            answer.append(response.getJson());
+//            DEBUG() << "answer: " << answer.data();
+//            return answer;
+//    }
 
 
-    if(!Core::MetaCache::addUser(user))
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        DEBUG() << "answer: " << answer.data();
-        return answer;
-    }
+//    if(!Core::MetaCache::addUser(user))
+//    {
+//        response.setErrno(INTERNAL_DB_ERROR);
+//        answer.append(response.getJson());
+//        DEBUG() << "answer: " << answer.data();
+//        return answer;
+//    }
 
-    response.addUser(user);
+//    response.addUser(user);
+    response.addUser(BasicUser());
     response.setErrno(SUCCESS);
 
 
@@ -646,7 +641,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -655,10 +650,10 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
     }
 
     common::BasicUser user = session.getUser();
- 
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
 
     Channel channel = request.getChannel();
-    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
+    Channel realChannel = cache->findChannel(channel.getName());
     if(!realChannel.isValid())
     {
         response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
@@ -666,7 +661,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         return answer;
     }
 
-    bool isSubscribed = Core::MetaCache::testChannel(user, realChannel);
+    bool isSubscribed = cache->testChannel(user, realChannel);
     if (!isSubscribed)
     {
         response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
@@ -675,7 +670,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
     }
 
 
-    bool result = Core::MetaCache::unsubscribeChannel(user, realChannel);
+    bool result = cache->unsubscribeChannel(user, realChannel);
 
     if(!result)
     {
@@ -683,7 +678,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
         answer.append(response.getJson());
         return answer;
     }
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -730,7 +725,7 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -738,8 +733,9 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
     common::BasicUser realUser = session.getUser();
-    Channel channel = Core::MetaCache::findChannel(request.getChannelName());
+    Channel channel = cache->findChannel(request.getChannelName());
 
     if (!channel.isValid())
     {
@@ -748,7 +744,7 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
         return answer;
     }
 
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(realUser);
+    QList<Channel> channels = cache->getSubscribedChannels(realUser);
 
     if (!channels.contains(channel))
     {
@@ -758,11 +754,11 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
 		
     }
 
-    QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
+    QList<Tag > tags = cache->loadTagsFromChannel(channel);
     unsigned int amount = request.getAmount();
     tags = (unsigned int)tags.count() > amount ? tags.mid(0, amount) : tags;
 
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setData(channel, tags);
     response.setErrno(SUCCESS);
@@ -784,30 +780,75 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
         return answer;
     }
 
-    common::BasicUser user = request.getUser();
-    common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
+//    https://geo2tag.atlassian.net/browse/GT-915
 
-    if( areCredentialsIncorrect(realUser, user) )
-    {
-        response.setErrno(INCORRECT_CREDENTIALS_ERROR);
-        answer.append(response.getJson());
-        DEBUG() << "answer: %s" <<  answer.data();
-        return answer;
-    }
+//    common::BasicUser user = request.getUser();
+//    common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
 
-    if(! Core::MetaCache::deleteUser(realUser))
-    {
-        response.setErrno(INTERNAL_DB_ERROR);
-        answer.append(response.getJson());
-        DEBUG() << "answer: " << answer.data();
-        return answer;
-    }
+//    if( areCredentialsIncorrect(realUser, user) )
+//    {
+//        response.setErrno(INCORRECT_CREDENTIALS_ERROR);
+//        answer.append(response.getJson());
+//        DEBUG() << "answer: %s" <<  answer.data();
+//        return answer;
+//    }
+
+//    if(! Core::MetaCache::deleteUser(realUser))
+//    {
+//        response.setErrno(INTERNAL_DB_ERROR);
+//        answer.append(response.getJson());
+//        DEBUG() << "answer: " << answer.data();
+//        return answer;
+//    }
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
 }
+
+
+QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
+{
+    SetDbRequestJSON request;
+    SetDbResponseJSON response;
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    Session session = m_defaultCache->findSession(request.getSessionToken());
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+
+
+    QString dbName = request.getDbName();
+    bool doesDbExist = QueryExecutor::checkDbExistance(dbName);
+    if(!doesDbExist)
+    {
+        response.setErrno(DB_DOES_NOT_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    m_defaultCache->changeDbName(session, dbName);
+    m_defaultCache->updateSession(session);
+
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
 
 //QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)
 //{
@@ -861,7 +902,7 @@ void DbObjectsCollection::init()
 {
 
     getInstance();
-    Core::MetaCache::init();
+    //Core::::init();
 
 }
 

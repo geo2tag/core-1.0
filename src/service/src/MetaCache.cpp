@@ -43,24 +43,54 @@
 #include "QueryExecutor.h"
 #include "servicelogger.h"
 #include "defines.h"
+#include "SettingsStorage.h"
 
 namespace Core
 {
 
-QList<Channel>           MetaCache::s_channels;
-QList<Session>           MetaCache::s_sessions;
-QList<BasicUser>         MetaCache::s_users;
+QMap<QString, MetaCache*> MetaCache::m_cachesMap;
 
-QReadWriteLock      MetaCache::s_cacheLock;
-QReadWriteLock      MetaCache::s_usersLock;
-QReadWriteLock      MetaCache::s_channelsLock;
-QReadWriteLock      MetaCache::s_SessionsLock;
+MetaCache* MetaCache::getDefaultMetaCache()
+{
+    QString defaultDbName =
+            SettingsStorage::getValue("database/name",DEFAULT_DB_NAME).toString();
+    return getMetaCache(defaultDbName);
+}
+
+MetaCache* MetaCache::getMetaCache(const Session& session)
+{
+    DEBUG() << "Getting MetaCache for DB = " << session.getDbName();
+    return getMetaCache(session.getDbName());
+}
+
+MetaCache* MetaCache::getMetaCache(const QString& dbName)
+{
+    MetaCache* newCache;
+    if (!m_cachesMap.contains(dbName))
+    {
+        newCache = new MetaCache(dbName);
+        m_cachesMap.insert(dbName, newCache);
+
+    }else{
+        newCache = m_cachesMap.value(dbName);
+    }
+
+
+    return newCache;
+}
+
+
+MetaCache::MetaCache(const QString& dbName):
+    m_queryExecutor(QueryExecutor::getInstance(dbName)){
+    DEBUG() << "Creating MetaCache for DB = " << dbName;
+}
+
 
 void MetaCache::init()
 {
     DEBUG() << "Initializing MetaCache objects";
-    initUsers();
-    initChannels();
+    //initUsers();
+    //initChannels();
 }
 
 BasicUser MetaCache::getUserById(const QString userId)
@@ -87,50 +117,50 @@ QList<BasicUser> MetaCache::getUsers()
 
 QList<Channel> MetaCache::getChannels()
 {
-    QReadLocker lock(&s_channelsLock);
-    return   s_channels;
+
+    return   m_queryExecutor->loadChannels();
 }
 
 bool MetaCache::addChannel(const Channel &channel, const common::BasicUser& user)
 {
-    bool result = QueryExecutor::instance()->insertNewChannel(channel, user);
+    bool result = m_queryExecutor->insertNewChannel(channel, user);
     
-    if (result){
-      DEBUG() << "Adding to memory channel " << channel.getName();
-      s_channels.push_back(Channel(channel));
-    }
+//    if (result){
+//      DEBUG() << "Adding to memory channel " << channel.getName();
+//      s_channels.push_back(Channel(channel));
+//    }
     return result;
 }
 
 bool MetaCache::addUser(const common::BasicUser &user)
 {
-    bool result = QueryExecutor::instance()->insertNewUser(user);
-    if (result)
-    {
-        QWriteLocker lock(&s_usersLock);
-	s_users.push_back(user);
-    }
+    bool result = m_queryExecutor->insertNewUser(user);
+//    if (result)
+//    {
+//        QWriteLocker lock(&s_usersLock);
+//	s_users.push_back(user);
+//    }
     return result;
 }
 
 bool MetaCache::deleteUser(const BasicUser &user)
 {
-    bool result = QueryExecutor::instance()->deleteUser(user);
+    bool result = m_queryExecutor->deleteUser(user);
 
-    if (result)
-    {
-      BasicUser u;
-      foreach (u, s_users)
-      {
-        if (u.getLogin() == user.getLogin())
-	{
-          QWriteLocker lock(&s_usersLock);
-          s_users.removeOne(u);
-	  break;
-        }
+//    if (result)
+//    {
+//      BasicUser u;
+//      foreach (u, s_users)
+//      {
+//        if (u.getLogin() == user.getLogin())
+//	{
+//          QWriteLocker lock(&s_usersLock);
+//          s_users.removeOne(u);
+//	  break;
+//        }
 
-      }
-    }   
+//      }
+//    }
 
     return result;
 }
@@ -143,12 +173,12 @@ void MetaCache::insertSession(const Session& session)
 
 Channel MetaCache::getChannel(const QString name)
 {
-    return QueryExecutor::instance()->getChannel(name);
+    return m_queryExecutor->getChannel(name);
 }
 
 QList<Channel> MetaCache::getChannelsByOwner(const BasicUser &user)
 {
-    return QueryExecutor::instance()->getChannelsByOwner(user);
+    return m_queryExecutor->getChannelsByOwner(user);
 }
 
 Session MetaCache::findSession(const BasicUser &user)
@@ -206,34 +236,34 @@ Session MetaCache::findSession(const QString &token)
 
 Channel MetaCache::findChannel(const QString &name)
 {
-#ifdef GEO2TAG_LITE
-    return QueryExecutor::instance()->getChannel(name);
-#else
-    Channel ch;
-    QReadLocker lock(&s_channelsLock);
-    foreach(ch,s_channels)
-    {
-	DEBUG() << "Checking channel " << ch.getName(); 
-        if(QString::compare(ch.getName(), name, Qt::CaseInsensitive) == 0)
-            return ch;
-    }
-    return Channel();
-#endif
+//#ifdef GEO2TAG_LITE
+    return m_queryExecutor->getChannel(name);
+//#else
+//    Channel ch;
+//    QReadLocker lock(&s_channelsLock);
+//    foreach(ch,s_channels)
+//    {
+//	DEBUG() << "Checking channel " << ch.getName();
+//        if(QString::compare(ch.getName(), name, Qt::CaseInsensitive) == 0)
+//            return ch;
+//    }
+//    return Channel();
+//#endif
 }
 
 QList<Channel> MetaCache::getSubscribedChannels(const BasicUser &user)
 {
-    return QueryExecutor::instance()->getSubscribedChannels(user);
+    return m_queryExecutor->getSubscribedChannels(user);
 }
 
 bool MetaCache::subscribeChannel(const BasicUser &user, const Channel &channel)
 {
-    return QueryExecutor::instance()->subscribeChannel(user,channel);
+    return m_queryExecutor->subscribeChannel(user,channel);
 }
 
 bool MetaCache::unsubscribeChannel(const BasicUser &user, const Channel &channel)
 {
-    return QueryExecutor::instance()->unsubscribeChannel(user,channel);
+    return m_queryExecutor->unsubscribeChannel(user,channel);
 }
 
 void MetaCache::reloadSessions()
@@ -244,7 +274,7 @@ void MetaCache::reloadSessions()
 
 bool MetaCache::checkEmail(const QString& email){
 
-  bool result = QueryExecutor::instance()->checkEmail(email);
+  bool result = m_queryExecutor->checkEmail(email);
   return result;
 
 }
@@ -252,7 +282,7 @@ bool MetaCache::checkEmail(const QString& email){
 bool MetaCache::checkUser(BasicUser &user)
 {
 
-    BasicUser bu = QueryExecutor::instance()->getUser(user.getLogin());
+    BasicUser bu = m_queryExecutor->getUser(user.getLogin());
 
 
     DEBUG() << "Checking " << user << " ->" << bu.isValid();
@@ -273,18 +303,18 @@ bool MetaCache::testChannel(BasicUser &user, const Channel& channel)
 #ifdef GEO2TAG_LITE
     return true;
 #else
-    return QueryExecutor::instance()->isSubscribed(user,channel);
+    return m_queryExecutor->isSubscribed(user,channel);
 #endif
 }
 
 bool MetaCache::writeTag(const Tag &tag)
 {
-    return QueryExecutor::instance()->insertNewTag(tag);
+    return m_queryExecutor->insertNewTag(tag);
 }
 
 QList<Tag> MetaCache::loadTagsFromChannel(const Channel &channel)
 {
-    return QueryExecutor::instance()->loadTags(channel);
+    return m_queryExecutor->loadTags(channel);
 }
 
 void MetaCache::initUsers()
@@ -292,7 +322,7 @@ void MetaCache::initUsers()
     QWriteLocker lock(&s_cacheLock);
 
     DEBUG() << "Initializing Users";
-    s_users=QueryExecutor::instance()->loadUsers();
+    s_users = m_queryExecutor->loadUsers();
     DEBUG() << "Loaded " << s_users.size() << "users";
     BasicUser u;
     foreach(u, s_users)
@@ -302,16 +332,16 @@ void MetaCache::initUsers()
 }
 
 BasicUser MetaCache::findUserByName(const QString& name){
-    BasicUser u;
+//    BasicUser u;
  
-    foreach(u,s_users)
-    {
-        if(QString::compare(u.getLogin(), name, Qt::CaseInsensitive) == 0 )
-            return u;
-    }
+//    foreach(u,s_users)
+//    {
+//        if(QString::compare(u.getLogin(), name, Qt::CaseInsensitive) == 0 )
+//            return u;
+//    }
 
-    return BasicUser();
-
+//    return BasicUser();
+    return m_queryExecutor->getUser(name);
 }
 
 void MetaCache::updateSession(Session &session)
@@ -338,9 +368,25 @@ void MetaCache::initChannels()
     QWriteLocker lock(&s_cacheLock);
 
     DEBUG() << "Initializing Channels";
-    s_channels=QueryExecutor::instance()->loadChannels();
+    s_channels = m_queryExecutor->loadChannels();
     DEBUG() << "Loaded " << s_users.size() << "channels";
 #endif
+}
+
+void MetaCache::changeDbName(const Session& session, const QString& dbName)
+{
+    QWriteLocker lock(&s_SessionsLock);
+    for(int i=0; i<s_sessions.size(); i++){
+        if (s_sessions[i] == session){
+            DEBUG() << "Found Session, its dbName set to " << dbName;
+
+            s_sessions[i].setDbName(dbName);
+
+            DEBUG() << "After changes " << getDefaultMetaCache()->findSession(session.getSessionToken()).getDbName();
+            return;
+        }
+    }
+    DEBUG() << "Session not found for changing dbName";
 }
 
 } // namespace Core

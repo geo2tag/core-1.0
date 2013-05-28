@@ -1,5 +1,5 @@
 /*
- * Copyright 2012  OSLL osll@osll.spb.ru
+ * Copyright 2010  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,62 +28,78 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file  Session.h
- * \brief Declaration of the class Session
+
+/*! ---------------------------------------------------------------
+ * $Id$
+ *
+ * \file SetDbRequestJSON.cpp
+ * \brief SetDbRequestJSON implementation
+ *
+ * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef SESSION_H
-#define SESSION_H
+#include "SetDbRequestJSON.h"
 
-#include <QSharedPointer>
-#include <QString>
-#include <QDateTime>
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+
+#include <QVariant>
+#include <QVariantMap>
 #include <QDebug>
 
-#include "User.h"
+#include "JsonChannel.h"
+#include "JsonDataMark.h"
+#include "JsonSession.h"
+#include "servicelogger.h"
 
-class Session
+
+SetDbRequestJSON::SetDbRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
-  private:
-    QString             m_token;
-    QDateTime           m_accessTime;
-    common::BasicUser   m_user;
+  DEBUG() << "SetDbRequestJSON::SetDbRequestJSON()";
+}
 
-    QString             m_dbName;
+bool SetDbRequestJSON::parseJson(const QByteArray &data)
+{
+  clearContainers();
 
-  public:
+  QJson::Parser parser;
+  bool ok;
+  QVariantMap result = parser.parse(data, &ok).toMap();
 
-    Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
-            const common::BasicUser& user=common::BasicUser());
-    Session(const Session& obj);
-    Session();
-    Session& operator=(const Session& obj);
-    bool operator==(const Session& obj);
+  if(!ok) return false;
 
-    void setSessionToken(const QString& sessionToken);
-    void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
-    void setUser(const common::BasicUser& user);
+  QString dbName = result["db_name"].toString();
+  QString auth_token = result["auth_token"].toString();
 
-    bool isValid() const { return !m_token.isEmpty(); }
-    bool isExpired() const;
+  if (dbName.isEmpty() || auth_token.isEmpty()) return false;
 
-    const QString& getSessionToken() const;
-    const QDateTime& getLastAccessTime() const;
-    common::BasicUser getUser() const;
-
-    static QString generateToken(const common::BasicUser& user);
-
-    virtual ~Session();
-
-    QString getDbName() const;
-    void setDbName(const QString& dbName);
-};
-
-QDebug& operator<<(QDebug &dbg, Session const& session);
+  m_dbName = dbName;
+  m_token = auth_token;
+  return true;
+}
 
 
-typedef ConcurrentVector<Session> Sessions;
-#endif                                  // SESSION_H
+QByteArray SetDbRequestJSON::getJson() const
+{
+  QJson::Serializer serializer;
+  QVariantMap request;
+
+  request.insert("auth_token", m_token);
+  request.insert("db_name", m_dbName);
+
+  return serializer.serialize(request);
+}
+
+void SetDbRequestJSON::setDbName(const QString& dbName)
+{
+  m_dbName = dbName;
+}
+
+const QString SetDbRequestJSON::getDbName() const
+{
+  return m_dbName;
+} 
+
+/* ===[ End of file $HeadURL$ ]=== */

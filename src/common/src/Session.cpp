@@ -39,9 +39,11 @@
 #include <QCryptographicHash>
 #include "servicelogger.h"
 #include "SettingsStorage.h"
+#include "defines.h"
 
 Session::Session(const QString &token, const QDateTime &accessTime, const common::BasicUser &user)
-    : m_token(token), m_accessTime(accessTime), m_user(user)
+    : m_token(token), m_accessTime(accessTime), m_user(user),
+      m_dbName(SettingsStorage::getValue("database/name", DEFAULT_DB_NAME).toString())
 {
 }
 
@@ -155,3 +157,13 @@ QDebug& operator<<(QDebug &dbg, Session const& session)
     return dbg;
 }
 
+
+QString Session::getDbName() const
+{
+    return m_dbName;
+}
+
+void Session::setDbName(const QString& dbName)
+{
+    m_dbName = dbName;
+}

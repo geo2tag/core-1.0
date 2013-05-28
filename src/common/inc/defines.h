@@ -65,7 +65,7 @@ void setServerPort(int port);
 //#define CONFIG_FILE               "/usr/share/wikigps/wikigps.conf"
 
 // Default values
-#define DEFAULT_SERVER "http://tracks.osll.spb.ru:81/"
+#define DEFAULT_SERVER "http://demo64.geo2tag.org/"
 #define DEFAULT_PORT 81
 #define PASSWORD_SALT "geo2tag_salt"
 
@@ -74,6 +74,8 @@ void setServerPort(int port);
 #define DEFAULT_USER_PASSWORD     "test"
 #define DEFAULT_CHANNEL           "default"
 #define DEFAULT_TOKEN             "2154086390Ivan1128557755"
+
+#define DEFAULT_DB_NAME             "geo2tag"
 
 #define DEFAULT_TMP_USER_TIMELIFE "2 days"
 #define DEFAULT_SESSION_TIMELIFE  3     // days

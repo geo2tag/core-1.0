@@ -54,6 +54,11 @@
 #include "FilterRequestJSON.h"
 #include "Session.h"
 
+namespace Core{
+    class MetaCache;
+}
+
+
 namespace common
 {
 
@@ -74,6 +79,9 @@ namespace common
 
     static const QString error;
     static const QString ok;
+
+    Core::MetaCache * m_defaultCache;
+
 
     DbObjectsCollection();
 
@@ -122,6 +130,8 @@ namespace common
 
     QByteArray internalProcessFilterQuery(FilterRequestJSON&, const QByteArray&, bool is3d);
 
+
+    QByteArray processSetDbQuery(const QByteArray &data);
     //    void processSendConfirmationLetter(const QString &address);
 
     //    static void processSendConfirmationLetter(const QString&);
@@ -138,7 +148,8 @@ namespace common
       static QString getPlatformVersion();
       static QString getPlatformBuildInfo();
 
-    private:
+
+  private:
       DbObjectsCollection(const DbObjectsCollection& obj);
       DbObjectsCollection& operator=(const DbObjectsCollection& obj);
 

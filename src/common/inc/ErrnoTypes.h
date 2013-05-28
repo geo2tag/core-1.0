@@ -68,6 +68,7 @@
 #define EMAIL_ALREADY_EXIST_ERROR           19
 #define WEAK_PASSWORD_ERROR                 20
 #define NOT_SUPPORTED                       21
+#define DB_DOES_NOT_EXIST_ERROR             22
 
 class Errno
 {
@@ -123,6 +124,8 @@ public:
         emap.insert(WEAK_PASSWORD_ERROR                ,"WEAK_PASSWORD_ERROR");
         // 21
         emap.insert(NOT_SUPPORTED                      ,"NOT_SUPPORTED");
+        // 22
+        emap.insert(DB_DOES_NOT_EXIST_ERROR            ,"DB_DOES_NOT_EXIST_ERROR");
         return emap;
     }
 };

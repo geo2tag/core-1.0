@@ -78,7 +78,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
 
     if(!session.isValid())
     {
@@ -86,7 +86,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         answer.append(response.getJson());
         return answer;
     }
-
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
     qulonglong tagNumber = request.getTagNumber();
 
     common::BasicUser user = session.getUser();
@@ -98,7 +98,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
     }
 
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(user);
+    QList<Channel> channels = cache->getSubscribedChannels(user);
     QList<Tag> feed;
 
     if (request.getChannels().size() > 0)
@@ -122,7 +122,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
             return answer;
         }
 
-        QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(targetChannel);
+        QList<Tag > tags = cache->loadTagsFromChannel(targetChannel);
         QList<Tag > filteredTags = filtration.filtrate(tags);
 
 	if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
@@ -135,7 +135,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         for(int i = 0; i<channels.size(); i++)
         {
             Channel channel = channels.at(i);
-            QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
+            QList<Tag > tags = cache->loadTagsFromChannel(channel);
             QList<Tag > filteredTags = filtration.filtrate(tags);
 
 	    if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
@@ -144,7 +144,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         }
 	DEBUG() << "Filtred tags number " << feed.size();
 
-	Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
         response.setErrno(SUCCESS);
     }

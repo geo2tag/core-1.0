@@ -65,7 +65,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     }
 
     common::BasicUser user = request.getUser();
-    common::BasicUser realUser = Core::MetaCache::findUserByName(user.getLogin());
+    common::BasicUser realUser = m_defaultCache->findUserByName(user.getLogin());
     DEBUG() << "realUser=" << realUser;
     DEBUG() << "user=" << user;
 
@@ -79,7 +79,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
     else
     {
-        Session session = Core::MetaCache::findSession(user);
+        Session session = m_defaultCache->findSession(user);
 
         if (!session.isValid())
         {
@@ -88,14 +88,14 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
             DEBUG() <<  "Session hasn't been found. Generating of new Session.";
 
-            Core::MetaCache::insertSession(addedSession);
+            m_defaultCache->insertSession(addedSession);
             response.setSessionToken(token);
         }
         else
         {
             DEBUG() <<  "Session has been found. Session's token:" << session.getSessionToken();
             DEBUG() <<  "Updating session";
-            Core::MetaCache::updateSession(session);
+            m_defaultCache->updateSession(session);
             response.setSessionToken(session.getSessionToken());
         }
         response.setErrno(SUCCESS);
@@ -123,7 +123,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     Tag tag = request.getTag();
 
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
 
     DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
     DEBUG() << "Session:" << session;
@@ -139,7 +139,9 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     common::BasicUser user = session.getUser();
     tag.setUser(user);
 
-    if(!Core::MetaCache::testChannel(user,request.getChannel()))
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+
+    if(!cache->testChannel(user,request.getChannel()))
     {
         DEBUG() << "user has no roghts to write";
         response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
@@ -148,14 +150,14 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     }
 
     DEBUG() << "writing tag " << tag;
-    if(!Core::MetaCache::writeTag(tag))
+    if(!cache->writeTag(tag))
     {
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         return answer;
     }
 
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);
     response.addTag(tag);
@@ -178,7 +180,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
 
     if(!session.isValid())
     {
@@ -188,8 +190,8 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     }
 
     QList<Tag> feed;
-
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(session.getUser());
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+    QList<Channel> channels = cache->getSubscribedChannels(session.getUser());
 
     DEBUG() << "User is subscribed for " << channels.size() << " channels";
 
@@ -200,7 +202,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     Channel channel;
     foreach(channel, channels)
     {
-        QList<Tag> tags = Core::MetaCache::loadTagsFromChannel(channel);
+        QList<Tag> tags = cache->loadTagsFromChannel(channel);
         Tag tag;
         foreach(tag,tags)
         {
@@ -212,7 +214,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
     response.setData(feed);
 
     DEBUG() << "Updating session";
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
     DEBUG() << "Updating session ..done";
 
     response.setErrno(SUCCESS);
@@ -238,7 +240,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
     DEBUG() << "Session:" << session;
 
     if(!session.isValid())
@@ -249,8 +251,9 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
     Channel channel = request.getChannel();
-    Channel realChannel = Core::MetaCache::findChannel(channel.getName());
+    Channel realChannel = cache->findChannel(channel.getName());
 
     if(realChannel.isValid())
     {
@@ -261,7 +264,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 
     }
 
-    if(!Core::MetaCache::addChannel(channel,session.getUser()))
+    if(!cache->addChannel(channel,session.getUser()))
     {
         qWarning() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);
@@ -270,7 +273,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         return answer;
     }
 
-    Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -292,7 +295,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
         answer.append(response.getJson());
         return answer;
     }
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
     if(!session.isValid())
     {
         response.setErrno(WRONG_TOKEN_ERROR);
@@ -300,9 +303,11 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
         return answer;
     }
 
-    Core::MetaCache::updateSession(session);
 
-    response.setChannels(Core::MetaCache::getChannels());
+    m_defaultCache->updateSession(session);
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+
+    response.setChannels(cache->getChannels());
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();

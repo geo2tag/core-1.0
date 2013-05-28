@@ -1,5 +1,5 @@
 /*
- * Copyright 2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,62 +28,15 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file  Session.h
- * \brief Declaration of the class Session
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef SETDBRESPONSEJSON_H
+#define SETDBRESPONSEJSON_H
 
-#include <QSharedPointer>
-#include <QString>
-#include <QDateTime>
-#include <QDebug>
+#include "DefaultResponseJSON.h"
 
-#include "User.h"
-
-class Session
-{
-  private:
-    QString             m_token;
-    QDateTime           m_accessTime;
-    common::BasicUser   m_user;
-
-    QString             m_dbName;
-
-  public:
-
-    Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
-            const common::BasicUser& user=common::BasicUser());
-    Session(const Session& obj);
-    Session();
-    Session& operator=(const Session& obj);
-    bool operator==(const Session& obj);
-
-    void setSessionToken(const QString& sessionToken);
-    void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
-    void setUser(const common::BasicUser& user);
-
-    bool isValid() const { return !m_token.isEmpty(); }
-    bool isExpired() const;
-
-    const QString& getSessionToken() const;
-    const QDateTime& getLastAccessTime() const;
-    common::BasicUser getUser() const;
-
-    static QString generateToken(const common::BasicUser& user);
-
-    virtual ~Session();
-
-    QString getDbName() const;
-    void setDbName(const QString& dbName);
-};
-
-QDebug& operator<<(QDebug &dbg, Session const& session);
-
-
-typedef ConcurrentVector<Session> Sessions;
-#endif                                  // SESSION_H
+typedef DefaultResponseJSON SetDbResponseJSON;
+// SETDBRESPONSEJSON_H
+#endif

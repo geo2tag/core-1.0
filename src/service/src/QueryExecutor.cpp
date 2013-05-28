@@ -53,9 +53,7 @@
 
 #include "MetaCache.h"
 
-QueryExecutor::QueryExecutor()
-{
-}
+QMap<QString, QueryExecutor*> QueryExecutor::m_executorsMap;
 
 
 qlonglong QueryExecutor::nextKey(const QString &sequence) const
@@ -66,6 +64,12 @@ qlonglong QueryExecutor::nextKey(const QString &sequence) const
     if ( query.next() )
         id = query.value(0).toLongLong();
     return id;
+}
+
+QueryExecutor::QueryExecutor(const QString &dbName): m_dbName(dbName)
+{
+    DEBUG() << "Calling QueryExecutor constructor for " << m_dbName;
+    initDatabase(dbName);
 }
 
 
@@ -124,8 +128,8 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     newTagQuery.bindValue(":url", tag.getUrl());
 
 
-    qlonglong userId = QueryExecutor::instance()->getUserIdByName(tag.getUser().getLogin());
-    qlonglong channelId = QueryExecutor::instance()->getChannelIdByName(tag.getChannel().getName());
+    qlonglong userId = getUserIdByName(tag.getUser().getLogin());
+    qlonglong channelId = getChannelIdByName(tag.getChannel().getName());
 
 
     newTagQuery.bindValue(":user_id", userId);
@@ -163,7 +167,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     newChannelQuery.bindValue(":description",channel.getDescription());
     newChannelQuery.bindValue(":url",channel.getUrl());
 
-    qlonglong owner = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    qlonglong owner = getUserIdByName(user.getLogin());
     newChannelQuery.bindValue(":owner_id",owner);
 
     DEBUG() << "Writing channel " << channel.getName() << " for user " << user << "(" << owner << ")";
@@ -545,7 +549,7 @@ QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
     QList<Channel> container;
 
     QSqlQuery query=makeQuery();
-    qlonglong owner_id = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    qlonglong owner_id = getUserIdByName(user.getLogin());
     QString qry = QString(("select description, name, url from channel where owner_id='%1'")).arg(owner_id);
     query.exec(qry);
 
@@ -578,7 +582,7 @@ QList<Channel> QueryExecutor::getSubscribedChannels(const common::BasicUser &use
 {
     QSqlQuery query=makeQuery();
     QList<Channel> container;
-    qlonglong userId = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    qlonglong userId = getUserIdByName(user.getLogin());
 
     QString qry("select channel.name, channel.id, channel.description, channel.url from channel inner join subscribe on channel.id = subscribe.channel_id inner join users on subscribe.user_id = users.id where users.id=%1;");
 
@@ -730,7 +734,7 @@ QList<Session> QueryExecutor::loadSessions()
         QDateTime lastAccessTime = query.record().value("last_access_time").toDateTime();
 
         common::BasicUser user(login,password,email);
-        if(Core::MetaCache::checkUser(user))
+        if(Core::MetaCache::getDefaultMetaCache()->checkUser(user))
         {
             Session session(token,lastAccessTime,user);
             result.push_back(session);
@@ -854,9 +858,9 @@ qlonglong QueryExecutor::getFactTransactionNumber()
     return 0;
 }
 
-QSqlQuery QueryExecutor::makeQuery()
+QSqlQuery QueryExecutor::makeQuery() const
 {
-    return QSqlQuery(QSqlDatabase::database());
+    return QSqlQuery(QSqlDatabase::database(m_dbName));
 }
 
 void QueryExecutor::transaction()
@@ -874,8 +878,74 @@ void QueryExecutor::commit()
     QSqlDatabase::database().commit();
 }
 
-QueryExecutor *QueryExecutor::instance()
+QueryExecutor *QueryExecutor::getInstance(const QString &dbName)
 {
-    static QueryExecutor instance;
-    return &instance;
+    QueryExecutor* result;
+    if (!m_executorsMap.contains(dbName)){
+        result = new QueryExecutor(dbName);
+        m_executorsMap.insert(dbName, result);
+    }else{
+        result = m_executorsMap.value(dbName);
+    }
+    return result;
+}
+
+
+bool QueryExecutor::checkDbExistance(const QString & dbName)
+{
+
+    bool connectionOpeningResult = initDatabase("postgres");
+    if (!connectionOpeningResult)
+    {
+      DEBUG() << "Unable to connect to postgres!";
+      return false;
+    }
+
+
+    QSqlQuery getDbNameQuery = QSqlQuery(QSqlDatabase::database("postgres"));
+    QString q = QString("select datname from pg_database where datname='%1';").arg(dbName);
+
+    getDbNameQuery.exec(q);
+
+    if (!getDbNameQuery.next())
+    {
+      DEBUG() << "Database " << dbName << " does not exist on this server";
+      return false;
+    }
+
+    DEBUG() << "Database " << dbName << " exists on this server";
+    return true;
+}
+
+bool QueryExecutor::initDatabase(const QString & dbName){
+    DEBUG() << "Initializing DB = " << dbName;
+
+    //GT-817 Now is only QPSQL base is supported
+
+    QSqlDatabase oldDatabase = QSqlDatabase::database(dbName);
+    if (oldDatabase.isOpen())
+    {
+        DEBUG() << dbName <<" is still opened, closing";
+        oldDatabase.close();
+    }
+
+    QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL", dbName);
+
+    QVariant defaultName("COULD_NOT_READ_CONFIG");
+    QString host=SettingsStorage::getValue("database/host",defaultName).toString();
+
+    QString user=SettingsStorage::getValue("database/user",defaultName).toString();
+    QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
+
+    database.setHostName(host);
+    database.setDatabaseName(dbName);
+    database.setUserName(user);
+    database.setPassword(pass);
+
+    DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
+    bool result = database.open();
+    DEBUG() << "database.open()=" << result;
+
+    return result;
+
 }

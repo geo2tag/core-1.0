@@ -49,10 +49,14 @@ class QueryExecutor : public QObject
 {
     Q_OBJECT
 
+    static QMap<QString, QueryExecutor*> m_executorsMap;
+
     //Geo2tagDatabase m_database;
 
     qlonglong nextKey(const QString& sequence) const;
-    QueryExecutor();
+    QueryExecutor(const QString& dbName);
+
+    QString m_dbName;
 
 public:
 
@@ -111,11 +115,14 @@ public:
 
     qlonglong getFactTransactionNumber();
 
-    static QSqlQuery makeQuery();
+    QSqlQuery makeQuery() const;
     static void transaction();
     static void rollback();
     static void commit();
-    static QueryExecutor* instance();
+    static QueryExecutor* getInstance(const QString& dbName);
+
+    static bool checkDbExistance(const QString& dbName);
+    static bool initDatabase(const QString& dbName);
 
 signals:
 
