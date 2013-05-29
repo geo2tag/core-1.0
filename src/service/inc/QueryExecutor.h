@@ -49,7 +49,7 @@ class QueryExecutor : public QObject
 {
     Q_OBJECT
 
-    static QMap<QString, QueryExecutor*> m_executorsMap;
+    static QMap<QString, QueryExecutor*> s_executorsMap;
 
     //Geo2tagDatabase m_database;
 

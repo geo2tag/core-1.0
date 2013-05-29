@@ -61,18 +61,18 @@ namespace Core
    */
   class MetaCache
   {
-      static QMap<QString, MetaCache*> m_cachesMap;
+      static QMap<QString, MetaCache*> s_cachesMap;
 
       QueryExecutor* m_queryExecutor;
 
-      QList<Channel>     s_channels;
-      QList<Session>     s_sessions;
-      QList<BasicUser>   s_users;
+      QList<Channel>     m_channels;
+      QList<Session>     m_sessions;
+      QList<BasicUser>   m_users;
 
-      QReadWriteLock      s_cacheLock;
-      QReadWriteLock      s_usersLock;
-      QReadWriteLock      s_channelsLock;
-      QReadWriteLock      s_SessionsLock;
+      QReadWriteLock      m_cacheLock;
+      QReadWriteLock      m_usersLock;
+      QReadWriteLock      m_channelsLock;
+      QReadWriteLock      m_SessionsLock;
 
   public:
 
@@ -122,6 +122,7 @@ namespace Core
       QList<Tag> loadTagsFromChannel(const Channel& channel);
 
       BasicUser findUserByName(const QString& name);
+
 
       void changeDbName(const Session& session, const QString& dbName);
 

@@ -53,7 +53,7 @@
 
 #include "MetaCache.h"
 
-QMap<QString, QueryExecutor*> QueryExecutor::m_executorsMap;
+QMap<QString, QueryExecutor*> QueryExecutor::s_executorsMap;
 
 
 qlonglong QueryExecutor::nextKey(const QString &sequence) const
@@ -881,11 +881,11 @@ void QueryExecutor::commit()
 QueryExecutor *QueryExecutor::getInstance(const QString &dbName)
 {
     QueryExecutor* result;
-    if (!m_executorsMap.contains(dbName)){
+    if (!s_executorsMap.contains(dbName)){
         result = new QueryExecutor(dbName);
-        m_executorsMap.insert(dbName, result);
+        s_executorsMap.insert(dbName, result);
     }else{
-        result = m_executorsMap.value(dbName);
+        result = s_executorsMap.value(dbName);
     }
     return result;
 }
@@ -936,6 +936,8 @@ bool QueryExecutor::initDatabase(const QString & dbName){
 
     QString user=SettingsStorage::getValue("database/user",defaultName).toString();
     QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
+
+    DEBUG() << host << user << pass;
 
     database.setHostName(host);
     database.setDatabaseName(dbName);

@@ -52,9 +52,11 @@ Session::Session(const Session &obj)
     m_token = obj.m_token;
     m_accessTime = obj.m_accessTime;
     m_user = obj.m_user;
+    m_dbName = obj.m_dbName;
 }
 
-Session::Session() : m_token(""), m_accessTime(QDateTime::currentDateTime())
+Session::Session() : m_token(""), m_accessTime(QDateTime::currentDateTime()),
+    m_dbName(SettingsStorage::getValue("database/name", DEFAULT_DB_NAME).toString())
 {
 }
 
@@ -63,6 +65,7 @@ Session &Session::operator =(const Session &obj)
     m_token = obj.m_token;
     m_accessTime = obj.m_accessTime;
     m_user = obj.m_user;
+    m_dbName = obj.m_dbName;
     return *this;
 }
 

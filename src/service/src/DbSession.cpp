@@ -829,9 +829,12 @@ QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
         return answer;
     }
 
+    // If "default" passed as db_name -> take db_name from config file
 
+    QString dbName = (request.getDbName() == DEFAULT_DB_NAME_CONSTANT) ?
+                SettingsStorage::getValue("database/name", DEFAULT_DB_NAME).toString() :
+                request.getDbName();
 
-    QString dbName = request.getDbName();
     bool doesDbExist = QueryExecutor::checkDbExistance(dbName);
     if(!doesDbExist)
     {

@@ -40,6 +40,7 @@
 #include <QString>
 #include <QVariant>
 #include <QSettings>
+#include <QDebug>
 
 static const char* SETTINGS_STORAGE_FILENAME="/opt/geo2tag/geo2tag.conf";
 SettingsStorage* SettingsStorage::s_settings = NULL;
@@ -82,6 +83,8 @@ QVariant SettingsStorage::getValue(const QString &key, const QVariant &defaultVa
 
     QSettings settings(s_settings->m_filename, QSettings::IniFormat);
     QVariant value = settings.value(key, defaultValue);
+    qDebug() << "QVariant SettingsStorage::getValue"<<key << value.toString();
+
     return value;
 }
 
