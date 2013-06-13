@@ -91,6 +91,24 @@ then
         exit 1
 fi
 
+default_db_name="default"
+response_setdb_test_1=`curl -d "{ \"auth_token\" : "$auth_token", \"db_name\" : \"$default_db_name\" }"  http://${INSTANCE}/service/setDb`;
+echo "SetDb test (attempt to change db to default value) - $response_setdb_test_1"
+if ! echo $response_setdb_test_1 | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at setDb_1 test"
+        exit 1
+fi
+
+incorrect_db_name="incorrect_database_name"
+db_does_not_exist_result="22"
+response_setdb_test_2=`curl -d "{ \"auth_token\" : "$auth_token", \"db_name\" : \"$incorrect_db_name\" }"  http://${INSTANCE}/service/setDb`;
+echo "SetDb test (attempt to change db to default value) - $response_setdb_test_2"
+if ! echo $response_setdb_test_2 | grep -q -s -F "$db_does_not_exist_result"  ;
+then
+        echo "Fail at setDb_2 test"
+        exit 1
+fi
 
 response_altitude_test=`curl   -d "{\"auth_token\":"$auth_token",\"latitude\":0.0, \"longitude\":0.0, \"radius\":10.0}"  http://${INSTANCE}/service/loadTags`;
 echo "Alt test - $response_altitude_test "
@@ -136,31 +154,31 @@ fi
 #        exit 1
 #fi
 
-
-response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
-echo "Add user test - $response_add_user_test"
-if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at addUser test"
-        exit 1
-fi
-
-echo "$test_channel"
-response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
-echo "Delete user test - $response_delete_user_test"
-#response_check_delete_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/login`;
-echo "Check delete test - $response_check_delete_test"
-if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at deleteUser test"
-        exit 1
-fi
-if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
-then
-        echo "Fail at checkDelete test"
-				echo $response_check_delete_test
-        #exit 1
-fi
+#### Commented because addUser and deleteUser are stubs now
+#	response_add_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\",\"email\":\"11@11.ru\"}" http://${INSTANCE}/service/addUser`;
+#	echo "Add user test - $response_add_user_test"
+#	if ! echo $response_add_user_test | grep -q -s -F "$correct_result"  ;
+#	then
+#		echo "Fail at addUser test"
+#		exit 1
+#	fi
+#
+#	echo "$test_channel"
+#	response_delete_user_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/deleteUser`;
+#	echo "Delete user test - $response_delete_user_test"
+#	#response_check_delete_test=`curl   -d "{\"login\":\"$test_channel\",\"password\":\"test\"}" http://${INSTANCE}/service/login`;
+#	echo "Check delete test - $response_check_delete_test"
+#	if ! echo $response_delete_user_test | grep -q -s -F "$correct_result"  ;
+#	then
+#		echo "Fail at deleteUser test"
+#		exit 1
+#	fi
+#	if  echo $response_check_delete_test | grep -q -s -F "$correct_result"  ;
+#	then
+#		echo "Fail at checkDelete test"
+#					echo $response_check_delete_test
+#		#exit 1
+#	fi
 
 #random_number=$((RANDOM%1000000));
 #rand_user=user_$random_number;
