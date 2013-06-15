@@ -492,7 +492,7 @@ bool QueryExecutor::checkEmail(const QString& email)
 {
 
     QSqlQuery query=makeQuery();
-    QString qry("select email from users where email='%1';");
+    QString qry("select email from users where lower(email) = lower('%1');");
     
 
     DEBUG() << "QueryExecutor::checkEmail " << email;
@@ -509,7 +509,7 @@ bool QueryExecutor::checkEmail(const QString& email)
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select id, login, password, email from users where login='%1';");
+    QString qry("select id, login, password, email from users where lower(login) = lower('%1');");
     
 
     DEBUG() << "QueryExecutor::getUser " << login;
@@ -753,7 +753,7 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
     QSqlQuery query=makeQuery();
     DEBUG() << "getUserIdByName " << name;
 
-    QString qry=QString("select id from users where login='%1';").arg(name);
+    QString qry=QString("select id from users where lower(login)=lower('%1');").arg(name);
     DEBUG() << "qry:" << qry;
     query.exec(qry);
     qlonglong id =1;  //default value
@@ -774,7 +774,7 @@ qlonglong QueryExecutor::getChannelIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
 
-    query.exec(QString("select id from channel where name='%1';").arg(name));
+    query.exec(QString("select id from channel where lower(name) = lower('%1');").arg(name));
     qlonglong id =-1;
 
     if(!query.next())
@@ -794,7 +794,7 @@ Channel QueryExecutor::getChannel(const QString &name)
     QSqlQuery query=makeQuery();
 
     DEBUG() << "Looking up channel " << name;
-    QString q=QString("select name, description, url from channel where name='%1';").arg(name);
+    QString q=QString("select name, description, url from channel where lower(name) = lower('%1');").arg(name);
 
     query.exec(q);
 
@@ -903,7 +903,7 @@ bool QueryExecutor::checkDbExistance(const QString & dbName)
 
 
     QSqlQuery getDbNameQuery = QSqlQuery(QSqlDatabase::database("postgres"));
-    QString q = QString("select datname from pg_database where datname='%1';").arg(dbName);
+    QString q = QString("select datname from pg_database where lower(datname) = lower('%1');").arg(dbName);
 
     getDbNameQuery.exec(q);
 
