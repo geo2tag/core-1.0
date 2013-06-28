@@ -83,6 +83,14 @@ then
         exit 1
 fi
 
+response_GT_935_test=`curl -d "{\"login\":\"Mark\') OR id=1;--\",\"password\":\"tkkkkest\"}" http://localhost/service/login`;
+correct_result_GT_935='10';
+if ! echo $response_GT_935_test | grep -q -s -F "$correct_result_GT_935"  ;
+then
+        echo "Fail at GT_935 test"
+        exit 1
+fi
+
 
 echo "Success"
 
