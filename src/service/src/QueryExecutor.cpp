@@ -243,13 +243,16 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 
     DEBUG() << "inserting user " << user;
 
-    QString qry="insert into users (email,login,password) values('%1','%2','%3');";
-
-    qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
-    DEBUG() << "stmt=" << qry;
+//   QString qry="insert into users (email,login,password) values('%1','%2','%3');";
+//    qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
+//    DEBUG() << "stmt=" << qry;
+    newUserQuery.prepare("insert into users (email,login,password) values(:email, :login, :password);");
+    newUserQuery.bindValue(":email", user.getEmail());
+    newUserQuery.bindValue(":login", user.getLogin());
+    newUserQuery.bindValue(":password", user.getPassword());
 
     transaction();
-    bool result = newUserQuery.exec(qry);
+    bool result = newUserQuery.exec();
 
     if  (result ){
 
@@ -492,12 +495,13 @@ bool QueryExecutor::checkEmail(const QString& email)
 {
 
     QSqlQuery query=makeQuery();
-    QString qry("select email from users where lower(email) = lower('%1');");
-    
+    //QString qry("select email from users where lower(email) = lower('%1');");
+    query.prepare("select email from users where lower(email) = lower(:email);");
+    query.bindValue(":email", email);
 
     DEBUG() << "QueryExecutor::checkEmail " << email;
 
-    query.exec(qry.arg(email));
+    query.exec();
     if (query.next())
     {
 	return true;
@@ -509,12 +513,12 @@ bool QueryExecutor::checkEmail(const QString& email)
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select id, login, password, email from users where lower(login) = lower('%1');");
-    
+    query.prepare("select id, login, password, email from users where lower(login) = lower(:login);");
+    query.bindValue(":login", login);
 
     DEBUG() << "QueryExecutor::getUser " << login;
 
-    query.exec(qry.arg(login));
+    query.exec();
     if (query.next())
     {
         QString login = query.record().value("login").toString();
@@ -528,12 +532,11 @@ common::BasicUser QueryExecutor::getUser(const QString &login)
 common::BasicUser QueryExecutor::getUserById(qlonglong id)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select login, password, email from users where id='%1';");
-    qry = qry.arg(id);
+    query.prepare("select login, password, email from users where id=:Id ;");
+    query.bindValue(":Id", id);
 
-    DEBUG() << "QueryExecutor::getUserById " << qry;
 
-    query.exec(qry);
+    query.exec();
     if (query.next())
     {
         QString login = query.record().value("login").toString();
@@ -550,8 +553,10 @@ QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
 
     QSqlQuery query=makeQuery();
     qlonglong owner_id = getUserIdByName(user.getLogin());
-    QString qry = QString(("select description, name, url from channel where owner_id='%1'")).arg(owner_id);
-    query.exec(qry);
+    query.prepare("select description, name, url from channel where owner_id=:ownerId;");
+    query.bindValue(":ownerId", owner_id);
+
+    query.exec();
 
     DEBUG() << "Found " << query.size() << " channels";
     while (query.next())
@@ -584,9 +589,10 @@ QList<Channel> QueryExecutor::getSubscribedChannels(const common::BasicUser &use
     QList<Channel> container;
     qlonglong userId = getUserIdByName(user.getLogin());
 
-    QString qry("select channel.name, channel.id, channel.description, channel.url from channel inner join subscribe on channel.id = subscribe.channel_id inner join users on subscribe.user_id = users.id where users.id=%1;");
+    query.prepare("select channel.name, channel.id, channel.description, channel.url from channel inner join subscribe on channel.id = subscribe.channel_id inner join users on subscribe.user_id = users.id where users.id=:userId;");
+    query.bindValue(":userId", userId);
 
-    query.exec(qry.arg(userId));
+    query.exec();
 
     DEBUG() << "User " << user.getLogin() << " subscribed to " << query.size() << " channels";
 
@@ -668,8 +674,11 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
     DEBUG() << "Loading tags for " << channel.getName();
 
     QSqlQuery query=makeQuery();
-    query.exec(QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
-                       "from tag where channel_id = %1 order by time;").arg(channelId));
+    query.prepare("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
+                       "from tag where channel_id = :channelId order by time;");
+    query.bindValue(":channelId", channelId);
+
+    query.exec();
     while (query.next())
     {
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
@@ -698,12 +707,11 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
 Channel QueryExecutor::getChannelById(qlonglong id)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select name, description, url from channel where id='%1';");
-    qry = qry.arg(id);
+    query.prepare("select name, description, url from channel where id=:channelId;");
+    query.bindValue(":channelId", id);
 
-    DEBUG() << "QueryExecutor::getChannelById " << qry;
 
-    query.exec(qry);
+    query.exec();
     if (query.next())
     {
         QString name = query.record().value("name").toString();
@@ -753,9 +761,9 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
     QSqlQuery query=makeQuery();
     DEBUG() << "getUserIdByName " << name;
 
-    QString qry=QString("select id from users where lower(login)=lower('%1');").arg(name);
-    DEBUG() << "qry:" << qry;
-    query.exec(qry);
+    query.prepare("select id from users where lower(login)=lower(:login);");
+    query.bindValue(":login", name);
+    query.exec();
     qlonglong id =1;  //default value
 
     if(!query.next())
@@ -773,8 +781,10 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
 qlonglong QueryExecutor::getChannelIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
+    query.prepare("select id from channel where lower(name) = lower(:name);");
+    query.bindValue(":name", name);
+    query.exec();
 
-    query.exec(QString("select id from channel where lower(name) = lower('%1');").arg(name));
     qlonglong id =-1;
 
     if(!query.next())
@@ -794,9 +804,13 @@ Channel QueryExecutor::getChannel(const QString &name)
     QSqlQuery query=makeQuery();
 
     DEBUG() << "Looking up channel " << name;
-    QString q=QString("select name, description, url from channel where lower(name) = lower('%1');").arg(name);
+    //QString q=QString("select name, description, url from channel where lower(name) = lower('%1');").arg(name);
+    query.prepare("select name, description, url from channel where lower(name) = lower(:name);");
+    query.bindValue(":name", name);
 
-    query.exec(q);
+    DEBUG() << "Query = " << query.lastQuery();
+
+    query.exec();
 
     DEBUG() << " ... found " << query.size() << "results, take first if possibe";
 
@@ -824,9 +838,12 @@ bool QueryExecutor::isSubscribed(const common::BasicUser &user, const Channel &c
     qlonglong userId = getUserIdByName(user.getLogin());
     qlonglong channelId = getChannelIdByName(channel.getName());
 
-    QString qry("select * from subscribe where channel_id=%1 and user_id=%2;");
+    query.prepare("select * from subscribe where channel_id=:chanelId and user_id=:userId;");
+    query.bindValue(":chanelId", channelId);
+    query.bindValue(":userId", userId);
+    
 
-    query.exec(qry.arg(channelId).arg(userId));
+    query.exec();
 
 
     if(query.size()>0)
@@ -903,9 +920,10 @@ bool QueryExecutor::checkDbExistance(const QString & dbName)
 
 
     QSqlQuery getDbNameQuery = QSqlQuery(QSqlDatabase::database("postgres"));
-    QString q = QString("select datname from pg_database where lower(datname) = lower('%1');").arg(dbName);
+    getDbNameQuery.prepare("select datname from pg_database where lower(datname) = lower(:dbName);");
+    getDbNameQuery.bindValue(":dbName", dbName);
 
-    getDbNameQuery.exec(q);
+    getDbNameQuery.exec();
 
     if (!getDbNameQuery.next())
     {
