@@ -3,12 +3,13 @@ Section: database
 Priority: optional
 Maintainer: Kirill Krinkin <geo2tag-maintainer@fruct.org>
 Standards-Version: 3.9.3.0
+Build-Depends: debhelper (>= 7), g++, make, libxml2-dev (>=2.6), libqt4-dev, libqjson-dev, libfcgi-dev, qt4-qmake
 
 Package: geo2tag-core
 Architecture: amd64 i386
 Section: database
 Priority: optional
-Depends: ${shlibs:Depends}, libxml2 (>=2.6), libqt4-core ,libqt4-network ,libqt4-gui, libqt4-sql-psql, postgresql (>=8.4), postgresql-client, lighttpd 
+Depends: ${shlibs:Depends}, libxml2 (>=2.6), libqt4-core, libqt4-network, libqt4-gui, libqt4-sql-psql, postgresql (>=8.4), postgresql-client, lighttpd, libqjson0, libfcgi0ldbl 
 Description: Geo2Tag LBS platform core
  Geo2tag is an Open Source Location Based Services Platform. It provides all 
  programming interfaces and services (database for geotags, filters, queries) which 
