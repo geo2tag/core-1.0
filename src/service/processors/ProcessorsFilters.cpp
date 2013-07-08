@@ -64,6 +64,12 @@ QByteArray DbObjectsCollection::processFilterFenceQuery(const QByteArray& data)
     return internalProcessFilterQuery(request, data, true);
 }
 
+void DbObjectsCollection::extractLastNTags(QList<Tag>& tags, qulonglong tagNumber){
+	if (tagNumber > 0 && tagNumber < (qulonglong)tags.size())
+		tags = tags.mid(tags.size()-tagNumber);
+
+}
+
 QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& request,
                                                            const QByteArray& data, bool is3d)
 {
@@ -125,9 +131,9 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         QList<Tag > tags = cache->loadTagsFromChannel(targetChannel);
         QList<Tag > filteredTags = filtration.filtrate(tags);
 
-	if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
-
+	extractLastNTags( filteredTags, tagNumber);
         feed << filteredTags;
+
         response.setErrno(SUCCESS);
     }
     else
@@ -138,8 +144,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
             QList<Tag > tags = cache->loadTagsFromChannel(channel);
             QList<Tag > filteredTags = filtration.filtrate(tags);
 
-	    if (tagNumber > 0 ) filteredTags = filteredTags.mid(0, tagNumber);
-
+	    extractLastNTags( filteredTags, tagNumber);
             feed << filteredTags;
         }
 	DEBUG() << "Filtred tags number " << feed.size();

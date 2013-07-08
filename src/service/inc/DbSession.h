@@ -136,6 +136,8 @@ namespace common
 
     //    static void processSendConfirmationLetter(const QString&);
 
+    void extractLastNTags(QList<Tag>& tags, qulonglong tagNumber);
+
     public:
 
       static DbObjectsCollection& getInstance();
