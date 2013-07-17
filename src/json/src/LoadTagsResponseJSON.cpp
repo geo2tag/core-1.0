@@ -54,7 +54,6 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
-#include "MetaCache.h"
 
 LoadTagsResponseJSON::LoadTagsResponseJSON(const QList<Tag>&hashMap, QObject *parent):
     JsonSerializer(parent), m_tags(hashMap)
