@@ -1,5 +1,5 @@
 /*
- * Copyright 2011  Mark Zaslavskiy  mark.zaslavskiy@gmail.com
+ * Copyright 2010-2013  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -11,7 +11,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -28,61 +28,27 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
-/*! ---------------------------------------------------------------
- *
- * \file Region.cpp
- * \brief Region implementation
- *
- * File description
+/*!
+ * \file Test_TimeFilter.h
+ * \brief Test suite for TimeFilter class
  *
  * PROJ: OSLL/geo2tag
- * ---------------------------------------------------------------- */
+ * ----------------------------------------------------------- */
 
-#include "Region.h"
-#include <QPolygonF>
-#include <QDebug>
-namespace common
+#ifndef TEST_TIME_FILTER_H
+#define TEST_TIME_FILTER_H
+
+#include <QObject>
+#include <QtTest>
+
+namespace Test
 {
-  Region::Region()
+  class Test_TimeFilter : public QObject
   {
-  }
+    Q_OBJECT
 
-  Region::Region(const QList<Tag>& points):m_points(points)
-  {
-  }
-
-  const QList<Tag>&Region::getPoints() const
-  {
-    return m_points;
-  }
-
-  void Region::setPoints(const QList<Tag>& points)
-  {
-    m_points = points;
-  }
-
-  void Region::addPoint(const Tag& point)
-  {
-    m_points.push_back(point);
-  }
-
-  bool Region::atRegion(const Tag& point)
-  {
-    if (m_points.size() == 0) return false;
-
-    QPolygonF polygon;
-    for (int i=0;i<m_points.size();i++)
-    {
-      polygon << QPointF(m_points.at(i).getLatitude(),m_points.at(i).getLongitude());
-    }
-    polygon << QPointF(m_points.at(0).getLatitude(),m_points.at(0).getLongitude());
-    return polygon.containsPoint(QPointF(point.getLatitude(),point.getLongitude()), Qt::OddEvenFill);
-
-  }
-
-  Region::~Region()
-  {
-  }
-
-}
+      private slots:
+	void testFiltration();
+  };                                    // class Test_TimeFilter
+}                                       // end of namespace Test
+#endif                                  // TEST_TimeFilter_H

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011  Mark Zaslavskiy  mark.zaslavskiy@gmail.com
+ * Copyright 2010-2013  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -11,7 +11,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -28,61 +28,40 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
-/*! ---------------------------------------------------------------
- *
- * \file Region.cpp
- * \brief Region implementation
- *
- * File description
+/*!
+ * \file main.cpp
+ * \brief Test suite for common
  *
  * PROJ: OSLL/geo2tag
- * ---------------------------------------------------------------- */
+ * ------------------------------------------------------------------------ */
 
-#include "Region.h"
-#include <QPolygonF>
-#include <QDebug>
-namespace common
+#include <QtTest/QtTest>
+#include <QtCore/QtCore>
+#include <QCoreApplication>
+
+// Test headers
+#include "test_AltitudeFilter.h"
+#include "test_TimeFilter.h"
+#include "test_FShapeCircle.h"
+#include "test_FShapeRectangle.h"
+#include "test_FShapePolygon.h"
+
+int main(int argc, char **argv)
 {
-  Region::Region()
+  QCoreApplication app(argc, argv);
+
+  QObject *tests[] =
   {
-  }
+    new Test::Test_AltitudeFilter(),
+    new Test::Test_TimeFilter(),
+    new Test::Test_FShapeCircle(),
+    new Test::Test_FShapeRectangle(),
+    new Test::Test_FShapePolygon()
+  };
 
-  Region::Region(const QList<Tag>& points):m_points(points)
+  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
   {
+    QTest::qExec(tests[i]);
   }
-
-  const QList<Tag>&Region::getPoints() const
-  {
-    return m_points;
-  }
-
-  void Region::setPoints(const QList<Tag>& points)
-  {
-    m_points = points;
-  }
-
-  void Region::addPoint(const Tag& point)
-  {
-    m_points.push_back(point);
-  }
-
-  bool Region::atRegion(const Tag& point)
-  {
-    if (m_points.size() == 0) return false;
-
-    QPolygonF polygon;
-    for (int i=0;i<m_points.size();i++)
-    {
-      polygon << QPointF(m_points.at(i).getLatitude(),m_points.at(i).getLongitude());
-    }
-    polygon << QPointF(m_points.at(0).getLatitude(),m_points.at(0).getLongitude());
-    return polygon.containsPoint(QPointF(point.getLatitude(),point.getLongitude()), Qt::OddEvenFill);
-
-  }
-
-  Region::~Region()
-  {
-  }
-
+  return 0;                             //app.exec();
 }
