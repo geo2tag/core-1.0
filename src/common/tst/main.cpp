@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
   for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
   {
-    QTest::qExec(tests[i]);
+    QTest::qExec(tests[i], argc, argv);
   }
   return 0;                             //app.exec();
 }
