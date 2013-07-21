@@ -54,6 +54,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 
+#include "ErrnoTypes.h"
 
 LoadTagsResponseJSON::LoadTagsResponseJSON(const QList<Tag>&hashMap, QObject *parent):
     JsonSerializer(parent), m_tags(hashMap)
@@ -131,28 +132,31 @@ QByteArray LoadTagsResponseJSON::getJson() const
     QVariantList jtags;
     QVariantMap channel;
 
-    for(int j=0; j<m_tags.size(); j++)
-    {
-        Tag tag = m_tags.at(j);
-        QVariantMap jtag;
-        jtag["title"] = tag.getLabel();
-        jtag["link"] = tag.getUrl();
-        jtag["description"] = tag.getDescription();
-        jtag["latitude"] = tag.getLatitude();
-        jtag["altitude"] = tag.getAltitude();
-        jtag["longitude"] = tag.getLongitude();
-        jtag["user"] = tag.getUser().getLogin();
-        jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
-        jtags.append(jtag);
-    }
-    channel["items"] = jtags;
-//    channel["name"] = m_channels.at(i).getName();
-    jchannels.append(channel);
-
-    jchannel["items"] = jchannels;
-    rss["channels"] = jchannel;
-    obj["rss"] = rss;
     obj["errno"]= m_errno;
+
+    if (m_errno == SUCCESS){
+	    for(int j=0; j<m_tags.size(); j++)
+	    {
+		Tag tag = m_tags.at(j);
+		QVariantMap jtag;
+		jtag["title"] = tag.getLabel();
+		jtag["link"] = tag.getUrl();
+		jtag["description"] = tag.getDescription();
+		jtag["latitude"] = tag.getLatitude();
+		jtag["altitude"] = tag.getAltitude();
+		jtag["longitude"] = tag.getLongitude();
+		jtag["user"] = tag.getUser().getLogin();
+		jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
+		jtags.append(jtag);
+	    }
+	    channel["items"] = jtags;
+	//    channel["name"] = m_channels.at(i).getName();
+	    jchannels.append(channel);
+
+	    jchannel["items"] = jchannels;
+	    rss["channels"] = jchannel;
+	    obj["rss"] = rss;
+    }
     return serializer.serialize(obj);
 }
 
