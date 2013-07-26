@@ -11,5 +11,9 @@ TESTS=`find ./ -name utest.*`
 for test in ${TESTS}; 
 do
 	echo ${test} >>tests.list
-	${test} -xunitxml >>tests.output
+	${test} -xml >>tests.output
 done;
+
+echo '<?xml version="1.0" encoding="ISO-8859-1"?>' >tests.output.xml
+cat ./tests.output >>tests.output.xml
+
