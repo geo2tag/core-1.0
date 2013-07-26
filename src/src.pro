@@ -11,7 +11,7 @@ message($$LIBS)
              http_requests \
              service \
 	     common/tst\
-#             json/tst 
+             json/tst\ 
 #            service/tst
 #            tracker/observer
 #	     maps \
