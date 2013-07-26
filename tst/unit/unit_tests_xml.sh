@@ -11,5 +11,5 @@ TESTS=`find ./ -name utest.*`
 for test in ${TESTS}; 
 do
 	echo ${test} >>tests.list
-	${test} -xml >>tests.output
+	${test} -lightxml >>tests.output
 done;
