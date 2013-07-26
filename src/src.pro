@@ -9,9 +9,9 @@ message($$LIBS)
   SUBDIRS += \
              json \
              http_requests \
-             service 
-#	     common/tst
-#            json/tst 
+             service \
+	     common/tst\
+             json/tst 
 #            service/tst
 #            tracker/observer
 #	     maps \
