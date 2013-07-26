@@ -12,6 +12,6 @@ echo "Found `echo ${TESTS} | wc -l` tests"
 
 for test in ${TESTS}; 
 do
-	echo ${test}
-	${test} -xml >> ./unit_tests_xml.log 
+	echo ${test} >>tests.list
+	${test} -xml
 done;
