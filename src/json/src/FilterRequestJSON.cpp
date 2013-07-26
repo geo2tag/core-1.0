@@ -145,6 +145,22 @@ bool FilterRequestJSON::parseJson(const QByteArray& data)
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok) return false;
 
+  QString auth_token = result["auth_token"].toString();
+  if (auth_token.isEmpty()) return false;
+  m_token = auth_token;
+
+  QDateTime timeFrom = QDateTime::fromString(result["time_from"].toString(), "dd MM yyyy HH:mm:ss.zzz");
+  if( timeFrom.isValid() )
+    setTimeFrom(timeFrom);
+  else
+    return false;
+
+  QDateTime timeTo = QDateTime::fromString(result["time_to"].toString(), "dd MM yyyy HH:mm:ss.zzz");
+  if ( timeTo.isValid() )
+    setTimeTo(timeTo);
+  else 
+    return false;
+
   qulonglong tagNumber = result["tag_number"].toULongLong(&ok);
   if (ok) m_tagNumber = tagNumber;
 

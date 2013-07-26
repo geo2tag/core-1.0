@@ -74,7 +74,9 @@ QByteArray FilterCircleRequestJSON::getJson() const
 bool FilterCircleRequestJSON::parseJson(const QByteArray&data)
 {
   clearContainers();
-  FilterRequestJSON::parseJson(data);
+  bool baseParseresult = FilterRequestJSON::parseJson(data);
+  if (!baseParseresult)
+    return false;
 
   QJson::Parser parser;
   bool ok;
@@ -84,12 +86,6 @@ bool FilterCircleRequestJSON::parseJson(const QByteArray&data)
     return false;
   }
 
-  QString auth_token = result["auth_token"].toString();
-  if (auth_token.isEmpty()) return false;
-  m_token = auth_token;
-
-  setTimeFrom(QDateTime::fromString(result["time_from"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
-  setTimeTo(QDateTime::fromString(result["time_to"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
   double latitude = result["latitude"].toDouble(&ok);
   if (!ok) return false;
 

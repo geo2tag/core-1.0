@@ -21,7 +21,8 @@ namespace Test
         // Object for testing
         AltitudeFilter *  m_tstObject = new AltitudeFilter (TEST_ALT1, TEST_ALT2);
 
-
+	// Correct version: 
+	// QVERIFY(m_tstObject->filtrate(POINT_IN_FILTER));
         QVERIFY(!m_tstObject->filtrate(POINT_IN_FILTER));
         QVERIFY(!m_tstObject->filtrate(POINT_OUT_FILTER));
 	delete m_tstObject;
