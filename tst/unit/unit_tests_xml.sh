@@ -11,7 +11,7 @@ TESTS=`find ./ -name utest.*`
 for test in ${TESTS}; 
 do
 	echo ${test} >>tests.list
-	${test} -xml >>tests.output
+	${test} -xml  | grep -v "?xml version=" >>tests.output
 done;
 
 echo '<?xml version="1.0" encoding="ISO-8859-1"?>' >tests.output.xml
