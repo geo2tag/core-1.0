@@ -134,7 +134,7 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
 
     newTagQuery.bindValue(":user_id", userId);
     newTagQuery.bindValue(":channel_id", channelId);
-    newTagQuery.bindValue(":time", tag.getTime().toUTC());
+    newTagQuery.bindValue(":time", tag.getTime()/*.toUTC()*/);
     newTagQuery.bindValue(":id", newId);
 
     transaction();
@@ -645,7 +645,7 @@ QList<Tag> QueryExecutor::loadTags()
     query.exec("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag order by time;");
     while (query.next())
     {
-        QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
+        QDateTime time = query.record().value("time").toDateTime();//.toTimeSpec(Qt::LocalTime);
         qreal latitude = query.record().value("latitude").toReal();
         qreal altitude = query.record().value("altitude").toReal();
         qreal longitude = query.record().value("longitude").toReal();
