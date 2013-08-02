@@ -51,6 +51,7 @@
 #include "symbian.h"
 #endif
 
+
 DefaultQuery::DefaultQuery(QObject *parent): QObject(parent),
 m_manager(new QNetworkAccessManager(parent))
 {
@@ -69,14 +70,18 @@ void DefaultQuery::doRequest()
 
   //  DEBUG() << "doing post to" << url << " with body: " << getRequestBody();
   DEBUG() << "posting http request to "<<url.toString()<<" with body "<<getRequestBody();
-  QNetworkReply *reply = m_manager->post(request, getRequestBody());
+  m_reply = m_manager->post(request, getRequestBody());
   m_sendTime = QDateTime::currentDateTime();
-  connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(handleError()));
+  connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(handleError()));
 }
 
 
 void DefaultQuery::processResponse(const QByteArray &)
 {
+    qDebug() << this->metaObject()->className();
+
+    qDebug() << "DefaultQuery::processResponse(const QByteArray &)";
+
 }
 
 
@@ -87,13 +92,20 @@ void DefaultQuery::process(QNetworkReply *reply)
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
 
-  if (!ok) Q_EMIT errorOccured(INCORRECT_JSON_ERROR);
+  if (!ok || data.size()==0){
+      m_errno = INCORRECT_JSON_ERROR;
+      Q_EMIT errorOccured(INCORRECT_JSON_ERROR);
+      return;
+  }
   m_errno = result["errno"].toInt();
 
   if(m_errno == SUCCESS)
   {
-    Q_EMIT success();
+
+    qDebug() << data;
     processResponse(data);
+  //  QueryCaster::processData(this,data);
+    Q_EMIT success();
   }
   else errorOccured(m_errno);
 
@@ -108,7 +120,7 @@ int DefaultQuery::getErrno() const
 
 void DefaultQuery::handleError()
 {
-  DEBUG() << "Network error occured while sending request";
+  DEBUG() << "Network error occured while sending request, error = " << m_reply->errorString();
   m_errno = NETWORK_ERROR;
   Q_EMIT errorOccured("network error occcured");
 }

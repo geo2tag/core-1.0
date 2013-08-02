@@ -41,7 +41,7 @@
 #include <unistd.h>
 
 #include "server.h"
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 
 #define LISTENSOCK_FILENO 0
 #define LISTENSOCK_FLAGS 0

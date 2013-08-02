@@ -60,8 +60,8 @@ HEADERS += \
            inc/QueryExecutor.h \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
-    src/servicelogger.h \
-    inc/DbSession.h \
+    inc/DbObjectsCollection.h \
+    inc/servicelogger.h \
     inc/MetaCache.h
 
 
@@ -71,7 +71,7 @@ SOURCES += src/main.cpp \
            src/DataMarkInternal.cpp \
            src/DynamicCastFailure.cpp \
            src/UserInternal.cpp \
-           src/DbSession.cpp \
+           src/DbObjectsCollection.cpp \
            src/QueryExecutor.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \

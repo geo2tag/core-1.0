@@ -29,8 +29,8 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file DbSession.h
- * \brief Header of DbSession
+ * \file DbObjectsCollection.h
+ * \brief Header of DbObjectsCollection
  * \todo add comment here
  *
  * File description
@@ -38,12 +38,13 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
-#define _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#ifndef _DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#define _DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 
 #include "servicelogger.h"
 
 #include <QtSql>
+#include <QSqlDatabase>
 #include <QThread>
 #include <QMap>
 #include "DataMarks.h"
@@ -131,7 +132,7 @@ namespace common
     QByteArray internalProcessFilterQuery(FilterRequestJSON&, const QByteArray&, bool is3d);
 
 
-    QByteArray processSetDbQuery(const QByteArray &data);
+    QByteArray processSetDbQuery(const QByteArray&);
     //    void processSendConfirmationLetter(const QString &address);
 
     //    static void processSendConfirmationLetter(const QString&);
@@ -155,10 +156,10 @@ namespace common
       DbObjectsCollection(const DbObjectsCollection& obj);
       DbObjectsCollection& operator=(const DbObjectsCollection& obj);
 
-  };                                    // class DbSession
+  };                                    // class DbObjectsCollection
 
   // namespace common
 }
-#endif                                  //_DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#endif                                  //_DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 
 /* ===[ End of file ]=== */

@@ -31,8 +31,8 @@
 /*! ---------------------------------------------------------------
  *
  *
- * \file DbSession.cpp
- * \brief DbSession implementation
+ * \file DbObjectsCollection.cpp
+ * \brief DbObjectsCollection implementation
  *
  * File description
  *
@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include "defines.h"
 #include "SettingsStorage.h"
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "EmailMessage.h"
 
 #include "RegisterUserRequestJSON.h"
@@ -146,6 +146,7 @@ DbObjectsCollection::DbObjectsCollection()
     // Initialization of default QueryExecutor and
     m_defaultCache = Core::MetaCache::getDefaultMetaCache();
 }
+
 
 DbObjectsCollection& DbObjectsCollection::getInstance()
 {
@@ -852,7 +853,6 @@ QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
     return answer;
 }
 
-
 //QByteArray DbObjectsCollection::processRestorePasswordQuery(const QByteArray& data)
 //{
 //    DEBUG() <<  "starting RestorePassword processing";
@@ -905,7 +905,6 @@ void DbObjectsCollection::init()
 {
 
     getInstance();
-    //Core::::init();
 
 }
 

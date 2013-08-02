@@ -355,7 +355,7 @@ void MetaCache::initSessions()
 #if GEO2TAG_LITE
     DEBUG() << "Session persistans is not supported in lite version";
 #else
-    NOT_IMPLEMENTED();
+    //NOT_IMPLEMENTED();
 #endif
 }
 
@@ -366,6 +366,7 @@ void MetaCache::initChannels()
     // initialization is not supported;
 #else
     QWriteLocker lock(&m_cacheLock);
+
 
     DEBUG() << "Initializing Channels";
     m_channels = m_queryExecutor->loadChannels();

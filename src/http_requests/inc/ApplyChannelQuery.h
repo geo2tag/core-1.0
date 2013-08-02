@@ -20,7 +20,7 @@ class ApplyChannelQuery: public DefaultQuery
 
     ApplyChannelQuery(const Channel &channel, const Session &session, QObject *parent = 0);
 
-    ApplyChannelQuery(QObject *parent = 0);
+    explicit ApplyChannelQuery(QObject *parent = 0);
 
     void setQuery(const Channel &channel, const Session &session);
 

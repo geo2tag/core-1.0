@@ -1,4 +1,4 @@
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "ErrnoTypes.h"
 #include "defines.h"
 #include "SettingsStorage.h"
@@ -153,7 +153,6 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
 
         response.setErrno(SUCCESS);
     }
-   
     response.setTags(feed);
 
     answer.append(response.getJson());

@@ -59,7 +59,7 @@ class SubscribeChannelQuery: public DefaultQuery
 
   public:
 
-    SubscribeChannelQuery(QObject *parent = 0);
+    explicit SubscribeChannelQuery(QObject *parent = 0);
 
     SubscribeChannelQuery(const Channel &channel, const Session &session, QObject *parent = 0);
 

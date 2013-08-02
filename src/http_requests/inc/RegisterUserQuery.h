@@ -60,7 +60,7 @@ class RegisterUserQuery : public DefaultQuery
   public:
 
     RegisterUserQuery(const QString& email, const QString& login, const QString& password, QObject *parent = 0);
-    RegisterUserQuery(QObject *parent = 0);
+    explicit RegisterUserQuery(QObject *parent = 0);
     void setQuery(const QString& email, const QString& login, const QString& password);
     const QString& getConfirmUrl() const;
     ~RegisterUserQuery();
