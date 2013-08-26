@@ -1,4 +1,4 @@
-geo2tag-core (0.25-rc2.geo2tag-dev-202.1.geo2tag-dev-205.1) precise; urgency=low
+geo2tag-core (0.25-rc2) precise; urgency=low
 
   * Built on Linux geo2tag-dev 3.2.0-48-generic #74-Ubuntu SMP Thu Jun 6
     19:43:26 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux at Fri Jul 26
@@ -6,7 +6,7 @@ geo2tag-core (0.25-rc2.geo2tag-dev-202.1.geo2tag-dev-205.1) precise; urgency=low
 
  -- Kirill Krinkin <krinkin@geo2tag-dev.cs.prv>  Fri, 26 Jul 2013 20:47:05 +0400
 
-geo2tag-core (0.25-rc2.geo2tag-dev-202.1) precise; urgency=low
+geo2tag-core (0.25-rc2) precise; urgency=low
 
   * Built on Linux geo2tag-dev 3.2.0-48-generic #74-Ubuntu SMP Thu Jun 6
     19:43:26 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux at Fri Jul 26
