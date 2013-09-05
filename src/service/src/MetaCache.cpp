@@ -344,6 +344,11 @@ BasicUser MetaCache::findUserByName(const QString& name){
     return m_queryExecutor->getUser(name);
 }
 
+
+bool MetaCache::alterChannel(const QString& name, const QString& field, const QString& value){
+	return m_queryExecutor->alterChannel(name, field, value);
+}
+
 void MetaCache::updateSession(Session &session)
 {
     QDateTime currentTime = QDateTime::currentDateTime();
@@ -391,6 +396,10 @@ void MetaCache::changeDbName(const Session& session, const QString& dbName)
         }
     }
     DEBUG() << "Session not found for changing dbName";
+}
+
+bool MetaCache::isOwner(const Session& session, const QString& channel){
+	return m_queryExecutor->isOwner(session.getUser().getLogin(), channel);
 }
 
 } // namespace Core

@@ -133,6 +133,7 @@ namespace common
 
 
     QByteArray processSetDbQuery(const QByteArray&);
+    QByteArray processAlterChannelQuery(const QByteArray&);
     //    void processSendConfirmationLetter(const QString &address);
 
     //    static void processSendConfirmationLetter(const QString&);

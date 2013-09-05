@@ -184,6 +184,27 @@ checkResponseErrno "$response_filter_box_test" $errno_success "Fail at filterBox
 response_filter_fence_test=`curl -d "{ \"auth_token\":"$auth_token",\"time_from\":\"04 03 2011 15:33:47.630\", \"time_to\":\"31 12 2011 15:33:47.630\" ,\"polygon\" : [{ \"number\":0,\"latitude\":0.0,\"longitude\":0.0 }, { \"number\":1,\"latitude\":70.0, \"longitude\":0.0 }, { \"number\":2, \"latitude\":70.0, \"longitude\":100.0 } ], \"altitude_shift\":{ \"altitude1\":-1.0 ,\"altitude2\": 1.0} }" http://${INSTANCE}/service/filterFence`;
 checkResponseErrno "$response_filter_fence_test" $errno_success "Fail at filterFence test"
 
+# Check that alterChannel works normaly
+response_alter_channel_1=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"field\":\"url\", \"value\":\"test_url\"}" http://${INSTANCE}/service/alterChannel`;
+echo "AlterChannel test_2 - $response_alter_channeli_1"
+checkResponseErrno "$response_alter_channel_1"   $errno_success "Fail at alterChannel_1 test"
+
+# Check that field name is checked
+response_alter_channel_2=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"field\":\"wrong field name\", \"value\":\"test_url\"}" http://${INSTANCE}/service/alterChannel`;
+echo "AlterChannel test_2 - $response_alter_channel_2"
+checkResponseErrno "$response_alter_channel_2"   $errno_incorrect_json "Fail at alterChannel_2 test"
+
+# Check that ownership is checked
+response_alter_channel_3=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"Rom\", \"field\":\"url\", \"value\":\"test_url\"}" http://${INSTANCE}/service/alterChannel`;
+echo "AlterChannel test_3 - $response_alter_channel_3"
+errno_channel_not_owned="23";
+checkResponseErrno "$response_alter_channel_3"   $errno_channel_not_owned "Fail at alterChannel_3 test"
+
+# Check that channel existance is checked
+response_alter_channel_4=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"not_existing_channel\", \"field\":\"url\", \"value\":\"test_url\"}" http://${INSTANCE}/service/alterChannel`;
+echo "AlterChannel test_4 - $response_alter_channel_4"
+errno_channel_does_not_exist="5";
+checkResponseErrno "$response_alter_channel_4"   $errno_channel_does_not_exist "Fail at alterChannel_4 test"
 
 response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
 echo "Quit session test auth_token=$auth_token, - $response_quit_session_test"

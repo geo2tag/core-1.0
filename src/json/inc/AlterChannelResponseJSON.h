@@ -1,5 +1,5 @@
 /*
- * Copyright 2013  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
+ * Copyright 2010-2013  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,46 +28,15 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
-/* $Id$ */
-/*!
- * \file SetDbRequestJSON.h
- * \brief Header of SetDbRequestJSON
- * \todo add comment here
- *
- * File description
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _SETDBREQUESTJSON_H_
-#define _SETDBREQUESTJSON_H_
+#ifndef ALTER_CHANNEL_RESPONSEJSON_H
+#define ALTER_CHANNEL_RESPONSEJSON_H
 
-#include "JsonSerializer.h"
-#include "Session.h"
-#include "Channel.h"
+#include "DefaultResponseJSON.h"
 
-class SetDbRequestJSON: public JsonSerializer
-{
-  private:
-
-     QString m_dbName;
-
-  public:
-    SetDbRequestJSON(QObject *parent = 0);
-
-    // Three functions below was virtual
-    QByteArray getJson() const;
-
-    bool parseJson(const QByteArray&);
-
-    void setDbName(const QString& dbName);
-
-    const QString getDbName() const;
-
-    //   ~SetDbRequestJSON();
-
-};                                      // class SetDbRequestJSON
-#endif                                  //_SetDbRequestJSON_H_
-
-/* ===[ End of file $HeadURL$ ]=== */
+typedef DefaultResponseJSON AlterChannelResponseJSON;
+// ALTER_CHANNEL_RESPONSEJSON_H
+#endif

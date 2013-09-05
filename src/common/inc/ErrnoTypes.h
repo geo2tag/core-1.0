@@ -69,6 +69,7 @@
 #define WEAK_PASSWORD_ERROR                 20
 #define NOT_SUPPORTED                       21
 #define DB_DOES_NOT_EXIST_ERROR             22
+#define USER_DOES_NOT_OWN_CHANNEL_ERROR     23
 
 class Errno
 {
@@ -126,6 +127,8 @@ public:
         emap.insert(NOT_SUPPORTED                      ,"NOT_SUPPORTED");
         // 22
         emap.insert(DB_DOES_NOT_EXIST_ERROR            ,"DB_DOES_NOT_EXIST_ERROR");
+	// 23
+	emap.insert(USER_DOES_NOT_OWN_CHANNEL_ERROR    ,"USER_DOES_NOT_OWN_CHANNEL_ERROR");
         return emap;
     }
 };

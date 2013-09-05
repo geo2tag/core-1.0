@@ -88,6 +88,7 @@ public:
 
     bool                     updateSession(Session& session);
     bool                     deleteSession(const Session& session);
+    bool isOwner(const QString& name, const QString& channel);
 
     QList<common::BasicUser> loadUsers();
 
@@ -111,6 +112,8 @@ public:
     qlonglong getChannelIdByName(const QString& name);
     Channel getChannel(const QString& name);
     bool isSubscribed(const common::BasicUser& user, const Channel &channel);
+
+    bool alterChannel(const QString& name, const QString& field, const QString& value);
 
 
     qlonglong getFactTransactionNumber();

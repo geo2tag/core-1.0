@@ -62,7 +62,9 @@ HEADERS += \
     inc/RestorePasswordRequestJSON.h \
     inc/RestorePasswordResponseJSON.h \
     inc/SetDbRequestJSON.h \
-    inc/SetDbResponseJSON.h
+    inc/SetDbResponseJSON.h \
+    inc/AlterChannelRequestJSON.h \
+    inc/AlterChannelResponseJSON.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -99,7 +101,8 @@ SOURCES += \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \
     src/RestorePasswordRequestJSON.cpp \
-    src/SetDbRequestJSON.cpp
+    src/SetDbRequestJSON.cpp \
+    src/AlterChannelRequestJSON.cpp \
            
 
 LIBS    +=  -lcommon -lqjson

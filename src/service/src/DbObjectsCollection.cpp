@@ -134,6 +134,7 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
 
     m_processors.insert("setDb", &DbObjectsCollection::processSetDbQuery);
+    m_processors.insert("alterChannel", &DbObjectsCollection::processAlterChannelQuery);
 
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
 //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);

@@ -31,8 +31,8 @@
 
 /* $Id$ */
 /*!
- * \file SetDbRequestJSON.h
- * \brief Header of SetDbRequestJSON
+ * \file AlterChannelRequestJSON.h
+ * \brief Header of AlterChannelRequestJSON
  * \todo add comment here
  *
  * File description
@@ -40,34 +40,39 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _SETDBREQUESTJSON_H_
-#define _SETDBREQUESTJSON_H_
+#ifndef _AlterChannelRequestJSON_H_
+#define _AlterChannelRequestJSON_H_
 
 #include "JsonSerializer.h"
 #include "Session.h"
 #include "Channel.h"
 
-class SetDbRequestJSON: public JsonSerializer
+class AlterChannelRequestJSON: public JsonSerializer
 {
   private:
 
-     QString m_dbName;
+     QString m_field;
+     QString m_value;
+     QString m_name;
 
   public:
-    SetDbRequestJSON(QObject *parent = 0);
+    AlterChannelRequestJSON(QObject *parent = 0);
 
-    // Three functions below was virtual
     QByteArray getJson() const;
 
     bool parseJson(const QByteArray&);
 
-    void setDbName(const QString& dbName);
+    void setField(const QString& field);
+    void setValue(const QString& value);
+    void setName(const QString& name);
 
-    const QString getDbName() const;
+    const QString getField() const;
+    const QString getValue() const;
+    const QString getName() const;
 
-    //   ~SetDbRequestJSON();
+    //   ~AlterChannelRequestJSON();
 
-};                                      // class SetDbRequestJSON
-#endif                                  //_SetDbRequestJSON_H_
+};                                      // class AlterChannelRequestJSON
+#endif                                  //_AlterChannelRequestJSON_H_
 
 /* ===[ End of file $HeadURL$ ]=== */

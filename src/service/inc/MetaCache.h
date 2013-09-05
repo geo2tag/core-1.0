@@ -87,6 +87,7 @@ namespace Core
       QList<BasicUser> getUsers();
       QList<Channel> getChannels();
 
+      bool alterChannel(const QString& name, const QString& field, const QString& value);
       bool addChannel(const Channel &channel, const BasicUser &user);
       bool addUser(const BasicUser &user);
       bool deleteUser(const BasicUser& user);
@@ -125,6 +126,9 @@ namespace Core
 
 
       void changeDbName(const Session& session, const QString& dbName);
+
+      bool isOwner(const Session& session, const QString& channel);
+
 
   protected:
 

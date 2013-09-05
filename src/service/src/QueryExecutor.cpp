@@ -969,3 +969,49 @@ bool QueryExecutor::initDatabase(const QString & dbName){
     return result;
 
 }
+
+bool QueryExecutor::alterChannel(const QString& name, const QString& field, const QString& value){
+
+    if ( !Channel::isFieldNameValid(field)) return false;
+
+    QSqlQuery query=makeQuery();
+
+    qlonglong channelId = getChannelIdByName(name);
+
+    QString queryString = QString("update channel set %1=:value where id=:chanelId;").arg(field);
+
+    query.prepare(queryString);
+    query.bindValue(":chanelId", channelId);
+    query.bindValue(":value", value);
+    
+
+    transaction();
+
+    bool result = query.exec();
+    if(result)
+    {
+    	commit();
+        DEBUG() <<  "Commit for AlterChannel sql query";
+    }else{
+	rollback();
+        DEBUG() <<  "Rollback for AlterChannel sql query";
+    }
+
+
+    return result;
+}
+
+bool QueryExecutor::isOwner(const QString& name, const QString& channel){
+
+    QSqlQuery query = makeQuery();
+    qlonglong userId = getUserIdByName(name);
+    qlonglong channelId = getChannelIdByName(channel);
+
+    query.prepare("select * from channel where owner_id=:userId and id=:channelId;");
+    query.bindValue(":userId", userId);
+    query.bindValue(":channelId", channelId);
+
+    query.exec();
+
+    return (query.size()>0);
+}

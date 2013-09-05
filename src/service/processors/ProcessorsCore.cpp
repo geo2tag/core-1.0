@@ -17,6 +17,9 @@
 #include "AddChannelRequestJSON.h"
 #include "AddChannelResponseJSON.h"
 
+#include "AlterChannelRequestJSON.h"
+#include "AlterChannelResponseJSON.h"
+
 #include "VersionResponseJSON.h"
 
 #include "ErrnoTypes.h"
@@ -309,6 +312,58 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
 
     response.setChannels(cache->getChannels());
     response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processAlterChannelQuery(const QByteArray &data)
+{
+    AlterChannelRequestJSON request;
+    AlterChannelResponseJSON response;
+    DEBUG() << "processAlterChannelQuery - data = " << data.data();
+    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+    Session session = m_defaultCache->findSession(request.getSessionToken());
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+
+    Channel channel = cache->findChannel(request.getName());
+    if (!channel.isValid())
+    {
+        response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }	
+
+    bool isOwned = cache->isOwner(session, request.getName());
+    if (!isOwned)
+    {
+        response.setErrno(USER_DOES_NOT_OWN_CHANNEL_ERROR);
+        answer.append(response.getJson());
+        return answer;
+
+    }
+
+    m_defaultCache->updateSession(session);
+    bool result = cache->alterChannel(request.getName(), request.getField(), request.getValue());
+    if (!result){
+	response.setErrno(INTERNAL_DB_ERROR);
+    }else{
+	response.setErrno(SUCCESS);
+    }
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;
