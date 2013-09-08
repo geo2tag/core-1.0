@@ -186,7 +186,7 @@ checkResponseErrno "$response_filter_fence_test" $errno_success "Fail at filterF
 
 # Check that alterChannel works normaly
 response_alter_channel_1=`curl   -d "{\"auth_token\":"$auth_token", \"name\":\"$test_channel\", \"field\":\"url\", \"value\":\"test_url\"}" http://${INSTANCE}/service/alterChannel`;
-echo "AlterChannel test_2 - $response_alter_channeli_1"
+echo "AlterChannel test_1 - $response_alter_channel_1"
 checkResponseErrno "$response_alter_channel_1"   $errno_success "Fail at alterChannel_1 test"
 
 # Check that field name is checked
