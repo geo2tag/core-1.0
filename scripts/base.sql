@@ -21,6 +21,16 @@ CREATE TABLE users (
   constraint users_pkey primary key (id)
 );
 
+CREATE TABLE tmp_users (
+  registration_token VARCHAR(50) UNIQUE NOT NULL,
+  db_name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  login VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  datetime TIMESTAMP NOT NULL DEFAULT now(),  
+  constraint tmp_users_pkey primary key (registration_token)
+);
+
 CREATE SEQUENCE sessions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 
 CREATE TABLE sessions (
