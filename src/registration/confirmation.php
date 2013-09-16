@@ -3,49 +3,29 @@
 include('config.php');
 
 // Passkey that got from link 
-$passkey=$_GET['passkey'];
-$tbl_name1="temp_members_db";
+$registration_token=$_GET['passkey'];
 
-// Retrieve data from table where row that match this passkey 
-$sql1="SELECT * FROM $tbl_name1 WHERE confirm_code ='$passkey'";
-$result1=mysql_query($sql1);
+if (empty($registration_token))
+	die("Token is empty.");
 
-// If successfully queried 
-if($result1){
 
-// Count how many row has this passkey
-$count=mysql_num_rows($result1);
+$db_master_connection = pg_connect("host=$db_host dbname=$default_db_name user=$db_username password=$db_password")
+                or die("Internal db error.");
 
-// if found this passkey in our database, retrieve data from table "temp_members_db"
-if($count==1){
-
-$rows=mysql_fetch_array($result1);
-$name=$rows['name'];
-$email=$rows['email'];
-$password=$rows['password']; 
-$country=$rows['country'];
-$tbl_name2="registered_members";
-
-// Insert data that retrieves from "temp_members_db" into table "registered_members" 
-$sql2="INSERT INTO $tbl_name2(name, email, password, country)VALUES('$name', '$email', '$password', '$country')";
-$result2=mysql_query($sql2);
+if ( !checkTokenExistance($db_master_connection, $registration_token)){
+	pg_close($db_master_connection);	
+	die("Token is invalid");
 }
 
-// if not found passkey, display message "Wrong Confirmation code" 
-else {
-echo "Wrong Confirmation code";
-}
+$db_name = getDbNameByToken($db_master_connection, $registration_token);
 
-// if successfully moved data from table"temp_members_db" to table "registered_members" displays message "Your account has been activated" and don't forget to delete confirmation code from table "temp_members_db"
-if($result2){
+$db_service_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
+                or die("Internal db error.");
 
-echo "Your account has been activated";
+convertTmpUser($db_master_connection, $db_service_connection, $registration_token);
 
-// Delete information of this user from table "temp_members_db" that has this passkey 
-$sql3="DELETE FROM $tbl_name1 WHERE confirm_code = '$passkey'";
-$result3=mysql_query($sql3);
+echo "Congratulations! User was confirmed successfuly.";
 
-}
-
-}
+pg_close($db_master_connection);	
+pg_close($db_service_connection);	
 ?>

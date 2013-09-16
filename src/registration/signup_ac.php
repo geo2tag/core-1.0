@@ -2,53 +2,53 @@
 
 include('config.php');
 
-// table name 
-$tbl_name=temp_members_db;
 
-// Random confirmation code 
-$confirm_code=md5(uniqid(rand())); 
-
-// values sent from form 
-$name=$_POST['name'];
+$login=$_POST['name'];
+$password=$_POST['password'];
 $email=$_POST['email'];
-$country=$_POST['country'];
+$db_name=$_POST['db_name'];
 
-// Insert data into database 
-$sql="INSERT INTO $tbl_name(confirm_code, name, email, password, country)VALUES('$confirm_code', '$name', '$email', '$password', '$country')";
-$result=mysql_query($sql);
+if (empty($login) || empty($password) || empty($email) || empty($db_name))
+	die("Incorrect parameters!!");
 
-// if suceesfully inserted data into database, send confirmation link to email 
-if($result){
-// ---------------- SEND MAIL FORM ----------------
+if ( ! doesDbExist($db_name)) 
+	die("Service with given name does not exist!!!");
 
-// send e-mail to ...
-$to=$email;
+$registration_token = md5(uniqid(rand())); 
 
-// Your subject
-$subject="Your confirmation link here";
 
-// From
-$header="from: your name <your email>";
+// Opening connection to master db and db with db_name 
+$db_master_connection = pg_connect("host=$db_host dbname=$default_db_name user=$db_username password=$db_password")
+                or die("Internal db error.");
 
-// Your message
-$message="Your Comfirmation link \r\n";
-$message.="Click on this link to activate your account \r\n";
-$message.="http://www.yourweb.com/confirmation.php?passkey=$confirm_code";
+$db_service_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
+                or die("Internal db error.");
 
-// send email
-$sentmail = mail($to,$subject,$message,$header);
+if ( checkUserExistance( $db_master_connection, $login, $email))
+{
+	pg_close($db_master_connection);	
+	pg_close($db_service_connection);	
+	die("User already exists!!!");
 }
 
-// if not found 
-else {
-echo "Not found your email in our database";
+
+addNewTmpUser($db_master_connection, $login, $password, $email, $registration_token, $db_name);
+
+$subject="Geo2Tag registration confirmation";
+$server_address=getServerAddress();
+$message="Your Comfirmation link \r\n".
+	"Click on this link to activate your account \r\n".
+	"$server_address/confirmation.php?passkey=$registration_token";
+
+$mail_sending_result = mail($email, $subject, $message);
+
+if ($mail_sending_result)
+{
+	echo "Confirmation link was sent on your email address.";
+}else{
+	echo "Problems during email sending.";
 }
 
-// if your email succesfully sent
-if($sentmail){
-echo "Your Confirmation link Has Been Sent To Your Email Address.";
-}
-else {
-echo "Cannot send Confirmation link to your e-mail address";
-}
+pg_close($db_master_connection);	
+pg_close($db_service_connection);	
 ?>
