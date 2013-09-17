@@ -4,7 +4,7 @@
 </head>
 
 <body>
-<table width="350" border="0" align="center" cellpadding="0" cellspacing="0">
+<table  border="0" align="center" cellpadding="0" cellspacing="0">
 <tr>
 <td><form name="form1" method="post" action="signup_ac.php">
 <table width="100%" border="0" cellspacing="4" cellpadding="0">
@@ -39,13 +39,13 @@ if (empty($db_name))
 	echo "<input name=\"db_name\" type=\"hidden\" id=\"db_name\" value=\"$db_name\">";
 }
 ?>
-<tr><td>
+<tr><td colspan=3><center>
 <?php
 	require_once('recaptchalib.php');
 	$publickey = "6LdHlucSAAAAAIRBeeKVLR_nmvyCbDX064F08JJx"; 
 	echo recaptcha_get_html($publickey);
 ?>
-</td></tr>
+</center></td></tr>
 <tr>
 <td><input type="submit" name="Submit" value="Submit">&nbsp;
 <input type="reset" name="Reset" value="Reset"></td>
