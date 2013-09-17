@@ -12,9 +12,9 @@
 <td colspan="3"><strong>Sign up</strong></td>
 </tr>
 <tr>
-<td width="76">Name</td>
-<td width="3">:</td>
-<td width="305"><input name="name" type="text" id="name" size="30"></td>
+<td >Name</td>
+<td >:</td>
+<td ><input name="name" type="text" id="name" size="30"></td>
 </tr>
 <tr>
 <td>E-mail</td>
@@ -39,10 +39,15 @@ if (empty($db_name))
 	echo "<input name=\"db_name\" type=\"hidden\" id=\"db_name\" value=\"$db_name\">";
 }
 ?>
+<tr><td>
+<?php
+	require_once('recaptchalib.php');
+	$publickey = "6LdHlucSAAAAAIRBeeKVLR_nmvyCbDX064F08JJx"; 
+	echo recaptcha_get_html($publickey);
+?>
+</td></tr>
 <tr>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><input type="submit" name="Submit" value="Submit"> &nbsp;
+<td><input type="submit" name="Submit" value="Submit">&nbsp;
 <input type="reset" name="Reset" value="Reset"></td>
 </tr>
 </table>

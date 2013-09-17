@@ -1,5 +1,20 @@
 <?php
 
+
+require_once('recaptchalib.php');
+$key_file="/opt/geo2tag/recaptcha_pkey";
+if (!file_exists($key_file))
+	die("Internal error!!!");
+
+$private_key = file_get_contents($key_file);
+$resp = recaptcha_check_answer ($private_key,
+	$_SERVER["REMOTE_ADDR"],
+	$_POST["recaptcha_challenge_field"],
+	$_POST["recaptcha_response_field"]);
+
+if (!$resp->is_valid) 
+	die ("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
+
 include('config.php');
 
 
@@ -8,14 +23,15 @@ $password=$_POST['password'];
 $email=$_POST['email'];
 $db_name=$_POST['db_name'];
 
+
 if (empty($login) || empty($password) || empty($email) || empty($db_name))
 	die("Incorrect parameters!!");
 
 if ( ! doesDbExist($db_name)) 
 	die("Service with given name does not exist!!!");
 
-$registration_token = md5(uniqid(rand())); 
 
+$registration_token = md5(uniqid(rand())); 
 
 // Opening connection to master db and db with db_name 
 $db_master_connection = pg_connect("host=$db_host dbname=$default_db_name user=$db_username password=$db_password")
