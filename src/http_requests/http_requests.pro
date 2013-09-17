@@ -24,7 +24,8 @@ HEADERS += \
            inc/RegisterUserQuery.h \
            inc/AvailableChannelsQuery.h \
            inc/SubscribedChannelsQuery.h \
-	   inc/VersionQuery.h  
+           inc/VersionQuery.h \
+    inc/setdbquery.h
 
 
 
@@ -38,8 +39,9 @@ SOURCES += \
            src/ApplyChannelQuery.cpp \
            src/SubscribeChannelQuery.cpp \
            src/SubscribedChannelsQuery.cpp \
-           src/RegisterUserQuery.cpp \ 
-	   src/VersionQuery.cpp
+           src/RegisterUserQuery.cpp \
+           src/VersionQuery.cpp \
+    src/setdbquery.cpp
 
 
 LIBS    +=  -lcommon -lqjson
