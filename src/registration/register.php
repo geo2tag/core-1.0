@@ -9,7 +9,7 @@
 <td><form name="form1" method="post" action="signup_ac.php">
 <table width="100%" border="0" cellspacing="4" cellpadding="0">
 <tr>
-<td colspan="3"><strong>Sign up</strong></td>
+<td colspan="3"><strong>Geo2Tag LBS Platform services registration form</strong></td>
 </tr>
 <tr>
 <td >Name</td>
@@ -54,6 +54,11 @@ if (empty($db_name))
 </form></td>
 </tr>
 </table>
-
+<br>
+<div style="position: absolute; bottom: 0px;">
+<small>
+If you need information about registration or if you have any questions, please write <a href=mailto:info@geo2tag.org >us</a>.
+</small>
+</div>
 </body>
 </html>
