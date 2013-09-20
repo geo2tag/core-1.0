@@ -41,10 +41,13 @@ if (empty($db_name))
 ?>
 <tr><td colspan=3><center>
 <?php
-	require_once('recaptchalib.php');
-	$publickey = "6LdHlucSAAAAAIRBeeKVLR_nmvyCbDX064F08JJx"; 
-	echo recaptcha_get_html($publickey);
+	//require_once('recaptchalib.php');
+	//$publickey = "6LdHlucSAAAAAIRBeeKVLR_nmvyCbDX064F08JJx"; 
+	//echo recaptcha_get_html($publickey);
 ?>
+<img id="captcha" src="/securimage/securimage_show.php" alt="CAPTCHA Image" />
+<input type="text" name="captcha_code" size="10" maxlength="6" />
+<a href="#" onclick="document.getElementById('captcha').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a>
 </center></td></tr>
 <tr>
 <td><input type="submit" name="Submit" value="Submit">&nbsp;

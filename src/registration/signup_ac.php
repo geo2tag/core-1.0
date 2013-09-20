@@ -1,7 +1,7 @@
 <?php
 
 
-require_once('recaptchalib.php');
+/*require_once('recaptchalib.php');
 $key_file="/opt/geo2tag/recaptcha_pkey";
 if (!file_exists($key_file))
 	die("Internal error!!!");
@@ -13,7 +13,13 @@ $resp = recaptcha_check_answer ($private_key,
 	$_POST["recaptcha_response_field"]);
 
 if (!$resp->is_valid) 
-	die ("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
+	die ("The reCAPTCHA wasn't entered correctly. Go back and try it again.");*/
+
+session_start();
+include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
+$securimage = new Securimage();
+if ($securimage->check($_POST['captcha_code']) == false) 
+	die ("The CAPTCHA wasn't entered correctly. Go back and try it again.");
 
 include('config.php');
 
