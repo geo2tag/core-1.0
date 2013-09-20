@@ -28,10 +28,13 @@ $login=$_POST['name'];
 $password=$_POST['password'];
 $email=$_POST['email'];
 $db_name=$_POST['db_name'];
-
+$age_restriction=$_POST['age_restriction'];
 
 if (empty($login) || empty($password) || empty($email) || empty($db_name))
 	die("Incorrect parameters!!");
+
+if ($age_restriction != "age_restriction")
+	die ("Age restriction is not met.");
 
 if ( ! doesDbExist($db_name)) 
 	die("Service with given name does not exist!!!");
