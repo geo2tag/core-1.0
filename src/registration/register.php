@@ -39,6 +39,11 @@ if (empty($db_name))
 	echo "<input name=\"db_name\" type=\"hidden\" id=\"db_name\" value=\"$db_name\">";
 }
 ?>
+<tr>
+<td>
+<input type="checkbox" name="age_restriction" value="age_restriction">I declare and affirm that I am at least 13 years old.
+</td>
+</tr>
 <tr><td colspan=3><center>
 <?php
 	//require_once('recaptchalib.php');
@@ -47,7 +52,7 @@ if (empty($db_name))
 ?>
 <img id="captcha" src="/securimage/securimage_show.php" alt="CAPTCHA Image" />
 <input type="text" name="captcha_code" size="10" maxlength="6" />
-<a href="#" onclick="document.getElementById('captcha').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a>
+<a href="#" onclick="document.getElementById('captcha').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Another Image ]</a>
 </center></td></tr>
 <tr>
 <td><input type="submit" name="Submit" value="Submit">&nbsp;
@@ -58,10 +63,10 @@ if (empty($db_name))
 </tr>
 </table>
 <br>
-<div style="position: absolute; bottom: 0px;">
+<!--<div style="position: absolute; bottom: 0px;">-->
 <small>
 If you need information about registration or if you have any questions, please write <a href=mailto:info@geo2tag.org >us</a>.
 </small>
-</div>
+<!--</div>-->
 </body>
 </html>
