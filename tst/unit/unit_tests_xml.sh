@@ -3,7 +3,7 @@
 # this file running tests.
 #
 
-export LD_LIBRARY_PATH=./debian/build/lib/
+export LD_LIBRARY_PATH=./src/lib/
 
 
 TESTS=`find ./ -name utest.*`
