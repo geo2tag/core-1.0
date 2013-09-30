@@ -206,6 +206,17 @@ echo "AlterChannel test_4 - $response_alter_channel_4"
 errno_channel_does_not_exist="5";
 checkResponseErrno "$response_alter_channel_4"   $errno_channel_does_not_exist "Fail at alterChannel_4 test"
 
+# Check that login is checked
+response_change_password_1=`curl   -d "{\"login\":\"not_existing_login\", \"password\":\"not_existing_password\", \"new_password\":\"newpassword\"}" http://${INSTANCE}/service/changePassword`;
+echo "ChangePassword test_1 - $response_change_password_1"
+checkResponseErrno "$response_change_password_1" $errno_incorrect_credentials "Fail at changePassword test 1"
+
+# Check that request return success in case of correct credentials
+response_change_password_2=`curl   -d "{\"login\":\"Yevgeni\", \"password\":\"test\", \"new_password\":\"test\"}" http://${INSTANCE}/service/changePassword`;
+echo "ChangePassword test_2 - $response_change_password_2"
+checkResponseErrno "$response_change_password_2" $errno_success "Fail at changePassword test 2"
+
+
 response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
 echo "Quit session test auth_token=$auth_token, - $response_quit_session_test"
 checkResponseErrno "$response_quit_session_test" $errno_success "Fail at quitSession test"
