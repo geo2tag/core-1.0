@@ -402,4 +402,7 @@ bool MetaCache::isOwner(const Session& session, const QString& channel){
 	return m_queryExecutor->isOwner(session.getUser().getLogin(), channel);
 }
 
+bool MetaCache::changePassword(const QString& login, const QString& newPassword){
+	return m_queryExecutor->changePassword(login, newPassword);
+}
 } // namespace Core

@@ -75,7 +75,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
 {
     Filtration filtration;
     FilterDefaultResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {

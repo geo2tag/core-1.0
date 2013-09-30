@@ -111,10 +111,11 @@ public:
     qlonglong getUserIdByName(const QString& name);
     qlonglong getChannelIdByName(const QString& name);
     Channel getChannel(const QString& name);
-    bool isSubscribed(const common::BasicUser& user, const Channel &channel);
+    bool isSubscribed(const common::BasicUser& user, const Channel& channel);
 
     bool alterChannel(const QString& name, const QString& field, const QString& value);
 
+    bool changePassword(const QString& login, const QString& newPassword);
 
     qlonglong getFactTransactionNumber();
 

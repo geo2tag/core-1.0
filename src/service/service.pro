@@ -61,7 +61,6 @@ HEADERS += \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
     inc/DbObjectsCollection.h \
-    inc/servicelogger.h \
     inc/MetaCache.h
 
 
@@ -75,7 +74,6 @@ SOURCES += src/main.cpp \
            src/QueryExecutor.cpp \
     src/SessionInternal.cpp \
     src/Geo2tagDatabase.cpp \
-    src/servicelogger.cpp \
     processors/ProcessorsCore.cpp \
     processors/ProcessorsFilters.cpp \
     src/MetaCache.cpp

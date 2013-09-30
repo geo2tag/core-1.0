@@ -135,6 +135,7 @@ DbObjectsCollection::DbObjectsCollection()
 
     m_processors.insert("setDb", &DbObjectsCollection::processSetDbQuery);
     m_processors.insert("alterChannel", &DbObjectsCollection::processAlterChannelQuery);
+    m_processors.insert("changePassword", &DbObjectsCollection::processChangePasswordQuery);
 
 //    m_processors.insert("registerUser", &DbObjectsCollection::processRegisterUserQuery);
 //    m_processors.insert("restorePassword", &DbObjectsCollection::processRestorePasswordQuery);
@@ -208,7 +209,7 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
     }
     // end of extra code !
 
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
     DefaultResponseJSON response;
     response.setErrno(INCORRECT_QUERY_NAME_ERROR);
 
@@ -324,7 +325,7 @@ const QString DbObjectsCollection::generateNewPassword(const common::BasicUser& 
 //    RegisterUserRequestJSON request;
 //    RegisterUserResponseJSON response;
 //    QByteArray answer;
-//    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//    answer.append(OK_REQUEST_HEADER);
 //    if (!request.parseJson(data))
 //    {
 //        response.setErrno(INCORRECT_JSON_ERROR);
@@ -388,7 +389,7 @@ const QString DbObjectsCollection::generateNewPassword(const common::BasicUser& 
 QByteArray DbObjectsCollection::processConfirmRegistrationQuery(const QString &/*registrationToken*/)
 {
     QByteArray answer;
-    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    answer.append(OK_REQUEST_HEADER);
     Q_ASSERT(false); //NOT implemented
     //    bool tokenExists = QueryExecutor::instance()->doesRegistrationTokenExist(registrationToken);
     //    if (!tokenExists)
@@ -419,7 +420,7 @@ QByteArray DbObjectsCollection::processQuitSessionQuery(const QByteArray &data)
     QuitSessionRequestJSON request;
     QuitSessionResponseJSON response;
     QByteArray answer;
-    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    answer.append(OK_REQUEST_HEADER);
 
 
     if (!request.parseJson(data))
@@ -458,7 +459,7 @@ QByteArray DbObjectsCollection::processOwnedChannelsQuery(const QByteArray &data
 {
     OwnedChannelsRequestJSON request;
     OwnedChannelsResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -493,7 +494,7 @@ QByteArray DbObjectsCollection::processSubscribedChannelsQuery(const QByteArray 
 {
     SubscribedChannelsRequestJSON request;
     SubscribedChannelsResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -528,7 +529,7 @@ QByteArray DbObjectsCollection::processSubscribeQuery(const QByteArray &data)
     SubscribeChannelRequestJSON request;
     SubscribeChannelResponseJSON response;
 
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -588,7 +589,7 @@ QByteArray DbObjectsCollection::processAddUserQuery(const QByteArray &data)
     AddUserRequestJSON request;
 
     AddUserResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -634,7 +635,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
 {
     UnsubscribeChannelRequestJSON request;
     UnsubscribeChannelResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -692,7 +693,7 @@ QByteArray DbObjectsCollection::processUnsubscribeQuery(const QByteArray &data)
 QByteArray DbObjectsCollection::processGetErrnoInfo(const QByteArray&)
 {
     ErrnoInfoResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
@@ -704,7 +705,7 @@ QByteArray DbObjectsCollection::processGetErrnoInfo(const QByteArray&)
 QByteArray DbObjectsCollection::processBuildQuery(const QByteArray&)
 {
     BuildResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     response.setErrno(SUCCESS);
     response.setVersion(getPlatformBuildInfo());
@@ -718,7 +719,7 @@ QByteArray DbObjectsCollection::processFilterChannelQuery(const QByteArray& data
 
     FilterChannelRequestJSON request;
     FilterChannelResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -774,7 +775,7 @@ QByteArray DbObjectsCollection::processDeleteUserQuery(const QByteArray& data)
     DEBUG() <<  "starting DeleteUser processing";
     DeleteUserRequestJSON request;
     DeleteUserResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
     if (!request.parseJson(data))
     {
         response.setErrno(INCORRECT_JSON_ERROR);
@@ -814,7 +815,7 @@ QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
 {
     SetDbRequestJSON request;
     SetDbResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -859,7 +860,7 @@ QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
 //    DEBUG() <<  "starting RestorePassword processing";
 //    RestorePasswordRequestJSON request;
 //    RestorePasswordResponseJSON response;
-//    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+//    QByteArray answer(OK_REQUEST_HEADER);
 //    if (!request.parseJson(data))
 //    {
 //        response.setErrno(INCORRECT_JSON_ERROR);

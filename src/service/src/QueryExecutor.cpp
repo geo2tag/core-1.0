@@ -1015,3 +1015,26 @@ bool QueryExecutor::isOwner(const QString& name, const QString& channel){
 
     return (query.size()>0);
 }
+
+
+bool QueryExecutor::changePassword(const QString& login, const QString& newPassword){
+
+  QSqlQuery query=makeQuery();
+
+  query.prepare("update users set password=:new_password where login=:login;");
+  query.bindValue(":login", login);
+  query.bindValue(":new_password", newPassword);
+
+  transaction();
+
+  bool result = query.exec();
+  if(result)
+  {
+    commit();
+    DEBUG() <<  "Commit for ChangePassword sql query";
+  }else{
+    rollback();
+    DEBUG() <<  "Rollback for ChangePassword sql query";
+  }
+  return result;
+}

@@ -20,6 +20,9 @@
 #include "AlterChannelRequestJSON.h"
 #include "AlterChannelResponseJSON.h"
 
+#include "ChangePasswordRequestJSON.h"
+#include "ChangePasswordResponseJSON.h"
+
 #include "VersionResponseJSON.h"
 
 #include "ErrnoTypes.h"
@@ -30,8 +33,11 @@ namespace common
 {
 
   // Return true, if credentials are incorrect
-  bool DbObjectsCollection::areCredentialsIncorrect(const BasicUser& realUser, const BasicUser& user) const
+  bool DbObjectsCollection::areCredentialsIncorrect(const BasicUser& user) const
   {
+    common::BasicUser realUser = m_defaultCache->findUserByName(user.getLogin());
+    DEBUG() << "realUser=" << realUser;
+    DEBUG() << "user=" << user;
 
     bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
     bool passwordMatches = (user.getPassword() == realUser.getPassword());
@@ -54,12 +60,14 @@ namespace common
     //return !realUser.isValid() || ( realUser.isValid() && !passwordMatches && secirutyEnabled );
   }
 
+
+
 QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 {
     LoginRequestJSON request;
     LoginResponseJSON response;
     QByteArray answer;
-    answer.append("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    answer.append(OK_REQUEST_HEADER);
     if (!request.parseJson(data))
     {
         response.setErrno(INCORRECT_JSON_ERROR);
@@ -68,12 +76,8 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
     }
 
     common::BasicUser user = request.getUser();
-    common::BasicUser realUser = m_defaultCache->findUserByName(user.getLogin());
-    DEBUG() << "realUser=" << realUser;
-    DEBUG() << "user=" << user;
 
-
-    if( areCredentialsIncorrect(realUser, user) )
+    if( areCredentialsIncorrect( user) )
     {
 	
         response.setErrno(INCORRECT_CREDENTIALS_ERROR);
@@ -114,7 +118,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     WriteTagRequestJSON request;
     WriteTagResponseJSON response;
 
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -174,7 +178,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
 {
     LoadTagsRequestJSON request;
     LoadTagsResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -233,7 +237,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
     DEBUG() <<  "starting AddChannelQuery processing";
     AddChannelRequestJSON request;
     AddChannelResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -290,7 +294,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
     AvailableChannelsRequestJSON request;
     AvailableChannelsResponseJSON response;
     DEBUG() << "processAvailableChannelsQuery - data = " << data.data();
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -322,7 +326,7 @@ QByteArray DbObjectsCollection::processAlterChannelQuery(const QByteArray &data)
     AlterChannelRequestJSON request;
     AlterChannelResponseJSON response;
     DEBUG() << "processAlterChannelQuery - data = " << data.data();
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -372,10 +376,44 @@ QByteArray DbObjectsCollection::processAlterChannelQuery(const QByteArray &data)
 QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
 {
     VersionResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     response.setErrno(SUCCESS);
     response.setVersion(getPlatformVersion());
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processChangePasswordQuery(const QByteArray &data)
+{
+    ChangePasswordRequestJSON request;
+    ChangePasswordResponseJSON response;
+    QByteArray answer;
+    answer.append(OK_REQUEST_HEADER);
+    if (!request.parseJson(data))
+    {
+      response.setErrno(INCORRECT_JSON_ERROR);
+      answer.append(response.getJson());
+      return answer;
+    }
+
+    common::BasicUser user = request.getUser();
+    if (areCredentialsIncorrect(user))
+    {
+      response.setErrno(INCORRECT_CREDENTIALS_ERROR);
+      DEBUG() << "Incorrect credentilas";
+    }else{
+	// Do password changing	
+      QString newPassword = request.getNewPassword();
+      bool changePasswordResult = m_defaultCache->changePassword(user.getLogin(), newPassword);
+      
+      if (changePasswordResult)
+        response.setErrno(SUCCESS);
+      else 
+        response.setErrno(INTERNAL_DB_ERROR); 
+    }
+
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;

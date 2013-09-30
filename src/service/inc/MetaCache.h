@@ -124,6 +124,7 @@ namespace Core
 
       BasicUser findUserByName(const QString& name);
 
+      bool changePassword(const QString& login, const QString& newPassword);
 
       void changeDbName(const Session& session, const QString& dbName);
 

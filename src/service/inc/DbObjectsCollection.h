@@ -55,6 +55,9 @@
 #include "FilterRequestJSON.h"
 #include "Session.h"
 
+
+#define OK_REQUEST_HEADER "Status: 200 OK\r\nContent-Type: text/html\r\n\r\n"
+
 namespace Core{
     class MetaCache;
 }
@@ -98,7 +101,7 @@ namespace common
 
     common::BasicUser findUser(const common::BasicUser &dummyUser) const;
 
-    bool areCredentialsIncorrect(const BasicUser& realUser, const BasicUser& user) const;
+    bool areCredentialsIncorrect(const BasicUser& user) const;
 
     QByteArray processRegisterUserQuery(const QByteArray&);
     QByteArray processConfirmRegistrationQuery(const QString&);
@@ -134,6 +137,7 @@ namespace common
 
     QByteArray processSetDbQuery(const QByteArray&);
     QByteArray processAlterChannelQuery(const QByteArray&);
+    QByteArray processChangePasswordQuery(const QByteArray&);
     //    void processSendConfirmationLetter(const QString &address);
 
     //    static void processSendConfirmationLetter(const QString&);
