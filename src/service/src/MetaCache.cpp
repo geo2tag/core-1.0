@@ -405,4 +405,21 @@ bool MetaCache::isOwner(const Session& session, const QString& channel){
 bool MetaCache::changePassword(const QString& login, const QString& newPassword){
 	return m_queryExecutor->changePassword(login, newPassword);
 }
+
+bool MetaCache::isDefaultMetaCache() const {
+	return this == MetaCache::getDefaultMetaCache();
+}
+
+void MetaCache::touchUserToServiceDb(const common::BasicUser& user){
+
+	if (isDefaultMetaCache()) return;
+
+	common::BasicUser serviceUser = m_queryExecutor->getUser(user.getLogin());	
+	DEBUG() << serviceUser;
+	if (serviceUser.isValid()) return;
+
+	m_queryExecutor->insertNewUser(user);
+
+}
+
 } // namespace Core

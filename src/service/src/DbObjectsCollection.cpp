@@ -847,6 +847,12 @@ QByteArray DbObjectsCollection::processSetDbQuery(const QByteArray &data)
     }
 
     m_defaultCache->changeDbName(session, dbName);
+
+    // Do touchUser();
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(dbName);
+    cache->touchUserToServiceDb(session.getUser()); 
+ 
+
     m_defaultCache->updateSession(session);
 
     response.setErrno(SUCCESS);

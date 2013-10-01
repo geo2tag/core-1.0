@@ -90,8 +90,9 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 
         if (!session.isValid())
         {
-            QString token=Session::generateToken(user);
-            Session addedSession = Session(token,QDateTime::currentDateTime(),user);
+            QString token = Session::generateToken(user);
+	    common::BasicUser realUser = m_defaultCache->findUserByName(user.getLogin());
+            Session addedSession = Session(token,QDateTime::currentDateTime(), realUser);
 
             DEBUG() <<  "Session hasn't been found. Generating of new Session.";
 

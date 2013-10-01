@@ -9,7 +9,8 @@
 <td><form name="form1" method="post" action="signup_ac.php">
 <table width="100%" border="0" cellspacing="4" cellpadding="0">
 <tr>
-<td colspan="3"><strong>Geo2Tag LBS Platform services registration form</strong></td>
+<td colspan="3"><strong>Geo2Tag LBS Platform services registration form</strong></td></tr>
+<tr><td colspan="3">If you already have an account in any Geo2Tag service you can skip this page.</td>
 </tr>
 <tr>
 <td >Name</td>

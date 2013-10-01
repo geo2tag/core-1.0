@@ -74,6 +74,9 @@ namespace Core
       QReadWriteLock      m_channelsLock;
       QReadWriteLock      m_SessionsLock;
 
+
+      bool isDefaultMetaCache() const;
+
   public:
 
       MetaCache(const QString& dbName);
@@ -130,6 +133,7 @@ namespace Core
 
       bool isOwner(const Session& session, const QString& channel);
 
+      void touchUserToServiceDb(const common::BasicUser& user);
 
   protected:
 
