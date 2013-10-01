@@ -1,6 +1,6 @@
 <?php
 
-include('config.php');
+include('db_interaction.php');
 
 // Passkey that got from link 
 $registration_token=$_GET['passkey'];

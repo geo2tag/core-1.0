@@ -21,7 +21,7 @@ $securimage = new Securimage();
 if ($securimage->check($_POST['captcha_code']) == false) 
 	die ("The CAPTCHA wasn't entered correctly. Go back and try it again.");
 
-include('config.php');
+include('db_interaction.php');
 
 
 $login=$_POST['name'];
