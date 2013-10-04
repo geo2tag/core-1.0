@@ -1021,7 +1021,7 @@ bool QueryExecutor::changePassword(const QString& login, const QString& newPassw
 
   QSqlQuery query=makeQuery();
 
-  query.prepare("update users set password=:new_password where login=:login;");
+  query.prepare("update users set password=:new_password where lower(login)=lower(:login);");
   query.bindValue(":login", login);
   query.bindValue(":new_password", newPassword);
 
