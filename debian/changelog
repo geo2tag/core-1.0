@@ -1,3 +1,11 @@
+geo2tag-core (0.25-rc2.vood-ThinkPad-.1) oneiric; urgency=low
+
+  * Built on Linux vood-ThinkPad 3.0.0-15-generic #26-Ubuntu SMP Fri Jan
+    20 17:23:00 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux at Пн. окт.  7
+    23:24:26 MSK 2013
+
+ -- Mark <vood@vood-ThinkPad>  Mon, 07 Oct 2013 23:24:27 +0400
+
 geo2tag-core (0.25-rc2) precise; urgency=low
 
   * [GT-566] - Implement new type of filters 
