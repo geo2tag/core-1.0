@@ -1,26 +1,6 @@
 <?php
 
-
-/*require_once('recaptchalib.php');
-$key_file="/opt/geo2tag/recaptcha_pkey";
-if (!file_exists($key_file))
-	die("Internal error!!!");
-
-$private_key = file_get_contents($key_file);
-$resp = recaptcha_check_answer ($private_key,
-	$_SERVER["REMOTE_ADDR"],
-	$_POST["recaptcha_challenge_field"],
-	$_POST["recaptcha_response_field"]);
-
-if (!$resp->is_valid) 
-	die ("The reCAPTCHA wasn't entered correctly. Go back and try it again.");*/
-
-session_start();
-include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
-$securimage = new Securimage();
-if ($securimage->check($_POST['captcha_code']) == false) 
-	die ("The CAPTCHA wasn't entered correctly. Go back and try it again.");
-
+include('check_captcha.php');
 include('db_interaction.php');
 
 
@@ -40,14 +20,12 @@ if ( ! doesDbExist($db_name))
 	die("Service with given name does not exist!!!");
 
 
-$registration_token = md5(uniqid(rand())); 
+$registration_token = generateToken(); 
 
 // Opening connection to master db and db with db_name 
-$db_master_connection = pg_connect("host=$db_host dbname=$default_db_name user=$db_username password=$db_password")
-                or die("Internal db error.");
+$db_master_connection = getDbConnection();
 
-$db_service_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
-                or die("Internal db error.");
+$db_service_connection = getDbConnection($db_name);
 
 if ( checkUserExistance( $db_master_connection, $login, $email))
 {

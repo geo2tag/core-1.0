@@ -4,6 +4,22 @@ $db_username="geo2tag";
 $db_password="geo2tag"; 
 $default_db_name=getDefaultDbName(); 
 
+
+function generateToken(){
+	return md5(uniqid(rand()));
+}
+
+function generatePassword($length = 8){
+	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_+=@#$%&*!(){}";
+	return substr( str_shuffle( $chars ), 0, $length );	
+}
+
+function isQueryResultNotEmpty($result){
+	$rows_number = pg_num_rows($result);
+	pg_free_result($result);
+	return ($rows_number != 0);
+}
+
 function doesDbExist($db_name)
 {
 	global $db_host, $db_username, $db_password;
@@ -11,18 +27,22 @@ function doesDbExist($db_name)
 	$dbconn = pg_connect("host=$db_host dbname=$master_db user=$db_username password=$db_password")
 		or die("Internal db error.");
 
-	$query_result = pg_query_params($dbconn, "select datname from pg_database where lower(datname) = lower($1);", array($db_name))  
+	$query_result = pg_query_params($dbconn, 
+		"select datname from pg_database where lower(datname) = lower($1);", array($db_name))  
 		or die("Internal db error.");
-	$line = pg_fetch_array($query_result, null, PGSQL_ASSOC);
 	
-	pg_free_result($query_result);
 	pg_close($dbconn);
 
-	$result=(bool)($line != FALSE);
-
-	return $result;
+	return isQueryResultNotEmpty($query_result);
 
 	
+}
+
+function getDbConnection($db_name = $default_db_name){
+	$db_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
+			or die("Internal db error.");
+
+	return $db_connection;
 }
 
 function getStringConfigParam($section, $field)
@@ -57,6 +77,12 @@ function checkUserExistance($db_conn, $username, $email)
 	return false;
 }
 
+function checkUserExistance($db_conn, $username)
+{
+	return checkUserExistanceInTable($db_conn, $username, "", "users");
+
+}
+
 function checkUserExistanceInTable($db_conn, $username, $email, $table)
 {
 	$check_user_query_result = pg_query_params($db_conn, 
@@ -64,11 +90,8 @@ function checkUserExistanceInTable($db_conn, $username, $email, $table)
 		"or lower(email) = lower($2);",
 		 array($username, $email))
                 	or die("Internal db error.");
-
-	$row_count = pg_num_rows($check_user_query_result);
-	pg_free_result($check_user_query_result);
 	
-	return ((bool)($row_count != 0));
+	return isQueryResultNotEmpty($check_user_query_result);
 }
 
 function addNewTmpUser($db_conn, $login, $password, $email, $registration_token, $db_name)
@@ -100,9 +123,7 @@ function checkTokenExistance($db_conn, $registration_token)
 		 array($registration_token))
                 	or die("Internal db error.");
 
-	$row_count = pg_num_rows($check_token_query_result);
-	pg_free_result($check_token_query_result);
-	return ((bool)($row_count != 0));
+	return isQueryResultNotEmpty($check_token_query_result);
 }
 
 
@@ -150,11 +171,46 @@ function deleteTmpUser($db_conn, $registration_token)
                         or die("Internal db error.");
 }
 
-/*
-echo getDefaultDbName();
-echo "<br>";
-$db_name_to_check="geo12tag";
-$existance_flag=var_export(doesDbExist($db_name_to_check), TRUE);
-echo "doesDbExist($db_name_to_check) == $existance_flag";*/
+function addResetPasswordToken($db_conn, $login, $reset_password_token)
+{
+	pg_query_params($db_conn,
+		"insert into reset_password_tokens (user_id, token) values ".
+		" ((select id from users where lower(login)=lower($1)), $2);",
+		array($login, $reset_password_token))
+			or die("Internal db error."); 
+}
+
+function checkResetPasswordToken($db_conn, $reset_password_token)
+{
+	$check_token_result = pg_query_params($db_conn,
+		"select * from reset_password_tokens where lower(token)=lower($1);",
+		array($reset_password_token)) or die ("Internal db error.");
+
+        return isQueryResultNotEmpty($check_token_result);
+}
+
+function checkResetPasswordTokenByLogin($db_conn, $login)
+{
+	$check_token_result = pg_query_params($db_conn,
+		"select * from reset_password_tokens where user_id = ".
+		"( select id from users where lower(login)=lower($1) );",
+		array($login)) or die ("Internal db error.");
+
+        return isQueryResultNotEmpty($check_token_result);
+}
+
+function changePasswordForUserWithToken($db_conn, $reset_password_token, $new_password)
+{
+	pq_query_params("update users set password=$1 ".
+		" where id=(select user_id from reset_password_tokens lower(token)=lower($2));",
+		array($new_password,  $reset_password_token)) or die("Internal db error.");
+
+}
+
+function removeRecordFromResetPasswordTokens($db_conn, $reset_password_token)
+{
+	pq_query_params("delte from reset_password_tokens where lower(token)=lower($1);",
+		array($reset_password_token)) or die ("Internal db error.");
+}
 
 ?>

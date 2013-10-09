@@ -9,8 +9,7 @@ if (empty($registration_token))
 	die("Token is empty.");
 
 
-$db_master_connection = pg_connect("host=$db_host dbname=$default_db_name user=$db_username password=$db_password")
-                or die("Internal db error.");
+$db_master_connection = getDbConnection();
 
 if ( !checkTokenExistance($db_master_connection, $registration_token)){
 	pg_close($db_master_connection);	
@@ -19,9 +18,8 @@ if ( !checkTokenExistance($db_master_connection, $registration_token)){
 
 $db_name = getDbNameByToken($db_master_connection, $registration_token);
 
-$db_service_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
-                or die("Internal db error.");
-
+$db_service_connection = getDbConnection($db_name);
+ 
 convertTmpUser($db_master_connection, $db_service_connection, $registration_token);
 
 echo "Congratulations! User was confirmed successfuly.";

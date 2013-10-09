@@ -31,6 +31,15 @@ CREATE TABLE tmp_users (
   constraint tmp_users_pkey primary key (registration_token)
 );
 
+CREATE TABLE reset_password_tokens (
+  user_id NUMERIC(9,0) NOT NULL,
+  token VARCHAR(65) NOT NULL,
+  datetime TIMESTAMP NOT NULL DEFAULT now(),
+  constraint fk_user foreign key (user_id) references users(id)
+                                                      on delete cascade,
+  constraint reset_password_tokens_pkey primary key (token)
+);
+
 CREATE SEQUENCE sessions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 
 CREATE TABLE sessions (
