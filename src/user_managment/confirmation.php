@@ -9,16 +9,16 @@ if (empty($registration_token))
 	die("Token is empty.");
 
 
-$db_master_connection = getDbConnection();
+$db_master_connection = getMasterDbConnection();
 
-if ( !checkTokenExistance($db_master_connection, $registration_token)){
+if ( !doesRegistrationTokenExist($db_master_connection, $registration_token)){
 	pg_close($db_master_connection);	
 	die("Token is invalid");
 }
 
-$db_name = getDbNameByToken($db_master_connection, $registration_token);
+$db_name = getDbNameByRegistrationToken($db_master_connection, $registration_token);
 
-$db_service_connection = getDbConnection($db_name);
+$db_service_connection = getServiceDbConnection($db_name);
  
 convertTmpUser($db_master_connection, $db_service_connection, $registration_token);
 

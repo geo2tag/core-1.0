@@ -23,11 +23,11 @@ if ( ! doesDbExist($db_name))
 $registration_token = generateToken(); 
 
 // Opening connection to master db and db with db_name 
-$db_master_connection = getDbConnection();
+$db_master_connection = getMasterDbConnection();
 
-$db_service_connection = getDbConnection($db_name);
+$db_service_connection = getServiceDbConnection($db_name);
 
-if ( checkUserExistance( $db_master_connection, $login, $email))
+if ( doesUserAndTmpUserExist( $db_master_connection, $login, $email))
 {
 	pg_close($db_master_connection);	
 	pg_close($db_service_connection);	

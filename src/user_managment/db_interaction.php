@@ -38,7 +38,12 @@ function doesDbExist($db_name)
 	
 }
 
-function getDbConnection($db_name = $default_db_name){
+function getMasterDbConnection(){
+	return getServiceDbConnection(getDefaultDbName());
+}
+
+function getServiceDbConnection($db_name){
+	global $db_host, $db_username, $db_password;
 	$db_connection = pg_connect("host=$db_host dbname=$db_name user=$db_username password=$db_password")
 			or die("Internal db error.");
 
@@ -67,23 +72,22 @@ function getDefaultDbName()
 }
 
 // return false if user with $username or $email exists in Users or TmpUsers tables
-function checkUserExistance($db_conn, $username, $email)
+function doesUserAndTmpUserExist($db_conn, $username, $email)
 {
-	if ( checkUserExistanceInTable($db_conn, $username, $email, "users") ) 
+	if ( doesUserExistInTable($db_conn, $username, $email, "users") ) 
 		return true;
-	if ( checkUserExistanceInTable($db_conn, $username, $email, "tmp_users")) 
+	if ( doesUserExistInTable($db_conn, $username, $email, "tmp_users")) 
 		return true;
 
 	return false;
 }
 
-function checkUserExistance($db_conn, $username)
+function doesUserExistInUsers($db_conn, $username)
 {
-	return checkUserExistanceInTable($db_conn, $username, "", "users");
-
+	return doesUserExistInTable($db_conn, $username, "", "users");
 }
 
-function checkUserExistanceInTable($db_conn, $username, $email, $table)
+function doesUserExistInTable($db_conn, $username, $email, $table)
 {
 	$check_user_query_result = pg_query_params($db_conn, 
 		"select * from $table where lower(login) = lower($1) ".
@@ -116,7 +120,7 @@ function addNewUser($db_conn, $login, $password, $email)
 
 }
 // check existance of tmp_user with given token
-function checkTokenExistance($db_conn, $registration_token)
+function doesRegistrationTokenExist($db_conn, $registration_token)
 {
 	$check_token_query_result = pg_query_params($db_conn, 
 		"select * from tmp_users where lower(registration_token) = lower($1); ",
@@ -127,13 +131,13 @@ function checkTokenExistance($db_conn, $registration_token)
 }
 
 
-function getDbNameByToken($db_master_connection, $registration_token)
+function getDbNameByRegistrationToken($db_master_connection, $registration_token)
 {
-	$result_array = getTmpUser($db_master_connection, $registration_token);
+	$result_array = getTmpUserByRegistrationToken($db_master_connection, $registration_token);
 	return $result_array["db_name"];
 }
 
-function getTmpUser($db_conn, $registration_token)
+function getTmpUserByRegistrationToken($db_conn, $registration_token)
 {
 	$get_tmp_user_query = pg_query_params($db_conn,
 		"select login, password, email, db_name from tmp_users ".
@@ -145,10 +149,28 @@ function getTmpUser($db_conn, $registration_token)
 	return $result;
 }
 
+function getUserByLogin($db_conn, $login)
+{
+	$get_user_query = pg_query_params($db_conn,
+		"select login, password, id, email from users ".
+		" where lower(login) = lower($1);",
+		array($login))
+			or die("Internal db error.");
+	$result = pg_fetch_array($get_user_query, null, PGSQL_ASSOC);
+
+	return $result;
+}
+function getUserEmailByLogin($db_conn, $login)
+{
+	$result = getUserByLogin($db_conn, $login);
+
+	return $result["email"];
+}
+
 //Create new entry in users, move data from tmp users
 function convertTmpUser($db_master_conn, $db_service_db_conn, $registration_token)
 {
-	$tmp_user = getTmpUser($db_master_conn, $registration_token);
+	$tmp_user = getTmpUserByRegistrationToken($db_master_conn, $registration_token);
 
 	$login = $tmp_user["login"];
 	$password =$tmp_user["password"];
@@ -180,7 +202,7 @@ function addResetPasswordToken($db_conn, $login, $reset_password_token)
 			or die("Internal db error."); 
 }
 
-function checkResetPasswordToken($db_conn, $reset_password_token)
+function doesResetPasswordTokenExist($db_conn, $reset_password_token)
 {
 	$check_token_result = pg_query_params($db_conn,
 		"select * from reset_password_tokens where lower(token)=lower($1);",
@@ -189,7 +211,7 @@ function checkResetPasswordToken($db_conn, $reset_password_token)
         return isQueryResultNotEmpty($check_token_result);
 }
 
-function checkResetPasswordTokenByLogin($db_conn, $login)
+function doesResetPasswordTokenExistForLogin($db_conn, $login)
 {
 	$check_token_result = pg_query_params($db_conn,
 		"select * from reset_password_tokens where user_id = ".
@@ -201,15 +223,15 @@ function checkResetPasswordTokenByLogin($db_conn, $login)
 
 function changePasswordForUserWithToken($db_conn, $reset_password_token, $new_password)
 {
-	pq_query_params("update users set password=$1 ".
-		" where id=(select user_id from reset_password_tokens lower(token)=lower($2));",
+	pg_query_params("update users set password=$1 ".
+		" where id=(select user_id from reset_password_tokens where lower(token)=lower($2));",
 		array($new_password,  $reset_password_token)) or die("Internal db error.");
 
 }
 
 function removeRecordFromResetPasswordTokens($db_conn, $reset_password_token)
 {
-	pq_query_params("delte from reset_password_tokens where lower(token)=lower($1);",
+	pg_query_params("delete from reset_password_tokens where lower(token)=lower($1);",
 		array($reset_password_token)) or die ("Internal db error.");
 }
 
