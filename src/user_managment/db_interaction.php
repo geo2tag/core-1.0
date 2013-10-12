@@ -235,4 +235,14 @@ function removeRecordFromResetPasswordTokens($db_conn, $reset_password_token)
 		array($reset_password_token)) or die ("Internal db error.");
 }
 
+function areCredentialsCorrect($db_conn, $login, $password)
+{
+	$check_user_result = pg_query_params($db_conn,
+		"select * from users where lower(login)=lower($1) and  ".
+		" password=$2;",
+		array($login, $password)) or die ("Internal db error.");
+
+        return isQueryResultNotEmpty($check_user_result);
+}
+
 ?>
