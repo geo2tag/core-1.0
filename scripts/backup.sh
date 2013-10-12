@@ -20,6 +20,7 @@ done
 
 echo "Saving configuration files"
 cp $geo2tag_dir/geo2tag.conf* $backup_dir/
+chown -R backup_operator:backup_operator $backup_dir/..
 cd $backup_dir/
 tar -cvzf $backup_archive_file ./*
 md5sum * > $md5sums_file
