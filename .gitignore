@@ -1,2 +1,7 @@
 local.properties
 *.user
+.classpath
+.project
+gen/
+bin/
+*.class
