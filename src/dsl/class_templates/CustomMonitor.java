@@ -1,4 +1,4 @@
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 public class CustomMonitor extends MonitorService {
 

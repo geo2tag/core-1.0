@@ -1,4 +1,4 @@
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 import android.os.Bundle;
 import android.app.Activity;

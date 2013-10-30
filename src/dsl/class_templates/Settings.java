@@ -1,5 +1,5 @@
 
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 
 class Settings

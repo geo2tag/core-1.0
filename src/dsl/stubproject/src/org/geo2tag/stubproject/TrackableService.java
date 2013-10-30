@@ -28,7 +28,7 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 
 import java.util.Date;

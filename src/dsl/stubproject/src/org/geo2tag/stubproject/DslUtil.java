@@ -33,7 +33,7 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

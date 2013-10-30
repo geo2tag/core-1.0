@@ -32,7 +32,7 @@
 
 //package org.geo2tag.tracker.services;
 
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 
 import java.util.List;

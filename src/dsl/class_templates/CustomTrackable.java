@@ -1,4 +1,4 @@
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 public class CustomTrackable extends TrackableService {
 

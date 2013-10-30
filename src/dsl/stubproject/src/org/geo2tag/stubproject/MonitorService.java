@@ -1,4 +1,4 @@
-package com.example.stubproject;
+package org.geo2tag.stubproject;
 
 
 import java.util.Date;
