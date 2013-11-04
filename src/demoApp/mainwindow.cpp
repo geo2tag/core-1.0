@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    SettingsStorage::init();
+//    SettingsStorage::init();
 
     ui->setupUi(this);
 
