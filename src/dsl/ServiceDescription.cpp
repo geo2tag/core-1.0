@@ -6,24 +6,25 @@ ServiceDescription::ServiceDescription()
 {
 }
 
-void ServiceDescription::isDescriptionValid() const{
+void ServiceDescription::checkDescriptionValidity() {
 
     for (int i=0; i<trackables.size(); i++){
-        Channel* channel = getChannelForTrackable(trackables.at(i));
+        const Channel* channel = getChannelForTrackable(trackables.at(i));
         if (channel == NULL)
             throw ServiceDescriptionValidityException(
                     QString("Description is invalid: no channel for trackable \"%1\"").
                     arg(trackables.at(i).name));
 
-        trackables.at(i).setChannel(channel->name);
+        (trackables[i])
+                .setChannel(channel->name);
 
     }
 
 }
 
-Channel* ServiceDescription::getChannelForTrackable(const Trackable& trackable) const
+const Channel* ServiceDescription::getChannelForTrackable(const Trackable& trackable) const
 {
-    Channel* channel = NULL;
+    const Channel* channel = NULL;
     for (int i=0; i<channels.size(); i++){
         QString channelTrackable = channels.at(i).trackable;
         if (channelTrackable.compare(trackable.name, Qt::CaseInsensitive) == 0){

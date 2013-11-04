@@ -1,12 +1,12 @@
 package org.geo2tag.stubproject;
 
-public class MONITOR_NAME_PLACEHOLDER extends MonitorService {
+public class NAME_PLACEHOLDER extends MonitorService {
 
 
 	@Override
 	public void onCreate() {
-		setBroadcastActionName("BROADCAST_ACTION_PLACEHOLDER");
-		setUpdateInterval(UPDATE_INTERVAL_PLACEHOLDER);
+		setBroadcastActionName("action.NAME_PLACEHOLDER");
+		setUpdateInterval(100);
 		setMonitorCondition(new MonitorCondition("MONITOR_CONDITION_PLACEHOLDER"));
 	}
 }

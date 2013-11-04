@@ -1,5 +1,6 @@
 #include "ServiceGenerator.h"
 #include <QFileInfo>
+#include <QDir>
 
 ServiceGenerator::ServiceGenerator(const QString &serviceName,
                                    const QString &outputDir,
@@ -40,14 +41,14 @@ void ServiceGenerator::initSettings()
 void ServiceGenerator::initMonitors()
 {
     QList<Monitor> monitors = m_serviceDescription.monitors;
-    for (int i=0; i<monitors; i++){
+    for (int i=0; i<monitors.size(); i++){
         Monitor monitor = monitors.at(i);
         copyFile(TEMPLATES_DIR+MONITOR_FILE, getServiceSourcesPath(),
                  monitor.name+".java");
-        QString newMonitorFile = getServiceSourcesPath() + "/" + MONITOR_FILE;
+        QString newMonitorFile = getServiceSourcesPath() + "/" + monitor.name + ".java";
 
         replacePlaceholderForMapObject(newMonitorFile, &monitor);
-
+        addServiceToList(monitor.name);
     }
 }
 
@@ -65,14 +66,15 @@ void ServiceGenerator::replacePlaceholderForMapObject(const QString& file,
 void ServiceGenerator::initTrackables()
 {
     QList<Trackable> trackables = m_serviceDescription.trackables;
-    for (int i=0; i<trackables; i++){
-        Trackable trackable = trackable.at(i);
+    for (int i=0; i<trackables.size(); i++){
+        Trackable trackable = trackables.at(i);
         copyFile(TEMPLATES_DIR+TRACKABLE_FILE, getServiceSourcesPath(),
                  trackable.name+".java");
-        QString newTrackableFile = getServiceSourcesPath() + "/" + TRACKABLE_FILE;
+        QString newTrackableFile = getServiceSourcesPath() + "/" + trackable.name +
+                ".java";
 
         replacePlaceholderForMapObject(newTrackableFile, &trackable);
-
+        addServiceToList(trackable.name);
     }
 }
 
@@ -80,6 +82,8 @@ void ServiceGenerator::initManifestFile()
 {
     copyFile(TEMPLATES_DIR+MANIFEST_FILE, getServicePath());
     QString newManifestFilePath = getServicePath() + "/" + MANIFEST_FILE;
+
+    qDebug() << m_servicesList;
 
     replacePlaceholders(newManifestFilePath, SERVICES_PLACEHOLDER, m_servicesList);
 }
@@ -111,12 +115,15 @@ void ServiceGenerator::generateService()
 void ServiceGenerator::replacePlaceholders(const QString& file, const QString& placeholder,
                                            const QString& value)
 {
-    system(SED_REPLACE_COMMAND.arg(placeholder).arg(value).arg(file));
+    system(SED_REPLACE_COMMAND.arg(placeholder).arg(value).arg(file).toStdString().c_str());
 }
 
 bool ServiceGenerator::copyFile(const QString& sourceFile, const QString& destinationDir,
                                 const QString& destinationName)
 {
+    qDebug() << sourceFile << destinationDir<< destinationName;
+
+
     QFileInfo fileInfo(sourceFile);
     QString fileName;
 

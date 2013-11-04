@@ -76,10 +76,6 @@ public class LocationService extends Service {
 
 	private static boolean isDeviceReady = false;
 
-	public LocationService(String channelName, String broadcastActionName,
-			int updateInterval, boolean isOnline) {
-	}
-
 
 	@Override
 	public void onStart(Intent intent, int startId) {

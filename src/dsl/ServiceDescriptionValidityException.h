@@ -5,6 +5,8 @@
 
 class ServiceDescriptionValidityException: public BasicException
 {
+public:
+    ServiceDescriptionValidityException(const QString& message):BasicException(message){}
 
 };
 

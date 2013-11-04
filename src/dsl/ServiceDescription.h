@@ -33,12 +33,11 @@ public:
 
     ServiceDescription();
 
-    void isDescriptionValid()  const;
-
-    Channel* getChannelForTrackable(const Trackable& trackable) const;
+    const Channel *getChannelForTrackable(const Trackable& trackable) const;
 
     void addDescriptionEntry(const QString& prefix, const QString& mainPart);
 
+    void checkDescriptionValidity();
 };
 
 #endif // SERVICEDESCRIPTION_H

@@ -39,14 +39,12 @@ import ru.spb.osll.json.*;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
+import android.content.Intent;
+
 
 public class TrackableService extends LocationService {
 
 
-	public TrackableService(String channelName, String broadcastActionName,
-			int updateInterval, boolean isOnline) {
-		super(channelName, broadcastActionName, updateInterval, isOnline);
-	}
 
 	private static final String TAG_TITLE = "";
 	private static final String TAG_DESCRIPTION = "";

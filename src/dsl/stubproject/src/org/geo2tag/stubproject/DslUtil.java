@@ -94,10 +94,10 @@ public class DslUtil {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static boolean isServiceRunning(Context c, Class<? extends Service> class){
+	public static boolean isServiceRunning(Context c, Class<? extends Service> className){
 		ActivityManager manager = (ActivityManager) c.getSystemService(c.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-    			if (class.getName().equals(service.service.getClassName())) {
+    			if (className.getName().equals(service.service.getClassName())) {
 				return true;
 			}
 		}

@@ -8,7 +8,8 @@
 
 class ServiceFileParserException: public BasicException
 {
-
+public:
+    ServiceFileParserException(const QString& message):BasicException(message){}
 };
 
 #endif // SERVICEFILEPARSEREXCEPTION_H

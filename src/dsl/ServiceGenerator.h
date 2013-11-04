@@ -5,8 +5,8 @@
 #include "ServiceDescription.h"
 
 // Commands
-#define COPY_STUB_PROJECT QString("cp -R stuproject/ %1/")
-#define SED_REPLACE_COMMAND QString("sed -i \'s/%1/%2/g\' %3")
+#define COPY_STUB_PROJECT QString("cp -R stubproject/ %1/")
+#define SED_REPLACE_COMMAND QString("sed -i \'s|%1|%2|g\' %3")
 
 // Directories
 #define TEMPLATES_DIR QString("templates/")
@@ -14,16 +14,19 @@
 
 // Template files
 #define SETTINGS_FILE QString("Settings.java")
+#define MONITOR_FILE QString("CustomMonitor.java")
+#define TRACKABLE_FILE QString("CustomTrackable.java")
 #define MANIFEST_FILE QString("AndroidManifest.xml")
 #define CUSTOM_MONITOR_FILE QString("CustomMonitor.java")
 #define CUSTOM_TRACKABLE_FILE QString("CustomTrackable.java")
 
 // Placeholders
+#define SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
 #define SERVER_URL_PLACEHOLDER "SERVER_URL_PLACEHOLDER"
 #define DB_NAME_PLACEHOLDER "DB_NAME_PLACEHOLDER"
 
 
-#define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" ></service>\n")
+#define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
 
 
 class ServiceGenerator
@@ -57,6 +60,8 @@ public:
     ServiceGenerator(const QString &serviceName, const QString &outputDir, const ServiceDescription &serviceDescription);
 
     void generateService();
+    QString getServiceSourcesPath();
+    void replacePlaceholderForMapObject(const QString &file, MapObject *object);
 };
 
 #endif // SERVICEGENERATOR_H

@@ -6,9 +6,9 @@
 class BasicException{
 public:
     QString errorMessage;
-    ServiceFileParserException(const QString& message){
+    BasicException(const QString& message){
         errorMessage = message;
     }
-}
+};
 
 #endif // BASICEXCEPTION_H
