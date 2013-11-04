@@ -65,6 +65,7 @@ public class LocationService extends Service {
 	private String m_channelName = null;
 	private String m_broadcastActionName = null;
 	private int m_updateInterval;
+	private boolean m_online = true;
 	
 	private Settings m_settings = Settings.getInstance();
 
@@ -76,15 +77,9 @@ public class LocationService extends Service {
 	private static boolean isDeviceReady = false;
 
 	public LocationService(String channelName, String broadcastActionName,
-			int updateInterval) {
-		setChannelName(channelName);
-		setBroadcastActionName(broadcastActionName);
-		setUpdateInterval(updateInterval);
+			int updateInterval, boolean isOnline) {
 	}
 
-	@Override
-	public void onCreate() {
-	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
@@ -284,6 +279,16 @@ public class LocationService extends Service {
 
 	public void setSettings(Settings m_settings) {
 		this.m_settings = m_settings;
+	}
+
+
+
+	public boolean isOnline(){
+		return m_online;
+	}
+
+	public void setOnline(boolean online){
+		m_online = online;
 	}
 	
 }

@@ -25,11 +25,17 @@ public class MonitorService extends LocationService {
 	private List<Channel> m_oldChannels = null;
 	
 	
-	public MonitorService(String channelName, String broadcastActionName, MonitorCondition condition, int refreshInterval ){
-		super(channelName, broadcastActionName, refreshInterval);
+	public MonitorService(String channelName, String broadcastActionName, 
+		MonitorCondition condition, int refreshInterval, boolean isOnline){
+
+		super(channelName, broadcastActionName, refreshInterval, isOnline);
 		
 		m_condition = condition;
 	
+	}
+
+	public void setMonitorCondition(MonitorCondition condition){
+		m_condition = condition;
 	}
 
 	@Override

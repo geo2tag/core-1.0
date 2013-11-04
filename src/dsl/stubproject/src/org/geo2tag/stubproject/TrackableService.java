@@ -36,23 +36,16 @@ import java.util.Date;
 
 import ru.spb.osll.Geo2TagRequests;
 import ru.spb.osll.json.*;
-import android.app.ActivityManager;
-import android.app.Service;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
 public class TrackableService extends LocationService {
 
-	private static boolean s_online = true;
-
 
 	public TrackableService(String channelName, String broadcastActionName,
-			int updateInterval) {
-		super(channelName, broadcastActionName, updateInterval);
+			int updateInterval, boolean isOnline) {
+		super(channelName, broadcastActionName, updateInterval, isOnline);
 	}
 
 	private static final String TAG_TITLE = "";
@@ -124,34 +117,5 @@ public class TrackableService extends LocationService {
 		}
 	}
 	
-	private static Class<?> getClassStaticaly(){
-		Class<?> result = new Object() {}.getClass().getEnclosingClass();
-		
-		return result;
-	}
-	
-	
-    @SuppressWarnings("static-access")
-	public static boolean isServiceRunning(Context c, Class<? extends Service> serviceClass){
-        ActivityManager manager = (ActivityManager) c.getSystemService(c.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-	
-	public static void startTracking(Context context){
-		context.startService(new Intent(context, getClassStaticaly()));
-	}
-	
-	public static void stopTracking(Context context){
-		context.stopService(new Intent(context, getClassStaticaly()));
-	}
-
-	public static void setOnline(boolean online){
-		s_online = online;
-	}
 
 }

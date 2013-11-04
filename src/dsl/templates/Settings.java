@@ -14,19 +14,27 @@ class Settings
 	}
 
 
-	private String m_login		= LOGIN_PLACEHOLDER;
-	private String m_password	= PASSWORD_PLACEHOLDER;
-	private String m_serverUrl	= SERVER_URL_PLACEHOLDER;
-	private String m_dbName		= DB_NAME_PLACEHOLDER;
-	private double m_radius		= RADIUS_PLACEHOLDER;
-	private int	m_dayShift		= DAY_SHIFT_PLACEHOLDER;
+	private String m_login		= null;
+	private String m_password	= null;
+	private String m_serverUrl	= "SERVER_URL_PLACEHOLDER";
+	private String m_dbName		= "DB_NAME_PLACEHOLDER";
+	private double m_radius		= 10;
+	private int	m_dayShift	= 1;
 
 	public String getLogin(){
 		return m_login;
 	}
 
+	public void setLogin(String login){
+		m_login = login;
+	}
+
 	public String getPassword(){
 		return m_password;
+	}
+
+	public void setPassword(String password){
+		m_password = password;
 	}
 
 	public String getServerUrl(){
