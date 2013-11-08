@@ -52,6 +52,8 @@ class Session
     QDateTime           m_accessTime;
     common::BasicUser   m_user;
 
+    QString             m_dbName;
+
   public:
 
     Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
@@ -75,6 +77,9 @@ class Session
     static QString generateToken(const common::BasicUser& user);
 
     virtual ~Session();
+
+    QString getDbName() const;
+    void setDbName(const QString& dbName);
 };
 
 QDebug& operator<<(QDebug &dbg, Session const& session);

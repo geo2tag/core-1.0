@@ -83,7 +83,7 @@ class LoadTagsQuery : public DefaultQuery
       double radius,
       QObject *parent = 0);
 
-    LoadTagsQuery(QObject *parent = 0);
+    explicit LoadTagsQuery(QObject *parent = 0);
 
     void setQuery(const Session &session,
       double latitude,

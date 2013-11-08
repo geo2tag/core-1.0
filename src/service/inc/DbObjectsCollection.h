@@ -29,8 +29,8 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file DbSession.h
- * \brief Header of DbSession
+ * \file DbObjectsCollection.h
+ * \brief Header of DbObjectsCollection
  * \todo add comment here
  *
  * File description
@@ -38,12 +38,13 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
-#define _DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#ifndef _DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#define _DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 
 #include "servicelogger.h"
 
 #include <QtSql>
+#include <QSqlDatabase>
 #include <QThread>
 #include <QMap>
 #include "DataMarks.h"
@@ -53,6 +54,14 @@
 #include "QueryExecutor.h"
 #include "FilterRequestJSON.h"
 #include "Session.h"
+
+
+#define OK_REQUEST_HEADER "Status: 200 OK\r\nContent-Type: text/html\r\n\r\n"
+
+namespace Core{
+    class MetaCache;
+}
+
 
 namespace common
 {
@@ -75,6 +84,9 @@ namespace common
     static const QString error;
     static const QString ok;
 
+    Core::MetaCache * m_defaultCache;
+
+
     DbObjectsCollection();
 
     // initializes db by default sql script
@@ -89,7 +101,7 @@ namespace common
 
     common::BasicUser findUser(const common::BasicUser &dummyUser) const;
 
-    bool areCredentialsIncorrect(const BasicUser& realUser, const BasicUser& user) const;
+    bool areCredentialsIncorrect(const BasicUser& user) const;
 
     QByteArray processRegisterUserQuery(const QByteArray&);
     QByteArray processConfirmRegistrationQuery(const QString&);
@@ -122,9 +134,15 @@ namespace common
 
     QByteArray internalProcessFilterQuery(FilterRequestJSON&, const QByteArray&, bool is3d);
 
+
+    QByteArray processSetDbQuery(const QByteArray&);
+    QByteArray processAlterChannelQuery(const QByteArray&);
+    QByteArray processChangePasswordQuery(const QByteArray&);
     //    void processSendConfirmationLetter(const QString &address);
 
     //    static void processSendConfirmationLetter(const QString&);
+
+    void extractLastNTags(QList<Tag>& tags, qulonglong tagNumber);
 
     public:
 
@@ -138,14 +156,15 @@ namespace common
       static QString getPlatformVersion();
       static QString getPlatformBuildInfo();
 
-    private:
+
+  private:
       DbObjectsCollection(const DbObjectsCollection& obj);
       DbObjectsCollection& operator=(const DbObjectsCollection& obj);
 
-  };                                    // class DbSession
+  };                                    // class DbObjectsCollection
 
   // namespace common
 }
-#endif                                  //_DbSession_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
+#endif                                  //_DbObjectsCollection_H_9BF6A8FE_DA47_4F7A_B008_2EA2842C490F_INCLUDED_
 
 /* ===[ End of file ]=== */

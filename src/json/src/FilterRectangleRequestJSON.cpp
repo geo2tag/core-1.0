@@ -74,19 +74,14 @@ QByteArray FilterRectangleRequestJSON::getJson() const
 bool FilterRectangleRequestJSON::parseJson(const QByteArray&data)
 {
   clearContainers();
-  FilterRequestJSON::parseJson(data);
+  bool baseParseResult = FilterRequestJSON::parseJson(data);
+  if (!baseParseResult)
+    return false;
 
   QJson::Parser parser;
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok) return false;
-
-  QString auth_token = result["auth_token"].toString();
-  if (auth_token.isEmpty()) return false;
-  m_token = auth_token;
-
-  setTimeFrom(QDateTime::fromString(result["time_from"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
-  setTimeTo(QDateTime::fromString(result["time_to"].toString(), "dd MM yyyy HH:mm:ss.zzz"));
 
   double lat1, lat2, lon1, lon2;
   QVariantMap latData = result["latitude_shift"].toMap();

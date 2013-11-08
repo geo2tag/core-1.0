@@ -43,7 +43,7 @@
 #include "serializer.h"
 #endif
 
-#if 0
+
 RegisterUserRequestJSON::RegisterUserRequestJSON (QObject * parent):JsonSerializer
   (parent)
 {
@@ -55,18 +55,18 @@ RegisterUserRequestJSON::RegisterUserRequestJSON (const common::
 						  QObject * parent):
 JsonSerializer (parent)
 {
-  m_usersContainer->push_back (user);
+  m_users.push_back (user);
 }
 
 
 QByteArray
-RegisterUserRequestJSON::getJson () const const
+RegisterUserRequestJSON::getJson () const 
 {
   QJson::Serializer serializer;
   QVariantMap obj;
-  obj.insert ("email", m_usersContainer->at (0)->getEmail ());
-  obj.insert ("login", m_usersContainer->at (0)->getLogin ());
-  obj.insert ("password", m_usersContainer->at (0)->getPassword ());
+  obj.insert ("email", m_users.at (0).getEmail ());
+  obj.insert ("login", m_users.at (0).getLogin ());
+  obj.insert ("password", m_users.at (0).getPassword ());
   return serializer.serialize (obj);
 }
 
@@ -85,8 +85,6 @@ RegisterUserRequestJSON::parseJson (const QByteArray & data)
   QString email = result["email"].toString ();
   QString login = result["login"].toString ();
   QString password = result["password"].toString ();
-  m_usersContainer->
-    push_back (common::BasicUser (new JsonUser (login, password, email)));
+  m_users.push_back (common::BasicUser (login, password, email));
   return true;
 }
-#endif

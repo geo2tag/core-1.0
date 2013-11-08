@@ -62,9 +62,9 @@ namespace common
     m_points = points;
   }
 
-  void Region::addPoint(const Tag& /*point*/)
+  void Region::addPoint(const Tag& point)
   {
-    //FIXME m_points->push_back(point);
+    m_points.push_back(point);
   }
 
   bool Region::atRegion(const Tag& point)

@@ -49,7 +49,7 @@ class DataThread : public QThread
     QSettings m_settings;
   // here marks are stored
   QList<Tag> m_marks;
-  QSharedPointer<common::User> m_user;
+  common::BasicUser m_user;
   MapScene * m_map;
 
   // this field needs because query is asynchronous

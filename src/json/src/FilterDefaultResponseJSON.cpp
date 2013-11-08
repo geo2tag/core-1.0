@@ -130,7 +130,7 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
       QString userName = markMap["user"].toString();
       QString timeStr =  markMap["pubDate"].toString();
       QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
-      time.setTimeSpec(Qt::UTC);
+      //time.setTimeSpec(Qt::UTC);
    
       Tag tag = Tag(altitude,  latitude, longitude, title, description, link, time);
       m_tagMap.insert(channel,tag);

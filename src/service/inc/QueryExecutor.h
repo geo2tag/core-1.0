@@ -49,10 +49,14 @@ class QueryExecutor : public QObject
 {
     Q_OBJECT
 
+    static QMap<QString, QueryExecutor*> s_executorsMap;
+
     //Geo2tagDatabase m_database;
 
     qlonglong nextKey(const QString& sequence) const;
-    QueryExecutor();
+    QueryExecutor(const QString& dbName);
+
+    QString m_dbName;
 
 public:
 
@@ -84,6 +88,7 @@ public:
 
     bool                     updateSession(Session& session);
     bool                     deleteSession(const Session& session);
+    bool isOwner(const QString& name, const QString& channel);
 
     QList<common::BasicUser> loadUsers();
 
@@ -106,16 +111,22 @@ public:
     qlonglong getUserIdByName(const QString& name);
     qlonglong getChannelIdByName(const QString& name);
     Channel getChannel(const QString& name);
-    bool isSubscribed(const common::BasicUser& user, const Channel &channel);
+    bool isSubscribed(const common::BasicUser& user, const Channel& channel);
 
+    bool alterChannel(const QString& name, const QString& field, const QString& value);
+
+    bool changePassword(const QString& login, const QString& newPassword);
 
     qlonglong getFactTransactionNumber();
 
-    static QSqlQuery makeQuery();
+    QSqlQuery makeQuery() const;
     static void transaction();
     static void rollback();
     static void commit();
-    static QueryExecutor* instance();
+    static QueryExecutor* getInstance(const QString& dbName);
+
+    static bool checkDbExistance(const QString& dbName);
+    static bool initDatabase(const QString& dbName);
 
 signals:
 

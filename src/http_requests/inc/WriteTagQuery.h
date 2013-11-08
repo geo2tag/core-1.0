@@ -58,7 +58,7 @@ class WriteTagQuery: public DefaultQuery
     WriteTagQuery(const Session &session,
       const Channel &channel,
       const Tag &tag, QObject *parent = 0);
-    WriteTagQuery(QObject *parent = 0);
+    explicit WriteTagQuery(QObject *parent = 0);
 
     ~WriteTagQuery();
     void setTag(const Tag &tag);

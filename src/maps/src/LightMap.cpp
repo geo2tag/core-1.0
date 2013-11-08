@@ -261,7 +261,7 @@ void LightMap::mouseReleaseEvent(QMouseEvent *)
 }
 
 
-void LightMap::setMarks(DataChannels marks)
+void LightMap::setMarks(QList<Tag> marks)
 {
   m_marks=marks;
   m_normalMap->invalidate();

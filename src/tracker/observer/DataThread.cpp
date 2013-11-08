@@ -87,7 +87,7 @@ void DataThread::run()
 void DataThread::onConnected()
 {
   m_isConnected = true;
-  QSharedPointer<Session> session = m_loginQuery->getSession();
+  Session session = m_loginQuery->getSession();
   m_user=session->getUser();
   m_rssQuery=new LoadTagsQuery(session,60.,30.,3000000.,parent());
   qDebug() << "rssFeedQuery setted" << m_rssQuery;

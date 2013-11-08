@@ -45,6 +45,8 @@ QByteArray AddUserQuery::getRequestBody() const
 
 void AddUserQuery::processResponse(const QByteArray &data)
 {
+    qDebug() << "AddUserQuery::processResponse(const QByteArray &data)";
+
   #ifndef Q_OS_SYMBIAN
   AddUserResponseJSON response;
   response.parseJson(data);

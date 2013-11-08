@@ -94,6 +94,7 @@ QByteArray LoadTagsQuery::getRequestBody() const
 
 void LoadTagsQuery::processResponse(const QByteArray &data)
 {
+    qDebug() << "LoadTagsQuery::processResponse(const QByteArray &data)";
   LoadTagsResponseJSON response;
   response.parseJson(data);
   m_tag = response.getData();

@@ -50,6 +50,8 @@
 #include "Session.h"
 #include "DataMarks.h"
 
+class QueryExecutor;
+
 namespace Core
 {
     using namespace common;
@@ -59,64 +61,85 @@ namespace Core
    */
   class MetaCache
   {
+      static QMap<QString, MetaCache*> s_cachesMap;
 
-      static QList<Channel>     s_channels;
-      static QList<Session>     s_sessions;
-      static QList<BasicUser>   s_users;
+      QueryExecutor* m_queryExecutor;
 
-      static QReadWriteLock      s_cacheLock;
-      static QReadWriteLock      s_usersLock;
-      static QReadWriteLock      s_channelsLock;
-      static QReadWriteLock      s_SessionsLock;
+      QList<Channel>     m_channels;
+      QList<Session>     m_sessions;
+      QList<BasicUser>   m_users;
+
+      QReadWriteLock      m_cacheLock;
+      QReadWriteLock      m_usersLock;
+      QReadWriteLock      m_channelsLock;
+      QReadWriteLock      m_SessionsLock;
+
+
+      bool isDefaultMetaCache() const;
 
   public:
 
+      MetaCache(const QString& dbName);
+
+      static MetaCache* getMetaCache(const Session& session);
+      static MetaCache* getMetaCache(const QString& dbName);
+      static MetaCache* getDefaultMetaCache();
+
       static void init();
-      static BasicUser getUserById(const QString userId);
-      static QList<BasicUser> getUsers();
-      static QList<Channel> getChannels();
+      BasicUser getUserById(const QString userId);
+      QList<BasicUser> getUsers();
+      QList<Channel> getChannels();
 
-      static bool addChannel(const Channel &channel, const BasicUser &user);
-      static bool addUser(const BasicUser &user);
-      static bool deleteUser(const BasicUser& user);
-      static void insertSession(const Session &session);
-      static Channel getChannel(const QString name);
-      static QList<Channel> getChannels(const common::BasicUser& user);
-      static QList<Channel> getChannelsByOwner(const BasicUser &user);
+      bool alterChannel(const QString& name, const QString& field, const QString& value);
+      bool addChannel(const Channel &channel, const BasicUser &user);
+      bool addUser(const BasicUser &user);
+      bool deleteUser(const BasicUser& user);
+      void insertSession(const Session &session);
+      Channel getChannel(const QString name);
+      QList<Channel> getChannels(const common::BasicUser& user);
+      QList<Channel> getChannelsByOwner(const BasicUser &user);
 
-      static void updateSession(Session &session);
+      void updateSession(Session &session);
 
-      static void removeSession(const Session& session);
+      void removeSession(const Session& session);
 
-      static Session findSession(const common::BasicUser& user);
-      static Session findSession(const QString& token);
-      static Channel findChannel(const QString& name);
-      static QList<Channel> getSubscribedChannels(const BasicUser& user);
+      Session findSession(const common::BasicUser& user);
+      Session findSession(const QString& token);
+      Channel findChannel(const QString& name);
+      QList<Channel> getSubscribedChannels(const BasicUser& user);
 
-      static bool subscribeChannel(const common::BasicUser& user, const Channel& channel);
-      static bool unsubscribeChannel(const common::BasicUser& user, const Channel& channel);
+      bool subscribeChannel(const common::BasicUser& user, const Channel& channel);
+      bool unsubscribeChannel(const common::BasicUser& user, const Channel& channel);
 
       // Reloading sessions from db (used after adding session)
-      static void reloadSessions();
+      void reloadSessions();
 
-      static bool checkEmail(const QString& email);
+      bool checkEmail(const QString& email);
 
       // returns true if user exists and loaded
-      static bool checkUser(common::BasicUser &user);
+      bool checkUser(common::BasicUser &user);
 
       // returns true if channed exists and user is subscribed
-      static bool testChannel(common::BasicUser &user, const Channel& channel);
+      bool testChannel(common::BasicUser &user, const Channel& channel);
 
-      static bool writeTag(const Tag& tag);
-      static QList<Tag> loadTagsFromChannel(const Channel& channel);
+      bool writeTag(const Tag& tag);
+      QList<Tag> loadTagsFromChannel(const Channel& channel);
 
-      static BasicUser findUserByName(const QString& name);
+      BasicUser findUserByName(const QString& name);
+
+      bool changePassword(const QString& login, const QString& newPassword);
+
+      void changeDbName(const Session& session, const QString& dbName);
+
+      bool isOwner(const Session& session, const QString& channel);
+
+      void touchUserToServiceDb(const common::BasicUser& user);
 
   protected:
 
-      static void initUsers();
-      static void initSessions();
-      static void initChannels();
+      void initUsers();
+      void initSessions();
+      void initChannels();
     
   private:    
     MetaCache(const MetaCache& obj);

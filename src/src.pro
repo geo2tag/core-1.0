@@ -10,10 +10,10 @@ message($$LIBS)
              json \
              http_requests \
              service \
+	     common/tst\
+             json/tst\ 
+#            service/tst
+#            tracker/observer
 #	     maps \
 #            http_requests/tst_http_requests \
-#             tracker/clients/meego/tst \
-             #json/tst \
-             #common/tst
-             #service/tst
-             #tracker/observer
+#            tracker/clients/meego/tst \

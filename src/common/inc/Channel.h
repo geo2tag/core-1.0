@@ -48,6 +48,10 @@
 #include "ConcurrentVector.h"
 #include "BasicUser.h"
 
+#define NAME_FIELD "name"
+#define DESCRIPTION_FIELD "description"
+#define URL_FIELD "url"
+
 class Channel
 {
                          //!< channel name
@@ -59,6 +63,8 @@ class Channel
     bool m_isDisplayed;
 
 public:
+
+    static bool isFieldNameValid(const QString& field);
 
     static const qulonglong DEFAULT_TIME_SLOT_VALUE_MIN;
 
@@ -83,6 +89,8 @@ public:
     void setDisplayed(bool);
 
     bool isValid() const;
+
+    void changeField(const QString& field, const QString& value);
 
     virtual ~Channel();
     // class Channel

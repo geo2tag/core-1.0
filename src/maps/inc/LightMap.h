@@ -38,8 +38,10 @@
 #include <QWidget>
 #include <QPixmap>
 #include <QBasicTimer>
-#include "DataChannel.h"
+#include "Channel.h"
 #include "SlippyMap.h"
+#include "DataMarks.h"
+
 class LightMap: public QWidget
 {
   Q_OBJECT

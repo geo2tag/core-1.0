@@ -53,6 +53,8 @@ class FilterRequestJSON : public JsonSerializer
   double m_alt1;
   double m_alt2;
 
+  qulonglong m_tagNumber;
+
   public:
     FilterRequestJSON(QObject *parent = 0);
     ~FilterRequestJSON();
@@ -72,6 +74,8 @@ class FilterRequestJSON : public JsonSerializer
     double getAltitude2() const;
 
     void setChannel(const Channel &channel);
+    void setTagNumber(qulonglong tagNumber);
+    qulonglong getTagNumber() const;
 
     bool parseJson(const QByteArray&);
 };                                      // class FilterRequestJSON

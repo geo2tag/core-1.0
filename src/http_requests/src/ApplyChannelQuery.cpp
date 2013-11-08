@@ -33,7 +33,7 @@ QByteArray ApplyChannelQuery::getRequestBody() const
 {
   AddChannelRequestJSON request;
   request.addChannel(m_channel);
-  //GT-834 request.setSessionToken(m_session);
+  request.setSessionToken(m_session.getSessionToken());
   return request.getJson();
 }
 

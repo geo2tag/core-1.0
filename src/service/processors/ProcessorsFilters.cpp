@@ -1,4 +1,4 @@
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "ErrnoTypes.h"
 #include "defines.h"
 #include "SettingsStorage.h"
@@ -64,12 +64,18 @@ QByteArray DbObjectsCollection::processFilterFenceQuery(const QByteArray& data)
     return internalProcessFilterQuery(request, data, true);
 }
 
+void DbObjectsCollection::extractLastNTags(QList<Tag>& tags, qulonglong tagNumber){
+	if (tagNumber > 0 && tagNumber < (qulonglong)tags.size())
+		tags = tags.mid(tags.size()-tagNumber);
+
+}
+
 QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& request,
                                                            const QByteArray& data, bool is3d)
 {
     Filtration filtration;
     FilterDefaultResponseJSON response;
-    QByteArray answer("Status: 200 OK\r\nContent-Type: text/html\r\n\r\n");
+    QByteArray answer(OK_REQUEST_HEADER);
 
     if (!request.parseJson(data))
     {
@@ -78,7 +84,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         return answer;
     }
 
-    Session session = Core::MetaCache::findSession(request.getSessionToken());
+    Session session = m_defaultCache->findSession(request.getSessionToken());
 
     if(!session.isValid())
     {
@@ -86,6 +92,8 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         answer.append(response.getJson());
         return answer;
     }
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+    qulonglong tagNumber = request.getTagNumber();
 
     common::BasicUser user = session.getUser();
 
@@ -96,7 +104,7 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         filtration.addFilter(QSharedPointer<Filter>(new AltitudeFilter(request.getAltitude1(), request.getAltitude2())));
     }
 
-    QList<Channel> channels = Core::MetaCache::getSubscribedChannels(user);
+    QList<Channel> channels = cache->getSubscribedChannels(user);
     QList<Tag> feed;
 
     if (request.getChannels().size() > 0)
@@ -120,10 +128,12 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
             return answer;
         }
 
-        QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(targetChannel);
+        QList<Tag > tags = cache->loadTagsFromChannel(targetChannel);
         QList<Tag > filteredTags = filtration.filtrate(tags);
 
+	extractLastNTags( filteredTags, tagNumber);
         feed << filteredTags;
+
         response.setErrno(SUCCESS);
     }
     else
@@ -131,13 +141,15 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
         for(int i = 0; i<channels.size(); i++)
         {
             Channel channel = channels.at(i);
-            QList<Tag > tags = Core::MetaCache::loadTagsFromChannel(channel);
+            QList<Tag > tags = cache->loadTagsFromChannel(channel);
             QList<Tag > filteredTags = filtration.filtrate(tags);
-                feed << filteredTags;
+
+	    extractLastNTags( filteredTags, tagNumber);
+            feed << filteredTags;
         }
 	DEBUG() << "Filtred tags number " << feed.size();
 
-	Core::MetaCache::updateSession(session);
+    m_defaultCache->updateSession(session);
 
         response.setErrno(SUCCESS);
     }

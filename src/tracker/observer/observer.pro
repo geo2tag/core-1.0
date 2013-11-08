@@ -21,7 +21,7 @@ INCLUDEPATH += . \
                ../ui/ \
                ../../http_requests/inc
 
-LIBS += -lmaps -lqjson -lcommon -lwikigpsHttp -lwikigpsJson
+LIBS += -lmaps -lgeo2tag
 
 # Input
 SOURCES += main.cpp \
