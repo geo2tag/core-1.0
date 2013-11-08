@@ -1,10 +1,17 @@
-geo2tag-core (0.25-rc2) precise; urgency=low
+geo2tag-core (0.26) precise; urgency=low
 
-  * Built on Linux geo2tag-dev 3.2.0-48-generic #74-Ubuntu SMP Thu Jun 6
-    19:43:26 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux at Fri Jul 26
-    20:47:05 MSK 2013
+  New features:
+  * QuitSession REST request
+  * SetDB REST request + multi service support
+  * User managment scripts
+  * AlterChannel REST request
+  * ChangePassword REST request
+  * Sessions can have limited lifetime
+  * tag_number parameter in Filter requests
+  * Case insensitivenes in requests
+  Full list of solved tasks and bugs at https://geo2tag.atlassian.net/issues/?filter=11100
 
- -- Kirill Krinkin <krinkin@geo2tag-dev.cs.prv>  Fri, 26 Jul 2013 20:47:05 +0400
+ -- Mark Zaslavskiy<mark.zaslavskiy@gmail.com>  Fri, 08 Nov 2013 12:00:58 +0400
 
 geo2tag-core (0.25-rc2) precise; urgency=low
 
