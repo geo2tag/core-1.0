@@ -1,3 +1,9 @@
+geo2tag-core (0.29) precise; urgency=low
+
+  version updated
+
+ -- Mark Zaslavskiy <mark.zaslavskiy@gmail.com>  Mon, 11 Nov 2013 20:52:16 +0400
+
 geo2tag-core (0.26) precise; urgency=low
 
   New features:
