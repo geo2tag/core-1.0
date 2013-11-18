@@ -14,17 +14,10 @@
 	
 	<script>
 
-		var login = null;
-		var password = null;
-		var dbName = null;
-		var radius = null;
 		var tagNumber = 20;
 		var latitude = null;
 		var longitude = null;
 		var mapwidget = null;
-		var target = null;
-		var spinner = null;
-		var token = "";
 
 		console.log("Head");
 
@@ -35,18 +28,13 @@
 		}
 
 
-		function initWithSettings(login, password, radius, dbName, serverUrl, lat, lon){
+		function initWithSettings( lat, lon){
 		
 			mapWidget.map.setZoom(13);
 			
 			console.log("initWithSettings");
 		
-			this.token = "";
 
-			this.login = login;
-			this.password = password;
-			this.dbName = dbName;
-			this.radius = radius;
 			this.latitude = lat;
 			this.longitude = lon; 
 			
@@ -54,9 +42,8 @@
 			
 			updateMapCenter(lat, lon);
 
-			SettingsStorage.SERVER_URL = serverUrl;	
 			
-			refresh();
+		//	refresh();
 		}
 
 		function updateMapCenter(lat, lon){
@@ -68,67 +55,6 @@
 
 			
 		}	
-
-		function refresh(){
-			console.log("refresh");
-			if (token == ""){
-				//console.log("onlyLastTag:"+onlyLastTag);
-				mapWidget.addEventListener("onLoginSuccess",onMapWidgetLogin);
-				//mapWidget.setShowOnlyLastTag(onlyLastTag);
-				mapWidget.addEventListener("onLoginSuccess",onMapWidgetLogin);
-				mapWidget.addEventListener("onErrorOccured", onError);
-				mapWidget.addEventListener("onFilterSuccess", onDataLoaded);
-				//mapWidget.setShowOnlyLastTag(onlyLastTag);
-				mapWidget.login(login, password);
-			} else {
-				onSetDbSuccess(null);
-			}
-			spinner.spin(target);
-		}
-		
-		
-		function onDataLoaded(){
-			console.log("onDataLoaded()");
-			console.log(mapWidget.markers.length);
-
-			var lastMarker = mapWidget.findLastMarker();
-			if (lastMarker != null){
-				var latLng = lastMarker.getLatLng();
-				console.log("Last tag coordinates, lat="+latLng.lat+", lon="+latLng.lng);
-				updateMapCenter(latLng.lat, latLng.lng);
-			}
-			stopSpinner();
-		}
-		
-		function onError(){
-			console.log("onError!");
-			alert("Error during map loading.");
-			stopSpinner();
-		}
-		
-		function stopSpinner(){
-			spinner.stop();
-		}
-		
-		function onMapWidgetLogin(){
-			sendSetDbRequest(mapWidget.authToken, dbName, onSetDbSuccess, bind(mapWidget,"onErrorOccured"));
-			
-		}
-			
-			
-		function onSetDbSuccess(jsonResponse){
-			
-			if (radius<1){
-				console.log("Radius has incorrect value!!!");
-				stopSpinner();
-				return;
-			}
-			console.log("Times: "+getPastDateTime(1)+" "+getCurrentDateTime());
-
-			mapWidget.filterCircle(latitude, longitude, radius, getPastDateTime(1), getCurrentDateTime(), tagNumber);
-			
-		}
-			
 	
 	</script>
 </head>
@@ -139,28 +65,6 @@
 	<script>
 		console.log("Body");
 			
-			
-			var opts = {
-			  lines: 17, // The number of lines to draw
-			  length: 34, // The length of each line
-			  width: 8, // The line thickness
-			  radius: 30, // The radius of the inner circle
-			  corners: 1, // Corner roundness (0..1)
-			  rotate: 63, // The rotation offset
-			  direction: 1, // 1: clockwise, -1: counterclockwise
-			  color: '#000', // #rgb or #rrggbb
-			  speed: 0.8, // Rounds per second
-		  	  trail: 58, // Afterglow percentage
-		  	  shadow: false, // Whether to render a shadow
-			  hwaccel: false, // Whether to use hardware acceleration
-		  	  className: 'spinner', // The CSS class to assign to the spinner
-		 	  zIndex: 2e9, // The z-index (defaults to 2000000000)
-		  	  top: 'auto', // Top position relative to parent in px
-		  	  left: 'auto' // Left position relative to parent in px
-			};
-			target = document.getElementById('map');
-			spinner = new Spinner(opts);
-			spinner.spin(target);
 			
 			mapWidget = new MapWidget(0, 0, "map");
 			mapWidget.map.setZoom(1);

@@ -6,6 +6,7 @@ function MapWidget(latitude, longitude,  widgetName){
 	this.markers = new Array() ;
 	this.mapControl = null;
 	this.authToken = null;
+	this.markerChannelMap = new Object();
 	this.showLayerControl = true;
 	this.showOnlyLastTag = false;
 	// Listeners map 
@@ -33,39 +34,41 @@ MapWidget.prototype.initMapWidget = function (){
 	}).addTo(this.map);
 }
 	
-/*
- * Add tags array to the map
- * @param {array<tag>} tags
- */
-MapWidget.prototype.addLoadTagsResultToMap = function ( tags){
-	this.removeAllTagsFromMap();
-	
-	if (tags.length == 0 ) return;
- 
-	var tagMarkers = new Object();
 
-	for (var i = tags.length-1 ; i >= 0 ; i--){
-		var tag = tags[i];
-		var userName = tag["user"];
-		 
-		if ( !(userName in tagMarkers) ){
-			tagMarkers[userName] = new Array();
-			console.log("Creating array for " + userName);
-		}
-		
-		// If this.showOnlyLastTag == true then add only one last tag for each user
-		// otherwize add all tags
-		if (this.showOnlyLastTag && tagMarkers[userName].length == 0 || !this.showOnlyLastTag){
-			var currentMarker = L.marker([tag.latitude, tag.longitude], {icon: this.icon}).
-			bindPopup(DataMark.getStringRepresentation(tag));
-			this.markers.push(currentMarker);
-			tagMarkers[userName].push(currentMarker);
-		}
-		
-	}
-	
-	this.addLayerControl(tagMarkers);
+MapWidget.prototype.addTag = function (user, channel, title, description, link, latitude, longitude, pubDate){
+
+	var tag	= {
+		channel: channel,
+		title: title,
+		description: description,
+		user: user,
+		link: link,
+		pubDate: pubDate
+	};
+
+	var currentMarker = L.marker([latitude, longitude]).
+	bindPopup(DataMark.getStringRepresentation(tag));
+	this.markers.push(currentMarker);
+
+	this.updateLayerControl(channel, currentMarker);	
+
 }
+
+
+MapWidget.prototype.updateLayerControl = function (channel, marker){
+
+
+	if (!(channel in this.markerChannelMap))
+		this.markerChannelMap[channel] = new Array();
+
+	this.markerChannelMap[channel].push(marker);
+
+	if (this.mapControl != null)
+		this.map.removeControl(this.mapControl);
+
+	this.addLayerControl(this.markerChannelMap);
+}
+
 
 /* 
  * Creates UI element with checkbox for each user
@@ -113,73 +116,6 @@ MapWidget.prototype.changeMapCenter = function (latitude, longitude){
 	this.centerInDefaultPosition();
 }	
 	
-MapWidget.prototype.login = function (userName, password){
-	sendLoginRequest(userName, password,
-		bind(this, "onLoginSuccess"), bind(this, "onErrorOccured"));
-}	
-	
-/*
- * Load tags for coordinates this.latitude, this.longitude and this.radius 
- */
-MapWidget.prototype.loadTags = function (latitude, longitude, radius){
-
-	if (this.authToken == null) return;
-
-	sendLoadTagsRequest(this.authToken, latitude, longitude, radius, 
-		bind(this, "onLoadTagsSuccess"), bind(this, "onErrorOccured"));
-		
-};
-
-/*
- * Perform filterCircle request
- */
-MapWidget.prototype.filterCircle = function (latitude, longitude, radius, timeFrom, timeTo, tagNumber){
-
-	if (this.authToken == null) return;
-
-	sendFilterCircleRequest(this.authToken, latitude, longitude, timeFrom, timeTo, radius, null, tagNumber,
-		bind(this, "onFilterSuccess"), bind(this, "onErrorOccured"));	
-		
-}
-
-/*
- * Add channels array to the map
- * @param {array<channel>} channels
- */
-MapWidget.prototype.addFilterResultsToMap = function (channels){
-	this.removeAllTagsFromMap();
-	
-	if (channels.length == 0 ) return;
- 
-	var tagMarkers = new Object();
-
-	for (var i =0 ; i < channels.length ; i++){
-	
-		var tags = channels[i].channel.items;
-		var channelName = channels[i].channel.name;
-		tagMarkers[channelName] = new Array();
-		
-		var tagAmount = ((this.showOnlyLastTag==true) ? tags.length-1  : 0);
-		console.log(this.showOnlyLastTag+" "+channelName+" "+i+" "+tagAmount);
-		
-		for (var j = tags.length-1; j >= tagAmount; j--){
-			
-			var tag = tags[j];
-			tag["channel"] = channelName;
-			var currentMarker = L.marker([tag.latitude, tag.longitude], {icon: this.icon}).
-			bindPopup(DataMark.getStringRepresentation(tag));
-			currentMarker.pubDate = tag.pubDate;
-			
-			this.markers.push(currentMarker);
-		
-			tagMarkers[channelName].push(currentMarker);
-		}
-	}
-	
-	console.log("this.markers.length =" + this.markers.length);
-	
-	this.addLayerControl(tagMarkers);
-};
 
 MapWidget.prototype.findLastMarker = function (){
 	var lastMarker = null;
@@ -202,42 +138,6 @@ MapWidget.prototype.findLastMarker = function (){
 	}
 	
 	return lastMarker;
-}
-
-
-MapWidget.prototype.onFilterSuccess = function (jsonResponse){
-
-	this.addFilterResultsToMap(jsonResponse.channels);
-	var lastMarker = this.findLastMarker();
-	if (lastMarker != null ){
-		lastMarker.openPopup();
-	}
-	this.raiseEvent("onFilterSuccess");
-}	
-		
-/*
- * Store auth_token and trigger onLoginSuccess event
- */
-MapWidget.prototype.onLoginSuccess = function (jsonResponse){
-	this.authToken = jsonResponse.auth_token;
-	console.log("LoginQuery succed");
-	
-	this.raiseEvent("onLoginSuccess");
-}
-
-
-
-MapWidget.prototype.onLoadTagsSuccess = function (jsonResponse){
-
-	var tags = jsonResponse.rss.channels.items[0].items;
-	console.log("onLoadTagsSuccess: Loaded "+ tags.length + " tags");
-	this.addLoadTagsResultToMap(tags);
-}
-	
-MapWidget.prototype.onErrorOccured = function (jsonResponse){
-	this.raiseEvent("onErrorOccured");
-	console.log("onErrorOccured");
-	//alert("Error during requests processing, errno = "+jsonResponse.errno);
 }
 
 
