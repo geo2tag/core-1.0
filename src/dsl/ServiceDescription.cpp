@@ -4,6 +4,7 @@
 
 ServiceDescription::ServiceDescription()
 {
+    mapWidget = MapWidgetEnum("NO_MAPWIDGET");
 }
 
 void ServiceDescription::checkDescriptionValidity() {

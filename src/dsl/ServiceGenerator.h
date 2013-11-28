@@ -19,13 +19,19 @@
 #define MANIFEST_FILE QString("AndroidManifest.xml")
 #define CUSTOM_MONITOR_FILE QString("CustomMonitor.java")
 #define CUSTOM_TRACKABLE_FILE QString("CustomTrackable.java")
+#define GOOGLE_MAP_ACTIVITY_FILE QString("MapGoogleActivity.java")
+#define OSM_MAP_ACTIVITY_FILE QString("MapJsActivity.java")
 
 // Placeholders
 #define SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
 #define SERVER_URL_PLACEHOLDER "SERVER_URL_PLACEHOLDER"
 #define DB_NAME_PLACEHOLDER "DB_NAME_PLACEHOLDER"
+#define MAP_ACTIVITY_PLACEHOLDER "MAP_ACTIVITY_PLACEHOLDER"
+#define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
 
-
+#define MAP_ACTIVITY_NAME QString("MapActivity.java")
+#define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(this, org.geo2tag.stubproject.MapActivity.class));")
+#define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.MapActivity\"></activity>");
 #define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
 
 
@@ -37,6 +43,9 @@ private:
     QString m_serviceName;
     ServiceDescription m_serviceDescription;
 
+
+    QString m_mapActivity;
+    QString m_mapActivityTransfer;
     QString m_servicesList;
 
     bool isDirectoryWritable(const QString &outputDir) const;
@@ -45,6 +54,7 @@ private:
     void initSettings();
     void initMonitors();
     void initTrackables();
+    void initMapActivity();
     void initManifestFile();
 
     void addServiceToList(const QString& serviceName);

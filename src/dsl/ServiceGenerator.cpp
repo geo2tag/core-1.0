@@ -78,6 +78,28 @@ void ServiceGenerator::initTrackables()
     }
 }
 
+void ServiceGenerator::initMapActivity()
+{
+    if (m_serviceDescription.mapWidget.value == NO_MAPWIDGET ){
+        qDebug() << "No map widget!!";
+        return;
+    }
+
+    m_mapActivity = MAP_ACTIVITY_XML_STRING;
+    m_mapActivityTransfer = MAP_ACTIVITY_TRANSFER_STRING;
+
+    QString sourceMapActivity;
+
+    if (m_serviceDescription.mapWidget.value == GOOGLE_MOBILE )
+        sourceMapActivity = TEMPLATES_DIR+GOOGLE_MAP_ACTIVITY_FILE;
+    else if (m_serviceDescription.mapWidget.value == OSM_MOBILE )
+        sourceMapActivity = TEMPLATES_DIR+OSM_MAP_ACTIVITY_FILE;
+
+
+    copyFile(sourceMapActivity, getServiceSourcesPath(),
+             MAP_ACTIVITY_NAME);
+}
+
 void ServiceGenerator::initManifestFile()
 {
     copyFile(TEMPLATES_DIR+MANIFEST_FILE, getServicePath());
@@ -85,7 +107,12 @@ void ServiceGenerator::initManifestFile()
 
     qDebug() << m_servicesList;
 
+    //system(QString("cat %1").arg(newManifestFilePath).toStdString().c_str());
     replacePlaceholders(newManifestFilePath, SERVICES_PLACEHOLDER, m_servicesList);
+    replacePlaceholders(newManifestFilePath, MAP_ACTIVITY_PLACEHOLDER, m_mapActivity);
+
+
+
 }
 
 void ServiceGenerator::addServiceToList(const QString &serviceName)
@@ -108,6 +135,7 @@ void ServiceGenerator::generateService()
     initSettings();
     initMonitors();
     initTrackables();
+    initMapActivity();
     initManifestFile();
 
 }
@@ -115,6 +143,7 @@ void ServiceGenerator::generateService()
 void ServiceGenerator::replacePlaceholders(const QString& file, const QString& placeholder,
                                            const QString& value)
 {
+    qDebug() << "ServiceGenerator::replacePlaceholders:" << file << placeholder << value;
     system(SED_REPLACE_COMMAND.arg(placeholder).arg(value).arg(file).toStdString().c_str());
 }
 

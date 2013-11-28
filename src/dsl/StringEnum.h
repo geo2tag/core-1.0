@@ -26,6 +26,7 @@ public:
 
     E fromString(const QString& string){
         for (int i = 0; i< ELEMENTS_NUMBER; i++){
+	qDebug() << string << STRING_NAMES[i];
             if (QString(STRING_NAMES[i]).compare( string, Qt::CaseInsensitive) == 0)
                 return (E)i;
         }
