@@ -16,7 +16,7 @@ import android.widget.Toast;
 public class MapJsView extends WebView {
 
 	
-	private static final String MAP_FILE = "file:///android_asset/map_tracker.html"; 
+	private static final String MAP_FILE = "file:///android_asset/map.html"; 
 
 
 	private static final String ADD_TAG_URL = "javascript:mapWidget.addTag('%s', '%s', '%s', '%s', '%s', %.10f, %.10f, '%s');"; 

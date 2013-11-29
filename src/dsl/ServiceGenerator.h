@@ -21,6 +21,7 @@
 #define CUSTOM_TRACKABLE_FILE QString("CustomTrackable.java")
 #define GOOGLE_MAP_ACTIVITY_FILE QString("MapGoogleActivity.java")
 #define OSM_MAP_ACTIVITY_FILE QString("MapJsActivity.java")
+#define MAIN_ACTIVITY_FILE QString("MainActivity.java")
 
 // Placeholders
 #define SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
@@ -30,7 +31,7 @@
 #define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
 
 #define MAP_ACTIVITY_NAME QString("MapActivity.java")
-#define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(this, org.geo2tag.stubproject.MapActivity.class));")
+#define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.MapActivity.class));")
 #define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.MapActivity\"></activity>");
 #define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
 
@@ -55,6 +56,8 @@ private:
     void initMonitors();
     void initTrackables();
     void initMapActivity();
+    void initMainActivity();
+    void initMapActivityTransition();
     void initManifestFile();
 
     void addServiceToList(const QString& serviceName);

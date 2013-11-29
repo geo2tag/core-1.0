@@ -98,6 +98,16 @@ void ServiceGenerator::initMapActivity()
 
     copyFile(sourceMapActivity, getServiceSourcesPath(),
              MAP_ACTIVITY_NAME);
+
+    initMapActivityTransition();
+}
+
+void ServiceGenerator::initMapActivityTransition()
+{
+	QString mainActivityFile = getServiceSourcesPath() + "/" + MAIN_ACTIVITY_FILE;
+
+	replacePlaceholders(mainActivityFile, MAP_ACTIVITY_TRANSFER_PLACEHOLDER, MAP_ACTIVITY_TRANSFER_STRING );
+	
 }
 
 void ServiceGenerator::initManifestFile()
