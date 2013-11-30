@@ -6,10 +6,16 @@
 	<script src="geo2tag_requests.js"></script>
 	<script src="spin.js"></script>
 
+	<?php 
+		include('db_interaction.php');
+		$server_name=getServerAddress();
+		echo "<script> SettingsStorage.SERVER_URL = '$server_name/service'</script>";
+		
+	?>
+
 	<script>
 	var target = document.getElementById('table');
 	var spinner = new Spinner();
-	SettingsStorage.SERVER_URL = "http://194.85.173.9:20005/service";
 
 	function onSubmitButtonClicked(){
 

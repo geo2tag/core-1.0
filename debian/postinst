@@ -99,15 +99,18 @@ fi
 create_db
 make_default_config
 
-
+cp /etc/lighttpd/conf-available/15-fastcgi-php.conf /etc/lighttpd/conf-enabled/
 
 sudo /etc/init.d/lighttpd start;
 
 echo "======================================================================"
 echo "                      PLEASE READ AND UNDERSTAND  "
 echo "======================================================================"
-echo "Note: new instance of Geo2tag DB was created. Instance name ${DB_NAME}"
+echo "Note1 : new instance of Geo2tag DB was created. Instance name ${DB_NAME}"
 echo "Please check db name in /opt/geo2tag/geo2tag.conf file and restart"
 echo "lighttpd service if required:"
 echo "       sudo /etc/init.d/lighttpd restart"
 echo "   "
+echo "Note2 : for enabling Geo2Tag registration and user-managment scripts "
+echo "edit server_url parameter in /opt/geo2tag/geo2tag.conf and configure "
+echo "ssmtp for mail sending at /etc/ssmtp/ssmtp.conf"
