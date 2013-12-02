@@ -216,6 +216,9 @@ response_change_password_2=`curl   -d "{\"login\":\"Yevgeni\", \"password\":\"te
 echo "ChangePassword test_2 - $response_change_password_2"
 checkResponseErrno "$response_change_password_2" $errno_success "Fail at changePassword test 2"
 
+response_GT_1002_test=`curl -d "{\"auth_token\":\"$auth_token\",\"channel\":\"Mark\",\"description\":\" \",\"latitude\":34.3833,\"altitude\":0,\"longitude\":61.788,\"link\":\"http:\/\/www.ticrk.ru\/ru\/regions\/region_3659\/sights\/33130.html\",\"time\":\"29 11 2013 22:24:40.99\",\"title\":\"\u0414\u043e\u043c \u041a\u0430\u043d\u0442\u0435\u043b\u0435\"}"  http://${INSTANCE}/service/writeTag`;
+echo "WriteTagJsonQuery checks test (GT-1002) - $response_GT_1002_test"
+checkResponseErrno "$response_GT_1002_test" $errno_incorrect_json "Fail at WriteTagJsonQuery checks test (GT-1002) test"
 
 response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
 echo "Quit session test auth_token=$auth_token, - $response_quit_session_test"
