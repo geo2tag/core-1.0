@@ -1,6 +1,8 @@
 package org.geo2tag.stubproject;
 
 import java.util.Locale;
+import java.util.List;
+import java.util.ArrayList;
 
 
 import android.annotation.SuppressLint;
@@ -23,6 +25,8 @@ public class MapJsView extends WebView {
 	private static final String DELETE_ALL_TAGS_URL = "javascript:mapWidget.removeAllTagsFromMap();"; 
 	private static final String CHANGE_MAP_CENTER_URL = "javascript:mapWidget.changeMapCenter(%.10f, %.10f);"; 
 	
+	private List<String> m_urlList = new ArrayList<String>();
+	private boolean m_mapIsLoading = false;
 	
 	
 	@SuppressLint("SetJavaScriptEnabled")
@@ -35,9 +39,18 @@ public class MapJsView extends WebView {
 		
 		setWebViewClient(new WebViewClient() {
 		    public void onPageFinished(WebView view, String url) {
+			Log.d("DSL", "Finished "+url+" loading");
+			m_mapIsLoading = false;
+			
+			for (String s: m_urlList){
+				Log.d("DSL", "Start loading: "+s);
+				loadUrlSync(s);
+			}
+			//m_urlList.clear();
 		    }
 		});
 		
+		// Create lock
 		loadUrlSync(MAP_FILE);
 	}
 	
@@ -45,7 +58,16 @@ public class MapJsView extends WebView {
 	
 	private synchronized void loadUrlSync(String url)
 	{
-		loadUrl(url);
+		Log.d("DSL", url+" m_urlIsLoading = "+m_mapIsLoading);
+		if (m_mapIsLoading ){
+			Log.d("DSL", "Putting url to wait list: "+url);
+			m_urlList.add(url);
+		}else{
+			Log.d("DSL", "Loading url immideately: "+url);
+			if (url.equals(MAP_FILE))
+				m_mapIsLoading = true;
+			loadUrl(url);
+		}
 	}	
 	
 	
