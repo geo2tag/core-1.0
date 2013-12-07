@@ -13,6 +13,7 @@ import org.geo2tag.stubproject.TagOverlayItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import android.app.AlertDialog;
@@ -23,7 +24,7 @@ import com.google.android.maps.OverlayItem;
 
 
 
-public class MapActivity extends MapActivity {
+public class CustomMapActivity extends MapActivity {
 
 	TagItemizedOverlay m_tagItemizedOverlay;
 
@@ -36,7 +37,7 @@ public class MapActivity extends MapActivity {
 
 		setContentView(R.layout.map_google_activity);
 		
-		m_mapView = (MapView) findViewById(R.id.mapview);
+		m_mapView = (MapView) findViewById(R.id.map_google_view);
 		m_mapController = m_mapView.getController();
 
 		List<Overlay> mapOverlays = m_mapView.getOverlays();
@@ -55,7 +56,7 @@ public class MapActivity extends MapActivity {
 		
 
 	public void changeMapCenter(double latitude, double longitude){
-		m_mapController.animateTo(new GeoPoint(latitude, longitude));
+		m_mapController.animateTo(new GeoPoint((int)(latitude*1E6), (int)(longitude*1E6)));
 	}
 
 	public void addTag(String user, String channel, String label, 
@@ -65,5 +66,11 @@ public class MapActivity extends MapActivity {
 		m_tagItemizedOverlay.addOverlay(new TagOverlayItem(user,channel,
 			label,description,link,latitude,longitude,pubDate,"",""));
 		
+	}
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.view.Menu;
 import org.geo2tag.stubproject.MapJsView;
 
-public class MapActivity extends Activity {
+public class CustomMapActivity extends Activity {
 
 	private MapJsView m_mapJsView ;
 

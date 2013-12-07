@@ -30,9 +30,9 @@
 #define MAP_ACTIVITY_PLACEHOLDER "MAP_ACTIVITY_PLACEHOLDER"
 #define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
 
-#define MAP_ACTIVITY_NAME QString("MapActivity.java")
-#define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.MapActivity.class));")
-#define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.MapActivity\"></activity>");
+#define MAP_ACTIVITY_NAME QString("CustomMapActivity.java")
+#define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.CustomMapActivity.class));")
+#define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.CustomMapActivity\"></activity>");
 #define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
 
 
