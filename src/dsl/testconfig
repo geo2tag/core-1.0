@@ -5,5 +5,5 @@ trackable(DRIVER_TRACKABLE, online)
 monitor(channel_monitor, car)
 server=http://localhost/service
 database=geo2tag
-map_widget=osm_mobile
+map_widget=no_mapwidget
 target=android
