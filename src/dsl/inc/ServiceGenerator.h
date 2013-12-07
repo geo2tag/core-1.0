@@ -19,8 +19,8 @@
 #define MANIFEST_FILE QString("AndroidManifest.xml")
 #define CUSTOM_MONITOR_FILE QString("CustomMonitor.java")
 #define CUSTOM_TRACKABLE_FILE QString("CustomTrackable.java")
-#define GOOGLE_MAP_ACTIVITY_FILE QString("MapGoogleActivity.java")
-#define OSM_MAP_ACTIVITY_FILE QString("MapJsActivity.java")
+#define GOOGLE_MAP_ACTIVITY_CLASS QString("MapGoogleActivity")
+#define OSM_MAP_ACTIVITY_CLASS QString("MapJsActivity")
 #define MAIN_ACTIVITY_FILE QString("MainActivity.java")
 
 // Placeholders
@@ -29,8 +29,9 @@
 #define DB_NAME_PLACEHOLDER "DB_NAME_PLACEHOLDER"
 #define MAP_ACTIVITY_PLACEHOLDER "MAP_ACTIVITY_PLACEHOLDER"
 #define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
+#define BASE_ACTIVITY_PLACEHOLDER "BASE_ACTIVITY_PLACEHOLDER" 
 
-#define MAP_ACTIVITY_NAME QString("CustomMapActivity.java")
+#define MAP_ACTIVITY_FILE QString("CustomMapActivity.java")
 #define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.CustomMapActivity.class));")
 #define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.CustomMapActivity\"></activity>");
 #define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")

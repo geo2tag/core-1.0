@@ -10,6 +10,7 @@ import java.util.List;
 import org.geo2tag.stubproject.MapJsView;
 import org.geo2tag.stubproject.TagItemizedOverlay;
 import org.geo2tag.stubproject.TagOverlayItem;
+import org.geo2tag.stubproject.ITagMapActivity;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -24,7 +25,7 @@ import com.google.android.maps.OverlayItem;
 
 
 
-public class CustomMapActivity extends MapActivity {
+public class MapGoogleActivity extends MapActivity implements ITagMapActivity{
 
 	TagItemizedOverlay m_tagItemizedOverlay;
 
@@ -47,7 +48,8 @@ public class CustomMapActivity extends MapActivity {
 		m_tagItemizedOverlay = new TagItemizedOverlay(drawable, this);
 		mapOverlays.add(m_tagItemizedOverlay);
 
-		changeMapCenter(60, 30);
+//		changeMapCenter(60, 30);
+//		addTag("Mark", "testchannel", "A", "desc", "http://geo2tag.org/", 60.0, 30.0, "04 03 2011 15:33:47.630");	
         }
 
 	public void deleteAllTags(){

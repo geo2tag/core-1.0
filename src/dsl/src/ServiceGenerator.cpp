@@ -88,16 +88,27 @@ void ServiceGenerator::initMapActivity()
     m_mapActivity = MAP_ACTIVITY_XML_STRING;
     m_mapActivityTransfer = MAP_ACTIVITY_TRANSFER_STRING;
 
-    QString sourceMapActivity;
-
-    if (m_serviceDescription.mapWidget.value == GOOGLE_MOBILE )
-        sourceMapActivity = TEMPLATES_DIR+GOOGLE_MAP_ACTIVITY_FILE;
-    else if (m_serviceDescription.mapWidget.value == OSM_MOBILE )
-        sourceMapActivity = TEMPLATES_DIR+OSM_MAP_ACTIVITY_FILE;
-
+    QString sourceMapActivity = TEMPLATES_DIR + MAP_ACTIVITY_FILE;
 
     copyFile(sourceMapActivity, getServiceSourcesPath(),
-             MAP_ACTIVITY_NAME);
+             MAP_ACTIVITY_FILE);
+    QString mapActivityFile = getServiceSourcesPath() + "/" + MAP_ACTIVITY_FILE;
+    QString mapActivityBaseClass;
+
+    if (m_serviceDescription.mapWidget.value == GOOGLE_MOBILE )
+        mapActivityBaseClass = GOOGLE_MAP_ACTIVITY_CLASS;
+    else if (m_serviceDescription.mapWidget.value == OSM_MOBILE )
+        mapActivityBaseClass = OSM_MAP_ACTIVITY_CLASS;
+
+    replacePlaceholders(mapActivityFile, BASE_ACTIVITY_PLACEHOLDER, mapActivityBaseClass );
+//    if (m_serviceDescription.mapWidget.value == GOOGLE_MOBILE )
+//        sourceMapActivity = TEMPLATES_DIR+GOOGLE_MAP_ACTIVITY_FILE;
+//    else if (m_serviceDescription.mapWidget.value == OSM_MOBILE )
+//        sourceMapActivity = TEMPLATES_DIR+OSM_MAP_ACTIVITY_FILE;
+
+
+//    copyFile(sourceMapActivity, getServiceSourcesPath(),
+//             MAP_ACTIVITY_NAME);
 
     initMapActivityTransition();
 }
