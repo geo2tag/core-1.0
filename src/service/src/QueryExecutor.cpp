@@ -668,7 +668,7 @@ QList<Tag> QueryExecutor::loadTags()
 
 void QueryExecutor::retrieveTagsToList(QList<Tag>& container, QSqlQuery& query, const Channel& channel)
 {
-    Channel channelToSet;
+    Channel channelToSet = channel;
     while (query.next())
     {
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
