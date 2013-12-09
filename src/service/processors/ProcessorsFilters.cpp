@@ -21,6 +21,9 @@
 #include "FilterChannelRequestJSON.h"
 #include "FilterChannelResponseJSON.h"
 
+#include "FilterSubstringRequestJSON.h"
+#include "FilterSubstringResponseJSON.h"
+
 #include "MetaCache.h"
 
 namespace common
@@ -155,6 +158,55 @@ QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& re
     }
     response.setTags(feed);
 
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processFilterSubstringQuery(const QByteArray &data)
+{
+    FilterSubstringRequestJSON request;
+    FilterSubstringResponseJSON response;
+
+    QByteArray answer(OK_REQUEST_HEADER);
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+    
+    Session session = m_defaultCache->findSession(request.getSessionToken());
+
+    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
+    DEBUG() << "Session:" << session;
+
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        DEBUG() << "invalid session";
+        return answer;
+    }
+
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+    BasicUser user = session.getUser();
+    QList<Channel> channels = cache->getSubscribedChannels(user);
+    QList<Tag> feed;
+     
+    for(int i = 0; i<channels.size(); i++)
+    {
+      Channel channel = channels.at(i);
+      QList<Tag > tags = cache->loadTagsWithSubstring(request.getField(), request.getSubstring(), channel);
+
+      extractLastNTags( tags, request.getTagNumber());
+      feed << tags;
+    }
+    DEBUG() << "Filtred tags number " << feed.size();
+
+    response.setTags(feed);
+    response.setErrno(SUCCESS);
     answer.append(response.getJson());
     DEBUG() << "answer: " << answer.data();
     return answer;

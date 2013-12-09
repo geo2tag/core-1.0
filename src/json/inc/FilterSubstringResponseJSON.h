@@ -37,6 +37,6 @@
 
 #include "DefaultResponseJSON.h"
 
-typedef DefaultResponseJSON FilterSubstringResponseJSON;
+typedef FilterDefaultResponseJSON FilterSubstringResponseJSON;
 // FILTERSUBSTRINGSPONSEJSON_H
 #endif

@@ -58,6 +58,9 @@ class QueryExecutor : public QObject
 
     QString m_dbName;
 
+    void retrieveTagsToList(QList<Tag>& container, QSqlQuery& query,
+	 const Channel& channel=Channel());
+
 public:
 
 
@@ -128,9 +131,11 @@ public:
     static bool checkDbExistance(const QString& dbName);
     static bool initDatabase(const QString& dbName);
 
-signals:
 
-public slots:
+    QList<Tag> loadTagsWithSubstring(const QString& field, const QString& substring,
+	 const Channel &channel);
+
+    
 
 };
 #endif                                  // QUERYEXECUTOR_H
