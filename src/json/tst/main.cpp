@@ -46,6 +46,7 @@
 #include "Test_AvailableChannelsResponseJSON.h"
 #include "Test_QuitSessionRequestJSON.h"
 #include "Test_QuitSessionResponseJSON.h"
+#include "Test_FilterSubstringRequestJSON.h"
 //#include "Test_RestorePasswordRequestJSON.h"
 //#include "Test_RestorePasswordResponseJSON.h"
 
@@ -60,7 +61,8 @@ int main(int argc, char **argv)
 //    new Test::Test_RegisterUserResponseJSON(),
     new Test::Test_AvailableChannelsResponseJSON(),
     new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON()
+    new Test::Test_QuitSessionResponseJSON(),
+    new Test::Test_FilterSubstringRequestJSON(),
   //  new Test::Test_RestorePasswordRequestJSON(),
   //  new Test::Test_RestorePasswordResponseJSON()
   };

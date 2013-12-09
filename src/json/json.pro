@@ -66,7 +66,9 @@ HEADERS += \
     inc/AlterChannelRequestJSON.h \
     inc/AlterChannelResponseJSON.h \
     inc/ChangePasswordRequestJSON.h \
-    inc/ChangePasswordResponseJSON.h 
+    inc/ChangePasswordResponseJSON.h \ 
+    inc/FilterSubstringRequestJSON.h \
+    inc/FilterSubstringResponseJSON.h 
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -105,7 +107,8 @@ SOURCES += \
     src/RestorePasswordRequestJSON.cpp \
     src/SetDbRequestJSON.cpp \
     src/AlterChannelRequestJSON.cpp \
-    src/ChangePasswordRequestJSON.cpp 
+    src/ChangePasswordRequestJSON.cpp \
+    src/FilterSubstringRequestJSON.cpp 
            
 
 LIBS    +=  -lcommon -lqjson
