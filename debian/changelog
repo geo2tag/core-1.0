@@ -1,3 +1,13 @@
+geo2tag-core (0.30) precise; urgency=low
+
+  New features:
+  * user managment scripts deploy were integrated into deb packages installation
+  * registration scripts now use transactions in sql queries
+  * added FilterSubstring request support into platform and client libraries
+  * added new syntax checks during json parsing
+
+ -- Mark Zaslavskiy <mark.zaslavskiy@gmail.com>  Wed, 11 Dec 2013 12:04:05 +0400
+
 geo2tag-core (0.29) precise; urgency=low
 
   version updated
