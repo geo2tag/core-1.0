@@ -2,7 +2,7 @@ TEMPLATE = app
 include(../../config.pri)
 TARGET = fcgi_server
 
-INSTALLS += target conf_lighttpd odbc_configs postgre_conf database
+INSTALLS += target conf_lighttpd odbc_configs postgre_conf database user_managment
 
 target.path = /opt/geo2tag/
 
@@ -21,7 +21,8 @@ odbc_configs.path = /opt/geo2tag/
 database.files=../../scripts/*
 database.path=/opt/geo2tag/db/
 
-
+user_managment.files=../user_managment/*
+user_managment.path=/var/www/
 
 DEPENDPATH += . \
               inc \

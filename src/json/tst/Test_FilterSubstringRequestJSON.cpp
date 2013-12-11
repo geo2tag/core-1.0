@@ -29,50 +29,56 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file main.cpp
- * \brief Test suite for json
+ * \file Test_FilterSubstringRequestJSON_Test.cpp
+ * \brief Test suite for FilterSubstringRequestJSON class
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ----------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
-
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
 #include "Test_FilterSubstringRequestJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#include <QDebug>
 
-int main(int argc, char **argv)
+#define VALID_STRING QString("{ \"auth_token\" : \"MMMM\", \"field\" : \"url\", \"substring\" : \"test\", \"tag_number\" : 3 }")
+#define TEST_TOKEN QString("MMMM")
+#define TEST_FIELD QString("url")
+#define TEST_SUBSTRING QString("test")
+#define TEST_TAG_NUMBER 3
+
+namespace Test
 {
-  QCoreApplication app(argc, argv);
-
-  QObject *tests[] =
+  void Test_FilterSubstringRequestJSON::getJson()
   {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-  };
+    FilterSubstringRequestJSON request;
+    QByteArray data;
+    QJson::Serializer serializer;
+    QVariantMap obj;
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
+    request.setField(TEST_FIELD);
+    request.setSubstring(TEST_SUBSTRING);
+    request.setSessionToken(TEST_TOKEN);
+    request.setTagNumber(TEST_TAG_NUMBER);
+    qDebug() << request.getJson();
+
+    QCOMPARE(request.getJson(), VALID_STRING.toAscii());
   }
-  return 0;
-}
+
+  void Test_FilterSubstringRequestJSON::parseJson()
+  {
+    FilterSubstringRequestJSON request;
+    QByteArray data;
+
+    request.parseJson(VALID_STRING.toAscii());
+    
+    QCOMPARE(request.getSessionToken(), TEST_TOKEN);
+    QCOMPARE(request.getField(), TEST_FIELD);
+    QCOMPARE(request.getSubstring(), TEST_SUBSTRING);
+    QCOMPARE((int)request.getTagNumber(), TEST_TAG_NUMBER);
 
 
-/* ===[ End of file $HeadURL$ ]=== */
+//    QCOMPARE(request.parseJson(data), true);
+//    QCOMPARE(request.getSessionToken(), QString("MMMMMMMMMM"));
+  }
+
+}                                       // end of namespace Test

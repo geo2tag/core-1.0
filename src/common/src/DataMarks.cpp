@@ -252,5 +252,11 @@ QDebug& operator<<(QDebug& dbg, const Tag& tag)
     return dbg;
 }
 
+bool Tag::isFieldNameValid(const QString& field){
+
+	bool isValid = (field == LABEL_FIELD || 
+		field == DESCRIPTION_FIELD || field == URL_FIELD);
+	return isValid;
+}
 
 /* ===[ End of file  ]=== */

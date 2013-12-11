@@ -422,4 +422,10 @@ void MetaCache::touchUserToServiceDb(const common::BasicUser& user){
 
 }
 
+
+QList<Tag> MetaCache::loadTagsWithSubstring(const QString& field, const QString& substring,
+	 const Channel &channel){
+	return m_queryExecutor->loadTagsWithSubstring(field, substring, channel);
+}
+
 } // namespace Core

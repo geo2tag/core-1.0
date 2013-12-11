@@ -132,6 +132,7 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("filterBox", &DbObjectsCollection::processFilterBoxQuery);
     m_processors.insert("filterFence", &DbObjectsCollection::processFilterFenceQuery);
     m_processors.insert("filterChannel", &DbObjectsCollection::processFilterChannelQuery);
+    m_processors.insert("filterSubstring", &DbObjectsCollection::processFilterSubstringQuery);
 
     m_processors.insert("setDb", &DbObjectsCollection::processSetDbQuery);
     m_processors.insert("alterChannel", &DbObjectsCollection::processAlterChannelQuery);

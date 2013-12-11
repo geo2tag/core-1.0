@@ -135,6 +135,9 @@ namespace Core
 
       void touchUserToServiceDb(const common::BasicUser& user);
 
+      QList<Tag> loadTagsWithSubstring(const QString& field, const QString& substring,
+	 const Channel &channel);
+
   protected:
 
       void initUsers();

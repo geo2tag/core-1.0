@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2013  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,51 +28,51 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
+
+/* $Id$ */
 /*!
- * \file main.cpp
- * \brief Test suite for json
+ * \file FilterSubstringRequestJSON.h
+ * \brief Header of FilterSubstringRequestJSON
+ * \todo add comment here
+ *
+ * File description
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ---------------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#ifndef _FilterSubstringRequestJSON_H_
+#define _FilterSubstringRequestJSON_H_
 
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
-#include "Test_FilterSubstringRequestJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
+#include "JsonSerializer.h"
+#include "Session.h"
+#include "Channel.h"
 
-int main(int argc, char **argv)
+class FilterSubstringRequestJSON: public JsonSerializer
 {
-  QCoreApplication app(argc, argv);
+  private:
 
-  QObject *tests[] =
-  {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-  };
+     QString m_field;
+     QString m_substring;
+     qulonglong m_tagNumber;
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
-  }
-  return 0;
-}
+  public:
+    FilterSubstringRequestJSON(QObject *parent = 0);
 
+    QByteArray getJson() const;
+
+    bool parseJson(const QByteArray&);
+
+    void setField(const QString& field);
+    void setSubstring(const QString& substring);
+
+    const QString getField() const;
+    const QString getSubstring() const;
+    void setTagNumber(qulonglong tagNumber);
+    qulonglong getTagNumber() const;
+
+    //   ~FilterSubstringRequestJSON();
+
+};                                      // class FilterSubstringRequestJSON
+#endif                                  //_FilterSubstringRequestJSON_H_
 
 /* ===[ End of file $HeadURL$ ]=== */

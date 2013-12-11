@@ -98,9 +98,24 @@ function doesUserExistInTable($db_conn, $username, $email, $table)
 	return isQueryResultNotEmpty($check_user_query_result);
 }
 
+function transaction_query_params($connection, $query, $param)
+{
+
+	pg_query($connection, "BEGIN;");
+	$result = pg_query_params($connection, $query, $param);
+
+	if ($result != FALSE)
+		pg_query($connection, "COMMIT;");
+	else 
+		pg_query($connection, "ROLLBACK;");
+
+	return $result;
+
+}
+
 function addNewTmpUser($db_conn, $login, $password, $email, $registration_token, $db_name)
 {
-	pg_query_params($db_conn, 
+	transaction_query_params($db_conn, 
                 "insert into tmp_users (login, password, email, registration_token, db_name) values ".
                 " ($1, $2, $3, $4, $5);", 
                  array($login, $password, $email, $registration_token, $db_name))
@@ -111,7 +126,7 @@ function addNewTmpUser($db_conn, $login, $password, $email, $registration_token,
 
 function addNewUser($db_conn, $login, $password, $email)
 {
-	pg_query_params($db_conn, 
+	transaction_query_params($db_conn, 
                 "insert into users (login, password, email) values ".
                 " ($1, $2, $3);", 
                  array($login, $password, $email))
@@ -187,7 +202,7 @@ function convertTmpUser($db_master_conn, $db_service_db_conn, $registration_toke
 // Remove user with $registration_token from tmp_user
 function deleteTmpUser($db_conn, $registration_token)
 {
-	pg_query_params($db_conn,
+	transaction_query_params($db_conn,
                 "delete from tmp_users where lower(registration_token) = lower($1); ",
                  array($registration_token))
                         or die("Internal db error.");
@@ -195,7 +210,7 @@ function deleteTmpUser($db_conn, $registration_token)
 
 function addResetPasswordToken($db_conn, $login, $reset_password_token)
 {
-	pg_query_params($db_conn,
+	transaction_query_params($db_conn,
 		"insert into reset_password_tokens (user_id, token) values ".
 		" ((select id from users where lower(login)=lower($1)), $2);",
 		array($login, $reset_password_token))
@@ -223,7 +238,7 @@ function doesResetPasswordTokenExistForLogin($db_conn, $login)
 
 function changePasswordForUserWithToken($db_conn, $reset_password_token, $new_password)
 {
-	pg_query_params("update users set password=$1 ".
+	transaction_query_params("update users set password=$1 ".
 		" where id=(select user_id from reset_password_tokens where lower(token)=lower($2));",
 		array($new_password,  $reset_password_token)) or die("Internal db error.");
 
@@ -231,7 +246,7 @@ function changePasswordForUserWithToken($db_conn, $reset_password_token, $new_pa
 
 function removeRecordFromResetPasswordTokens($db_conn, $reset_password_token)
 {
-	pg_query_params("delete from reset_password_tokens where lower(token)=lower($1);",
+	transaction_query_params("delete from reset_password_tokens where lower(token)=lower($1);",
 		array($reset_password_token)) or die ("Internal db error.");
 }
 

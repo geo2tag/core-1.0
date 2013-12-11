@@ -151,7 +151,8 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 
     if(!cache->testChannel(user,request.getChannel()))
     {
-        DEBUG() << "user has no roghts to write";
+        DEBUG() << "user has no rights to write";
+	DEBUG() << "CHANNEL_NOT_SUBCRIBED_ERROR";
         response.setErrno(CHANNEL_NOT_SUBCRIBED_ERROR);
         answer.append(response.getJson());
         return answer;
@@ -160,6 +161,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     DEBUG() << "writing tag " << tag;
     if(!cache->writeTag(tag))
     {
+	DEBUG() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
         return answer;

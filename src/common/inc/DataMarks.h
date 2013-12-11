@@ -49,7 +49,10 @@
 #include "User.h"
 #include "Session.h"
 #include "ConcurrentVector.h"
-//#include "Channel.h"
+
+#define LABEL_FIELD "label"
+#define DESCRIPTION_FIELD "description"
+#define URL_FIELD "url"
 
 class Tag
 {
@@ -78,6 +81,7 @@ public:
     Tag(const Tag& tag);
     Tag& operator=(const Tag& obj);
 
+    static bool isFieldNameValid(const QString& field);
 
     void setUser(const common::BasicUser& user);
     void setChannel(const Channel& channel);

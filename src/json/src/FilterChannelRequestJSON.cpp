@@ -63,8 +63,8 @@ QByteArray FilterChannelRequestJSON::getJson() const
   QJson::Serializer serializer;
   QVariantMap obj;
   obj.insert("auth_token", m_token);
-  obj.insert("channel", m_token);
-  obj.insert("amount", m_token);
+  obj.insert("channel", m_channel);
+  obj.insert("amount", m_amount);
   return serializer.serialize(obj);
   return NULL;
 }

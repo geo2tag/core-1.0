@@ -129,6 +129,7 @@ namespace common
     QByteArray processFilterBoxQuery(const QByteArray&);
     QByteArray processFilterFenceQuery(const QByteArray&);
     QByteArray processFilterChannelQuery(const QByteArray&);
+    QByteArray processFilterSubstringQuery(const QByteArray&);
 
     QByteArray processRestorePasswordQuery(const QByteArray&);
 

@@ -93,7 +93,7 @@ test_altitude=$((RANDOM%100)).0;
 test_time=`date +'%d %m %Y %H:%M:%S.300'`;
 echo "test time = $test_time"
 echo "Test alt:$test_altitude"
-response_write_tag_test=`curl -d "{ \"auth_token\" : "$auth_token", \"channel\" : \"$test_channel\", \"description\" : \"\", \"altitude\" : $test_altitude , \"latitude\" : 0.0,\"link\" : \"\", \"longitude\" : 0.0, \"time\" : \"$test_time\", \"title\" : \"\" }"  http://${INSTANCE}/service/writeTag`;
+response_write_tag_test=`curl -d "{ \"auth_token\" : "$auth_token", \"channel\" : \"$test_channel\", \"description\" : \" \", \"altitude\" : $test_altitude , \"latitude\" : 0.0,\"link\" : \" \", \"longitude\" : 0.0, \"time\" : \"$test_time\", \"title\" : \" \" }"  http://${INSTANCE}/service/writeTag`;
 echo "Write tag test - $response_write_tag_test"
 checkResponseErrno "$response_write_tag_test" $errno_success "Fail at writeTag test"
 
@@ -216,6 +216,13 @@ response_change_password_2=`curl   -d "{\"login\":\"Yevgeni\", \"password\":\"te
 echo "ChangePassword test_2 - $response_change_password_2"
 checkResponseErrno "$response_change_password_2" $errno_success "Fail at changePassword test 2"
 
+response_GT_1002_test=`curl -d "{\"auth_token\":\"$auth_token\",\"channel\":\"Mark\",\"description\":\" \",\"latitude\":34.3833,\"altitude\":0,\"longitude\":61.788,\"link\":\"http:\/\/www.ticrk.ru\/ru\/regions\/region_3659\/sights\/33130.html\",\"time\":\"29 11 2013 22:24:40.99\",\"title\":\"\u0414\u043e\u043c \u041a\u0430\u043d\u0442\u0435\u043b\u0435\"}"  http://${INSTANCE}/service/writeTag`;
+echo "WriteTagJsonQuery checks test (GT-1002) - $response_GT_1002_test"
+checkResponseErrno "$response_GT_1002_test" $errno_incorrect_json "Fail at WriteTagJsonQuery checks test (GT-1002) test"
+
+response_filter_substring_test=`curl   -d "{\"auth_token\":"$auth_token", \"field\" : \"description\", \"substring\" : \"Saint\"}"  http://${INSTANCE}/service/filterSubstring`;
+echo "response_filter_substring_test= $response_filter_substring_test"
+checkResponseErrno "$response_filter_substring_test" $errno_success "Fail at filterSubstring test"
 
 response_quit_session_test=`curl   -d "{\"auth_token\":"$auth_token"}"  http://${INSTANCE}/service/quitSession`;
 echo "Quit session test auth_token=$auth_token, - $response_quit_session_test"
