@@ -48,7 +48,7 @@ void ServiceGenerator::initMonitors()
         QString newMonitorFile = getServiceSourcesPath() + "/" + monitor.name + ".java";
 
         replacePlaceholderForMapObject(newMonitorFile, &monitor);
-        addServiceToList(monitor.name);
+        addAndroidServiceToList(monitor.name);
     }
 }
 
@@ -74,7 +74,7 @@ void ServiceGenerator::initTrackables()
                 ".java";
 
         replacePlaceholderForMapObject(newTrackableFile, &trackable);
-        addServiceToList(trackable.name);
+        addAndroidServiceToList(trackable.name);
     }
 }
 
@@ -129,16 +129,16 @@ void ServiceGenerator::initManifestFile()
     qDebug() << m_servicesList;
 
     //system(QString("cat %1").arg(newManifestFilePath).toStdString().c_str());
-    replacePlaceholders(newManifestFilePath, SERVICES_PLACEHOLDER, m_servicesList);
+    replacePlaceholders(newManifestFilePath, ANDROID_SERVICES_PLACEHOLDER, m_servicesList);
     replacePlaceholders(newManifestFilePath, MAP_ACTIVITY_PLACEHOLDER, m_mapActivity);
 
 
 
 }
 
-void ServiceGenerator::addServiceToList(const QString &serviceName)
+void ServiceGenerator::addAndroidServiceToList(const QString &serviceName)
 {
-    m_servicesList += SERVICE_XML_STRING.arg(serviceName);
+    m_servicesList += ANDROID_SERVICE_XML_STRING.arg(serviceName);
 }
 
 QString ServiceGenerator::getServiceSourcesPath() const{
@@ -196,24 +196,24 @@ bool ServiceGenerator::copyFile(const QString& sourceFile, const QString& destin
 
 void ServiceGenerator::initTests(){
 	for (int i=0; i<m_serviceDescription.trackables.size(); i++)
-		createTestForService(m_serviceDescription.trackables.at(i).name);
+		createTestForAndroidService(m_serviceDescription.trackables.at(i).name);
 
 	for (int i=0; i<m_serviceDescription.monitors.size(); i++)
-		createTestForService(m_serviceDescription.monitors.at(i).name);
+		createTestForAndroidService(m_serviceDescription.monitors.at(i).name);
 }
 
 
-QString ServiceGenerator::getServiceTestFileName(const QString& serviceName) const{
-	return serviceName+SERVICE_TEST_TEMPLATE; 
+QString ServiceGenerator::getAndroidServiceTestFileName(const QString& serviceName) const{
+	return serviceName + ANDROID_SERVICE_TEST_TEMPLATE; 
 }
 
-void ServiceGenerator::createTestForService(const QString& serviceName){
-	QString templateFile = TEMPLATES_DIR + TEST_SERVICE_FILE;
+void ServiceGenerator::createTestForAndroidService(const QString& serviceName){
+	QString templateFile = TEMPLATES_DIR + ANDROID_SERVICE_TEST_FILE;
 	QString destinationFile = getServiceTestPath() + QDir::separator() + 
-		getServiceTestFileName(serviceName);
+		getAndroidServiceTestFileName(serviceName);
 	// Create file 
-	copyFile(templateFile, getServiceTestPath(), getServiceTestFileName(serviceName));
+	copyFile(templateFile, getServiceTestPath(), getAndroidServiceTestFileName(serviceName));
 
 	// Replace placeholders
-	replacePlaceholders(destinationFile, SERVICE_NAME_PLACEHOLDER, serviceName);
+	replacePlaceholders(destinationFile, ANDROID_SERVICE_NAME_PLACEHOLDER, serviceName);
 }

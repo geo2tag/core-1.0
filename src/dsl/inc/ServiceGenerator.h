@@ -4,6 +4,11 @@
 #include <QString>
 #include "ServiceDescription.h"
 
+/**
+ * This class does generation of the stubproject by given ServiceDescription
+ */
+
+
 // Commands
 #define COPY_STUB_PROJECT QString("cp -R stubproject/ %1/")
 #define SED_REPLACE_COMMAND QString("sed -i \'s|%1|%2|g\' %3")
@@ -24,24 +29,24 @@
 #define GOOGLE_MAP_ACTIVITY_CLASS QString("MapGoogleActivity")
 #define OSM_MAP_ACTIVITY_CLASS QString("MapJsActivity")
 #define MAIN_ACTIVITY_FILE QString("MainActivity.java")
-#define TEST_SERVICE_FILE QString("ServiceTest.java")
+#define ANDROID_SERVICE_TEST_FILE QString("ServiceTest.java")
 
 
 // Placeholders
-#define SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
+#define ANDROID_SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
 #define SERVER_URL_PLACEHOLDER "SERVER_URL_PLACEHOLDER"
 #define DB_NAME_PLACEHOLDER "DB_NAME_PLACEHOLDER"
 #define MAP_ACTIVITY_PLACEHOLDER "MAP_ACTIVITY_PLACEHOLDER"
 #define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
 #define BASE_ACTIVITY_PLACEHOLDER "BASE_ACTIVITY_PLACEHOLDER" 
-#define SERVICE_NAME_PLACEHOLDER "SERVICE_NAME_PLACEHOLDER"
+#define ANDROID_SERVICE_NAME_PLACEHOLDER "SERVICE_NAME_PLACEHOLDER"
 
-#define SERVICE_TEST_TEMPLATE QString("Test.java")
+#define ANDROID_SERVICE_TEST_TEMPLATE QString("Test.java")
 
 #define MAP_ACTIVITY_FILE QString("CustomMapActivity.java")
 #define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.CustomMapActivity.class));")
 #define MAP_ACTIVITY_XML_STRING QString("<activity android:name=\"org.geo2tag.stubproject.CustomMapActivity\"></activity>");
-#define SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
+#define ANDROID_SERVICE_XML_STRING QString("<service android:enabled=\"true\" android:name=\"org.geo2tag.stubproject.%1\" />")
 
 
 class ServiceGenerator
@@ -70,7 +75,7 @@ private:
     void initManifestFile();
     void initTests();
 
-    void addServiceToList(const QString& serviceName);
+    void addAndroidServiceToList(const QString& serviceName);
 
     QString getServicePath() const;
     QString getServiceTestPath() const;
@@ -81,8 +86,8 @@ private:
     void replacePlaceholders(const QString& file, const QString& placeholder,
                                                const QString& value);
 
-    QString getServiceTestFileName(const QString& serviceName) const;
-    void createTestForService(const QString& serviceName);
+    QString getAndroidServiceTestFileName(const QString& serviceName) const;
+    void createTestForAndroidService(const QString& serviceName);
 
 public:
 
