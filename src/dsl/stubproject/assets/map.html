@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>	
+<head>
+	<meta charset="utf-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+	
+	<script src="http://leafletjs.com/dist/leaflet.js"></script>
+	<script src="geo2tag_map_widget_light.js"></script>
+	<script src="geo2tag_requests.js"></script>
+	
+	<script>
+
+		var tagNumber = 20;
+		var latitude = null;
+		var longitude = null;
+		var mapWidget = null;
+
+		console.log("Head");
+
+		function initWidget(){
+			mapWidget = new MapWidget(latitude, longitude, "map");
+			mapWidget.showLayerControl = true;
+
+		}
+
+
+		function initWithSettings( lat, lon){
+		
+			mapWidget.map.setZoom(13);
+			
+			console.log("initWithSettings");
+		
+
+			this.latitude = lat;
+			this.longitude = lon; 
+			
+			//initWidget();
+			
+			updateMapCenter(lat, lon);
+
+			
+		//	refresh();
+		}
+
+		function updateMapCenter(lat, lon){
+			console.log("Updating center with "+ lat + " " + lon);
+			this.latitude = lat;
+			this.longitude = lon; 
+			
+			mapWidget.changeMapCenter(lat, lon);	
+
+			
+		}	
+	
+	</script>
+</head>
+
+<body>
+	<div id="map" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
+
+	<script>
+		console.log("Body");
+			
+			
+			mapWidget = new MapWidget(0, 0, "map");
+			mapWidget.map.setZoom(1);
+			mapWidget.showLayerControl = true;
+		
+		
+	</script>
+</body>	
+</html>

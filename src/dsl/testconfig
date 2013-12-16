@@ -1,0 +1,9 @@
+channel(CAR_TRACKABLE, car, 10)
+channel(DRIVER_TRACKABLE, driver, 10)
+trackable(CAR_TRACKABLE, online)
+trackable(DRIVER_TRACKABLE, online)
+monitor(channel_monitor, car)
+server=http://localhost/service
+database=geo2tag
+map_widget=no_mapwidget
+target=android
