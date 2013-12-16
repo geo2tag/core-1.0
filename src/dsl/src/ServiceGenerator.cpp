@@ -141,12 +141,15 @@ void ServiceGenerator::addServiceToList(const QString &serviceName)
     m_servicesList += SERVICE_XML_STRING.arg(serviceName);
 }
 
-QString ServiceGenerator::getServiceSourcesPath(){
+QString ServiceGenerator::getServiceSourcesPath() const{
     return getServicePath()+"/"+SOURCES_SUBDIR;
 }
 
+QString ServiceGenerator::getServiceTestPath() const{
+    return getServicePath()+"/"+TEST_SUBDIR;
+}
 
-QString ServiceGenerator::getServicePath(){
+QString ServiceGenerator::getServicePath() const{
     return m_outputDir+"/"+m_serviceName;
 }
 
@@ -158,7 +161,7 @@ void ServiceGenerator::generateService()
     initTrackables();
     initMapActivity();
     initManifestFile();
-
+    initTests();
 }
 
 void ServiceGenerator::replacePlaceholders(const QString& file, const QString& placeholder,
@@ -183,7 +186,34 @@ bool ServiceGenerator::copyFile(const QString& sourceFile, const QString& destin
         fileName = fileInfo.fileName();
 
     QString destinationFile = destinationDir + QDir::separator() + fileName;
+
+    qDebug() << "Copying " << sourceFile << destinationFile;
+
     bool result = QFile::copy(sourceFile, destinationFile);
     return result;
 }
 
+
+void ServiceGenerator::initTests(){
+	for (int i=0; i<m_serviceDescription.trackables.size(); i++)
+		createTestForService(m_serviceDescription.trackables.at(i).name);
+
+	for (int i=0; i<m_serviceDescription.monitors.size(); i++)
+		createTestForService(m_serviceDescription.monitors.at(i).name);
+}
+
+
+QString ServiceGenerator::getServiceTestFileName(const QString& serviceName) const{
+	return serviceName+SERVICE_TEST_TEMPLATE; 
+}
+
+void ServiceGenerator::createTestForService(const QString& serviceName){
+	QString templateFile = TEMPLATES_DIR + TEST_SERVICE_FILE;
+	QString destinationFile = getServiceTestPath() + QDir::separator() + 
+		getServiceTestFileName(serviceName);
+	// Create file 
+	copyFile(templateFile, getServiceTestPath(), getServiceTestFileName(serviceName));
+
+	// Replace placeholders
+	replacePlaceholders(destinationFile, SERVICE_NAME_PLACEHOLDER, serviceName);
+}

@@ -81,6 +81,9 @@ public class LocationService extends Service {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 
+		if (isServiceUp())
+			return;
+		
 		setIsServiceUp(true);	
 
 		isDeviceReady = false;

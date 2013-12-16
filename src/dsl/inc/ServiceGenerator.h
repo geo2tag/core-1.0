@@ -11,6 +11,8 @@
 // Directories
 #define TEMPLATES_DIR QString("templates/")
 #define SOURCES_SUBDIR QString("src/org/geo2tag/stubproject/")
+#define TEST_SUBDIR QString("test/src/org/geo2tag/stubproject/test/")
+
 
 // Template files
 #define SETTINGS_FILE QString("Settings.java")
@@ -22,6 +24,8 @@
 #define GOOGLE_MAP_ACTIVITY_CLASS QString("MapGoogleActivity")
 #define OSM_MAP_ACTIVITY_CLASS QString("MapJsActivity")
 #define MAIN_ACTIVITY_FILE QString("MainActivity.java")
+#define TEST_SERVICE_FILE QString("ServiceTest.java")
+
 
 // Placeholders
 #define SERVICES_PLACEHOLDER "SERVICES_PLACEHOLDER"
@@ -30,6 +34,9 @@
 #define MAP_ACTIVITY_PLACEHOLDER "MAP_ACTIVITY_PLACEHOLDER"
 #define MAP_ACTIVITY_TRANSFER_PLACEHOLDER "\/\/MAP_ACTIVITY_TRANSFER_PLACEHOLDER"
 #define BASE_ACTIVITY_PLACEHOLDER "BASE_ACTIVITY_PLACEHOLDER" 
+#define SERVICE_NAME_PLACEHOLDER "SERVICE_NAME_PLACEHOLDER"
+
+#define SERVICE_TEST_TEMPLATE QString("Test.java")
 
 #define MAP_ACTIVITY_FILE QString("CustomMapActivity.java")
 #define MAP_ACTIVITY_TRANSFER_STRING QString("startActivity(new Intent(MainActivity.this, org.geo2tag.stubproject.CustomMapActivity.class));")
@@ -50,6 +57,7 @@ private:
     QString m_mapActivityTransfer;
     QString m_servicesList;
 
+
     bool isDirectoryWritable(const QString &outputDir) const;
 
     void createStubProject();
@@ -60,21 +68,27 @@ private:
     void initMainActivity();
     void initMapActivityTransition();
     void initManifestFile();
+    void initTests();
 
     void addServiceToList(const QString& serviceName);
 
-    QString getServicePath();
+    QString getServicePath() const;
+    QString getServiceTestPath() const;
+    QString getServiceSourcesPath() const;
 
     bool copyFile(const QString& sourceFile, const QString& destinationDir, const QString& destinationName="");
 
     void replacePlaceholders(const QString& file, const QString& placeholder,
                                                const QString& value);
+
+    QString getServiceTestFileName(const QString& serviceName) const;
+    void createTestForService(const QString& serviceName);
+
 public:
 
     ServiceGenerator(const QString &serviceName, const QString &outputDir, const ServiceDescription &serviceDescription);
 
     void generateService();
-    QString getServiceSourcesPath();
     void replacePlaceholderForMapObject(const QString &file, MapObject *object);
 };
 
