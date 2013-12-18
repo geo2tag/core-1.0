@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 
     if (argc != 3)
 	{
-		qDebug() << "Not enough arguments, usage:\n ./geo2tag_dsl service.g2t output_dir";
+		qDebug() << "Not enough arguments, usage:\n ./dsl service_description output_dir";
 		return 1;
 	}
 
