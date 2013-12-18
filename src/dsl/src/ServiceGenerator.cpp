@@ -195,6 +195,9 @@ bool ServiceGenerator::copyFile(const QString& sourceFile, const QString& destin
 
 
 void ServiceGenerator::initTests(){
+
+	system(QString("mkdir -p %1").arg(getServiceTestPath()).toStdString().c_str());
+
 	for (int i=0; i<m_serviceDescription.trackables.size(); i++)
 		createTestForAndroidService(m_serviceDescription.trackables.at(i).name);
 
