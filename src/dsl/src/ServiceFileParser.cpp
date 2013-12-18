@@ -62,14 +62,16 @@ QString ServiceFileParser::extractMainPart(const QString& line){
 QString ServiceFileParser::removeComments(const QString& line){
     QString result = line;
     int index = line.indexOf(COMMENT_SYMBOL);
-    if (index > -1)
-        result = line.left(index -1);
+    if (index > -1){
+        result = ( (index == 0) ? QString("") :  line.left(index -1) );
+    }
+    qDebug() << "After comment removing: " << result;
+    qDebug() << "Size = " << result.trimmed().size();
     return result;
 }
 
 void ServiceFileParser::processLine(const QString& line){
     QString lineToProcess = removeComments(line);
-
     // Skip empty lines
     if (lineToProcess.trimmed().size() == 0)
         return;
