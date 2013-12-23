@@ -18,7 +18,7 @@ HEADERS += \
            inc/AvailableChannelsRequestJSON.h \
            inc/LoadTagsResponseJSON.h \
            inc/LoadTagsRequestJSON.h \
-           inc/SubscribeChannelJSON.h \
+           inc/SubscribeChannelRequestJSON.h \
            inc/UnsubscribeChannelRequestJSON.h \
            inc/JsonUser.h \
            inc/JsonDataMark.h \
@@ -74,7 +74,7 @@ SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
            src/LoadTagsResponseJSON.cpp \
            src/LoadTagsRequestJSON.cpp \
-           src/SubscribeChannelJSON.cpp \
+           src/SubscribeChannelRequestJSON.cpp \
            src/JsonUser.cpp \
            src/JsonChannel.cpp \
            src/SubscribedChannelsRequestJSON.cpp \
@@ -85,7 +85,6 @@ SOURCES += \
            src/WriteTagRequestJSON.cpp \
            src/AddChannelRequestJSON.cpp \
            src/DefaultResponseJSON.cpp \
-           src/WriteTagResponseJSON.cpp \
            src/FilterRequestJSON.cpp \
            src/FilterDefaultResponseJSON.cpp \
            src/FilterCircleRequestJSON.cpp \

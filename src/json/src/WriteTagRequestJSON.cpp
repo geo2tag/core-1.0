@@ -53,13 +53,10 @@ WriteTagRequestJSON::WriteTagRequestJSON(QObject *parent) : JsonSerializer(paren
 
 
 WriteTagRequestJSON::WriteTagRequestJSON(const Session &session,
-const Channel &channel,
-const Tag &tag,
-QObject *parent)
-: JsonSerializer(parent)
+	const Tag &tag,QObject *parent): JsonSerializer(parent)
 {
   m_token = session.getSessionToken();
-  m_channels.push_back(channel);
+  m_channels.push_back(tag.getChannel());
   m_tags.push_back(tag);
 }
 

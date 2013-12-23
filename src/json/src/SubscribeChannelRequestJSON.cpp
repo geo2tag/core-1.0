@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2011  OSLL osll@osll.spb.ru
+ * Copyright 2010  Open Source & Linux Lab (OSLL)  osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,53 +28,72 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*----------------------------------------------------------------- !
+
+/*! ---------------------------------------------------------------
+ * $Id$
+ *
+ * \file SubscribeChannelRequestJSON.cpp
+ * \brief SubscribeChannelRequestJSON implementation
+ *
+ * File description
+ *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include <QDebug>
+#include "SubscribeChannelRequestJSON.h"
 
-#include "WriteTagResponseJSON.h"
-#include "JsonDataMark.h"
-#include "DataMarks.h"
-
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
-WriteTagResponseJSON::WriteTagResponseJSON(QObject *parent) : JsonSerializer(parent)
+#include <QVariant>
+#include <QVariantMap>
+#include <QDebug>
+
+#include "JsonChannel.h"
+#include "JsonDataMark.h"
+#include "JsonSession.h"
+#include "servicelogger.h"
+
+
+SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
+  DEBUG() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
 }
 
-
-QByteArray WriteTagResponseJSON::getJson() const
-{
-  QJson::Serializer serializer;
-  QVariantMap obj;
-  obj.insert("errno", m_errno);
-  return serializer.serialize(obj);
-}
-
-
-bool WriteTagResponseJSON::parseJson(const QByteArray &data)
+bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
 {
   clearContainers();
 
   QJson::Parser parser;
   bool ok;
-
   QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
 
-  result["errno"].toInt(&ok);
-  if (!ok) return false;
-  m_errno = result["errno"].toInt();
+  if(!ok) return false;
 
-  Tag mark;
-  m_tags.push_back(mark);
+  QString channelLabel = result["channel"].toString();
+  QString auth_token = result["auth_token"].toString();
+
+  m_channels.push_back(Channel(channelLabel));
+
+  m_token = auth_token;
   return true;
 }
+
+
+QByteArray SubscribeChannelRequestJSON::getJson() const
+{
+  QJson::Serializer serializer;
+  QVariantMap request;
+
+  request.insert("auth_token", m_token);
+  if(m_channels.size()>0)
+      request.insert("channel", m_channels.at(0).getName());
+  else
+  {
+      WARNING() << "No channels in object";
+  }
+
+  return serializer.serialize(request);
+}
+
+/* ===[ End of file $HeadURL$ ]=== */

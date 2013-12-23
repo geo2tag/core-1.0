@@ -29,71 +29,37 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 
-/*! ---------------------------------------------------------------
- * $Id$
- *
- * \file SubscribeChannelJSON.cpp
- * \brief SubscribeChannelJSON implementation
+/* $Id$ */
+/*!
+ * \file SubscribeChannelRequestJSON.h
+ * \brief Header of SubscribeChannelRequestJSON
+ * \todo add comment here
  *
  * File description
  *
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#include "SubscribeChannelJSON.h"
+#ifndef _SubscribeChannelRequestJSON_H_098EA975_5CFE_4C7A_B848_4CE151DE65FB_INCLUDED_
+#define _SubscribeChannelRequestJSON_H_098EA975_5CFE_4C7A_B848_4CE151DE65FB_INCLUDED_
 
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
+#include "JsonSerializer.h"
+#include "Session.h"
+#include "Channel.h"
 
-#include <QVariant>
-#include <QVariantMap>
-#include <QDebug>
-
-#include "JsonChannel.h"
-#include "JsonDataMark.h"
-#include "JsonSession.h"
-#include "servicelogger.h"
-
-
-SubscribeChannelRequestJSON::SubscribeChannelRequestJSON(QObject *parent) : JsonSerializer(parent)
+class SubscribeChannelRequestJSON: public JsonSerializer
 {
-  DEBUG() << "SubscribeChannelRequestJSON::SubscribeChannelRequestJSON()";
-}
+  public:
+    SubscribeChannelRequestJSON(QObject *parent = 0);
 
-bool SubscribeChannelRequestJSON::parseJson(const QByteArray &data)
-{
-  clearContainers();
+    // Three functions below was virtual
+    QByteArray getJson() const;
 
-  QJson::Parser parser;
-  bool ok;
-  QVariantMap result = parser.parse(data, &ok).toMap();
+    bool parseJson(const QByteArray&);
 
-  if(!ok) return false;
+    //   ~SubscribeChannelRequestJSON();
 
-  QString channelLabel = result["channel"].toString();
-  QString auth_token = result["auth_token"].toString();
-
-  m_channels.push_back(Channel(channelLabel));
-
-  m_token = auth_token;
-  return true;
-}
-
-
-QByteArray SubscribeChannelRequestJSON::getJson() const
-{
-  QJson::Serializer serializer;
-  QVariantMap request;
-
-  request.insert("auth_token", m_token);
-  if(m_channels.size()>0)
-      request.insert("channel", m_channels.at(0).getName());
-  else
-  {
-      WARNING() << "No channels in object";
-  }
-
-  return serializer.serialize(request);
-}
+};                                      // class SubscribeChannelRequestJSON
+#endif                                  //_SubscribeChannelRequestJSON_H_098EA975_5CFE_4C7A_B848_4CE151DE65FB_INCLUDED_
 
 /* ===[ End of file $HeadURL$ ]=== */
