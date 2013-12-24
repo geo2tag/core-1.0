@@ -61,7 +61,7 @@
 #include "SubscribedChannelsRequestJSON.h"
 #include "SubscribedChannelsResponseJSON.h"
 
-#include "SubscribeChannelJSON.h"
+#include "SubscribeChannelRequestJSON.h"
 #include "SubscribeChannelResponseJSON.h"
 
 
