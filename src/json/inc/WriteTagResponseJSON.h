@@ -35,6 +35,8 @@
 #ifndef WRITETAGRESPONSEJSON_H
 #define WRITETAGRESPONSEJSON_H
 
+#include "DefaultResponseJSON.h"
+
 typedef DefaultResponseJSON WriteTagResponseJSON;
 
 #endif
