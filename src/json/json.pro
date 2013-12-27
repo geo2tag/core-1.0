@@ -107,7 +107,8 @@ SOURCES += \
     src/SetDbRequestJSON.cpp \
     src/AlterChannelRequestJSON.cpp \
     src/ChangePasswordRequestJSON.cpp \
-    src/FilterSubstringRequestJSON.cpp 
+    src/FilterSubstringRequestJSON.cpp \ 
+    src/WriteTagResponseJSON.cpp
            
 
 LIBS    +=  -lcommon -lqjson

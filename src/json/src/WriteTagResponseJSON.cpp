@@ -32,25 +32,57 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef WRITETAGRESPONSEJSON_H
-#define WRITETAGRESPONSEJSON_H
+#include "WriteTagResponseJSON.h"
 
-#include "JsonSerializer.h"
-
-class WriteTagResponseJSON: public JsonSerializer
-{
-  private:
-    QString m_guid;
-
-  public:
-    WriteTagResponseJSON(QObject *parent=0, QString guid = QString());
-
-    virtual QByteArray getJson() const;
-
-    virtual bool parseJson(const QByteArray&);
-
-    void setGuid(const QString & guid);
-    QString getGuid();
-};
-
+#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#else
+#include "parser.h"
+#include "serializer.h"
 #endif
+
+WriteTagResponseJSON::WriteTagResponseJSON(QObject *parent, QString guid): JsonSerializer(parent), m_guid(guid)
+{
+}
+
+
+void WriteTagResponseJSON::setGuid(const QString &guid)
+{
+    m_guid = guid;
+}
+
+QString WriteTagResponseJSON::getGuid()
+{
+    return m_guid;
+}
+
+QByteArray WriteTagResponseJSON::getJson() const
+{
+  QJson::Serializer serializer;
+  QVariantMap obj;
+  obj["errno"] = getErrno();
+  if (!m_guid.isEmpty())
+      obj["guid"] = m_guid;
+  return serializer.serialize(obj);
+}
+
+
+bool WriteTagResponseJSON::parseJson(const QByteArray &data)
+{
+  clearContainers();
+
+  QJson::Parser parser;
+  bool ok;
+
+  QVariantMap result = parser.parse(data, &ok).toMap();
+  if (!ok) return false;
+
+  /*result["errno"].toInt(&ok);
+  if (!ok) return false;*/
+  m_errno = result["errno"].toInt();
+  m_guid = result["guid"].toString();
+  return true;
+}
+
+
