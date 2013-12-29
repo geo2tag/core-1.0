@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2011  OSLL osll@osll.spb.ru
+ * Copyright 2010-2012  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,62 +28,30 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*----------------------------------------------------------------- !
+/*!
+ * \file Test_AvailableChannelsResponseJSON.h
+ * \brief Test suite for AvailableChannelsResponseJSON class
+ *
  * PROJ: OSLL/geo2tag
- * ---------------------------------------------------------------- */
+ * ----------------------------------------------------------- */
 
-#include "WriteTagResponseJSON.h"
+#ifndef TEST_WRITETAGRESPONSEJSON_H
+#define TEST_WRITETAGRESPONSEJSON_H
 
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
+#include <QObject>
+#include <QtTest>
+#include "../inc/WriteTagResponseJSON.h"
 
-WriteTagResponseJSON::WriteTagResponseJSON(QObject *parent, QString guid): JsonSerializer(parent), m_guid(guid)
+namespace Test
 {
+  class Test_WriteTagResponseJSON : public QObject
+  {
+    Q_OBJECT
+
+      private slots:
+      void getJson();
+      void parseJson();
+  };
 }
 
-
-void WriteTagResponseJSON::setGuid(const QString &guid)
-{
-    m_guid = guid;
-}
-
-QString WriteTagResponseJSON::getGuid()
-{
-    return m_guid;
-}
-
-QByteArray WriteTagResponseJSON::getJson() const
-{
-  QJson::Serializer serializer;
-  QVariantMap obj;
-  obj["errno"] = getErrno();
-  /*if (!m_guid.isEmpty())
-      obj["guid"] = m_guid;*/
-  obj["guid"] = m_guid;
-  return serializer.serialize(obj);
-}
-
-
-bool WriteTagResponseJSON::parseJson(const QByteArray &data)
-{
-  clearContainers();
-
-  QJson::Parser parser;
-  bool ok;
-
-  QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
-
-  /*result["errno"].toInt(&ok);
-  if (!ok) return false;*/
-  m_errno = result["errno"].toInt();
-  m_guid = result["guid"].toString();
-  return true;
-}
-
-
+#endif // TEST_WRITETAGRESPONSEJSON_H

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2011  OSLL osll@osll.spb.ru
+ * Copyright 2010-2012  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,62 +28,44 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*----------------------------------------------------------------- !
+/*!
+ * \file Test_AvailableChannelsResponseJSON.cpp
+ * \brief Test suite for AvailableChannelsResponseJSON class
+ *
  * PROJ: OSLL/geo2tag
- * ---------------------------------------------------------------- */
+ * ----------------------------------------------------------- */
 
-#include "WriteTagResponseJSON.h"
-
-#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
+#include "Test_WriteTagResponseJSON.h"
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#else
-#include "parser.h"
-#include "serializer.h"
-#endif
 
-WriteTagResponseJSON::WriteTagResponseJSON(QObject *parent, QString guid): JsonSerializer(parent), m_guid(guid)
+namespace Test
 {
+  void Test_WriteTagResponseJSON::getJson()
+  {
+    WriteTagResponseJSON response;
+    QByteArray data;
+    QJson::Serializer serializer;
+    QVariantMap obj;
+
+    data = QString("{\"errno\":\"0\", \"guid\":\"testGuid\"}").toAscii();
+    obj.insert("errno", 0);
+    obj.insert("guid", "testGuid");
+
+    QByteArray true_json = serializer.serialize(obj);
+
+    response.parseJson(data);
+    QCOMPARE(response.getJson(), true_json);
+  }
+
+  void Test_WriteTagResponseJSON::parseJson()
+  {
+    WriteTagResponseJSON response;
+    QByteArray data;
+
+    data = QString("{\"errno\":\"0\"}").toAscii();
+    QCOMPARE(response.parseJson(data), true);
+    QCOMPARE(response.getErrno(), 0);
+    QCOMPARE(response.getGuid(), QString(""));
+  }
 }
-
-
-void WriteTagResponseJSON::setGuid(const QString &guid)
-{
-    m_guid = guid;
-}
-
-QString WriteTagResponseJSON::getGuid()
-{
-    return m_guid;
-}
-
-QByteArray WriteTagResponseJSON::getJson() const
-{
-  QJson::Serializer serializer;
-  QVariantMap obj;
-  obj["errno"] = getErrno();
-  /*if (!m_guid.isEmpty())
-      obj["guid"] = m_guid;*/
-  obj["guid"] = m_guid;
-  return serializer.serialize(obj);
-}
-
-
-bool WriteTagResponseJSON::parseJson(const QByteArray &data)
-{
-  clearContainers();
-
-  QJson::Parser parser;
-  bool ok;
-
-  QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
-
-  /*result["errno"].toInt(&ok);
-  if (!ok) return false;*/
-  m_errno = result["errno"].toInt();
-  m_guid = result["guid"].toString();
-  return true;
-}
-
-
