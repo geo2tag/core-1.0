@@ -29,41 +29,27 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file main.cpp
- * \brief Test suite for common
+ * \file Test_FShapeCircle.h
+ * \brief Test suite for FShapeCircle class
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ----------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#ifndef TEST_TAGTYPE_H
+#define TEST_TAGTYPE_H
 
-// Test headers
-#include "test_AltitudeFilter.h"
-#include "test_TimeFilter.h"
-#include "test_FShapeCircle.h"
-#include "test_FShapeRectangle.h"
-#include "test_FShapePolygon.h"
-#include "test_TagType.h"
+#include <QObject>
+#include <QtTest>
 
-int main(int argc, char **argv)
+namespace Test
 {
-  QCoreApplication app(argc, argv);
-
-  QObject *tests[] =
+  class Test_TagType : public QObject
   {
-    new Test::Test_AltitudeFilter(),
-    new Test::Test_TimeFilter(),
-    new Test::Test_FShapeCircle(),
-    new Test::Test_FShapeRectangle(),
-    new Test::Test_FShapePolygon(),
-    new Test::Test_TagType()
+    Q_OBJECT
+
+  private slots:
+    void getTagType();
   };
-
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
-  }
-  return 0;                             //app.exec();
 }
+
+#endif // TEST_TAGTYPE_H
