@@ -11,14 +11,21 @@ DEPENDDEPATH = . \
 INCLUDEPATH = . ../inc/ ../../common/inc/ \
               ../../json/inc
 
-SOURCES += ../src/QueryExecutor.cpp \
-           ../src/Geo2tagDatabase.cpp \
+SOURCES +=   ../src/Geo2tagDatabase.cpp \
+            ../src/QueryExecutor.cpp \
            ../src/UpdateThread.cpp \
            ../src/UserInternal.cpp \
            ../src/DataMarkInternal.cpp \
            ../src/SessionInternal.cpp \
            ../src/ChannelInternal.cpp \
-           main.cpp
+           main.cpp \
+    Test_GetGuidDbObjectsCollection.cpp \
+    ../src/DbObjectsCollection.cpp \
+    ../src/MetaCache.cpp \
+    ../src/server.cpp \
+    ../src/DynamicCastFailure.cpp \
+    ../processors/ProcessorsFilters.cpp \
+    ../processors/ProcessorsCore.cpp
 
 #          Test_QueryExecutor.cpp
 
@@ -29,7 +36,12 @@ HEADERS += ../inc/QueryExecutor.h \
            ../inc/DataMarkInternal.h \
            ../inc/SessionInternal.h \
            ../inc/ChannelInternal.h \
-	   UpdateThread_Test.h	   
+#            UpdateThread_Test.h \
+    Test_GetGuidDbObjectsCollection.h \
+    ../inc/DbObjectsCollection.h \
+    ../inc/MetaCache.h \
+    ../inc/server.h \
+    ../inc/DynamicCastFailure.h
 
 #            Test_QueryExecutor.h \
 
@@ -47,5 +59,5 @@ TARGET = test.DbInteraction
 
 
 LIBS -= -L/usr/lib
-LIBS += -lcommon -lwikigpsJson
+LIBS += -lcommon -lwikigpsJson -lfcgi
 message($$LIBS)

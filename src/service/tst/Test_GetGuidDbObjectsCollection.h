@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2012  Mark Zaslavskiy  mark.zaslavskiy@gmail.com
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -11,7 +11,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -28,40 +28,31 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
+
 /*!
- * \file main.cpp
- * \brief Test suite for service
+ * \file UpdateThread_Test.h
+ * \brief Test suite for UpdateThread class
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ----------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#ifndef TEST_GETGUIDDBOBJECTSCOLLECTION_H
+#define TEST_GETGUIDDBOBJECTSCOLLECTION_H
 
-// Test headers
-//#include "Test_QueryExecutor.h"
-//#include "UpdateThread_Test.h"
-#include "Test_GetGuidDbObjectsCollection.h"
+#include "DbObjectsCollection.h"
 
-int main(int argc, char **argv)
+namespace Test
 {
-  QCoreApplication app(argc, argv);
 
-  QObject *tests[] =
-  {
-  //  new Test::Test_QueryExecutor(),
-    //new Test::UpdateThread_Test()
-      new Test::Test_GetGuidDbObjectsCollection()
-  };
+class Test_GetGuidDbObjectsCollection : public QObject
+{
+    Q_OBJECT
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i]);
-  }
+private slots:
+    void getGuid();
 
-  return 0;                             //app.exec();
-}
+};                                    // class UpdateThread_Test
 
+}                                       // end of namespace Test
 
-/* ===[ End of file $HeadURL$ ]=== */
+#endif // TEST_GETGUIDDBOBJECTSCOLLECTION_H

@@ -79,7 +79,7 @@ SOURCES += src/main.cpp \
     processors/ProcessorsFilters.cpp \
     src/MetaCache.cpp
 
-LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
+LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq
 OBJECTS_DIR = .obj
 
 QMAKE_LFLAGS += -L../lib -L/usr/lib/

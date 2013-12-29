@@ -54,6 +54,7 @@
 #include "QueryExecutor.h"
 #include "FilterRequestJSON.h"
 #include "Session.h"
+#include <QUuid>
 
 
 #define OK_REQUEST_HEADER "Status: 200 OK\r\nContent-Type: text/html\r\n\r\n"
@@ -156,6 +157,8 @@ namespace common
 
       static QString getPlatformVersion();
       static QString getPlatformBuildInfo();
+
+      static QString getGuid();
 
 
   private:
