@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     Test_QuitSessionResponseJSON.cpp \
     Test_FilterSubstringRequestJSON.cpp \
     Test_WriteTagResponseJSON.cpp \
-    ../src/WriteTagResponseJSON.cpp
+    ../src/WriteTagResponseJSON.cpp \
+    ../src/SetBlobRequestJSON.cpp \
+    Test_SetBlobRequestJSON.cpp
 #    ../../json/src/RegisterUserRequestJSON.cpp \
 #    ../../json/src/RegisterUserResponseJSON.cpp \
 #    ../../json/src/RestorePasswordRequestJSON.cpp \
@@ -44,7 +46,9 @@ HEADERS += JsonUser_Test.h \
     Test_FilterSubstringRequestJSON.h \
     ../../json/inc/DefaultResponseJSON.h \ 
     Test_WriteTagResponseJSON.h \
-    ../inc/WriteTagResponseJSON.h
+    ../inc/WriteTagResponseJSON.h \
+    ../inc/SetBlobRequestJSON.h \
+    Test_SetBlobRequestJSON.h
 #    ../../json/inc/RestorePasswordRequestJSON.h \
 #    ../../json/inc/RestorePasswordResponseJSON.h \
 #    ../../json/inc/RegisterUserRequestJSON.h \

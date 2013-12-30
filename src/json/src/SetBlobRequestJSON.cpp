@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,55 +28,70 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file main.cpp
- * \brief Test suite for json
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ---------------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#include "SetBlobRequestJSON.h"
 
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
-#include "Test_FilterSubstringRequestJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
-#include "Test_WriteTagResponseJSON.h"
-#include "Test_SetBlobRequestJSON.h"
+#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#else
+#include "parser.h"
+#include "serializer.h"
+#endif
 
-int main(int argc, char **argv)
+SetBlobRequestJSON::SetBlobRequestJSON(QObject *parent) : JsonSerializer(parent)
 {
-  QCoreApplication app(argc, argv);
+}
 
-  QObject *tests[] =
-  {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-      new Test::Test_WriteTagResponseJSON(),
-      new Test::Test_SetBlobRequestJSON(),
-  };
+void SetBlobRequestJSON::setGuid(const QString &guid)
+{
+    m_guid = guid;
+}
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
-  }
-  return 0;
+QString SetBlobRequestJSON::getGuid()
+{
+    return m_guid;
+}
+
+void SetBlobRequestJSON::setBlob(const QString &blob)
+{
+    m_blob = blob;
+}
+
+QString SetBlobRequestJSON::getBlob()
+{
+    return m_blob;
 }
 
 
-/* ===[ End of file $HeadURL$ ]=== */
+QByteArray SetBlobRequestJSON::getJson() const
+{
+  QJson::Serializer serializer;
+  QVariantMap obj;
+  obj.insert("auth_token", m_token);
+  obj.insert("guid", m_guid);
+  obj.insert("blob", m_blob);
+  return serializer.serialize(obj);
+}
+
+bool SetBlobRequestJSON::parseJson(const QByteArray &data)
+{
+    clearContainers();
+
+    QJson::Parser parser;
+    bool ok;
+    QVariantMap result = parser.parse (data, &ok).toMap ();
+    if (!ok)
+        return false;
+
+    QString auth_token = result["auth_token"].toString ();
+    QString guid = result["guid"].toString ();
+    QString blob = result["blob"].toString ();
+    m_token = auth_token;
+    m_blob = blob;
+    m_guid = guid;
+    return true;
+}

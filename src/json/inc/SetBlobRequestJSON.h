@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,55 +28,34 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-/*!
- * \file main.cpp
- * \brief Test suite for json
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ---------------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#ifndef SETBLOBREQUESTJSON_H
+#define SETBLOBREQUESTJSON_H
 
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
-#include "Test_FilterSubstringRequestJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
-#include "Test_WriteTagResponseJSON.h"
-#include "Test_SetBlobRequestJSON.h"
+#include "JsonSerializer.h"
 
-int main(int argc, char **argv)
+
+class SetBlobRequestJSON : public JsonSerializer
 {
-  QCoreApplication app(argc, argv);
+private:
+    QString m_blob;
+    QString m_guid;
+public:
 
-  QObject *tests[] =
-  {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-      new Test::Test_WriteTagResponseJSON(),
-      new Test::Test_SetBlobRequestJSON(),
-  };
+    SetBlobRequestJSON(QObject *parent=0);
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
-  }
-  return 0;
-}
+    virtual QByteArray getJson() const;
 
+    virtual bool parseJson(const QByteArray&);
 
-/* ===[ End of file $HeadURL$ ]=== */
+    void setGuid(const QString & guid);
+    QString getGuid();
+
+    void setBlob(const QString &blob);
+    QString getBlob();
+};
+
+#endif // SETBLOBREQUESTJSON_H

@@ -29,54 +29,45 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file main.cpp
- * \brief Test suite for json
+ * \file Test_AvailableChannelsResponseJSON.cpp
+ * \brief Test suite for AvailableChannelsResponseJSON class
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ----------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
-
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
-#include "Test_FilterSubstringRequestJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
-#include "Test_WriteTagResponseJSON.h"
 #include "Test_SetBlobRequestJSON.h"
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
 
-int main(int argc, char **argv)
+namespace Test
 {
-  QCoreApplication app(argc, argv);
-
-  QObject *tests[] =
+  void Test_SetBlobRequestJSON::getJson()
   {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-      new Test::Test_WriteTagResponseJSON(),
-      new Test::Test_SetBlobRequestJSON(),
-  };
+    SetBlobRequestJSON request;
+    QByteArray data;
+    QJson::Serializer serializer;
+    QVariantMap obj;
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
+    data = QString("{\"auth_token\" : \"MMM\", \"guid\" : \"testGuid\", \"blob\" : \"testBinaryLargeObject\"}").toAscii();
+    obj.insert("auth_token", "MMM");
+    obj.insert("guid", "testGuid");
+    obj.insert("blob", "testBinaryLargeObject");
+
+    QByteArray true_json = serializer.serialize(obj);
+
+    request.parseJson(data);
+    QCOMPARE(request.getJson(), true_json);
   }
-  return 0;
+
+  void Test_SetBlobRequestJSON::parseJson()
+  {
+    SetBlobRequestJSON request;
+    QByteArray data;
+
+    data = QString("{\"auth_token\" : \"MMM\", \"guid\" : \"testGuid\", \"blob\" : \"testBinaryLargeObject\"}").toAscii();
+    QCOMPARE(request.parseJson(data), true);
+    QCOMPARE(request.getSessionToken(), QString("MMM"));
+    QCOMPARE(request.getGuid(), QString("testGuid"));
+    QCOMPARE(request.getBlob(), QString("testBinaryLargeObject"));
+  }
 }
-
-
-/* ===[ End of file $HeadURL$ ]=== */
