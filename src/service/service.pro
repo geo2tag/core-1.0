@@ -62,7 +62,8 @@ HEADERS += \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
     inc/DbObjectsCollection.h \
-    inc/MetaCache.h
+    inc/MetaCache.h \
+    inc/RiakInteractor.h
 
 
 SOURCES += src/main.cpp \
@@ -77,9 +78,13 @@ SOURCES += src/main.cpp \
     src/Geo2tagDatabase.cpp \
     processors/ProcessorsCore.cpp \
     processors/ProcessorsFilters.cpp \
-    src/MetaCache.cpp
+    src/MetaCache.cpp \
+    src/RiakInteractor.cpp
 
-LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq
+INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master/riak_client"
+INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master"
+
+LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
 
 QMAKE_LFLAGS += -L../lib -L/usr/lib/
