@@ -172,6 +172,9 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     response.setErrno(SUCCESS);
     response.addTag(tag);
 
+    if(tag.checkBinaryTag() == TAG_BINARY)
+        response.setGuid(DbObjectsCollection::getGuid());
+
     answer.append(response.getJson());
     DEBUG() <<  "answer: " << answer.data();
     return answer;
