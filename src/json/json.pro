@@ -70,7 +70,9 @@ HEADERS += \
     inc/FilterSubstringRequestJSON.h \
     inc/FilterSubstringResponseJSON.h \ 
     inc/SetBlobResponseJSON.h \
-    inc/SetBlobRequestJSON.h
+    inc/SetBlobRequestJSON.h \
+    inc/GetBlobRequestJSON.h \
+    inc/GetBlobResponseJSON.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -111,7 +113,9 @@ SOURCES += \
     src/ChangePasswordRequestJSON.cpp \
     src/FilterSubstringRequestJSON.cpp \ 
     src/WriteTagResponseJSON.cpp \
-    src/SetBlobRequestJSON.cpp
+    src/SetBlobRequestJSON.cpp \
+    src/GetBlobRequestJSON.cpp \
+    src/GetBlobResponseJSON.cpp
            
 
 LIBS    +=  -lcommon -lqjson
