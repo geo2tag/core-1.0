@@ -736,6 +736,22 @@ Channel QueryExecutor::getChannelById(qlonglong id)
 
 }
 
+QString QueryExecutor::getTagsChannelNameByGuid(QString & uuid)
+{
+    QSqlQuery query = makeQuery();
+    query.prepare("select channel_id from tag where label = :uuid;");
+    query.bindValue(":uuid", uuid);
+    query.exec();
+    if (query.next())
+    {
+        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        Channel ch;
+        ch = getChannelById(channelId);
+        return ch.getName();
+    }
+    return QString();
+}
+
 QList<Session> QueryExecutor::loadSessions()
 {
     // NOTE: Users should be loaded before!
