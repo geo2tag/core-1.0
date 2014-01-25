@@ -51,7 +51,7 @@ class Test_GetGuidDbObjectsCollection : public QObject
 private slots:
     void getGuid();
 
-};                                    // class UpdateThread_Test
+};
 
 }                                       // end of namespace Test
 

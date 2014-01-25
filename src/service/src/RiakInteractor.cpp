@@ -36,31 +36,27 @@
 #include <QDataStream>
 
 
-RiakInteractor::RiakInteractor(const std::string &host, const std::string &port)
+RiakInteractor::RiakInteractor(const QString &host, const QString &port)
 {
-    m_c = riak::new_client(host, port);
+    m_c = riak::new_client(host.toStdString(), port.toStdString());
 }
 
-std::string RiakInteractor::getData(const std::string bucketName, const std::string key, const std::string fileName, int r)
+QString RiakInteractor::getData(const QString &bucketName, const QString &key, int r)
 {
-    riak::result_ptr fr(m_c->fetch(bucketName, key, r));
+    riak::result_ptr fr(m_c->fetch(bucketName.toStdString(), key.toStdString(), r));
     std::string dataString;
     dataString = fr->contents()[0].value();
-    QFile file(fileName.c_str());
-    file.open(QIODevice::WriteOnly);
-    QDataStream out(&file);
-    out.writeRawData(dataString.c_str(), dataString.length());
-    return dataString;
+    return QString::fromStdString(dataString);
 }
 
-void RiakInteractor::putData(const std::string bucketName, const std::string key, const std::string data, const std::string & contentType, bool returnBody)
+void RiakInteractor::putData(const QString & bucketName, const QString & key, const QString & data, const QString & contentType, bool returnBody)
 {
     riak::store_params sp;
     sp.w(3).dw(3).return_body(returnBody);
     riak::object_ptr o;
-    o = riak::make_object(bucketName, key, data);
+    o = riak::make_object(bucketName.toStdString(), key.toStdString(), data.toStdString());
     riak::riak_metadata md;
-    md.content_type(contentType);
+    md.content_type(contentType.toStdString());
     o->update_content().metadata(md);
     m_c->store(o, sp);
 }

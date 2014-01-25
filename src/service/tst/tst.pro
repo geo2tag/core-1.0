@@ -25,7 +25,9 @@ SOURCES +=   ../src/Geo2tagDatabase.cpp \
     ../src/server.cpp \
     ../src/DynamicCastFailure.cpp \
     ../processors/ProcessorsFilters.cpp \
-    ../processors/ProcessorsCore.cpp
+    ../processors/ProcessorsCore.cpp \
+    Test_RiakInteractor.cpp \
+    ../src/RiakInteractor.cpp
 
 #          Test_QueryExecutor.cpp
 
@@ -41,7 +43,9 @@ HEADERS += ../inc/QueryExecutor.h \
     ../inc/DbObjectsCollection.h \
     ../inc/MetaCache.h \
     ../inc/server.h \
-    ../inc/DynamicCastFailure.h
+    ../inc/DynamicCastFailure.h \
+    Test_RiakInteractor.h \
+    ../inc/RiakInteractor.h
 
 #            Test_QueryExecutor.h \
 
@@ -52,6 +56,9 @@ TEMPLATE = app
 QT += testlib
 QT += sql
 
+INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master/riak_client"
+INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master"
+
 
 ## GT_779 This is not correct test format for pulse. refactoring is required
 TARGET = test.DbInteraction
@@ -59,5 +66,8 @@ TARGET = test.DbInteraction
 
 
 LIBS -= -L/usr/lib
-LIBS += -lcommon -lwikigpsJson -lfcgi
+LIBS += -lcommon -lwikigpsJson -lfcgi -lriak_client
 message($$LIBS)
+
+RESOURCES += \
+    TestBlobs.qrc

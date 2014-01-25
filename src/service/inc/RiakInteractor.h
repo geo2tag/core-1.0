@@ -31,8 +31,9 @@
 #ifndef RIAKINTERACTOR_H
 #define RIAKINTERACTOR_H
 
-#include <string>
+#include <QString>
 #include "riak_client/cxx/riak_client.hpp"
+#include <string>
 
 
 class RiakInteractor
@@ -40,9 +41,9 @@ class RiakInteractor
 private:
     riak::client_ptr m_c;
 public:
-    RiakInteractor(const std::string & host = "127.0.0.1", const std::string & port = "8087");
-    std::string getData(const std::string bucketName, const std::string key, const std::string fileName, int r = 1);
-    void putData(const std::string bucketName, const std::string key, const std::string fileName, const std::string & contentType = "image/jpeg", bool returnBody = true);
+    RiakInteractor(const QString & host = "127.0.0.1", const QString & port = "8087");
+    QString getData(const QString & bucketName, const QString & key, int r = 1);
+    void putData(const QString & bucketName, const QString & key, const QString & data, const QString & contentType = "image/jpeg", bool returnBody = true);
     bool createBucket(const std::string & bucketName, int n_val = 1, bool allow_mult = false);
 
 };
