@@ -112,6 +112,10 @@ namespace common
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAvailableChannelsQuery(const QByteArray&);
     QByteArray processWriteTagQuery(const QByteArray&);
+
+    QByteArray processSetBlobQuery(const QByteArray&);
+    QByteArray processGetBlobQuery(const QByteArray&);
+
     QByteArray processLoadTagsQuery(const QByteArray&);
     QByteArray processSubscribeQuery(const QByteArray&);
     QByteArray processUnsubscribeQuery(const QByteArray&);

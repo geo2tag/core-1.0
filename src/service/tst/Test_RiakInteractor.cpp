@@ -58,7 +58,7 @@ void Test::Test_RiakInteractor::getData()
     TestImage.open(QIODevice::WriteOnly);
     QDataStream outTestDocument(&TestDocument);
     QDataStream outTestImage(&TestImage);
-    outTestImage.writeRawData(dataTestImageString.toStdString().c_str(), dataTestImageString.size());
-    outTestDocument.writeRawData(dataTestDocumentString.toStdString().c_str(), dataTestDocumentString.size());
+    //outTestImage.writeRawData(dataTestImageString.toStdString().c_str(), dataTestImageString.size());
+    //outTestDocument.writeRawData(dataTestDocumentString.toStdString().c_str(), dataTestDocumentString.size());
 
 }

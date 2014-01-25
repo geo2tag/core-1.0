@@ -107,6 +107,9 @@ DbObjectsCollection::DbObjectsCollection()
     //Core processors
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
     m_processors.insert("writeTag", &DbObjectsCollection::processWriteTagQuery);
+
+    m_processors.insert("setBlob", &DbObjectsCollection::processSetBlobQuery);
+
     m_processors.insert("loadTags", &DbObjectsCollection::processLoadTagsQuery);
     m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);
     m_processors.insert("channels", &DbObjectsCollection::processAvailableChannelsQuery);

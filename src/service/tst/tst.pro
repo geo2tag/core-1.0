@@ -27,7 +27,7 @@ SOURCES +=   ../src/Geo2tagDatabase.cpp \
     ../processors/ProcessorsFilters.cpp \
     ../processors/ProcessorsCore.cpp \
     Test_RiakInteractor.cpp \
-    ../src/RiakInteractor.cpp
+    ../src/RiakInteractor.cpp \
 
 #          Test_QueryExecutor.cpp
 
@@ -45,7 +45,7 @@ HEADERS += ../inc/QueryExecutor.h \
     ../inc/server.h \
     ../inc/DynamicCastFailure.h \
     Test_RiakInteractor.h \
-    ../inc/RiakInteractor.h
+    ../inc/RiakInteractor.h \
 
 #            Test_QueryExecutor.h \
 

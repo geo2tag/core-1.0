@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------- */
 
 #include "SetBlobRequestJSON.h"
+#include "servicelogger.h"
 
 #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
@@ -90,6 +91,13 @@ bool SetBlobRequestJSON::parseJson(const QByteArray &data)
     QString auth_token = result["auth_token"].toString ();
     QString guid = result["guid"].toString ();
     QString blob = result["blob"].toString ();
+
+    if (auth_token.isEmpty() || guid.isEmpty() || blob.isEmpty())
+    {
+      DEBUG() << "Some of the string fields are empty." << data;
+      return false;
+    }
+
     m_token = auth_token;
     m_blob = blob;
     m_guid = guid;

@@ -99,6 +99,9 @@ namespace Core
       QList<Channel> getChannels(const common::BasicUser& user);
       QList<Channel> getChannelsByOwner(const BasicUser &user);
 
+      bool addBlobToRiakBD(const QString & guid, const QString & blob);
+      bool getBlobFromRiakBD(const QString & guid, QString * blob);
+
       void updateSession(Session &session);
 
       void removeSession(const Session& session);

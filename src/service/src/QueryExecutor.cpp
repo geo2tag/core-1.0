@@ -736,7 +736,7 @@ Channel QueryExecutor::getChannelById(qlonglong id)
 
 }
 
-QString QueryExecutor::getTagsChannelNameByGuid(QString & uuid)
+QString QueryExecutor::getTagsChannelNameByGuid(const QString &uuid)
 {
     QSqlQuery query = makeQuery();
     query.prepare("select channel_id from tag where label = :uuid;");
