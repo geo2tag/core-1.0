@@ -241,7 +241,7 @@ double Tag::getDistance(double lat1, double lon1, double lat2, double lon2)
 
 TagType Tag::checkBinaryTag()
 {
-    if (getLabel().contains("#BLOB"))
+    if (getDescription().contains("#BLOB"))
         return TAG_BINARY;
     else
         return TAG_COMMON;
