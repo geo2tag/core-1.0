@@ -930,6 +930,10 @@ QString DbObjectsCollection::getGuid()
     QString strUuid = uuid.toString();
     strUuid.remove(0, 1);
     strUuid.remove(strUuid.length() - 1, 1);
+    strUuid.remove(8, 1);
+    strUuid.remove(12, 1);
+    strUuid.remove(16, 1);
+    strUuid.remove(20, 1);
     return strUuid;
 }
 

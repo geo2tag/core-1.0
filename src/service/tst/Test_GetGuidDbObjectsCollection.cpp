@@ -6,5 +6,5 @@ void Test::Test_GetGuidDbObjectsCollection::getGuid()
 {
     QString uuid = common::DbObjectsCollection::getGuid();
     qDebug() << uuid;
-    QCOMPARE(uuid.length(), 36);
+    QCOMPARE(uuid.length(), 32);
 }

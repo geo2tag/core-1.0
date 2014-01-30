@@ -61,10 +61,10 @@ QByteArray WriteTagResponseJSON::getJson() const
 {
   QJson::Serializer serializer;
   QVariantMap obj;
+  obj["guid"] = m_guid;
   obj["errno"] = getErrno();
   /*if (!m_guid.isEmpty())
       obj["guid"] = m_guid;*/
-  obj["guid"] = m_guid;
   return serializer.serialize(obj);
 }
 
