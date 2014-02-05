@@ -33,7 +33,7 @@
 
 #include <QString>
 #include "riak_client/cxx/riak_client.hpp"
-#include <string>
+#include "SettingsStorage.h"
 
 
 class RiakInteractor
@@ -41,10 +41,11 @@ class RiakInteractor
 private:
     riak::client_ptr m_c;
 public:
-    RiakInteractor(const QString & host = "127.0.0.1", const QString & port = "8087");
+    RiakInteractor(const QString & host = SettingsStorage::getValue("riak/instance_ip", QString("127.0.0.1")).toString(),
+                   const QString & port = SettingsStorage::getValue("riak/instance_port", QString("8087")).toString());
     QString getData(const QString & bucketName, const QString & key, int r = 1);
     void putData(const QString & bucketName, const QString & key, const QString & data, const QString & contentType = "image/jpeg", bool returnBody = true);
-    bool createBucket(const std::string & bucketName, int n_val = 1, bool allow_mult = false);
+    bool createBucket(const QString & bucketName, int n_val = 1, bool allow_mult = false);
 
 };
 

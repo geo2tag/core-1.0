@@ -61,12 +61,12 @@ void RiakInteractor::putData(const QString & bucketName, const QString & key, co
     m_c->store(o, sp);
 }
 
-bool RiakInteractor::createBucket(const std::string & bucketName, int n_val, bool allow_mult)
+bool RiakInteractor::createBucket(const QString & bucketName, int n_val, bool allow_mult)
 {
     bool ping;
     riak::bucket_properties properties;
     properties.allow_mult(allow_mult);
     properties.n_val(n_val);
-    ping = m_c->set_bucket(bucketName, properties);
+    ping = m_c->set_bucket(bucketName.toStdString(), properties);
     return ping;
 }
