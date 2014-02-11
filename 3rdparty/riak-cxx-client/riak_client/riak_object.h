@@ -21,7 +21,7 @@ RIAKC_API void         riak_object_free(riak_object);
 RIAKC_API const char*  riak_object_get_key(riak_object);
 RIAKC_API const char*  riak_object_get_bucket(riak_object);
 //RIAKC_API const vclock riak_object_get_vclock(riak_object);
-RIAKC_API const riak_metadata riak_object_get_metadata(riak_object);
+RIAKC_API riak_metadata riak_object_get_metadata(riak_object);
 
 
 
