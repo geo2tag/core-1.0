@@ -56,8 +56,8 @@ TEMPLATE = app
 QT += testlib
 QT += sql
 
-INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master/riak_client"
-INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master"
+INCLUDEPATH += ../../../3rdparty/riak-cxx-client/riak_client
+INCLUDEPATH += ../../../3rdparty/riak-cxx-client
 
 
 ## GT_779 This is not correct test format for pulse. refactoring is required
