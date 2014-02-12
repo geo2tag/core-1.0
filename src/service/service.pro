@@ -82,7 +82,7 @@ SOURCES += src/main.cpp \
     src/RiakInteractor.cpp
 
 INCLUDEPATH += ../../3rdparty/libriak/riak_client
-INCLUDEPATH += ../../riak-1.4.2/3rdparty/libriak
+INCLUDEPATH += ../../3rdparty/libriak
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
