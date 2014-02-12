@@ -81,8 +81,8 @@ SOURCES += src/main.cpp \
     src/MetaCache.cpp \
     src/RiakInteractor.cpp
 
-INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master/riak_client"
-INCLUDEPATH += "/home/rodion/riak-1.4.2/client_lib/riak-cxx-client-master"
+INCLUDEPATH += ../../3rdparty/libriak/riak_client
+INCLUDEPATH += ../../riak-1.4.2/3rdparty/libriak
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
