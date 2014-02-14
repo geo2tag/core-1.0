@@ -87,7 +87,7 @@ INCLUDEPATH += ../../3rdparty/libriak
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
 
-QMAKE_LFLAGS += -L../lib -L/usr/lib/
+QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../../3rdparty/libriak/lib
 
 QT -= gui
 QT += sql
