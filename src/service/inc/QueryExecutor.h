@@ -61,6 +61,8 @@ class QueryExecutor : public QObject
     void retrieveTagsToList(QList<Tag>& container, QSqlQuery& query,
 	 const Channel& channel=Channel());
 
+    void loadTagsToContainerFromChannel(QList<Tag> & container, Channel channel);
+
 public:
 
 

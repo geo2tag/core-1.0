@@ -15,40 +15,33 @@ SOURCES += main.cpp \
     ../../json/src/QuitSessionRequestJSON.cpp \
     ../../json/src/FilterSubstringRequestJSON.cpp \
     ../../json/src/QuitSessionResponseJSON.cpp \
+    ../../json/src/LoadTagsResponseJSON.cpp \
+    ../../json/src/FilterDefaultResponseJSON.cpp \
     Test_AvailableChannelsResponseJSON.cpp \
     Test_QuitSessionRequestJSON.cpp \
     Test_QuitSessionResponseJSON.cpp \
-    Test_FilterSubstringRequestJSON.cpp
-#    ../../json/src/RegisterUserRequestJSON.cpp \
-#    ../../json/src/RegisterUserResponseJSON.cpp \
-#    ../../json/src/RestorePasswordRequestJSON.cpp \
-#    Test_RegisterUserResponseJSON.cpp \
-#    Test_RegisterUserRequestJSON.cpp \
-#    Test_RestorePasswordRequestJSON.cpp \
-#    Test_RestorePasswordResponseJSON.cpp
+    Test_FilterSubstringRequestJSON.cpp \
+    Test_DoublePrecisionJSON.cpp
+
 HEADERS += JsonUser_Test.h \
     ../inc/JsonUser.h \
     ../../common/inc/BasicUser.h \
     ../../common/inc/User.h \
     ../../common/inc/DataMarks.h \
+    ../../common/inc/ErrnoTypes.h \
     ../../json/inc/JsonChannel.h \
     ../../json/inc/JsonSerializer.h \
     ../../json/inc/AvailableChannelsResponseJSON.h \
     ../../json/inc/QuitSessionRequestJSON.h \
     ../../json/inc/QuitSessionResponseJSON.h \
+    ../../json/inc/LoadTagsResponseJSON.h \
+    ../../json/inc/FilterDefaultResponseJSON.h \
     Test_AvailableChannelsResponseJSON.h \
     Test_QuitSessionResponseJSON.h \
     Test_QuitSessionRequestJSON.h \
     Test_FilterSubstringRequestJSON.h \
+    Test_DoublePrecisionJSON.h\
     ../../json/inc/DefaultResponseJSON.h 
-#    ../../json/inc/RestorePasswordRequestJSON.h \
-#    ../../json/inc/RestorePasswordResponseJSON.h \
-#    ../../json/inc/RegisterUserRequestJSON.h \
-#    ../../json/inc/RegisterUserResponseJSON.h \
-#    Test_RegisterUserResponseJSON.h \
-#    Test_RegisterUserRequestJSON.h \
-#    Test_RestorePasswordResponseJSON.h \
-#    Test_RestorePasswordRequestJSON.h
 
 CONFIG   += qtestlib
 

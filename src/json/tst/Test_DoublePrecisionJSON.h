@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2013  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,52 +29,31 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 /*!
- * \file main.cpp
- * \brief Test suite for json
+ * \file Test_DoublePrecisionJSON.h
+ * \brief Test suite for #GT-1046 class
  *
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ----------------------------------------------------------- */
 
-#include <QtTest/QtTest>
-#include <QtCore/QtCore>
-#include <QCoreApplication>
+#ifndef TEST_DOUBLE_PRECISION_JSON_H
+#define TEST_DOUBLE_PRECISION_JSON_H
 
-// Test headers
-#include "JsonUser_Test.h"
-//#include "Test_RegisterUserRequestJSON.h"
-//#include "Test_RegisterUserResponseJSON.h"
-#include "Test_AvailableChannelsResponseJSON.h"
-#include "Test_QuitSessionRequestJSON.h"
-#include "Test_QuitSessionResponseJSON.h"
-#include "Test_FilterSubstringRequestJSON.h"
-#include "Test_DoublePrecisionJSON.h"
-//#include "Test_RestorePasswordRequestJSON.h"
-//#include "Test_RestorePasswordResponseJSON.h"
+#include <QObject>
+#include <QtTest>
+#include "../inc/LoadTagsResponseJSON.h"
+#include "../inc/FilterDefaultResponseJSON.h"
 
-int main(int argc, char **argv)
+namespace Test
 {
-  QCoreApplication app(argc, argv);
-
-  QObject *tests[] =
+  class Test_DoublePrecisionJSON : public QObject
   {
-    new Test::JsonUser_Test(),
-//    new Test::Test_RegisterUserRequestJSON(),
-//    new Test::Test_RegisterUserResponseJSON(),
-    new Test::Test_AvailableChannelsResponseJSON(),
-    new Test::Test_QuitSessionRequestJSON(),
-    new Test::Test_QuitSessionResponseJSON(),
-    new Test::Test_FilterSubstringRequestJSON(),
-    new Test::Test_DoublePrecisionJSON(),
-  //  new Test::Test_RestorePasswordRequestJSON(),
-  //  new Test::Test_RestorePasswordResponseJSON()
-  };
-
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i], argc, argv);
-  }
-  return 0;
-}
-
-
-/* ===[ End of file $HeadURL$ ]=== */
+	Q_OBJECT
+	QList<Tag> TEST_LIST;
+	private slots:
+		void testLoadTagsResponse();
+		void testFilterDefaultResponse();
+	public:
+		Test_DoublePrecisionJSON();
+  };                                    
+}                                      
+#endif                                  

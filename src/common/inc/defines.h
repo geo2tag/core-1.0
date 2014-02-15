@@ -69,6 +69,9 @@ void setServerPort(int port);
 #define DEFAULT_PORT 80
 #define PASSWORD_SALT "geo2tag_salt"
 
+
+#define DOUBLE_PRECISION_RESPONSE 15
+
 #define DEFAULT_RADIUS            30
 #define DEFAULT_USER_NAME         "Mark"
 #define DEFAULT_USER_PASSWORD     "test"
