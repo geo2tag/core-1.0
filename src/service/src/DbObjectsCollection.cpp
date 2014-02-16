@@ -95,8 +95,6 @@
 #include "Geo2tagDatabase.h"
 #include "MetaCache.h"
 
-#include <uuid/uuid.h>
-
 namespace common
 {
 const QString DbObjectsCollection::error = QString("Error");

@@ -66,6 +66,7 @@ TARGET = test.DbInteraction
 
 
 LIBS -= -L/usr/lib
+LIBS += -L../../../3rdparty/libriak/lib
 LIBS += -lcommon -lwikigpsJson -lfcgi -lriak_client
 message($$LIBS)
 
