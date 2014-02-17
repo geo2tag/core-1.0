@@ -20,7 +20,7 @@ namespace riakboost{} namespace boost = riakboost; namespace riakboost{
 
 enum xtime_clock_types
 {
-    TIME_UTC=1
+    TIME_UTC_=1
 //    TIME_TAI,
 //    TIME_MONOTONIC,
 //    TIME_PROCESS,
@@ -68,7 +68,7 @@ inline xtime get_xtime(riakboost::system_time const& abs_time)
 
 inline int xtime_get(struct xtime* xtp, int clock_type)
 {
-    if (clock_type == TIME_UTC)
+    if (clock_type == TIME_UTC_)
     {
         *xtp=get_xtime(get_system_time());
         return clock_type;

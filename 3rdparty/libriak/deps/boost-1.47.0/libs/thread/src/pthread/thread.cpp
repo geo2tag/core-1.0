@@ -349,7 +349,7 @@ namespace riakboost{} namespace boost = riakboost; namespace riakboost{
                     cond.timed_wait(lock, xt);
 #   endif
                     xtime cur;
-                    xtime_get(&cur, TIME_UTC);
+                    xtime_get(&cur, TIME_UTC_);
                     if (xtime_cmp(xt, cur) <= 0)
                         return;
                 }
@@ -364,7 +364,7 @@ namespace riakboost{} namespace boost = riakboost; namespace riakboost{
             BOOST_VERIFY(!pthread_yield());
 #   else
             xtime xt;
-            xtime_get(&xt, TIME_UTC);
+            xtime_get(&xt, TIME_UTC_);
             sleep(xt);
 #   endif
         }

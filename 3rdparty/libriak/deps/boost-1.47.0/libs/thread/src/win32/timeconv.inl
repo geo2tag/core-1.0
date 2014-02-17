@@ -17,8 +17,8 @@ const int NANOSECONDS_PER_MICROSECOND = 1000;
 inline void to_time(int milliseconds, riakboost::xtime& xt)
 {
     int res = 0;
-    res = riakboost::xtime_get(&xt, riakboost::TIME_UTC);
-    assert(res == riakboost::TIME_UTC);
+    res = riakboost::xtime_get(&xt, riakboost::TIME_UTC_);
+    assert(res == riakboost::TIME_UTC_);
 
     xt.sec += (milliseconds / MILLISECONDS_PER_SECOND);
     xt.nsec += ((milliseconds % MILLISECONDS_PER_SECOND) *
@@ -54,8 +54,8 @@ inline void to_timespec_duration(const riakboost::xtime& xt, timespec& ts)
 {
     riakboost::xtime cur;
     int res = 0;
-    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC);
-    assert(res == riakboost::TIME_UTC);
+    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC_);
+    assert(res == riakboost::TIME_UTC_);
 
     if (riakboost::xtime_cmp(xt, cur) <= 0)
     {
@@ -85,8 +85,8 @@ inline void to_duration(riakboost::xtime xt, int& milliseconds)
 {
     riakboost::xtime cur;
     int res = 0;
-    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC);
-    assert(res == riakboost::TIME_UTC);
+    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC_);
+    assert(res == riakboost::TIME_UTC_);
 
     if (riakboost::xtime_cmp(xt, cur) <= 0)
         milliseconds = 0;
@@ -107,8 +107,8 @@ inline void to_microduration(riakboost::xtime xt, int& microseconds)
 {
     riakboost::xtime cur;
     int res = 0;
-    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC);
-    assert(res == riakboost::TIME_UTC);
+    res = riakboost::xtime_get(&cur, riakboost::TIME_UTC_);
+    assert(res == riakboost::TIME_UTC_);
 
     if (riakboost::xtime_cmp(xt, cur) <= 0)
         microseconds = 0;
