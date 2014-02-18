@@ -1,5 +1,9 @@
 MAKEFILE = Makefile.libriak
 
+target.path = /usr/lib
+target.files = ./lib/libriak_client.so ./lib/libriak_client.so.1 ./lib/libriak_client.so.1.0.0
+INSTALLS += target
+
 ATPROJ_SRCDIR = ./
 
 autoreconf.target = $${ATPROJ_SRCDIR}/configure
