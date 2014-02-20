@@ -3,7 +3,7 @@ Section: database
 Priority: optional
 Maintainer: Kirill Krinkin <geo2tag-maintainer@fruct.org>
 Standards-Version: 3.9.3.0
-Build-Depends: debhelper (>= 7), g++, make, libxml2-dev (>=2.6), libqt4-dev, libqjson-dev, libfcgi-dev, qt4-qmake
+Build-Depends: debhelper (>= 7), g++, make, libxml2-dev (>=2.6), libqt4-dev, libqjson-dev(= 0.8.1-3), libfcgi-dev, qt4-qmake
 
 Package: geo2tag-core
 Architecture: amd64 i386
