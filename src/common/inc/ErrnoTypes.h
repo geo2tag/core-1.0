@@ -70,6 +70,7 @@
 #define NOT_SUPPORTED                       21
 #define DB_DOES_NOT_EXIST_ERROR             22
 #define USER_DOES_NOT_OWN_CHANNEL_ERROR     23
+#define WRONG_GUID_ERROR                    24
 
 class Errno
 {
@@ -129,6 +130,8 @@ public:
         emap.insert(DB_DOES_NOT_EXIST_ERROR            ,"DB_DOES_NOT_EXIST_ERROR");
 	// 23
 	emap.insert(USER_DOES_NOT_OWN_CHANNEL_ERROR    ,"USER_DOES_NOT_OWN_CHANNEL_ERROR");
+    //24
+    emap.insert(WRONG_GUID_ERROR                       ,"WRONG_GUID_ERROR");
         return emap;
     }
 };

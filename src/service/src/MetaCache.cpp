@@ -44,6 +44,7 @@
 #include "servicelogger.h"
 #include "defines.h"
 #include "SettingsStorage.h"
+#include "RiakInteractor.h"
 
 namespace Core
 {
@@ -174,6 +175,24 @@ void MetaCache::insertSession(const Session& session)
 Channel MetaCache::getChannel(const QString name)
 {
     return m_queryExecutor->getChannel(name);
+}
+
+bool MetaCache::addBlobToRiakBD(const QString & guid, const QString & blob)
+{
+    QString channelName;
+    channelName = m_queryExecutor->getTagsChannelNameByGuid(guid);
+    RiakInteractor riakConnection;
+    riakConnection.putData(channelName, guid, blob);
+    return true;
+}
+
+bool MetaCache::getBlobFromRiakBD(const QString & guid, QString * blob)
+{
+    QString channelName;
+    channelName = m_queryExecutor->getTagsChannelNameByGuid(guid);
+    RiakInteractor riakConnection;
+    *blob = riakConnection.getData(channelName, guid);
+    return true;
 }
 
 QList<Channel> MetaCache::getChannelsByOwner(const BasicUser &user)

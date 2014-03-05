@@ -35,8 +35,22 @@
 #ifndef WRITETAGRESPONSEJSON_H
 #define WRITETAGRESPONSEJSON_H
 
-#include "DefaultResponseJSON.h"
+#include "JsonSerializer.h"
 
-typedef DefaultResponseJSON WriteTagResponseJSON;
+class WriteTagResponseJSON: public JsonSerializer
+{
+  private:
+    QString m_guid;
+
+  public:
+    WriteTagResponseJSON(QObject *parent=0, QString guid = QString());
+
+    virtual QByteArray getJson() const;
+
+    virtual bool parseJson(const QByteArray&);
+
+    void setGuid(const QString & guid);
+    QString getGuid();
+};
 
 #endif

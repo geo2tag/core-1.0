@@ -21,8 +21,22 @@ SOURCES += main.cpp \
     Test_QuitSessionRequestJSON.cpp \
     Test_QuitSessionResponseJSON.cpp \
     Test_FilterSubstringRequestJSON.cpp \
-    Test_DoublePrecisionJSON.cpp
-
+    Test_DoublePrecisionJSON.cpp \
+    Test_WriteTagResponseJSON.cpp \
+    ../src/WriteTagResponseJSON.cpp \
+    ../src/SetBlobRequestJSON.cpp \
+    Test_SetBlobRequestJSON.cpp \
+    Test_GetBlobRequestJSON.cpp \
+    ../src/GetBlobRequestJSON.cpp \
+    Test_GetBlobResponseJSON.cpp \
+    ../src/GetBlobResponseJSON.cpp
+#    ../../json/src/RegisterUserRequestJSON.cpp \
+#    ../../json/src/RegisterUserResponseJSON.cpp \
+#    ../../json/src/RestorePasswordRequestJSON.cpp \
+#    Test_RegisterUserResponseJSON.cpp \
+#    Test_RegisterUserRequestJSON.cpp \
+#    Test_RestorePasswordRequestJSON.cpp \
+#    Test_RestorePasswordResponseJSON.cpp
 HEADERS += JsonUser_Test.h \
     ../inc/JsonUser.h \
     ../../common/inc/BasicUser.h \
@@ -40,8 +54,24 @@ HEADERS += JsonUser_Test.h \
     Test_QuitSessionResponseJSON.h \
     Test_QuitSessionRequestJSON.h \
     Test_FilterSubstringRequestJSON.h \
-    Test_DoublePrecisionJSON.h\
-    ../../json/inc/DefaultResponseJSON.h 
+    Test_DoublePrecisionJSON.h \
+    ../../json/inc/DefaultResponseJSON.h \ 
+    Test_WriteTagResponseJSON.h \
+    ../inc/WriteTagResponseJSON.h \
+    ../inc/SetBlobRequestJSON.h \
+    Test_SetBlobRequestJSON.h \
+    Test_GetBlobRequestJSON.h \
+    ../inc/GetBlobRequestJSON.h \
+    Test_GetBlobResponseJSON.h \
+    ../inc/GetBlobResponseJSON.h
+#    ../../json/inc/RestorePasswordRequestJSON.h \
+#    ../../json/inc/RestorePasswordResponseJSON.h \
+#    ../../json/inc/RegisterUserRequestJSON.h \
+#    ../../json/inc/RegisterUserResponseJSON.h \
+#    Test_RegisterUserResponseJSON.h \
+#    Test_RegisterUserRequestJSON.h \
+#    Test_RestorePasswordResponseJSON.h \
+#    Test_RestorePasswordRequestJSON.h
 
 CONFIG   += qtestlib
 

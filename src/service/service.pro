@@ -62,7 +62,8 @@ HEADERS += \
     inc/SessionInternal.h \
     inc/Geo2tagDatabase.h \
     inc/DbObjectsCollection.h \
-    inc/MetaCache.h
+    inc/MetaCache.h \
+    inc/RiakInteractor.h
 
 
 SOURCES += src/main.cpp \
@@ -77,12 +78,16 @@ SOURCES += src/main.cpp \
     src/Geo2tagDatabase.cpp \
     processors/ProcessorsCore.cpp \
     processors/ProcessorsFilters.cpp \
-    src/MetaCache.cpp
+    src/MetaCache.cpp \
+    src/RiakInteractor.cpp
 
-LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq 
+INCLUDEPATH += ../../3rdparty/libriak/riak_client
+INCLUDEPATH += ../../3rdparty/libriak
+
+LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
 
-QMAKE_LFLAGS += -L../lib -L/usr/lib/
+QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../../3rdparty/libriak/lib
 
 QT -= gui
 QT += sql

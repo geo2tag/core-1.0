@@ -45,6 +45,7 @@
 #include "test_FShapeCircle.h"
 #include "test_FShapeRectangle.h"
 #include "test_FShapePolygon.h"
+#include "test_TagType.h"
 
 int main(int argc, char **argv)
 {
@@ -56,7 +57,8 @@ int main(int argc, char **argv)
     new Test::Test_TimeFilter(),
     new Test::Test_FShapeCircle(),
     new Test::Test_FShapeRectangle(),
-    new Test::Test_FShapePolygon()
+    new Test::Test_FShapePolygon(),
+    new Test::Test_TagType()
   };
 
   for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)

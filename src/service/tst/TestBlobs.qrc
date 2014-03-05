@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/TestBlobs">
+        <file>Test_Image.jpg</file>
+        <file>Test_Document</file>
+    </qresource>
+</RCC>

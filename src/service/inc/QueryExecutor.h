@@ -104,6 +104,8 @@ public:
 
     Channel getChannelById(qlonglong id);
 
+    QString getTagsChannelNameByGuid(const QString & uuid);
+
 
     QList<Channel> getChannelsByOwner(const common::BasicUser& user );
     QList<Channel> getSubscribedChannels(const common::BasicUser& user );

@@ -8,6 +8,12 @@
 #include "WriteTagRequestJSON.h"
 #include "WriteTagResponseJSON.h"
 
+#include "SetBlobRequestJSON.h"
+#include "SetBlobResponseJSON.h"
+
+#include "GetBlobRequestJSON.h"
+#include "GetBlobResponseJSON.h"
+
 #include "LoadTagsRequestJSON.h"
 #include "LoadTagsResponseJSON.h"
 
@@ -28,6 +34,8 @@
 #include "ErrnoTypes.h"
 #include "defines.h"
 #include "Session.h"
+
+#include "RiakInteractor.h"
 
 namespace common
 {
@@ -158,6 +166,13 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
         return answer;
     }
 
+    if(tag.checkBinaryTag() == TAG_BINARY)
+    {
+        QString guid = DbObjectsCollection::getGuid();
+        response.setGuid(guid);
+        tag.setLabel(guid);
+    }
+
     DEBUG() << "writing tag " << tag;
     if(!cache->writeTag(tag))
     {
@@ -171,6 +186,100 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
 
     response.setErrno(SUCCESS);
     response.addTag(tag);
+
+    answer.append(response.getJson());
+    DEBUG() <<  "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processSetBlobQuery(const QByteArray &data)
+{
+    SetBlobRequestJSON request;
+    SetBlobResponseJSON response;
+
+    QByteArray answer(OK_REQUEST_HEADER);
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    Session session = m_defaultCache->findSession(request.getSessionToken());
+
+    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
+    DEBUG() << "Session:" << session;
+
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        DEBUG() << "invalid session";
+        return answer;
+    }
+
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+
+    //logic take blob from request and put blob into db riak by guid and as a result set errno in answer
+
+    if (!cache->addBlobToRiakBD(request.getGuid(), request.getBlob()))
+    {
+        DEBUG() << "INTERNAL_DB_ERROR";
+        response.setErrno(INTERNAL_DB_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    response.setErrno(SUCCESS);
+
+    answer.append(response.getJson());
+    DEBUG() <<  "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processGetBlobQuery(const QByteArray &data)
+{
+    GetBlobRequestJSON request;
+    GetBlobResponseJSON response;
+
+    QByteArray answer(OK_REQUEST_HEADER);
+
+    if (!request.parseJson(data))
+    {
+        response.setErrno(INCORRECT_JSON_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    Session session = m_defaultCache->findSession(request.getSessionToken());
+
+    DEBUG() << "Checking for sessions with token = " << session.getSessionToken();
+    DEBUG() << "Session:" << session;
+
+    if(!session.isValid())
+    {
+        response.setErrno(WRONG_TOKEN_ERROR);
+        answer.append(response.getJson());
+        DEBUG() << "invalid session";
+        return answer;
+    }
+
+    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
+
+    //logic find blob by guid and setBlob in answer and remember about field errno in answer
+
+    QString blob;
+    if(!cache->getBlobFromRiakBD(request.getGuid(), &blob))
+    {
+        DEBUG() << "INTERNAL_DB_ERROR";
+        response.setErrno(INTERNAL_DB_ERROR);
+        answer.append(response.getJson());
+        return answer;
+    }
+
+    response.setBlob(blob);
+    response.setErrno(SUCCESS);
 
     answer.append(response.getJson());
     DEBUG() <<  "answer: " << answer.data();

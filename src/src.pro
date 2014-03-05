@@ -5,6 +5,7 @@ include(../config.pri)
 CONFIG += ordered
 message($$LIBS)
 
+
   SUBDIRS += common
   SUBDIRS += \
              json \
