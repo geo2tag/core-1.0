@@ -26,7 +26,8 @@ HEADERS += \
            inc/SubscribedChannelsQuery.h \
            inc/VersionQuery.h \
     inc/setdbquery.h \
-    inc/SetBlobQuery.h
+    inc/SetBlobQuery.h \
+    inc/GetBlobQuery.h
 
 
 
@@ -43,7 +44,8 @@ SOURCES += \
            src/RegisterUserQuery.cpp \
            src/VersionQuery.cpp \
     src/setdbquery.cpp \
-    src/SetBlobQuery.cpp
+    src/SetBlobQuery.cpp \
+    src/GetBlobQuery.cpp
 
 
 LIBS    +=  -lcommon -lqjson

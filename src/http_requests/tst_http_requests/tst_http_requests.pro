@@ -53,7 +53,11 @@ SOURCES += \
     #Test_LoadTagsQuery.cpp \
     Test_SetBlobQuery.cpp \
     ../src/SetBlobQuery.cpp \
-    ../../json/src/SetBlobRequestJSON.cpp
+    ../../json/src/SetBlobRequestJSON.cpp \
+    Test_GetBlobQuery.cpp \
+    ../src/GetBlobQuery.cpp \
+    ../../json/src/GetBlobRequestJSON.cpp \
+    ../../json/src/GetBlobResponseJSON.cpp
 
 HEADERS += \
     ../../http_requests/inc/AddUserQuery.h \
@@ -111,7 +115,11 @@ HEADERS += \
     Test_SetBlobQuery.h \
     ../inc/SetBlobQuery.h \
     ../../json/inc/SetBlobRequestJSON.h \
-    ../../json/inc/SetBlobResponseJSON.h
+    ../../json/inc/SetBlobResponseJSON.h \
+    Test_GetBlobQuery.h \
+    ../inc/GetBlobQuery.h \
+    ../../json/inc/GetBlobRequestJSON.h \
+    ../../json/inc/GetBlobResponseJSON.h
 
 CONFIG += qtestlib debug
 

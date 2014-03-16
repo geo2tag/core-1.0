@@ -29,54 +29,33 @@
  * The advertising clause requiring mention in adverts must never be included.
  */
 
-/*!
- * \file main.cpp
- * \brief Test suite for http_requests
- *
- * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
-
-#include <QCoreApplication>
-
-//#include "DeleteUserQuery_Test.h"
-//#include "Test_AddUserQuery.h"
-//#include "Test_ApplyChannelQuery.h"
-//#include "Test_AvailableChannelsQuery.h"
-//#include "Test_LoadTagsQuery.h"
-//#include "Test_LoginQuery.h"
-//#include "Test_RegisterUserQuery.h"
-//#include "Test_SubscribeChannelQuery.h"
-//#include "Test_SubscribedChannelsQuery.h"
-//#include "Test_WriteTagQuery.h"
-//#include "VersionQuery_Test.h"
-#include "Test_SetBlobQuery.h"
 #include "Test_GetBlobQuery.h"
+#include "signals.h"
+#include "Session.h"
+#include "User.h"
+#include "SettingsStorage.h"
 
-int main(int argc, char *argv[])
+#include <QString>
+#include <QTimer>
+#include <QDateTime>
+
+namespace Test
 {
-  QCoreApplication app(argc, argv);
-
-  QObject *tests[] =
-  {
-    //new Test::DeleteUserQuery_Test,
-    //new Test::Test_AddUserQuery,
-    //new Test::Test_ApplyChannelQuery,
-    //new Test::Test_AvailableChannelsQuery,
-    //new Test::Test_LoadTagsQuery,
-    //new Test::Test_LoginQuery,
-    //new Test::Test_RegisterUserQuery,
-    //new Test::Test_SubscribeChannelQuery,
-    //new Test::Test_SubscribedChannelsQuery,
-    //new Test::Test_WriteTagQuery,
-    //new Test::VersionQuery_Test,
-    //new Test::Test_SetBlobQuery,
-      new Test::Test_GetBlobQuery
-  };
-
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i]);
-  }
-
-  return 0;
+void Test_GetBlobQuery::response()
+{
+    SettingsStorage::init();
+    SettingsStorage::setValue("server_url", QVariant("http://127.0.0.1/"), "common");
+    GetBlobQuery query(this);
+    common::User user("Paul", "test");
+    Session session("5136257300aadc645a6aa24295bc60b3", QDateTime::currentDateTime().toUTC(), user);
+    query.setSession(session);
+    query.setGuid("96e66ef5a7974ded9bcec23d25930574");
+    query.doRequest();
+    //connect(&query, SIGNAL(errorOccured(QString)), this, SLOT(ok()));
+    QVERIFY(waitForSignal(&query, SIGNAL(errorOccured(int)), 5000));
+    //qDebug() << query.getErrno();
 }
+
+}                                       // end of namespace Test
+
+

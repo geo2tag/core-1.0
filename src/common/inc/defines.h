@@ -61,6 +61,7 @@ void setServerPort(int port);
 #define VERSION_HTTP_URL          getServerUrl()+QString("service/version")
 #define DELETE_USER_HTTP_URL      getServerUrl()+QString("service/deleteUser")
 #define SET_BLOB_HTTP_URL         getServerUrl()+QString("service/setBlob")
+#define GET_BLOB_HTTP_URL         getServerUrl()+QString("service/getBlob")
 
 #define GPS_MODELLER_FILE         "/usr/share/wikigps/helsinki.gpx"
 //#define CONFIG_FILE               "/usr/share/wikigps/wikigps.conf"
