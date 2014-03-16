@@ -190,6 +190,8 @@ bool MetaCache::getBlobFromRiakBD(const QString & guid, QString * blob)
 {
     QString channelName;
     channelName = m_queryExecutor->getTagsChannelNameByGuid(guid);
+    if (channelName.isEmpty())
+        return false;
     RiakInteractor riakConnection;
     *blob = riakConnection.getData(channelName, guid);
     return true;
