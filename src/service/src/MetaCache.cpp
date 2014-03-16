@@ -181,6 +181,8 @@ bool MetaCache::addBlobToRiakBD(const QString & guid, const QString & blob)
 {
     QString channelName;
     channelName = m_queryExecutor->getTagsChannelNameByGuid(guid);
+    if (channelName.isEmpty())
+        return false;
     RiakInteractor riakConnection;
     riakConnection.putData(channelName, guid, blob);
     return true;
