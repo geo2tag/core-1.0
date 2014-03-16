@@ -31,8 +31,8 @@ void Test::Test_RiakInteractor::putData()
     qDebug() << dataTestImageString.size();
     qDebug() << dataTestDocumentString.size();
 
-    //riakObject.putData("Test_Bucket", "Test_Key4", dataTestDocumentString, "text/plain");
-    //riakObject.putData("Test_Bucket", "Test_KeyImage4", dataTestImageString, "image/jpeg");
+    riakObject.putData("Test_Bucket", "Test_KeyDocument", dataTestDocumentString, "text/plain");
+    riakObject.putData("Test_Bucket", "Test_KeyImage", dataTestImageString, "image/jpeg");
     free(dataTestDocument);
     free(dataTestImage);
 }
@@ -43,8 +43,8 @@ void Test::Test_RiakInteractor::getData()
 
     QString dataTestImageString;
     QString dataTestDocumentString;
-    dataTestImageString = riakObject.getData("Test_Bucket", "Test_KeyImage4");
-    dataTestDocumentString = riakObject.getData("Test_Bucket", "Test_Key4");
+    dataTestImageString = riakObject.getData("Test_Bucket", "Test_KeyImage");
+    dataTestDocumentString = riakObject.getData("Test_Bucket", "Test_KeyDocument");
 
     qDebug() << dataTestImageString.size();
     qDebug() << dataTestDocumentString.size();
@@ -58,7 +58,7 @@ void Test::Test_RiakInteractor::getData()
     TestImage.open(QIODevice::WriteOnly);
     QDataStream outTestDocument(&TestDocument);
     QDataStream outTestImage(&TestImage);
-    //outTestImage.writeRawData(dataTestImageString.toStdString().c_str(), dataTestImageString.size());
-    //outTestDocument.writeRawData(dataTestDocumentString.toStdString().c_str(), dataTestDocumentString.size());
+    outTestImage.writeRawData(dataTestImageString.toStdString().c_str(), dataTestImageString.size());
+    outTestDocument.writeRawData(dataTestDocumentString.toStdString().c_str(), dataTestDocumentString.size());
 
 }

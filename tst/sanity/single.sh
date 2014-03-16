@@ -103,6 +103,7 @@ echo "WriteTag test with BLOB - $response_writeTag_test"
 guid=`echo $response_writeTag_test | grep -Po '"\w+"' | grep -v "guid" | grep -v "errno"`;
 echo "guid = $guid"
 echo "channel = $test_channel"
+echo "auth_token = $auth_token"
 checkResponseErrno "$response_writeTag_test" $errno_success "Fail at writeTag test with BLOB"
 
 ### setBlob

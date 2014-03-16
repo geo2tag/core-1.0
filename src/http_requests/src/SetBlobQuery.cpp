@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,53 +28,86 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
-/*!
- * \file main.cpp
- * \brief Test suite for http_requests
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ---------------------------------------------------------------- */
 
-#include <QCoreApplication>
+#include "SetBlobQuery.h"
+#include "defines.h"
+#include "SetBlobRequestJSON.h"
+#include "SetBlobResponseJSON.h"
 
-#include "DeleteUserQuery_Test.h"
-#include "Test_AddUserQuery.h"
-//#include "Test_ApplyChannelQuery.h"
-//#include "Test_AvailableChannelsQuery.h"
-//#include "Test_LoadTagsQuery.h"
-//#include "Test_LoginQuery.h"
-//#include "Test_RegisterUserQuery.h"
-//#include "Test_SubscribeChannelQuery.h"
-//#include "Test_SubscribedChannelsQuery.h"
-//#include "Test_WriteTagQuery.h"
-//#include "VersionQuery_Test.h"
-#include "Test_SetBlobQuery.h"
-
-int main(int argc, char *argv[])
+SetBlobQuery::SetBlobQuery(const Session& session,
+                           const QString &guid,
+                           const QString &blob, QObject *parent)
+    : DefaultQuery(parent),
+      m_session(session),
+      m_guid(guid),
+      m_blob(blob)
 {
-  QCoreApplication app(argc, argv);
 
-  QObject *tests[] =
-  {
-    //new Test::DeleteUserQuery_Test,
-    //new Test::Test_AddUserQuery,
-    //new Test::Test_ApplyChannelQuery,
-    //new Test::Test_AvailableChannelsQuery,
-    //new Test::Test_LoadTagsQuery,
-    //new Test::Test_LoginQuery,
-    //new Test::Test_RegisterUserQuery,
-    //new Test::Test_SubscribeChannelQuery,
-    //new Test::Test_SubscribedChannelsQuery,
-    //new Test::Test_WriteTagQuery,
-    //new Test::VersionQuery_Test,
-    new Test::Test_SetBlobQuery
-  };
-
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i]);
-  }
-
-  return 0;
 }
+
+
+SetBlobQuery::SetBlobQuery(QObject *parent): DefaultQuery(parent)
+{
+}
+
+
+void SetBlobQuery::setBlob(const QString &blob)
+{
+    m_blob = blob;
+}
+
+
+QString SetBlobQuery::getUrl() const
+{
+    return SET_BLOB_HTTP_URL;
+}
+
+
+QByteArray SetBlobQuery::getRequestBody() const
+{
+    SetBlobRequestJSON request;
+    request.setGuid(m_guid);
+    request.setBlob(m_blob);
+    request.setSessionToken(m_session.getSessionToken());
+    return request.getJson();
+}
+
+
+SetBlobQuery::~SetBlobQuery()
+{
+
+}
+
+
+QString SetBlobQuery::getBlob() const
+{
+    return m_blob;
+}
+
+
+void SetBlobQuery::setSession(const Session &session)
+{
+    m_session = session;
+}
+
+
+Session SetBlobQuery::getSession() const
+{
+    return m_session;
+}
+
+
+void SetBlobQuery::setGuid(const QString &guid)
+{
+    m_guid = guid;
+}
+
+
+QString SetBlobQuery::getGuid()
+{
+    return m_guid;
+}
+

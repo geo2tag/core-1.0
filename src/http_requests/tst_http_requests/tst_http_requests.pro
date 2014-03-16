@@ -42,15 +42,18 @@ SOURCES += \
     ../../common/src/User.cpp \
     ../../common/src/Channel.cpp \
     ../../common/src/DataMarks.cpp \
-    Test_RegisterUserQuery.cpp \
-    Test_AddUserQuery.cpp \
-    Test_ApplyChannelQuery.cpp \
-    Test_AvailableChannelsQuery.cpp \
-    Test_SubscribeChannelQuery.cpp \
-    Test_SubscribedChannelsQuery.cpp \
-    Test_WriteTagQuery.cpp \
-    Test_LoginQuery.cpp \
-    Test_LoadTagsQuery.cpp
+    #Test_RegisterUserQuery.cpp \
+    #Test_AddUserQuery.cpp \
+    #Test_ApplyChannelQuery.cpp \
+    #Test_AvailableChannelsQuery.cpp \
+    #Test_SubscribeChannelQuery.cpp \
+    #Test_SubscribedChannelsQuery.cpp \
+    #Test_WriteTagQuery.cpp \
+    #Test_LoginQuery.cpp \
+    #Test_LoadTagsQuery.cpp \
+    Test_SetBlobQuery.cpp \
+    ../src/SetBlobQuery.cpp \
+    ../../json/src/SetBlobRequestJSON.cpp
 
 HEADERS += \
     ../../http_requests/inc/AddUserQuery.h \
@@ -94,17 +97,21 @@ HEADERS += \
     ../../common/inc/User.h \
     ../../common/inc/Channel.h \
     ../../common/inc/DataMarks.h \
-    VersionQuery_Test.h \
-    DeleteUserQuery_Test.h \
-    Test_RegisterUserQuery.h \
-    Test_AddUserQuery.h \
-    Test_ApplyChannelQuery.h \
-    Test_AvailableChannelsQuery.h \
-    Test_SubscribeChannelQuery.h \
-    Test_SubscribedChannelsQuery.h \
-    Test_WriteTagQuery.h \
-    Test_LoginQuery.h \
-    Test_LoadTagsQuery.h
+    #VersionQuery_Test.h \
+    #DeleteUserQuery_Test.h \
+    #Test_RegisterUserQuery.h \
+    #Test_AddUserQuery.h \
+    #Test_ApplyChannelQuery.h \
+    #Test_AvailableChannelsQuery.h \
+    #Test_SubscribeChannelQuery.h \
+    #Test_SubscribedChannelsQuery.h \
+    #Test_WriteTagQuery.h \
+    #Test_LoginQuery.h \
+    #Test_LoadTagsQuery.h \
+    Test_SetBlobQuery.h \
+    ../inc/SetBlobQuery.h \
+    ../../json/inc/SetBlobRequestJSON.h \
+    ../../json/inc/SetBlobResponseJSON.h
 
 CONFIG += qtestlib debug
 

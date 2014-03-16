@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012  OSLL osll@osll.spb.ru
+ * Copyright 2010-2011  OSLL osll@osll.spb.ru
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,53 +28,46 @@
  *
  * The advertising clause requiring mention in adverts must never be included.
  */
-
-/*!
- * \file main.cpp
- * \brief Test suite for http_requests
- *
+/*----------------------------------------------------------------- !
  * PROJ: OSLL/geo2tag
- * ------------------------------------------------------------------------ */
+ * ---------------------------------------------------------------- */
 
-#include <QCoreApplication>
+#ifndef SETBLOBQUERY_H
+#define SETBLOBQUERY_H
 
-#include "DeleteUserQuery_Test.h"
-#include "Test_AddUserQuery.h"
-//#include "Test_ApplyChannelQuery.h"
-//#include "Test_AvailableChannelsQuery.h"
-//#include "Test_LoadTagsQuery.h"
-//#include "Test_LoginQuery.h"
-//#include "Test_RegisterUserQuery.h"
-//#include "Test_SubscribeChannelQuery.h"
-//#include "Test_SubscribedChannelsQuery.h"
-//#include "Test_WriteTagQuery.h"
-//#include "VersionQuery_Test.h"
-#include "Test_SetBlobQuery.h"
+#include <QObject>
+#include <QString>
+#include "DefaultQuery.h"
+#include "Session.h"
 
-int main(int argc, char *argv[])
+class SetBlobQuery: public DefaultQuery
 {
-  QCoreApplication app(argc, argv);
+    Q_OBJECT
 
-  QObject *tests[] =
-  {
-    //new Test::DeleteUserQuery_Test,
-    //new Test::Test_AddUserQuery,
-    //new Test::Test_ApplyChannelQuery,
-    //new Test::Test_AvailableChannelsQuery,
-    //new Test::Test_LoadTagsQuery,
-    //new Test::Test_LoginQuery,
-    //new Test::Test_RegisterUserQuery,
-    //new Test::Test_SubscribeChannelQuery,
-    //new Test::Test_SubscribedChannelsQuery,
-    //new Test::Test_WriteTagQuery,
-    //new Test::VersionQuery_Test,
-    new Test::Test_SetBlobQuery
-  };
+    Session m_session;
+    QString m_guid;
+    QString m_blob;
 
-  for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)
-  {
-    QTest::qExec(tests[i]);
-  }
+    virtual QString getUrl() const;
+    virtual QByteArray getRequestBody() const;
 
-  return 0;
-}
+public:
+    SetBlobQuery(const Session &session,
+                 const QString &guid,
+                 const QString &blob,
+                 QObject *parent = 0);
+    explicit SetBlobQuery(QObject *parent = 0);
+
+    ~SetBlobQuery();
+    void setGuid(const QString &guid);
+    QString getGuid();
+
+    void setSession(const Session &session);
+    Session getSession() const;
+
+    void setBlob(const QString &blob);
+    QString getBlob() const;
+
+};
+
+#endif // SETBLOBQUERY_H
