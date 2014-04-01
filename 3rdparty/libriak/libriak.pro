@@ -25,7 +25,7 @@ Makefile.target = Makefile
 Makefile.commands = $${ATPROJ_SRCDIR}/configure
 Makefile.depends = autoreconf aclocal automake autoheader libtoolize
 
-all.commands = make && cp ./riakc ./.libs && mkdir -p ./lib && cp ./.libs/libriak_client.so ./lib && cp ./.libs/libriak_client.so.1 ./lib && cp ./.libs/libriak_client.so.1.0.0 ./lib
+all.commands = make && cp ./riakc ./.libs && mkdir -p ./lib && cp ./.libs/libriak_client.so ./lib && cp ./.libs/libriak_client.so.1 ./lib && cp ./.libs/libriak_client.so.1.0.0 ./lib && pwd && ls -la ./lib
 all.depends = Makefile
 all.CONFIG = phony
 
