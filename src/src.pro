@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 include(../config.pri)
 
 libriak.makefile = Makefile.libriak
+libriak.subdir = libriak/
 
 CONFIG += ordered
 message($$LIBS)
