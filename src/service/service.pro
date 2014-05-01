@@ -81,13 +81,13 @@ SOURCES += src/main.cpp \
     src/MetaCache.cpp \
     src/RiakInteractor.cpp
 
-INCLUDEPATH += ../../3rdparty/libriak/riak_client
-INCLUDEPATH += ../../3rdparty/libriak
+INCLUDEPATH += ../libriak/riak_client
+INCLUDEPATH += ../libriak
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
 
-QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../../3rdparty/libriak/lib
+QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../libriak/lib
 
 QT -= gui
 QT += sql
