@@ -2,9 +2,12 @@ TEMPLATE = app
 include(../../config.pri)
 TARGET = fcgi_server
 
-INSTALLS += target conf_lighttpd odbc_configs postgre_conf database user_managment
+INSTALLS += target conf_lighttpd odbc_configs postgre_conf database user_managment libriak
 
 target.path = /opt/geo2tag/
+
+libriak.files = ../libriak/.libs/libriak_client.so.1.0.0 ../libriak/.libs/libriak_client.so.1 ../libriak/.libs/libriak_client.so
+libriak.path = /usr/lib/
 
 conf_lighttpd.files = wikigps-service.conf
 conf_lighttpd.path = /etc/lighttpd/conf-enabled
