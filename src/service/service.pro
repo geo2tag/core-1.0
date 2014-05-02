@@ -6,7 +6,7 @@ INSTALLS += target conf_lighttpd odbc_configs postgre_conf database user_managme
 
 target.path = /opt/geo2tag/
 
-libriak.files = ../libriak/.libs/libriak_client.so.1.0.0 ../libriak/.libs/libriak_client.so.1 ../libriak/.libs/libriak_client.so
+libriak.files = ../../3rdparty/libriak/.libs/libriak_client.so.1.0.0 ../../3rdparty/libriak/.libs/libriak_client.so.1 ../../3rdparty/libriak/.libs/libriak_client.so
 libriak.path = /usr/lib/
 
 conf_lighttpd.files = wikigps-service.conf
@@ -84,13 +84,13 @@ SOURCES += src/main.cpp \
     src/MetaCache.cpp \
     src/RiakInteractor.cpp
 
-INCLUDEPATH += ../libriak/riak_client
-INCLUDEPATH += ../libriak
+INCLUDEPATH += ../../3rdparty/libriak/riak_client
+INCLUDEPATH += ../../3rdparty/libriak
 
 LIBS +=  -lcommon -lfcgi -lwikigpsJson -lpq -lriak_client
 OBJECTS_DIR = .obj
 
-QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../libriak/lib
+QMAKE_LFLAGS += -L../lib -L/usr/lib/ -L../../3rdparty/libriak/lib
 
 QT -= gui
 QT += sql

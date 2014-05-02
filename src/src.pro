@@ -1,15 +1,12 @@
 TEMPLATE = subdirs
 include(../config.pri)
 
-libriak.makefile = Makefile.libriak
-libriak.subdir = libriak/
 
 CONFIG += ordered
 message($$LIBS)
 
 SUBDIRS += \
 						 common \	
-						 libriak\
              json \
              http_requests \
              service \

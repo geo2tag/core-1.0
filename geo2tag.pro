@@ -2,7 +2,11 @@ TEMPLATE = subdirs
 
 include(config.pri)
 
-SUBDIRS += src
+libriak.makefile = Makefile.libriak
+libriak.subdir = ../3rdparty/libriak/
+
+SUBDIRS += libriak \
+	 src 
 
 CONFIG += mobility ordered
 MOBILITY = location
