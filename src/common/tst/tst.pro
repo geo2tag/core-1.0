@@ -18,7 +18,8 @@ SOURCES += \
     ../src/TimeFilter.cpp \
     ../src/FShapeCircle.cpp \
     ../src/FShapePolygon.cpp \
-    ../src/FShapeRectangle.cpp 
+    ../src/FShapeRectangle.cpp \ 
+    test_TagType.cpp
 
 
 CONFIG +=qtestlib console
@@ -42,5 +43,6 @@ HEADERS += \
     ../inc/FShapeCircle.h \
     ../inc/FShapePolygon.h \
     ../inc/FShape.h \
-    ../inc/FShapeRectangle.h
+    ../inc/FShapeRectangle.h \
+    test_TagType.h
 

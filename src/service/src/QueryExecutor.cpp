@@ -641,28 +641,11 @@ QList<Channel> QueryExecutor::loadChannels()
 QList<Tag> QueryExecutor::loadTags()
 {
     QList<Tag> container;
-    QSqlQuery query=makeQuery();
-    query.exec("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag order by time;");
-    while (query.next())
-    {
-        QDateTime time = query.record().value("time").toDateTime();//.toTimeSpec(Qt::LocalTime);
-        qreal latitude = query.record().value("latitude").toReal();
-        qreal altitude = query.record().value("altitude").toReal();
-        qreal longitude = query.record().value("longitude").toReal();
-        QString label = query.record().value("label").toString();
-        QString description = query.record().value("description").toString();
-        QString url = query.record().value("url").toString();
+    QList<Channel> channels = loadChannels();
 
-	qlonglong userId = query.record().value("user_id").toLongLong();
-	common::BasicUser user = getUserById(userId);
-        qlonglong channelId = query.record().value("channel_id").toLongLong();
-	Channel channel = getChannelById(channelId); 
+    for ( int i = 0; i< channels.size(); i++)
+	loadTagsToContainerFromChannel(container, channels[i]);
 
-        Tag tag(altitude,latitude,longitude,label,description,url,time);
-	tag.setUser(user);
-	tag.setChannel(channel);
-        container.push_back(tag);
-    }
     return container;
 }
 
@@ -672,9 +655,9 @@ void QueryExecutor::retrieveTagsToList(QList<Tag>& container, QSqlQuery& query, 
     while (query.next())
     {
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
-        qreal latitude = query.record().value("latitude").toReal();
-        qreal altitude = query.record().value("altitude").toReal();
-        qreal longitude = query.record().value("longitude").toReal();
+        double latitude = query.record().value("latitude").toDouble();
+        double altitude = query.record().value("altitude").toDouble();
+        double longitude = query.record().value("longitude").toDouble();
         QString label = query.record().value("label").toString();
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
@@ -691,15 +674,16 @@ void QueryExecutor::retrieveTagsToList(QList<Tag>& container, QSqlQuery& query, 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
 	tag.setUser(user);
 	tag.setChannel(channelToSet);
+	
+	DEBUG() << "TAG lat="<< query.record().value("latitude").toString() << ", lon=" << query.record().value("longitude").toString(); 
 
         container.push_back(tag);
     }
 
 }
 
-QList<Tag> QueryExecutor::loadTags(const Channel &channel)
-{
-    QList<Tag> container;
+void QueryExecutor::loadTagsToContainerFromChannel(QList<Tag> & container, Channel channel){
+
     qlonglong channelId=getChannelIdByName(channel.getName());
 
     DEBUG() << "Loading tags for " << channel.getName();
@@ -710,8 +694,19 @@ QList<Tag> QueryExecutor::loadTags(const Channel &channel)
     query.bindValue(":channelId", channelId);
 
     query.exec();
-
     retrieveTagsToList(container, query, channel);
+}
+
+QList<Tag> QueryExecutor::loadTags(const Channel &channel)
+{
+    QList<Tag> container;
+
+    loadTagsToContainerFromChannel(container, channel);
+
+    for (int i =0; i<container.size(); i++){
+	DEBUG() << "Tag "<< i <<" lat="<<container[i].getLatitude() << ", longitude" 
+		<< container[i].getLongitude();
+    }
 
     DEBUG() << ".... done, amount = " << container.size();
     return container;
@@ -734,6 +729,22 @@ Channel QueryExecutor::getChannelById(qlonglong id)
     }
     return Channel();
 
+}
+
+QString QueryExecutor::getTagsChannelNameByGuid(const QString &uuid)
+{
+    QSqlQuery query = makeQuery();
+    query.prepare("select channel_id from tag where label = :uuid;");
+    query.bindValue(":uuid", uuid);
+    query.exec();
+    if (query.next())
+    {
+        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        Channel ch;
+        ch = getChannelById(channelId);
+        return ch.getName();
+    }
+    return QString();
 }
 
 QList<Session> QueryExecutor::loadSessions()
@@ -974,7 +985,7 @@ bool QueryExecutor::initDatabase(const QString & dbName){
     database.setDatabaseName(dbName);
     database.setUserName(user);
     database.setPassword(pass);
-
+    database.setNumericalPrecisionPolicy(QSql::HighPrecision);
     DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
     bool result = database.open();
     DEBUG() << "database.open()=" << result;

@@ -61,6 +61,8 @@ class QueryExecutor : public QObject
     void retrieveTagsToList(QList<Tag>& container, QSqlQuery& query,
 	 const Channel& channel=Channel());
 
+    void loadTagsToContainerFromChannel(QList<Tag> & container, Channel channel);
+
 public:
 
 
@@ -101,6 +103,8 @@ public:
     common::BasicUser getUserById(qlonglong id);
 
     Channel getChannelById(qlonglong id);
+
+    QString getTagsChannelNameByGuid(const QString & uuid);
 
 
     QList<Channel> getChannelsByOwner(const common::BasicUser& user );

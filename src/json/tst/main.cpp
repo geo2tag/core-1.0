@@ -47,8 +47,13 @@
 #include "Test_QuitSessionRequestJSON.h"
 #include "Test_QuitSessionResponseJSON.h"
 #include "Test_FilterSubstringRequestJSON.h"
+#include "Test_DoublePrecisionJSON.h"
 //#include "Test_RestorePasswordRequestJSON.h"
 //#include "Test_RestorePasswordResponseJSON.h"
+#include "Test_WriteTagResponseJSON.h"
+#include "Test_SetBlobRequestJSON.h"
+#include "Test_GetBlobRequestJSON.h"
+#include "Test_GetBlobResponseJSON.h"
 
 int main(int argc, char **argv)
 {
@@ -63,8 +68,13 @@ int main(int argc, char **argv)
     new Test::Test_QuitSessionRequestJSON(),
     new Test::Test_QuitSessionResponseJSON(),
     new Test::Test_FilterSubstringRequestJSON(),
+    new Test::Test_DoublePrecisionJSON(),
   //  new Test::Test_RestorePasswordRequestJSON(),
   //  new Test::Test_RestorePasswordResponseJSON()
+      new Test::Test_WriteTagResponseJSON(),
+      new Test::Test_SetBlobRequestJSON(),
+      new Test::Test_GetBlobRequestJSON(),
+      new Test::Test_GetBlobResponseJSON(),
   };
 
   for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)

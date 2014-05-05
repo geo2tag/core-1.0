@@ -1,0 +1,7 @@
+channel(user_trackable, user_movements, 10)
+trackable(user_trackable, online)
+monitor(user_monitor, user_movements)
+server=http://localhost/service
+database=geo2tag
+map_widget=osm_mobile
+target=android

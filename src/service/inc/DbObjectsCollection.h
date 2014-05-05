@@ -54,6 +54,7 @@
 #include "QueryExecutor.h"
 #include "FilterRequestJSON.h"
 #include "Session.h"
+#include <QUuid>
 
 
 #define OK_REQUEST_HEADER "Status: 200 OK\r\nContent-Type: text/html\r\n\r\n"
@@ -111,6 +112,10 @@ namespace common
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAvailableChannelsQuery(const QByteArray&);
     QByteArray processWriteTagQuery(const QByteArray&);
+
+    QByteArray processSetBlobQuery(const QByteArray&);
+    QByteArray processGetBlobQuery(const QByteArray&);
+
     QByteArray processLoadTagsQuery(const QByteArray&);
     QByteArray processSubscribeQuery(const QByteArray&);
     QByteArray processUnsubscribeQuery(const QByteArray&);
@@ -156,6 +161,8 @@ namespace common
 
       static QString getPlatformVersion();
       static QString getPlatformBuildInfo();
+
+      static QString getGuid();
 
 
   private:

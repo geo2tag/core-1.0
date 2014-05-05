@@ -97,6 +97,26 @@ response_write_tag_test=`curl -d "{ \"auth_token\" : "$auth_token", \"channel\" 
 echo "Write tag test - $response_write_tag_test"
 checkResponseErrno "$response_write_tag_test" $errno_success "Fail at writeTag test"
 
+### writeTag - new request and response
+response_writeTag_test=`curl -d "{ \"auth_token\" : "$auth_token",  \"channel\" : \"$test_channel\", \"description\" : \" \", \"altitude\" : $test_altitude , \"latitude\" : 0.0,\"link\" : \" \", \"longitude\" : 0.0, \"time\" : \"$test_time\", \"title\" : \"#BLOB\" }" http://${INSTANCE}/service/writeTag`;
+echo "WriteTag test with BLOB - $response_writeTag_test"
+guid=`echo $response_writeTag_test | grep -Po '"\w+"' | grep -v "guid" | grep -v "errno"`;
+echo "guid = $guid"
+echo "channel = $test_channel"
+checkResponseErrno "$response_writeTag_test" $errno_success "Fail at writeTag test with BLOB"
+
+### setBlob
+response_setBlob_test=`curl -d "{ \"auth_token\" : "$auth_token", \"guid\" : "$guid", \"blob\" : \"my first BLOB\" }" http://${INSTANCE}/service/setBlob`;
+echo "SetBlob test - $response_setBlob_test"
+errno_incorrect_json="9";
+checkResponseErrno "$response_setBlob_test" $errno_success "Fail at setBlob test"
+
+### getBlob
+response_getBlob_test=`curl -d "{ \"auth_token\" : "$auth_token", \"guid\" : "$guid" }" http://${INSTANCE}/service/getBlob`;
+echo "GetBlob test - $response_getBlob_test"
+errno_incorrect_json="9";
+checkResponseErrno "$response_getBlob_test" $errno_success "Fail at getBlob test"
+
 default_db_name="default"
 response_setdb_test_1=`curl -d "{ \"auth_token\" : "$auth_token", \"db_name\" : \"$default_db_name\" }"  http://${INSTANCE}/service/setDb`;
 echo "SetDb test (attempt to change db to default value) - $response_setdb_test_1"

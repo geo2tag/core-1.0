@@ -47,6 +47,8 @@
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 
+#include "defines.h"
+
 #include "User.h"
 #include "Channel.h"
 
@@ -128,6 +130,7 @@ bool LoadTagsResponseJSON::parseJson(const QByteArray &data)
 QByteArray LoadTagsResponseJSON::getJson() const
 {
     QJson::Serializer serializer;
+    serializer.setDoublePrecision(DOUBLE_PRECISION_RESPONSE);
     QVariantMap obj, rss, jchannel;
 
     QVariantList jchannels;

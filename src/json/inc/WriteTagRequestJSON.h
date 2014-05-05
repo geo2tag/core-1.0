@@ -47,7 +47,6 @@ class WriteTagRequestJSON : public JsonSerializer
     WriteTagRequestJSON(QObject *parent=0);
 
     WriteTagRequestJSON(const Session &session,
-      const Channel &channel,
       const Tag &tag,
       QObject *parent=0);
 

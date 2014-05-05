@@ -61,7 +61,7 @@
 #include "SubscribedChannelsRequestJSON.h"
 #include "SubscribedChannelsResponseJSON.h"
 
-#include "SubscribeChannelJSON.h"
+#include "SubscribeChannelRequestJSON.h"
 #include "SubscribeChannelResponseJSON.h"
 
 
@@ -105,6 +105,10 @@ DbObjectsCollection::DbObjectsCollection()
     //Core processors
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
     m_processors.insert("writeTag", &DbObjectsCollection::processWriteTagQuery);
+
+    m_processors.insert("setBlob", &DbObjectsCollection::processSetBlobQuery);
+    m_processors.insert("getBlob", &DbObjectsCollection::processGetBlobQuery);
+
     m_processors.insert("loadTags", &DbObjectsCollection::processLoadTagsQuery);
     m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);
     m_processors.insert("channels", &DbObjectsCollection::processAvailableChannelsQuery);
@@ -915,6 +919,20 @@ void DbObjectsCollection::init()
 
     getInstance();
 
+}
+
+
+QString DbObjectsCollection::getGuid()
+{
+    QUuid uuid = QUuid::createUuid();
+    QString strUuid = uuid.toString();
+    strUuid.remove(0, 1);
+    strUuid.remove(strUuid.length() - 1, 1);
+    strUuid.remove(8, 1);
+    strUuid.remove(12, 1);
+    strUuid.remove(16, 1);
+    strUuid.remove(20, 1);
+    return strUuid;
 }
 
 }                                       // namespace common

@@ -1,6 +1,6 @@
 #include "SubscribeChannelQuery.h"
 #include "defines.h"
-#include "SubscribeChannelJSON.h"
+#include "SubscribeChannelRequestJSON.h"
 #include "SubscribeChannelResponseJSON.h"
 
 SubscribeChannelQuery::SubscribeChannelQuery(const Channel &channel,

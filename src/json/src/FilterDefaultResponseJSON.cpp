@@ -53,6 +53,8 @@
 #include "serializer.h"
 #endif
 
+#include "defines.h"
+
 #include "User.h"
 #include "Channel.h"
 
@@ -73,7 +75,7 @@ FilterDefaultResponseJSON::~FilterDefaultResponseJSON()
 
 QList<Tag> FilterDefaultResponseJSON::getTags() const
 {
-  return m_tags;
+  return m_tagMap.values();
 }
 
 
@@ -145,6 +147,7 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
 QByteArray FilterDefaultResponseJSON::getJson() const
 {
   QJson::Serializer serializer;
+  serializer.setDoublePrecision(DOUBLE_PRECISION_RESPONSE);
   QVariantMap obj;
 
 //  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
