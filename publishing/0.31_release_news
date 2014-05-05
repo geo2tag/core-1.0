@@ -1,0 +1,16 @@
+New version (0.31) of geo2tag-core was released.
+
+Key features:
+  * Riak support added
+  * Coordinates precision improved
+  * filterSubstring request added
+
+Full list of resolved tasks.
+https://geo2tag.atlassian.net/issues/?filter=12000
+
+
+Before updating please install Riak using this instruction
+http://docs.basho.com/riak/latest/downloads/
+
+Description of the riak-releated features 
+[rus, registration required] https://geo2tag.atlassian.net/wiki/display/GT/Exchange+Protocol+for+BLOBs 
