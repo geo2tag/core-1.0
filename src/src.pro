@@ -11,7 +11,7 @@ SUBDIRS += \
              http_requests \
              service \
       	     common/tst\
-             json/tst\ 
+# GT-1073             json/tst\ 
 #            service/tst
 #	     maps \
 #            http_requests/tst_http_requests \

@@ -48,7 +48,7 @@ namespace Test
     QJson::Serializer serializer;
     QVariantMap obj;
 
-    data = QString("{\"errno\":\"0\"}").toAscii();
+    data = QString("{\"errno\":\"0\"}").toStdString().c_str();
     obj.insert("errno", 0);
 
     QByteArray true_json = serializer.serialize(obj);
@@ -62,7 +62,7 @@ namespace Test
     AvailableChannelsResponseJSON response;
     QByteArray data;
 
-    data = QString("{\"errno\":\"0\"}").toAscii();
+    data = QString("{\"errno\":\"0\"}").toStdString().c_str();
     QCOMPARE(response.parseJson(data), true);
     QCOMPARE(response.getErrno(), 0);
   }
