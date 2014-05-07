@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QCoreApplication>
 
 class Log : public QObject
 {

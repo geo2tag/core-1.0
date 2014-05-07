@@ -8,7 +8,7 @@
 
 static const char *file="/var/log/geo2tag.log";
 
-static void handler(QtMsgType type, const char *msg)
+static void handler(QtMsgType type, const QMessageLogContext&, const QString& msg)
 {
     static QFile output(file);
 
@@ -44,5 +44,5 @@ static void handler(QtMsgType type, const char *msg)
 
 void Log::init()
 {
-    qInstallMsgHandler(handler);
+    qInstallMessageHandler(handler);
 }
