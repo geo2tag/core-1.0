@@ -24,6 +24,9 @@
 #include "FilterSubstringRequestJSON.h"
 #include "FilterSubstringResponseJSON.h"
 
+#include "ChannelsIntersectionRequestJSON.h"
+#include "ChannelsIntersectionResponseJSON.h"
+
 #include "MetaCache.h"
 
 namespace common
@@ -72,6 +75,17 @@ void DbObjectsCollection::extractLastNTags(QList<Tag>& tags, qulonglong tagNumbe
 		tags = tags.mid(tags.size()-tagNumber);
 
 }
+
+QByteArray DbObjectsCollection::processChannelsIntersectionQuery(const QByteArray&)
+{
+    ChannelsIntersectionResponseJSON response;
+    QByteArray answer(OK_REQUEST_HEADER);
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
 
 QByteArray DbObjectsCollection::internalProcessFilterQuery(FilterRequestJSON& request,
                                                            const QByteArray& data, bool is3d)
