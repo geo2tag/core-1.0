@@ -1,16 +1,14 @@
-#ifndef CHANNELINTERSECTIONRESPONSEJSON_H
-#define CHANNELINTERSECTIONRESPONSEJSON_H
+#ifndef CHANNELSINTERSECTIONRESPONSEJSON_H
+#define CHANNELSINTERSECTIONRESPONSEJSON_H
 
-#include "JsonSerializer.h"
+#include "ChannelsOperationResponseJSON.h"
 
-class ChannelsIntersectionResponseJSON: public JsonSerializer
+class ChannelsIntersectionResponseJSON: public ChannelsOperationResponseJSON
 {
 public:
     ChannelsIntersectionResponseJSON(QObject *parent=0);
-
-    virtual QByteArray getJson() const;
-
-    virtual bool parseJson(const QByteArray&);
+    QByteArray getJson() const;
+    virtual bool parseJson(const QByteArray &) { return true;}
 };
 
-#endif // CHANNELINTERSECTIONRESPONSEJSON_H
+#endif // CHANNELSINTERSECTIONRESPONSEJSON_H

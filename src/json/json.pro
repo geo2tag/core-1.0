@@ -73,8 +73,14 @@ HEADERS += \
     inc/SetBlobRequestJSON.h \
     inc/GetBlobRequestJSON.h \
     inc/GetBlobResponseJSON.h \
+    inc/ChannelsOperationRequestJSON.h \
+    inc/ChannelsOperationResponseJSON.h \
+    inc/ChannelsIntersectionResponseJSON.h \
     inc/ChannelsIntersectionRequestJSON.h \
-    inc/ChannelsIntersectionResponseJSON.h
+    inc/ChannelsUnionRequestJSON.h \
+    inc/ChannelsUnionResponseJSON.h \
+    inc/ChannelsComplementRequestJSON.h \
+    inc/ChannelsComplementResponseJSON.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
@@ -118,8 +124,14 @@ SOURCES += \
     src/SetBlobRequestJSON.cpp \
     src/GetBlobRequestJSON.cpp \
     src/GetBlobResponseJSON.cpp \
+    src/ChannelsOperationRequestJSON.cpp \
+    src/ChannelsOperationResponseJSON.cpp \
+    src/ChannelsIntersectionResponseJSON.cpp \
     src/ChannelsIntersectionRequestJSON.cpp \
-    src/ChannelsIntersectionResponseJSON.cpp
+    src/ChannelsUnionRequestJSON.cpp \
+    src/ChannelsUnionResponseJSON.cpp \
+    src/ChannelsComplementRequestJSON.cpp \
+    src/ChannelsComplementResponseJSON.cpp
            
 
 LIBS    +=  -lcommon -lqjson

@@ -1,13 +1,14 @@
 #ifndef CHANNELSINTERSECTIONREQUESTJSON_H
 #define CHANNELSINTERSECTIONREQUESTJSON_H
 
-#include "JsonSerializer.h"
-#include "Session.h"
+#include "ChannelsOperationRequestJSON.h"
 
-class ChannelsIntersectionRequestJSON: public JsonSerializer
+class ChannelsIntersectionRequestJSON: public ChannelsOperationRequestJSON
 {
 public:
-    ChannelsIntersectionRequestJSON();
+    ChannelsIntersectionRequestJSON(QObject *parent);
+    bool parseJson(const QByteArray &);
+    virtual QByteArray getJson() const { return ChannelsOperationRequestJSON::getJson(); }
 };
 
 #endif // CHANNELSINTERSECTIONREQUESTJSON_H

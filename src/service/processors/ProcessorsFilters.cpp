@@ -27,6 +27,12 @@
 #include "ChannelsIntersectionRequestJSON.h"
 #include "ChannelsIntersectionResponseJSON.h"
 
+#include "ChannelsUnionRequestJSON.h"
+#include "ChannelsUnionResponseJSON.h"
+
+#include "ChannelsComplementRequestJSON.h"
+#include "ChannelsComplementResponseJSON.h"
+
 #include "MetaCache.h"
 
 namespace common
@@ -79,6 +85,26 @@ void DbObjectsCollection::extractLastNTags(QList<Tag>& tags, qulonglong tagNumbe
 QByteArray DbObjectsCollection::processChannelsIntersectionQuery(const QByteArray&)
 {
     ChannelsIntersectionResponseJSON response;
+    QByteArray answer(OK_REQUEST_HEADER);
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processChannelsUnionQuery(const QByteArray&)
+{
+    ChannelsUnionResponseJSON response;
+    QByteArray answer(OK_REQUEST_HEADER);
+    response.setErrno(SUCCESS);
+    answer.append(response.getJson());
+    DEBUG() << "answer: " << answer.data();
+    return answer;
+}
+
+QByteArray DbObjectsCollection::processChannelsComplementQuery(const QByteArray&)
+{
+    ChannelsComplementResponseJSON response;
     QByteArray answer(OK_REQUEST_HEADER);
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
