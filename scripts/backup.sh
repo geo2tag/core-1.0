@@ -1,4 +1,8 @@
 #!/bin/bash
+
+
+
+
 ymd=$(date "+%Y-%m-%d");
 backup_dir="./db_backup/$ymd";
 geo2tag_dir="/opt/geo2tag/";
