@@ -12,7 +12,7 @@ public:
 
     virtual bool parseJson(const QByteArray &) {return true;}
 
-    void setTags(QList<Tag>&);
+    void setTags(const QList<Tag> &tags);
 
 };
 

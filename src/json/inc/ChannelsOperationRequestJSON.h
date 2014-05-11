@@ -8,7 +8,7 @@ class ChannelsOperationRequestJSON: public JsonSerializer
 public:
     ChannelsOperationRequestJSON(QObject *parent=0);
 
-    virtual bool parseJson(const QByteArray &);
+    virtual bool parseJson(const QByteArray &data);
     virtual QByteArray getJson() const { QByteArray a; return a;}
 };
 
