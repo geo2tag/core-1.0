@@ -157,7 +157,6 @@ def complement(channel_1, channel_2, auth_token):
         
 def doOperation(formula):
     url = "http://" + sys.argv[1] + "/service/channelsOperations"
-    print formula
     obj = {}
     obj["auth_token"] = auth_token
     obj["formula"] = formula
@@ -194,15 +193,10 @@ if __name__ == '__main__':
     channel_3 = 'channel_' + str(random.randint(0, 1000))
     channel_4 = 'channel_' + str(random.randint(0, 1000))
     
-    tags_union = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag1', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
-                  {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag2', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
-                  {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag3', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
-                  {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag4', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0}]
+    tags_set_1 = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag2', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
+                  {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag3', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0}]
                   
-    tags_intersection = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag1', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
-                         {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag2', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0}]
-                         
-    tags_complement = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag3', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0}]
+    tags_set_2 = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag4', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0}]
     
     
     auth_token = login()
@@ -218,12 +212,12 @@ if __name__ == '__main__':
     
     write_tag(channel_1, 'tag1', auth_token)
     write_tag(channel_1, 'tag2', auth_token)
-    write_tag(channel_1, 'tag3', auth_token)
+    write_tag(channel_1, 'tag4', auth_token)
     write_tag(channel_2, 'tag4', auth_token)
     
     write_tag(channel_2, 'tag1', auth_token)
     write_tag(channel_2, 'tag2', auth_token)
-    write_tag(channel_2, 'tag4', auth_token)
+    write_tag(channel_2, 'tag3', auth_token)
     write_tag(channel_2, 'tag4', auth_token)
 
     write_tag(channel_3, 'tag2', auth_token)
@@ -233,28 +227,16 @@ if __name__ == '__main__':
     write_tag(channel_4, 'tag2', auth_token)
     write_tag(channel_4, 'tag3', auth_token)
     
-    print doOperation("(" + channel_2 + "|" + channel_1 + ") | (" + channel_3 + "|" + channel_4 + ")")
-    #print doOperation(channel_2 + "\\" + channel_1 + "|" + channel_3 + "\\" + channel_4)
+    result_1 = doOperation("(" + channel_2 + "\\" + channel_1 + ") | (" + channel_3 + "&" + channel_4 + ")")
+    result_2 = doOperation("(" + channel_2 + "|" + channel_1 + "\\" + channel_4 + ") &" + channel_3)
     
-    #print load_tags(channel_1, auth_token)
-    #print load_tags(channel_2, auth_token)
-    #print load_tags(channel_3, auth_token)
-    #print load_tags(channel_4, auth_token)
-    #u = union(channel_1, channel_2, auth_token)
-    #i = intersection(channel_1, channel_2, auth_token)
-    #c = complement(channel_1, channel_2, auth_token)
-    
-    #if not compare(u, tags_union):
-    #    print "Union failed."
-    #    sys.exit(-1)
+    if not compare(result_1, tags_set_1):
+        print "Test 1 failed."
+        sys.exit(-1)
         
-    #if not compare(i, tags_intersection):
-    #    print "Intersection failed."
-    #    sys.exit(-1)
-    
-    #if not compare(c, tags_complement):
-    #    print "Complement failed."
-    #    sys.exit(-1)    
+    if not compare(result_2, tags_set_2):
+        print "Test 2 failed."
+        sys.exit(-1)
     
     print 'Success'
         
