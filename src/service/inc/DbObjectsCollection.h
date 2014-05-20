@@ -116,10 +116,10 @@ namespace common
     QByteArray processSetBlobQuery(const QByteArray&);
     QByteArray processGetBlobQuery(const QByteArray&);
 
-    QByteArray processChannelsIntersectionQuery(const QByteArray&);
-    QByteArray processChannelsUnionQuery(const QByteArray&);
-    QByteArray processChannelsComplementQuery(const QByteArray&);
+    QByteArray processChannelsOperationsQuery(const QByteArray&);
+
     QByteArray internalProcessOperationQuery(const QByteArray&, QString);
+
 
     QByteArray processLoadTagsQuery(const QByteArray&);
     QByteArray processSubscribeQuery(const QByteArray&);

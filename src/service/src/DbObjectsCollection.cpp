@@ -109,9 +109,7 @@ DbObjectsCollection::DbObjectsCollection()
     m_processors.insert("setBlob", &DbObjectsCollection::processSetBlobQuery);
     m_processors.insert("getBlob", &DbObjectsCollection::processGetBlobQuery);
 
-    m_processors.insert("channelsIntersection", &DbObjectsCollection::processChannelsIntersectionQuery);
-    m_processors.insert("channelsUnion", &DbObjectsCollection::processChannelsUnionQuery);
-    m_processors.insert("channelsComplement", &DbObjectsCollection::processChannelsComplementQuery);
+    m_processors.insert("channelsOperations", &DbObjectsCollection::processChannelsOperationsQuery);
 
     m_processors.insert("loadTags", &DbObjectsCollection::processLoadTagsQuery);
     m_processors.insert("addChannel", &DbObjectsCollection::processAddChannelQuery);

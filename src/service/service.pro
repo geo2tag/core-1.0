@@ -66,7 +66,8 @@ HEADERS += \
     inc/Geo2tagDatabase.h \
     inc/DbObjectsCollection.h \
     inc/MetaCache.h \
-    inc/RiakInteractor.h
+    inc/RiakInteractor.h \
+    inc/ChannelsOperator.h
 
 
 SOURCES += src/main.cpp \
@@ -82,7 +83,9 @@ SOURCES += src/main.cpp \
     processors/ProcessorsCore.cpp \
     processors/ProcessorsFilters.cpp \
     src/MetaCache.cpp \
-    src/RiakInteractor.cpp
+    src/RiakInteractor.cpp \
+    processors/ProcessorsChannelsOperations.cpp \
+    src/ChannelsOperator.cpp
 
 INCLUDEPATH += ../../3rdparty/libriak/riak_client
 INCLUDEPATH += ../../3rdparty/libriak

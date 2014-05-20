@@ -24,10 +24,6 @@
 #include "FilterSubstringRequestJSON.h"
 #include "FilterSubstringResponseJSON.h"
 
-#include "ChannelsOperationRequestJSON.h"
-#include "ChannelsOperationResponseJSON.h"
-#include "ChannelsOperations.h"
-
 #include "MetaCache.h"
 
 namespace common
@@ -75,79 +71,6 @@ void DbObjectsCollection::extractLastNTags(QList<Tag>& tags, qulonglong tagNumbe
 	if (tagNumber > 0 && tagNumber < (qulonglong)tags.size())
 		tags = tags.mid(tags.size()-tagNumber);
 
-}
-
-QByteArray DbObjectsCollection::processChannelsIntersectionQuery(const QByteArray& data)
-{
-    QString type = "intersection";
-    return internalProcessOperationQuery(data, type);
-}
-
-QByteArray DbObjectsCollection::processChannelsUnionQuery(const QByteArray& data)
-{
-    QString type = "union";
-    return internalProcessOperationQuery(data, type);
-}
-
-QByteArray DbObjectsCollection::processChannelsComplementQuery(const QByteArray& data)
-{
-    QString type = "complement";
-    return internalProcessOperationQuery(data, type);
-}
-
-
-QByteArray DbObjectsCollection::internalProcessOperationQuery(const QByteArray &data, QString type)
-{
-    DEBUG() << "processOperationQuery";
-    ChannelsOperationRequestJSON request;
-    ChannelsOperationResponseJSON response;
-    QByteArray answer(OK_REQUEST_HEADER);
-
-    if (!request.parseJson(data))
-    {
-        response.setErrno(INCORRECT_JSON_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-
-    Session session = m_defaultCache->findSession(request.getSessionToken());
-
-    if(!session.isValid())
-    {
-        response.setErrno(WRONG_TOKEN_ERROR);
-        answer.append(response.getJson());
-        return answer;
-    }
-
-    Core::MetaCache * cache = Core::MetaCache::getMetaCache(session);
-
-    QList<Channel> channels = request.getChannels();
-
-    if(channels.length() < 2)
-    {
-        response.setErrno(NOT_SUPPORTED);
-        answer.append(response.getJson());
-        return answer;
-    }
-
-    foreach (Channel channel, channels)
-    {
-        Channel realChannel = cache->findChannel(channel.getName());
-        if(!realChannel.isValid())
-        {
-            response.setErrno(CHANNEL_DOES_NOT_EXIST_ERROR);
-            answer.append(response.getJson());
-            return answer;
-        }
-    }
-
-    ChannelsOperations operation(request.getChannels().first(), request.getChannels().last());
-    response.setTags(operation.doOperation(type));
-
-    response.setErrno(SUCCESS);
-    answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
-    return answer;
 }
 
 

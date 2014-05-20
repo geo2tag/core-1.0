@@ -50,7 +50,6 @@ HEADERS += \
     inc/EmailMessage.h \
     inc/BasicUser.h \ 
     inc/servicelogger.h \
-    inc/ChannelsOperations.h
 
 SOURCES += \
     src/Channel.cpp \
@@ -74,7 +73,6 @@ SOURCES += \
     src/EmailMessage.cpp \
     src/BasicUser.cpp \ 
     src/servicelogger.cpp \
-    src/ChannelsOperations.cpp
 
 linux: {
     HEADERS += inc/GpsModeller.h

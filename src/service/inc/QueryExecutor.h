@@ -54,13 +54,13 @@ class QueryExecutor : public QObject
     //Geo2tagDatabase m_database;
 
     qlonglong nextKey(const QString& sequence) const;
-    QueryExecutor(const QString& dbName);
+
 
     QString m_dbName;
-
+protected:
     void retrieveTagsToList(QList<Tag>& container, QSqlQuery& query,
-	 const Channel& channel=Channel());
-
+    const Channel& channel=Channel());
+    QueryExecutor(const QString& dbName);
     void loadTagsToContainerFromChannel(QList<Tag> & container, Channel channel);
 
 public:

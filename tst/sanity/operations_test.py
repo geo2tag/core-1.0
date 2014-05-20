@@ -4,6 +4,7 @@ import urllib2
 import sys
 import json
 import time
+import random
 
 
 def login():
@@ -154,11 +155,32 @@ def complement(channel_1, channel_2, auth_token):
         return resp[u'tags']
         
         
+def doOperation(formula):
+    url = "http://" + sys.argv[1] + "/service/channelsOperations"
+    print formula
+    obj = {}
+    obj["auth_token"] = auth_token
+    obj["formula"] = formula
+    obj = json.dumps(obj)
+    header = {'Content-type': 'application/json'}
+    req = urllib2.Request(url, obj, header)
+    f = urllib2.urlopen(req)
+    resp = json.loads(f.read())
+    if resp[u'errno'] != 0:
+        print "Operation failed."
+        print resp[u'errno']
+        sys.exit(-1)
+    else:
+        return resp[u'tags']
+        
+        
 def compare(l1, l2):
+    l1.sort()
+    l2.sort()
     if len(l1) != len(l2):
         return False
     else:
-       for k, j in zip(l1.sort(), l2.sort()):
+       for k, j in zip(l1, l2):
            if k != j:
                return False
                
@@ -167,8 +189,11 @@ def compare(l1, l2):
     
     
 if __name__ == '__main__':
-    channel_1 = 'channel_' + str(time.time())
-    channel_2 = 'channel_' + str(time.time()+1)
+    channel_1 = 'channel_' + str(random.randint(0, 1000))
+    channel_2 = 'channel_' + str(random.randint(0, 1000))
+    channel_3 = 'channel_' + str(random.randint(0, 1000))
+    channel_4 = 'channel_' + str(random.randint(0, 1000))
+    
     tags_union = [{u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag1', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
                   {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag2', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
                   {u'description': u'my new super tag', u'pubDate': u'04 03 2011 15:33:47.630', u'title': u'tag3', u'altitude': 30.0, u'longitude': 30.0, u'link': u'unknown', u'user': u'Mark', u'latitude': 60.0},
@@ -183,30 +208,53 @@ if __name__ == '__main__':
     auth_token = login()
     add_channel(channel_1, auth_token)
     add_channel(channel_2, auth_token)
+    add_channel(channel_3, auth_token)
+    add_channel(channel_4, auth_token)
+    
     subscribe_channel(channel_1, auth_token)
     subscribe_channel(channel_2, auth_token)
+    subscribe_channel(channel_3, auth_token)
+    subscribe_channel(channel_4, auth_token)
+    
     write_tag(channel_1, 'tag1', auth_token)
     write_tag(channel_1, 'tag2', auth_token)
     write_tag(channel_1, 'tag3', auth_token)
+    write_tag(channel_2, 'tag4', auth_token)
+    
     write_tag(channel_2, 'tag1', auth_token)
     write_tag(channel_2, 'tag2', auth_token)
     write_tag(channel_2, 'tag4', auth_token)
-    load_tags(channel_1, auth_token)
-    load_tags(channel_2, auth_token)
-    u = union(channel_1, channel_2, auth_token)
-    i = intersection(channel_1, channel_2, auth_token)
-    c = complement(channel_1, channel_2, auth_token)
+    write_tag(channel_2, 'tag4', auth_token)
+
+    write_tag(channel_3, 'tag2', auth_token)
+    write_tag(channel_3, 'tag4', auth_token)
+    write_tag(channel_3, 'tag2', auth_token)
     
-    if not compare(u, tags_union):
-        print "Union failed."
-        sys.exit(-1)
+    write_tag(channel_4, 'tag2', auth_token)
+    write_tag(channel_4, 'tag3', auth_token)
+    
+    print doOperation("(" + channel_2 + "|" + channel_1 + ") | (" + channel_3 + "|" + channel_4 + ")")
+    #print doOperation(channel_2 + "\\" + channel_1 + "|" + channel_3 + "\\" + channel_4)
+    
+    #print load_tags(channel_1, auth_token)
+    #print load_tags(channel_2, auth_token)
+    #print load_tags(channel_3, auth_token)
+    #print load_tags(channel_4, auth_token)
+    #u = union(channel_1, channel_2, auth_token)
+    #i = intersection(channel_1, channel_2, auth_token)
+    #c = complement(channel_1, channel_2, auth_token)
+    
+    #if not compare(u, tags_union):
+    #    print "Union failed."
+    #    sys.exit(-1)
         
-    if not compare(i, tags_intersection):
-        print "Intersection failed."
-        sys.exit(-1)
+    #if not compare(i, tags_intersection):
+    #    print "Intersection failed."
+    #    sys.exit(-1)
     
-    if not compare(c, tags_complement):
-        print "Complement failed."
-        sys.exit(-1)    
+    #if not compare(c, tags_complement):
+    #    print "Complement failed."
+    #    sys.exit(-1)    
     
+    print 'Success'
         
