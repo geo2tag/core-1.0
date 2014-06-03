@@ -14,6 +14,7 @@ void ChannelsOperator::retrieveTagsToList(QList<Tag>& container, QSqlQuery& quer
 {
     while (query.next())
     {
+
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
         double latitude = query.record().value("latitude").toDouble();
         double altitude = query.record().value("altitude").toDouble();

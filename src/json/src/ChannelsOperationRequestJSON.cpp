@@ -22,6 +22,28 @@ bool ChannelsOperationRequestJSON::parseJson(const QByteArray &data)
 
     QString auth_token = result["auth_token"].toString();
     QString formula = result["formula"].toString();
+
+    latitude = result["latitude"].toDouble(&ok);
+    if (!ok) return false;
+
+
+    longitude = result["longitude"].toDouble(&ok);
+    if (!ok) return false;
+
+    result["qauntity"].toInt(&ok);
+    if (!ok) {
+        result["radius"].toDouble(&ok);
+        if (!ok) return false;
+        radius = result["radius"].toDouble(&ok);
+        if (radius < 0) return false;
+        DEBUG << "R OK";
+    } else {
+        qauntity = result["quantity"].toInt(&ok);
+        if (quantity < 0) return false;
+        DEBUG << "Q OK";
+    }
+
+
     formula.simplified();
     formula.replace(" ", "");
 

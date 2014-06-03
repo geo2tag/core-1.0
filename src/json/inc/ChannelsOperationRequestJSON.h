@@ -7,6 +7,10 @@
 class ChannelsOperationRequestJSON: public JsonSerializer
 {
     QStringList formula;
+    double latitude;
+    double longitude;
+    double radius;
+    int quantity;
 public:
     ChannelsOperationRequestJSON(QObject *parent=0);
 

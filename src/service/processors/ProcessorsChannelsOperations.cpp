@@ -55,12 +55,13 @@ QByteArray DbObjectsCollection::processChannelsOperationsQuery(const QByteArray&
             return answer;
         }
     }
+
     ChannelsOperator co(session.getDbName(), request.getFormula());
     response.setTags(co.doOperation());
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    DEBUG() << "TIME TO DO OPERATION: " << nMilliseconds;
     return answer;
 }
 
