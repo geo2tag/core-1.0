@@ -7,6 +7,8 @@
 
 ChannelsOperationRequestJSON::ChannelsOperationRequestJSON(QObject *parent): JsonSerializer(parent)
 {
+    radius = -1;
+    quantity = -1;
 }
 
 
@@ -30,17 +32,15 @@ bool ChannelsOperationRequestJSON::parseJson(const QByteArray &data)
     longitude = result["longitude"].toDouble(&ok);
     if (!ok) return false;
 
-    result["qauntity"].toInt(&ok);
+    result["quantity"].toInt(&ok);
     if (!ok) {
         result["radius"].toDouble(&ok);
         if (!ok) return false;
         radius = result["radius"].toDouble(&ok);
         if (radius < 0) return false;
-        DEBUG << "R OK";
     } else {
-        qauntity = result["quantity"].toInt(&ok);
+        quantity = result["quantity"].toInt(&ok);
         if (quantity < 0) return false;
-        DEBUG << "Q OK";
     }
 
 
@@ -85,4 +85,24 @@ bool ChannelsOperationRequestJSON::parseJson(const QByteArray &data)
 QStringList ChannelsOperationRequestJSON::getFormula() const
 {
     return formula;
+}
+
+double ChannelsOperationRequestJSON::getLatitude() const
+{
+    return latitude;
+}
+
+double ChannelsOperationRequestJSON::getLongitude() const
+{
+    return longitude;
+}
+
+double ChannelsOperationRequestJSON::getRadius() const
+{
+    return radius;
+}
+
+int ChannelsOperationRequestJSON::getQuantity() const
+{
+    return quantity;
 }

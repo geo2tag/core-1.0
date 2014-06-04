@@ -17,6 +17,10 @@ public:
     virtual bool parseJson(const QByteArray &data);
     virtual QByteArray getJson() const { QByteArray a; return a;}
     QStringList getFormula() const;
+    double getLatitude() const;
+    double getLongitude() const;
+    double getRadius() const;
+    int getQuantity() const;
 };
 
 #endif // CHANNELSOPERATIONREQUESTJSON_H

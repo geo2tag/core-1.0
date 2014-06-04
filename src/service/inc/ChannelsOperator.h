@@ -13,9 +13,13 @@ class ChannelsOperator: public QueryExecutor
 {
 private:
     QStringList formula;
+    double latitude;
+    double longitude;
+    double radius;
+    int quantity;
 
 public:
-    ChannelsOperator(const QString&, const QStringList&);
+    ChannelsOperator(const QString&, const QStringList&, const double, const double, const int, const double);
     QList<Tag> doOperation();
     void retrieveTagsToList(QList<Tag>& container, QSqlQuery& query);
 };

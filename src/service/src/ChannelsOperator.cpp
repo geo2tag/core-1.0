@@ -4,9 +4,14 @@
 #include <servicelogger.h>
 
 
-ChannelsOperator::ChannelsOperator(const QString& dbName, const QStringList& formula):QueryExecutor(dbName)
+ChannelsOperator::ChannelsOperator(const QString& dbName, const QStringList& formula, const double lon,
+                                   const double lat, const int quantity, const double radius):QueryExecutor(dbName)
 {
     this->formula = formula;
+    this->latitude = lat;
+    this->longitude = lon;
+    this->quantity = quantity;
+    this->radius = radius;
 }
 
 
@@ -51,8 +56,17 @@ QList<Tag> ChannelsOperator::doOperation()
        } else if (token == "\\") {
            queryString.append(" EXCEPT ");
        } else {
-            queryString.append("select time, altitude, latitude, longitude, label, description, url, user_id "
-                               "from tag where channel_id = " + QString::number(getChannelIdByName(token)));
+           if (quantity == -1) {
+               queryString.append("(select time, altitude, latitude, longitude, label, description, url, user_id "
+                               "from tag where channel_id = " + QString::number(getChannelIdByName(token)) + "and "
+                               "ST_DWithin(ST_GeographyFromText('SRID=4326;POINT(" + QString::number(longitude) + " "
+                               + QString::number(latitude) +  ")'), geography, " + QString::number(radius) + "))");
+           } else {
+               queryString.append("(select time, altitude, latitude, longitude, label, description, url, user_id "
+                               "from tag where channel_id = " + QString::number(getChannelIdByName(token)) + " "
+                               "ORDER BY st_distance(geography, st_setsrid(st_makepoint(" + QString::number(longitude) + ","
+                                + QString::number(latitude) + "),4326)) LIMIT " + QString::number(quantity)+")");
+           }
        }
     }
 

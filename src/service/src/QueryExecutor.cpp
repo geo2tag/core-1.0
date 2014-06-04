@@ -118,15 +118,14 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     DEBUG() <<  QString("inserting tag ") << tag << ", id=" << newId;
 
     QSqlQuery newTagQuery=makeQuery();
-    newTagQuery.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, id, channel_id) "
-                        "         values(:altitude,:latitude,:longitude,:label,:description,:url,:user_id,:time,:id, :channel_id);");
+    newTagQuery.prepare("insert into tag (altitude , latitude, longitude, label, description, url, user_id, time, id, channel_id, geography) "
+                        "values (:altitude,:latitude,:longitude,:label,:description,:url,:user_id,:time,:id, :channel_id, ST_GeographyFromText('SRID=4326;POINT(" + QString::number(tag.getLongitude()) + " " + QString::number(tag.getLatitude()) + ")'));");
     newTagQuery.bindValue(":altitude", tag.getAltitude());
     newTagQuery.bindValue(":latitude", tag.getLatitude());
     newTagQuery.bindValue(":longitude", tag.getLongitude());
     newTagQuery.bindValue(":label", tag.getLabel().isEmpty() ? "unnamed" : tag.getLabel());
     newTagQuery.bindValue(":description", tag.getDescription());
     newTagQuery.bindValue(":url", tag.getUrl());
-
 
     qlonglong userId = getUserIdByName(tag.getUser().getLogin());
     qlonglong channelId = getChannelIdByName(tag.getChannel().getName());
@@ -138,6 +137,8 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     newTagQuery.bindValue(":id", newId);
 
     transaction();
+
+    DEBUG() << newTagQuery.lastQuery();
 
     result = newTagQuery.exec();
     if(!result)
