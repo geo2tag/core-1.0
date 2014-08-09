@@ -51,6 +51,7 @@
 class VersionResponseJSON : public JsonSerializer
 {
   QString m_version;
+	
   public:
     VersionResponseJSON(QObject *parent = 0);
 

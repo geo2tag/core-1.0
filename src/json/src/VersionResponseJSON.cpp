@@ -63,7 +63,15 @@ QByteArray VersionResponseJSON::getJson() const
   QVariantMap obj;
 
   obj.insert("errno", m_errno);
-  if (getErrno()== SUCCESS) obj.insert("version", m_version);
+
+  QString build;
+  build = QString(__DATE__)+" "+QString(__TIME__);
+
+  if (getErrno()== SUCCESS) 
+  {
+  	obj.insert("version", m_version);
+        obj.insert("build_date", build);
+  }
   return serializer.serialize(obj);
 }
 
@@ -80,6 +88,7 @@ bool VersionResponseJSON::parseJson(const QByteArray& data)
   }
   m_errno = result["errno"].toInt();
   m_version = result["version"].toString();
+  
   return true;
 }
 
