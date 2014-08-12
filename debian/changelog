@@ -1,3 +1,11 @@
+geo2tag-core (0.31.geo2tag-debug-123.1) UNRELEASED; urgency=medium
+
+  * Built on Linux geo2tag-debug 3.13.0-24-generic #47-Ubuntu SMP Fri
+    May 2 23:30:00 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux at Mon Aug 11
+    16:26:47 CEST 2014
+
+ -- Kirill Krinkin <kkv@geo2tag-debug>  Mon, 11 Aug 2014 16:26:47 +0200
+
 geo2tag-core (0.31) precise; urgency=low
 
   New features:
