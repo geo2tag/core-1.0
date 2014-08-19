@@ -6,7 +6,7 @@ Standards-Version: 3.9.3.0
 Build-Depends: debhelper (>= 7), g++, make, libxml2-dev (>=2.6), libqt4-dev, libqjson-dev(>= 0.8.1-3), libfcgi-dev, qt4-qmake, libpq-dev
 
 Package: geo2tag-core
-Architecture: amd64 i386
+Architecture: amd64
 Section: database
 Priority: optional
 Depends: ${shlibs:Depends}, libxml2 (>=2.6), libqt4-core, libqt4-network, libqt4-gui, libqt4-sql-psql, postgresql (>=8.4), postgresql-client, lighttpd, libqjson0(>= 0.8.1-3), libfcgi0ldbl, php5-pgsql, php5-cgi, mail-transport-agent, php5-gd, riak
