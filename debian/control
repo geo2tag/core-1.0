@@ -1,11 +1,11 @@
-Source: geo2tag-core
+Source: geo2tag
 Section: database
 Priority: optional
 Maintainer: Kirill Krinkin <maintainer@geo2tag.org>
 Standards-Version: 3.9.3.0
 Build-Depends: debhelper (>= 7), g++, make, libxml2-dev (>=2.6), libqt4-dev, libqjson-dev(>= 0.8.1-3), libfcgi-dev, qt4-qmake, libpq-dev
 
-Package: geo2tag-core
+Package: geo2tag
 Architecture: amd64
 Section: database
 Priority: optional
