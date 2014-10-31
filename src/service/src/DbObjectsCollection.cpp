@@ -187,7 +187,7 @@ QByteArray DbObjectsCollection::process(const QString& queryType, const QByteArr
         {
 
             ProcessMethod method = m_processors.value(queries[i]);
-            DEBUG() << "calling " << queryType << " processor " << body;
+            //DEBUG() << "calling " << queryType << " processor " << body;
             QByteArray aa;
             PerformanceCounter a(queryType.toStdString());
             aa = (*this.*method)(body);

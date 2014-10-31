@@ -44,13 +44,13 @@ namespace common
   bool DbObjectsCollection::areCredentialsIncorrect(const BasicUser& user) const
   {
     common::BasicUser realUser = m_defaultCache->findUserByName(user.getLogin());
-    DEBUG() << "realUser=" << realUser;
-    DEBUG() << "user=" << user;
+    //DEBUG() << "realUser=" << realUser;
+    //DEBUG() << "user=" << user;
 
     bool secirutyEnabled = SettingsStorage::getValue("security/enable",QVariant(true)).toBool();
     bool passwordMatches = (user.getPassword() == realUser.getPassword());
 
-    DEBUG() << "secirutyEnabled = "<< secirutyEnabled << ", passwordMatches = " << passwordMatches;
+    //DEBUG() << "secirutyEnabled = "<< secirutyEnabled << ", passwordMatches = " << passwordMatches;
 
     if (!realUser.isValid()){
         DEBUG() << "Username is incorrect";
@@ -59,7 +59,7 @@ namespace common
     }else {
        if (secirutyEnabled && !passwordMatches){
         DEBUG() << "Security is enabled and password is incorrect";
-        DEBUG() << "password from request "<< user.getPassword() << ", real password" << realUser.getPassword();
+      //  DEBUG() << "password from request "<< user.getPassword() << ", real password" << realUser.getPassword();
         return  true;
        }
 	
@@ -117,7 +117,7 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
         response.setErrno(SUCCESS);
     }
     answer.append(response.getJson());
-    DEBUG() << "answer: " <<  answer.data();
+//    //DEBUG() << "answer: " <<  answer.data();
     return answer;
 }
 
@@ -188,7 +188,7 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     response.addTag(tag);
 
     answer.append(response.getJson());
-    DEBUG() <<  "answer: " << answer.data();
+//    DEBUG() <<  "answer: " << answer.data();
     return answer;
 }
 
@@ -234,7 +234,7 @@ QByteArray DbObjectsCollection::processSetBlobQuery(const QByteArray &data)
     response.setErrno(SUCCESS);
 
     answer.append(response.getJson());
-    DEBUG() <<  "answer: " << answer.data();
+//    DEBUG() <<  "answer: " << answer.data();
     return answer;
 }
 
@@ -282,7 +282,7 @@ QByteArray DbObjectsCollection::processGetBlobQuery(const QByteArray &data)
     response.setErrno(SUCCESS);
 
     answer.append(response.getJson());
-    DEBUG() <<  "answer: " << answer.data();
+//    DEBUG() <<  "answer: " << answer.data();
     return answer;
 }
 
@@ -340,7 +340,7 @@ QByteArray DbObjectsCollection::processLoadTagsQuery(const QByteArray &data)
 
     answer.append(response.getJson());
 
-    DEBUG() << "answer: " << answer.data();
+//    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -388,7 +388,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
         qWarning() << "INTERNAL_DB_ERROR";
         response.setErrno(INTERNAL_DB_ERROR);
         answer.append(response.getJson());
-        DEBUG() << "answer: " << answer.data();
+//        //DEBUG() << "answer: " << answer.data();
         return answer;
     }
 
@@ -396,7 +396,7 @@ QByteArray DbObjectsCollection::processAddChannelQuery(const QByteArray &data)
 
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -429,7 +429,7 @@ QByteArray DbObjectsCollection::processAvailableChannelsQuery(const QByteArray &
     response.setChannels(cache->getChannels());
     response.setErrno(SUCCESS);
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -481,7 +481,7 @@ QByteArray DbObjectsCollection::processAlterChannelQuery(const QByteArray &data)
 	response.setErrno(SUCCESS);
     }
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -493,7 +493,7 @@ QByteArray DbObjectsCollection::processVersionQuery(const QByteArray&)
     response.setErrno(SUCCESS);
     response.setVersion(getPlatformVersion());
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
@@ -527,7 +527,7 @@ QByteArray DbObjectsCollection::processChangePasswordQuery(const QByteArray &dat
     }
 
     answer.append(response.getJson());
-    DEBUG() << "answer: " << answer.data();
+    //DEBUG() << "answer: " << answer.data();
     return answer;
 }
 
