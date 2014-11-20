@@ -39,3 +39,7 @@ session_life_time=0
 [riak]
 instance_ip=127.0.0.1
 instance_port=8087
+
+[Log_Settings]
+test=debug, warning, critical, fatal
+undefined=debug, warning, critical, fatal

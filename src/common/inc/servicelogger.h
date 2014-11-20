@@ -33,6 +33,7 @@ public:
       severity_last_element__
     };
     static void init();
+    static void read_config();
 };
 //Class, used in logging macros to assemble a string from  macros' call and pass it to Log
 class MessageAssembler
@@ -52,7 +53,7 @@ public:
 //TODO: Find a way to put this definition to servicelogger.cpp.
 template<typename msg_type> MessageAssembler& operator<<(MessageAssembler& target,const msg_type msg)
 {
-    target.stream<<msg<<" ";
+    target.stream<<msg;
     return target;
 }
 namespace NLog
@@ -80,3 +81,4 @@ namespace NLog
 #define CRITICAL() CRITICAL__(Log::test_fac)
 #define FATAL() FATAL__(Log::test_fac)
 #endif // SERVICELOGGER_H
+

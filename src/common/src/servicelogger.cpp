@@ -84,19 +84,8 @@ static void handler(QtMsgType type, const char *msg)
     }
     write_to_log(msg,sev,Log::undefined_fac);
 }
-void Log::init()
+void Log::read_config()
 {
-    if(is_init)
-        return;
-    severity_name[Log::debug_sev]="debug";
-    severity_name[Log::warning_sev]="warning";
-    severity_name[Log::critical_sev]="critical";
-    severity_name[Log::fatal_sev]="fatal";
-
-    facility_name[Log::undefined_fac]="undefined";
-    facility_name[Log::test_fac]="test";
-    facility_name[Log::test2_fac]="Flying Spagetti Monster";
-
     /*By default all log messages are enabled. Severity mode x specified
      *for facility y, means that log with facility y and severity y is
      *enabled. "none" specified for a facility will disable all messages from it
@@ -134,6 +123,25 @@ void Log::init()
             }
         }
     }
+}
+void Log::init()
+{
+    if(is_init)
+        return;
+    SettingsStorage::init();
+
+    severity_name[Log::debug_sev]="debug";
+    severity_name[Log::warning_sev]="warning";
+    severity_name[Log::critical_sev]="critical";
+    severity_name[Log::fatal_sev]="fatal";
+
+    facility_name[Log::undefined_fac]="undefined";
+    facility_name[Log::test_fac]="test";
+    facility_name[Log::test2_fac]="Flying Spagetti Monster";
+
+    read_config();
+
     qInstallMsgHandler(handler);
     is_init=true;
 }
+

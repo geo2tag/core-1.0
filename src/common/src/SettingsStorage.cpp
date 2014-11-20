@@ -52,7 +52,8 @@ SettingsStorage::SettingsStorage(const QString filename)
 
 void SettingsStorage::init()
 {
-    s_settings = new SettingsStorage(SETTINGS_STORAGE_FILENAME);
+    if(!s_settings)
+        s_settings = new SettingsStorage(SETTINGS_STORAGE_FILENAME);
 }
 
 
@@ -92,3 +93,4 @@ QVariant SettingsStorage::getValue(const QString &key, const QVariant &defaultVa
 SettingsStorage::~SettingsStorage()
 {
 }
+
