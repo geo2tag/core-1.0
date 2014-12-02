@@ -1,0 +1,13 @@
+/var/log/geo2tag.log
+{
+    weekly
+    maxsize 1073741824
+    rotate 6
+    missingok
+    notifempty
+    compress
+    nocreate
+    copytruncate
+    su www-data www-data
+}
+

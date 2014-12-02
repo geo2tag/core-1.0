@@ -66,6 +66,28 @@ EOF"
  chmod 744 /var/log/geo2tag.log
 }
 
+setup_logrotate()
+{
+ #move old logrotate configuration for geo2tag from logrotate settings
+ local logrotate_conf="/etc/logrotate.d/geo2tag.dpkg-old";
+ local logrotate_conf_dest="/var/opt/geo2tag/logrotate/";
+ local proj_name="geo2tag"
+ if [ -f ${logrotate_conf} ]
+ then
+  if [ ! -d ${logrotate_conf_dest} ]
+  then
+   mkdir -p ${logrotate_conf_dest}
+  fi
+  mv ${logrotate_conf} ${logrotate_conf_dest}${proj_name}${TIME}
+  echo "Old logrotate configuration for geo2tag is now stored at ${logrotate_conf_dest}/geo2tag${TIME}"
+ fi
+ #delete new logrotate configuration if a user decides to keep an old one
+ logrotate_conf="/etc/logrotate.d/geo2tag.dpkg-dist";
+ if [ -f ${logrotate_conf} ]
+ then
+  rm -rf ${logrotate_conf}
+ fi
+}
 
 /etc/init.d/lighttpd stop
 
@@ -98,6 +120,9 @@ fi
 
 create_db
 make_default_config
+
+setup_logrotate
+
 
 cp /etc/lighttpd/conf-available/15-fastcgi-php.conf /etc/lighttpd/conf-enabled/
 
