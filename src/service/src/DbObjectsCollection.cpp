@@ -105,6 +105,7 @@ DbObjectsCollection::DbObjectsCollection()
     //Core processors
     m_processors.insert("login", &DbObjectsCollection::processLoginQuery);
     m_processors.insert("writeTag", &DbObjectsCollection::processWriteTagQuery);
+    m_processors.insert("addTag",&DbObjectsCollection::processAddTagQuery);
 
     m_processors.insert("setBlob", &DbObjectsCollection::processSetBlobQuery);
     m_processors.insert("getBlob", &DbObjectsCollection::processGetBlobQuery);

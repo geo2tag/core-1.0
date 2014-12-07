@@ -46,6 +46,7 @@
 #include <QVector>
 #include <QSharedPointer>
 #include <QDateTime>
+#include<limits>
 #include "User.h"
 #include "Session.h"
 #include "ConcurrentVector.h"
@@ -67,6 +68,7 @@ class Tag
     double m_altitude;
     double m_latitude;
     double m_longitude;
+    double m_direction;
 
     QString m_label;
     QString m_description;
@@ -78,13 +80,16 @@ class Tag
 
 public:
 
+    static const double INVALID_DIRECTION=512;
+
     Tag(double altitude =0.0,
         double latitude =0.0,
         double longitude =0.0,
         QString label="",
         QString description="",
         QString url="",
-        QDateTime time=QDateTime::currentDateTime());
+        QDateTime time=QDateTime::currentDateTime(),
+        double direction=0.0);
     Tag(const Tag& tag);
     Tag& operator=(const Tag& obj);
 
@@ -94,6 +99,8 @@ public:
     void setChannel(const Channel& channel);
 
     void copyFrom(const Tag& obj);
+
+    bool isDirected();
 
 public:
 
@@ -108,6 +115,9 @@ public:
 
     double getAltitude() const;
     void setAltitude(const double&);
+
+    double getDirection() const;
+    void setDirection(const double&);
 
     const QString& getLabel() const;
     void setLabel(const QString&);

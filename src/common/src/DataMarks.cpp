@@ -57,10 +57,11 @@ const QString& Tag::getDescription() const
 
 
 Tag::Tag(double altitude, double latitude, double longitude, QString label,
-QString description, QString url, QDateTime time):
+QString description, QString url, QDateTime time,double direction):
 m_altitude(altitude),
 m_latitude(latitude),
 m_longitude(longitude),
+m_direction(direction),
 m_label(label),
 m_description(description),
 m_url(url),
@@ -159,6 +160,17 @@ double Tag::getAltitude() const
 void Tag::setAltitude(const double& alt)
 {
   m_altitude = alt;
+}
+
+double Tag::getDirection() const
+{
+  return m_direction;
+}
+
+
+void Tag::setDirection(const double& dir)
+{
+  m_direction = dir;
 }
 
 
@@ -265,6 +277,10 @@ bool Tag::isFieldNameValid(const QString& field){
 	bool isValid = (field == LABEL_FIELD || 
 		field == DESCRIPTION_FIELD || field == URL_FIELD);
 	return isValid;
+}
+bool Tag::isDirected()
+{
+    return fabs(m_direction-INVALID_DIRECTION)<(std::numeric_limits<double>::epsilon());
 }
 
 /* ===[ End of file  ]=== */

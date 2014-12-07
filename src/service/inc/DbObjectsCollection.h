@@ -111,7 +111,10 @@ namespace common
     QByteArray processOwnedChannelsQuery(const QByteArray&);
     QByteArray processSubscribedChannelsQuery(const QByteArray&);
     QByteArray processAvailableChannelsQuery(const QByteArray&);
+
+    template<typename TagWriterRequest, typename TagWriterResponse> QByteArray WriteTagBase(const QByteArray &);
     QByteArray processWriteTagQuery(const QByteArray&);
+    QByteArray processAddTagQuery(const QByteArray&);
 
     QByteArray processSetBlobQuery(const QByteArray&);
     QByteArray processGetBlobQuery(const QByteArray&);

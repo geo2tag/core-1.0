@@ -38,6 +38,8 @@
 #include "JsonDataMark.h"
 #include "JsonSession.h"
 #include "servicelogger.h"
+#include<limits>
+#include<math.h>
 
 #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
@@ -61,7 +63,7 @@ WriteTagRequestJSON::WriteTagRequestJSON(const Session &session,
 }
 
 
-bool WriteTagRequestJSON::parseJson(const QByteArray &data)
+bool WriteTagRequestJSON::parseJsonBase(const QByteArray &data, bool check_for_direction)
 {
   DEBUG() << "Parsing tag: " << data;
 
@@ -110,10 +112,27 @@ bool WriteTagRequestJSON::parseJson(const QByteArray &data)
 	return false;
   }
 
+  double direction=Tag::INVALID_DIRECTION;
+  if(check_for_direction)
+  {
+    direction=result["direction"].toDouble(&ok);
+    if(!ok)
+    {
+        DEBUG()<<"Direction parsing error"<<data;
+        return false;
+    }
+    if(direction<-(std::numeric_limits<double>::epsilon())||direction-360>(std::numeric_limits<double>::epsilon()))
+    {
+        DEBUG()<<"Passed direction ("<<direction<<") is not in range [0;360]. Fixing";
+        direction=fmod(direction,360);
+        if(direction<0)
+            direction+=360;
+    }
+  }
   Session session(auth_token, QDateTime::currentDateTime(), common::BasicUser());
   Channel channel(channel_name, "unknown");
 
-  Tag tag(altitude, latitude, longitude, title, description, link, time);
+  Tag tag(altitude, latitude, longitude, title, description, link, time,direction);
   tag.setChannel(channel);
   //tag.setSession(session);
   m_channels.push_back(channel);
@@ -122,24 +141,37 @@ bool WriteTagRequestJSON::parseJson(const QByteArray &data)
 
   return true;
 }
+bool WriteTagRequestJSON::parseJson(const QByteArray &data)
+{
+    return parseJsonBase(data,false);
+    /*if(data.contains('~'))
+        return true;
+    return false;*/
+    //return parseJsonBase(data,true);
+}
 
+QByteArray WriteTagRequestJSON::getJsonBase(bool insert_direction) const
+{
+    QJson::Serializer serializer;
+    QVariantMap request;
 
+    Tag mark = m_tags.at(0);
+
+    Channel channel = m_channels.at(0);
+    request.insert("auth_token", m_token);
+    request.insert("channel", channel.getName());
+    request.insert("title", mark.getLabel().isEmpty()? "New mark":mark.getLabel());
+    request.insert("link", mark.getUrl());
+    request.insert("description", mark.getDescription());
+    request.insert("latitude", mark.getLatitude());
+    request.insert("altitude", mark.getAltitude());
+    request.insert("longitude", mark.getLongitude());
+    request.insert("time", mark.getTime().toString("dd MM yyyy HH:mm:ss.zzz"));
+    if(insert_direction)
+        request.insert("direction",mark.isDirected()?mark.getDirection():std::numeric_limits<double>::quiet_NaN());
+    return serializer.serialize(request);
+}
 QByteArray WriteTagRequestJSON::getJson() const
 {
-  QJson::Serializer serializer;
-  QVariantMap request;
-
-  Tag mark = m_tags.at(0);
-
-  Channel channel = m_channels.at(0);
-  request.insert("auth_token", m_token);
-  request.insert("channel", channel.getName());
-  request.insert("title", mark.getLabel().isEmpty()? "New mark":mark.getLabel());
-  request.insert("link", mark.getUrl());
-  request.insert("description", mark.getDescription());
-  request.insert("latitude", mark.getLatitude());
-  request.insert("altitude", mark.getAltitude());
-  request.insert("longitude", mark.getLongitude());
-  request.insert("time", mark.getTime().toString("dd MM yyyy HH:mm:ss.zzz"));
-  return serializer.serialize(request);
+  return getJsonBase(false);
 }

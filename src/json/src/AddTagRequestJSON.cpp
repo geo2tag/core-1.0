@@ -32,30 +32,42 @@
  * PROJ: OSLL/geo2tag
  * ---------------------------------------------------------------- */
 
-#ifndef WRITETAGREQUESTJSON_H
-#define WRITETAGREQUESTJSON_H
-
-#include "JsonSerializer.h"
-#include "Session.h"
-#include "Channel.h"
+#include "AddTagRequestJSON.h"
 #include "DataMarks.h"
+#include "JsonChannel.h"
+#include "JsonDataMark.h"
+#include "JsonSession.h"
+#include "servicelogger.h"
+#include<limits>
+#include<math.h>
 
-class WriteTagRequestJSON : public JsonSerializer
-{
-  public:
-
-    WriteTagRequestJSON(QObject *parent=0);
-
-    WriteTagRequestJSON(const Session &session,
-      const Tag &tag,
-      QObject *parent=0);
-
-    virtual QByteArray getJson() const;
-
-    virtual bool parseJson(const QByteArray&);
-
-    bool parseJsonBase(const QByteArray&, bool);
-    QByteArray getJsonBase(bool) const;
-};
-// ADDNEWMARKREQUESTJSON_H
+#if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#else
+#include "parser.h"
+#include "serializer.h"
 #endif
+
+AddTagRequestJSON::AddTagRequestJSON(QObject *parent) : WriteTagRequestJSON(parent)
+{
+}
+
+
+AddTagRequestJSON::AddTagRequestJSON(const Session &session,
+    const Tag &tag,QObject *parent): WriteTagRequestJSON(session,tag,parent)
+{
+  m_token = session.getSessionToken();
+  m_channels.push_back(tag.getChannel());
+  m_tags.push_back(tag);
+}
+
+bool AddTagRequestJSON::parseJson(const QByteArray &data)
+{
+    return parseJsonBase(data,true);
+}
+QByteArray AddTagRequestJSON::getJson() const
+{
+    return getJsonBase(true);
+}
+

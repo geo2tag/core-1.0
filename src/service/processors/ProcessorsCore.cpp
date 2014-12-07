@@ -8,6 +8,9 @@
 #include "WriteTagRequestJSON.h"
 #include "WriteTagResponseJSON.h"
 
+#include "AddTagRequestJSON.h"
+#include "AddTagResponseJSON.h"
+
 #include "SetBlobRequestJSON.h"
 #include "SetBlobResponseJSON.h"
 
@@ -122,10 +125,10 @@ QByteArray DbObjectsCollection::processLoginQuery(const QByteArray &data)
 }
 
 
-QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
+template<typename TagWriterRequest, typename TagWriterResponse> QByteArray DbObjectsCollection::WriteTagBase(const QByteArray &data)
 {
-    WriteTagRequestJSON request;
-    WriteTagResponseJSON response;
+    TagWriterRequest request;
+    TagWriterResponse response;
 
     QByteArray answer(OK_REQUEST_HEADER);
 
@@ -190,6 +193,14 @@ QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
     answer.append(response.getJson());
     DEBUG() <<  "answer: " << answer.data();
     return answer;
+}
+QByteArray DbObjectsCollection::processWriteTagQuery(const QByteArray &data)
+{
+    return WriteTagBase<WriteTagRequestJSON,WriteTagResponseJSON>(data);
+}
+QByteArray DbObjectsCollection::processAddTagQuery(const QByteArray &data)
+{
+    return WriteTagBase<AddTagRequestJSON,AddTagResponseJSON>(data);
 }
 
 QByteArray DbObjectsCollection::processSetBlobQuery(const QByteArray &data)
