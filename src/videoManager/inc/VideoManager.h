@@ -1,9 +1,8 @@
 #ifndef H_VIDEOMANAGER
 #define H_VIDEOMANAGER
+#include <QString>
 #include"VideoFile.h"
-#include"Terminal.h"
-#include <iostream>
-#include <string> 
+#include"Terminal.h" 
 
 class VideoManager
 {

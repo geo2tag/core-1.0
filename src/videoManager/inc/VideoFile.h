@@ -1,23 +1,23 @@
 #ifndef H_VIDEOFILE
 #define H_VIDEOFILE
-#include<string>
+#include <QString>
 #include"Terminal.h"
 class VideoFile
 {
 public:
-	VideoFile(std::string fileDir, std::string fileName);
+	VideoFile(QString fileDir, QString fileName);
 	~VideoFile(){};
-	void rename(std::string newName);
-	void replace(std::string newDir);
+	void rename(QString newName);
+	void replace(QString newDir);
 	void remove();
-	std::string getAbsoletePath();
-	std::string getName();
-	std::string getPath();
-	std::string getDir() ;
+	QString getAbsoletePath();
+	QString getName();
+	QString getPath();
+	QString getDir() ;
 private:
-	//static const std::string videoFilesDir;
-	std::string m_fileDir;
-	std::string m_fileName;
+	//static const QString videoFilesDir;
+	QString m_fileDir;
+	QString m_fileName;
 };
 //VideoFile::videoFilesDir = ".";
 #endif

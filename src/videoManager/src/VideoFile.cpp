@@ -1,36 +1,36 @@
 #include "VideoFile.h"
 
 
-VideoFile::VideoFile(std::string fileDir, std::string fileName){
+VideoFile::VideoFile(QString fileDir, QString fileName){
 	m_fileDir = fileDir;
 	m_fileName = fileName;
 }
 
-void VideoFile::rename(std::string newName){
-	std::string fromPath = getAbsoletePath();
+void VideoFile::rename(QString newName){
+	QString fromPath = getAbsoletePath();
 	m_fileName = newName;
-	std::string toPath = getAbsoletePath();
-	std::string command = "mv " + fromPath + " " + toPath;
-	Terminal::getInstance()->execute(command.c_str());
+	QString toPath = getAbsoletePath();
+	QString command = "mv " + fromPath + " " + toPath;
+	Terminal::getInstance()->execute(command.toStdString().c_str());
 }
 
-void VideoFile::replace(std::string newDir){
-	std::string fromPath = getAbsoletePath();
+void VideoFile::replace(QString newDir){
+	QString fromPath = getAbsoletePath();
 	m_fileDir = newDir;
-	std::string toPath = getAbsoletePath();
-	std::string command = "mv " + fromPath + " " + toPath;
-	Terminal::getInstance()->execute(command.c_str());
+	QString toPath = getAbsoletePath();
+	QString command = "mv " + fromPath + " " + toPath;
+	Terminal::getInstance()->execute(command.toStdString().c_str());
 }
 
 void VideoFile::remove(){
-	std::string command = "rm " + getAbsoletePath();
-	Terminal::getInstance()->execute(command.c_str());
+	QString command = "rm " + getAbsoletePath();
+	Terminal::getInstance()->execute(command.toStdString().c_str());
 }
 
-std::string VideoFile::getAbsoletePath(){
+QString VideoFile::getAbsoletePath(){
 	return m_fileDir + m_fileName;
 }
 
-std::string VideoFile::getName(){ return m_fileName; }
-std::string VideoFile::getPath(){ return m_fileDir + m_fileName; }
-std::string VideoFile::getDir() { return m_fileDir; }
+QString VideoFile::getName(){ return m_fileName; }
+QString VideoFile::getPath(){ return m_fileDir + m_fileName; }
+QString VideoFile::getDir() { return m_fileDir; }

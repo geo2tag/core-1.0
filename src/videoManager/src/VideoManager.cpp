@@ -1,12 +1,11 @@
 #include "VideoManager.h"
 
 VideoFile* VideoManager::cut(VideoFile* f, int from, int to){
-	std::string fileName =  std::to_string(from) + std::to_string(to)+f->getName();
+	QString fileName =  QString::number(from) + QString::number(to)+f->getName();
 	VideoFile *resultFile = new VideoFile(f->getDir(), fileName);
-	std::string command = "avconv -i " + f->getAbsoletePath() + " -ss " + std::to_string(from) + " -t "+ 
-		std::to_string(to) + " -codec copy " + resultFile->getAbsoletePath();
-	
-	std::cout << command << std::endl;
-	Terminal::getInstance()->execute(command.c_str());
+	QString command = "avconv -i " + f->getAbsoletePath() + " -ss " + QString::number(from) + " -t "+ 
+		QString::number(to) + " -codec copy " + resultFile->getAbsoletePath();
+
+	Terminal::getInstance()->execute(command.toStdString().c_str());
 	return resultFile;		
 }
