@@ -10,6 +10,7 @@ SUBDIRS += \
              json \
              http_requests \
              service \
+			 videoManager\
       	     common/tst\
              json/tst\ 
 #            service/tst
