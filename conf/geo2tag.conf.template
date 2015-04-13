@@ -6,8 +6,8 @@ restore_pwd_body=New password:
 
 
 [common]
-#server_url=http://tracks.osll.spb.ru:81/
-#server_port=81
+server_url=http://demo64.geo2tag.org/
+server_port=80
 version="${VERSION}"
 build="Database: ${DB_NAME}, git: ${GIT}"
 session_timelife=3
@@ -34,3 +34,8 @@ tracker_msecs_timeout=500
 password_quality_check=false
 password_length=12
 enable=false
+session_life_time=0
+
+[riak]
+instance_ip=127.0.0.1
+instance_port=8087

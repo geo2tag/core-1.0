@@ -142,5 +142,35 @@ QDebug operator<<(QDebug& dbg, const Channel& channel)
     return dbg;
 }
 
+bool operator<(const Channel &a, const Channel &b)
+{
+	return a.getName() < b.getName();
+}
+
+bool operator==(const Channel &a, const Channel &b)
+{
+	return a.getName() == b.getName();
+}
+
+uint qHash ( const Channel& ch)
+{
+	return qHash(ch.getName());
+}
+
+void Channel::changeField(const QString& field, const QString& value){
+	if (field == NAME_FIELD){
+		m_name = value;
+	} else if (field == DESCRIPTION_FIELD){
+		m_description = value;
+	} else if (field == URL_FIELD){
+		m_url = value;
+	}
+}
+
+bool Channel::isFieldNameValid(const QString& field){
+
+	bool isValid = (field == NAME_FIELD || field==DESCRIPTION_FIELD || field==URL_FIELD);
+	return isValid;
+}
 
 /* ===[ End of file ]=== */

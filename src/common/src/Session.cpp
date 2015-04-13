@@ -38,9 +38,12 @@
 #include "Session.h"
 #include <QCryptographicHash>
 #include "servicelogger.h"
+#include "SettingsStorage.h"
+#include "defines.h"
 
 Session::Session(const QString &token, const QDateTime &accessTime, const common::BasicUser &user)
-    : m_token(token), m_accessTime(accessTime), m_user(user)
+    : m_token(token), m_accessTime(accessTime), m_user(user),
+      m_dbName(SettingsStorage::getValue("database/name", DEFAULT_DB_NAME).toString())
 {
 }
 
@@ -49,9 +52,11 @@ Session::Session(const Session &obj)
     m_token = obj.m_token;
     m_accessTime = obj.m_accessTime;
     m_user = obj.m_user;
+    m_dbName = obj.m_dbName;
 }
 
-Session::Session() : m_token(""), m_accessTime(QDateTime::currentDateTime())
+Session::Session() : m_token(""), m_accessTime(QDateTime::currentDateTime()),
+    m_dbName(SettingsStorage::getValue("database/name", DEFAULT_DB_NAME).toString())
 {
 }
 
@@ -60,9 +65,14 @@ Session &Session::operator =(const Session &obj)
     m_token = obj.m_token;
     m_accessTime = obj.m_accessTime;
     m_user = obj.m_user;
+    m_dbName = obj.m_dbName;
     return *this;
 }
 
+bool Session::operator ==(const Session &obj)
+{ 
+   return obj.getSessionToken() == this->getSessionToken();
+}
 
 void Session::setSessionToken(const QString &sessionToken)
 {
@@ -101,7 +111,7 @@ common::BasicUser Session::getUser() const
 
 QString Session::generateToken(const common::BasicUser &user)
 {
-    QString token=user.getLogin()+user.getPassword()+user.getEmail();
+    QString token=user.getLogin()+user.getPassword()+user.getEmail()+QDateTime::currentDateTime().toString();
     QByteArray toHash(token.toUtf8());
     toHash=QCryptographicHash::hash(token.toUtf8(),QCryptographicHash::Md5);
     QString result(toHash.toHex());
@@ -113,10 +123,50 @@ Session::~Session()
 {
 }
 
+bool Session::isExpired() const
+{
+  // Check session_life_time parameter (hours)
+  // if it is 0 - return true - session could live forever
+  // else compare current lifetime with parameter
+  int sessionLifeTime = SettingsStorage::getValue("security/session_life_time",QVariant(0)).toInt();
+  
+  if (sessionLifeTime == 0) 
+  {
+    DEBUG() << "sessionLifeTime == 0, Sessions live forever";
+    return false;
+  }
+ 
+  QDateTime currentDateTime = QDateTime::currentDateTime();
+  int actualLifeTime = currentDateTime.secsTo(getLastAccessTime()) / 3600;
+  DEBUG() << "Session life time is " << actualLifeTime << " hours, value from settings " << sessionLifeTime << " hours";
+  if (actualLifeTime >= sessionLifeTime)
+  {
+    DEBUG() << "Session life time is too big, sessions is expired";
+    return true;
+  }
+
+  DEBUG() << "Session life time is less then session_life_time, sessions is not expired";
+  return false;
+
+ 
+ 
+}
+
 QDebug& operator<<(QDebug &dbg, Session const& session)
 {
     dbg << session.getSessionToken() << " user:"
         << session.getUser() << " accessTime:"
         << session.getLastAccessTime() << ", valid=" << session.isValid();
     return dbg;
+}
+
+
+QString Session::getDbName() const
+{
+    return m_dbName;
+}
+
+void Session::setDbName(const QString& dbName)
+{
+    m_dbName = dbName;
 }

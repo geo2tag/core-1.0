@@ -18,7 +18,7 @@ HEADERS += \
            inc/AvailableChannelsRequestJSON.h \
            inc/LoadTagsResponseJSON.h \
            inc/LoadTagsRequestJSON.h \
-           inc/SubscribeChannelJSON.h \
+           inc/SubscribeChannelRequestJSON.h \
            inc/UnsubscribeChannelRequestJSON.h \
            inc/JsonUser.h \
            inc/JsonDataMark.h \
@@ -61,13 +61,24 @@ HEADERS += \
     inc/OwnedChannelsResponse.h \
     inc/RestorePasswordRequestJSON.h \
     inc/RestorePasswordResponseJSON.h \
-    ../service/inc/MetaCache.h
+    inc/SetDbRequestJSON.h \
+    inc/SetDbResponseJSON.h \
+    inc/AlterChannelRequestJSON.h \
+    inc/AlterChannelResponseJSON.h \
+    inc/ChangePasswordRequestJSON.h \
+    inc/ChangePasswordResponseJSON.h \ 
+    inc/FilterSubstringRequestJSON.h \
+    inc/FilterSubstringResponseJSON.h \ 
+    inc/SetBlobResponseJSON.h \
+    inc/SetBlobRequestJSON.h \
+    inc/GetBlobRequestJSON.h \
+    inc/GetBlobResponseJSON.h
 
 SOURCES += \
            src/AvailableChannelsResponseJSON.cpp \
            src/LoadTagsResponseJSON.cpp \
            src/LoadTagsRequestJSON.cpp \
-           src/SubscribeChannelJSON.cpp \
+           src/SubscribeChannelRequestJSON.cpp \
            src/JsonUser.cpp \
            src/JsonChannel.cpp \
            src/SubscribedChannelsRequestJSON.cpp \
@@ -78,7 +89,6 @@ SOURCES += \
            src/WriteTagRequestJSON.cpp \
            src/AddChannelRequestJSON.cpp \
            src/DefaultResponseJSON.cpp \
-           src/WriteTagResponseJSON.cpp \
            src/FilterRequestJSON.cpp \
            src/FilterDefaultResponseJSON.cpp \
            src/FilterCircleRequestJSON.cpp \
@@ -98,7 +108,14 @@ SOURCES += \
     src/QuitSessionResponseJSON.cpp \
     src/JsonSession.cpp \
     src/RestorePasswordRequestJSON.cpp \
-    ../service/src/MetaCache.cpp
+    src/SetDbRequestJSON.cpp \
+    src/AlterChannelRequestJSON.cpp \
+    src/ChangePasswordRequestJSON.cpp \
+    src/FilterSubstringRequestJSON.cpp \ 
+    src/WriteTagResponseJSON.cpp \
+    src/SetBlobRequestJSON.cpp \
+    src/GetBlobRequestJSON.cpp \
+    src/GetBlobResponseJSON.cpp
            
 
 LIBS    +=  -lcommon -lqjson

@@ -44,12 +44,14 @@
 class DefaultQuery : public QObject
 {
   Q_OBJECT
-    protected:
+  protected:
     QNetworkAccessManager *m_manager;
+    QNetworkReply * m_reply;
+
 
     virtual QString getUrl() const = 0;
     virtual QByteArray getRequestBody() const = 0;
-    virtual void processResponse(const QByteArray &);
+    virtual void processResponse(const QByteArray &) ;
 
     QDateTime m_sendTime;
     int m_errno;
@@ -61,7 +63,7 @@ class DefaultQuery : public QObject
     void handleError();
 
   public:
-    DefaultQuery(QObject *parent = 0);
+    explicit DefaultQuery(QObject *parent = 0);
 
     void doRequest();
 
@@ -73,6 +75,8 @@ class DefaultQuery : public QObject
 
     void errorOccured(QString);
     void errorOccured(int);
+
+    friend class QueryCaster;
 };
 // DEFAULTQUERY_H
 #endif

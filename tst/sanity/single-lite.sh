@@ -53,6 +53,15 @@ then
 	exit 1
 fi
 
+response_subscribe_test=`curl   -d "{\"auth_token\":"$auth_token",\"channel\":\"$test_channel\"}"  http://${INSTANCE}/service/subscribe`;
+echo "Subscribe test - $response_subscribe_test"
+if ! echo $response_subscribe_test | grep -q -s -F "$correct_result"  ;
+then
+        echo "Fail at Subscribe test"
+        exit 1
+fi
+
+
 test_altitude=$((RANDOM%100)).0;
 test_time=`date +'%d %m %Y %H:%M:%S.300'`;
 echo "test time = $test_time"
@@ -74,6 +83,21 @@ then
         exit 1
 fi
 
+response_GT_935_test_1=`curl -d "{\"login\":\"Mark\') OR id=1;--\",\"password\":\"tkkkkest\"}" http://${INSTANCE}/service/login`;
+correct_result_GT_935='10';
+if ! echo $response_GT_935_test_1 | grep -q -s -F "$correct_result_GT_935"  ;
+then
+        echo "Fail at GT_935 test #1"
+        exit 1
+fi
+
+response_GT_935_test_2=`curl -d "{\"login\":\"Mark\' OR id=1;--\",\"password\":\"tkkkkest\"}" http://${INSTANCE}/service/login`;
+echo "$response_GT_935_test_2"
+if ! echo $response_GT_935_test_2 | grep -q -s -F "$correct_result_GT_935"  ;
+then
+        echo "Fail at GT_935 test #2"
+        exit 1
+fi
 
 echo "Success"
 

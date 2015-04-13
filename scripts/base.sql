@@ -21,6 +21,25 @@ CREATE TABLE users (
   constraint users_pkey primary key (id)
 );
 
+CREATE TABLE tmp_users (
+  registration_token VARCHAR(50) UNIQUE NOT NULL,
+  db_name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  login VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  datetime TIMESTAMP NOT NULL DEFAULT now(),  
+  constraint tmp_users_pkey primary key (registration_token)
+);
+
+CREATE TABLE reset_password_tokens (
+  user_id NUMERIC(9,0) NOT NULL,
+  token VARCHAR(65) NOT NULL,
+  datetime TIMESTAMP NOT NULL DEFAULT now(),
+  constraint fk_user foreign key (user_id) references users(id)
+                                                      on delete cascade,
+  constraint reset_password_tokens_pkey primary key (token)
+);
+
 CREATE SEQUENCE sessions_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 
 CREATE TABLE sessions (
@@ -38,7 +57,7 @@ CREATE SEQUENCE channels_seq INCREMENT 1 MINVALUE 1 START 1 CACHE 1;
 
 CREATE TABLE channel (
   id NUMERIC(9,0) NOT NULL DEFAULT nextval('channels_seq'),
-  name VARCHAR(300) NOT NULL,
+  name VARCHAR(300) UNIQUE NOT NULL,
   description VARCHAR(2048) NOT NULL, 
   url VARCHAR(2048) DEFAULT NULL,
   owner_id NUMERIC(9,0) NOT NULL,
@@ -78,10 +97,10 @@ CREATE TABLE subscribe (
                                                        on delete cascade
 );
 
-INSERT into users (email, login, password) values ('paul@test.org', 'Paul',   '811e97d9511e53a0da29efee50a8b6468c831606');
-INSERT into users (email, login, password) values ('kirill@test.org', 'Kirill', 'b8dcee14ab6a142619fdc5605c9b1182a5183292');
-INSERT into users (email, login, password) values ('mark@test.org', 'Mark',   '7b185e162978ee2b6d367c581c5ecda0fcdfbd8a');
-INSERT into users (email, login, password) values ('yevgeni@test.org', 'Yevgeni', '47e1b73dab5dbfdef3f2cd531ee44710ab1ec44e');
+INSERT into users (email, login, password) values ('paul@test.org', 'Paul',   'test');
+INSERT into users (email, login, password) values ('kirill@test.org', 'Kirill', 'test');
+INSERT into users (email, login, password) values ('mark@test.org', 'Mark',   'test');
+INSERT into users (email, login, password) values ('yevgeni@test.org', 'Yevgeni', 'test');
 
 INSERT into channel (name, description, url, owner_id) values ('Tourist information', 'This is free read-only tourist information channel. You can get information about buildings, sights around your location', '', 1);
 INSERT into channel (name, description, url, owner_id) values ('Public announcements', 'This is free read-only channel with public announcements from the city of your current location', '', 1);
@@ -94,13 +113,13 @@ INSERT into signups (datetime, email, login, password, registration_token, sent)
 INSERT into signups (datetime, email, login, password, registration_token, sent) values (now(), 'email3@test3.org', 'Mary', 'test', 'MMMMMMMMMM', FALSE);
 INSERT into signups (datetime, email, login, password, registration_token, sent) values (now(), 'email4@test4.org', 'David', 'test', 'DDDDDDDDDD', FALSE);
 
-INSERT into users (email, login, password) values ('rom@test.org', 'Rom',   '6f77a0a131c7a3d07595e06d1b8c9d283f234e47');
-INSERT into users (email, login, password) values ('jul@test.org', 'Jul', 'fdfd5c7cf62d92f15e64009e70f25009ffb68590');
+INSERT into users (email, login, password) values ('rom@test.org', 'Rom', 'test');
+INSERT into users (email, login, password) values ('jul@test.org', 'Jul', 'test');
 
 INSERT into sessions (user_id, session_token, last_access_time) values (2, 'kkkkkkkkkk', now());
 INSERT into sessions (user_id, session_token, last_access_time) values (3, 'mmmmmmmmmm', now());
 
-INSERT into channel (name, description, url, owner_id) values ('St.Petersburg''s sights', 'This is free read-only tourist information channel.', '', 2);
+INSERT into channel (name, description, url, owner_id) values ('St.Petersburg sights', 'This is free read-only tourist information channel.', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route A', '', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route B', '', '', 2);
 INSERT into channel (name, description, url, owner_id) values ('Route C', '', '', 2);

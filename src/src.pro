@@ -5,15 +5,14 @@ include(../config.pri)
 CONFIG += ordered
 message($$LIBS)
 
-  SUBDIRS += common
-  SUBDIRS += \
+SUBDIRS += \
+						 common \	
              json \
              http_requests \
              service \
+      	     common/tst\
+             json/tst\ 
+#            service/tst
 #	     maps \
 #            http_requests/tst_http_requests \
-#             tracker/clients/meego/tst \
-             #json/tst \
-             #common/tst
-             #service/tst
-             #tracker/observer
+#            tracker/clients/meego/tst \

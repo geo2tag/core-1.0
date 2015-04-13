@@ -51,7 +51,6 @@
 #include "serializer.h"
 #endif
 
-#if 0
 
 FilterChannelResponseJSON::FilterChannelResponseJSON(QObject *parent) : JsonSerializer(parent)
 {
@@ -69,21 +68,20 @@ QByteArray FilterChannelResponseJSON::getJson() const
 
   for(int i = 0; i < m_tags.size(); i++)
   {
-    QSharedPointer<Tag> tag = m_tags.at(i);
+    Tag tag = m_tags.at(i);
     QVariantMap jtag;
-    jtag["id"] = tag->getId();
-    jtag["title"] = tag->getLabel();
-    jtag["link"] = tag->getUrl();
-    jtag["description"] = tag->getDescription();
-    jtag["latitude"] = tag->getLatitude();
-    jtag["longitude"] = tag->getLongitude();
-    jtag["altitude"] = tag->getAltitude();
-    jtag["user"] = tag->getUser()->getLogin();
-    jtag["pubDate"] = tag->getTime().toString("dd MM yyyy HH:mm:ss.zzz");
+    jtag["title"] = tag.getLabel();
+    jtag["link"] = tag.getUrl();
+    jtag["description"] = tag.getDescription();
+    jtag["latitude"] = tag.getLatitude();
+    jtag["longitude"] = tag.getLongitude();
+    jtag["altitude"] = tag.getAltitude();
+    jtag["user"] = tag.getUser().getLogin();
+    jtag["pubDate"] = tag.getTime().toString("dd MM yyyy HH:mm:ss.zzz");
     jtags.append(jtag);
   }
   channel["items"] = jtags;
-  channel["name"] = m_channel.isNull() ? "" : m_channel->getName();
+  channel["name"] = m_channel.getName();
 
   obj["channel"] = channel;
   obj["errno"] = getErrno();
@@ -98,10 +96,9 @@ bool FilterChannelResponseJSON::parseJson(const QByteArray&)
 }
 
 
-void FilterChannelResponseJSON::setData(QSharedPointer<Channel> channel,
-QList<QSharedPointer<Tag> > tags)
+void FilterChannelResponseJSON::setData(const Channel& channel,
+const QList<Tag>& tags)
 {
   m_channel = channel;
   m_tags = tags;
 }
-#endif

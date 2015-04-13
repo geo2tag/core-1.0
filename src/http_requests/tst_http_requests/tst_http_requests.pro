@@ -28,7 +28,7 @@ SOURCES += \
     ../../json/src/RegisterUserResponseJSON.cpp \
     ../../json/src/AvailableChannelsResponseJSON.cpp \
     ../../json/src/SubscribedChannelsRequestJSON.cpp \
-    ../../json/src/SubscribeChannelJSON.cpp \
+    ../../json/src/SubscribeChannelRequestJSON.cpp \
     ../../json/src/AddChannelRequestJSON.cpp \
     ../../json/src/WriteTagRequestJSON.cpp \
     ../../json/src/WriteTagResponseJSON.cpp \

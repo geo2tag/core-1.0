@@ -64,11 +64,15 @@ QByteArray FilterCylinderRequestJSON::getJson() const
 
 bool FilterCylinderRequestJSON::parseJson(const QByteArray& data)
 {
-  FilterCircleRequestJSON::parseJson(data);
+  bool baseParseResult = FilterCircleRequestJSON::parseJson(data);
+  if (!baseParseResult)
+    return false;
+
   QJson::Parser parser;
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok)    return false;
+
 
   QVariantMap altitudeShift = result["altitude_shift"].toMap();
   double alt = altitudeShift["altitude1"].toDouble(&ok);

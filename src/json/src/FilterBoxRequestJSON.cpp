@@ -64,11 +64,15 @@ QByteArray FilterBoxRequestJSON::getJson() const
 
 bool FilterBoxRequestJSON::parseJson(const QByteArray& data)
 {
-  FilterRectangleRequestJSON::parseJson(data);
+  bool baseParseResult = FilterRectangleRequestJSON::parseJson(data);
+  if (!baseParseResult)
+    return false;
+
   QJson::Parser parser;
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
   if (!ok) return false;
+
   QVariantMap altitudeShift = result["altitude_shift"].toMap();
   double alt = altitudeShift["altitude1"].toDouble(&ok);
   if (!ok)    return false;

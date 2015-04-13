@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------- */
 
 #include "JsonSerializer.h"
-#include "MetaCache.h"
 
 JsonSerializer::JsonSerializer(QObject * parent)
     : QObject(parent)

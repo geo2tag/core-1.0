@@ -41,7 +41,7 @@
 
 #include "ChannelInternal.h"
 #include "DataMarkInternal.h"
-#include "DbSession.h"
+#include "DbObjectsCollection.h"
 #include "DynamicCastFailure.h"
 #include "servicelogger.h"
 

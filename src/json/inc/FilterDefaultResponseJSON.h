@@ -46,7 +46,8 @@
 
 class FilterDefaultResponseJSON : public JsonSerializer
 {
-  QList<Tag> m_hashMap;
+  //QList<Tag> m_hashMap;
+  QMultiMap<Channel, Tag> m_tagMap;
 
   public:
     FilterDefaultResponseJSON(QObject *parent=0);

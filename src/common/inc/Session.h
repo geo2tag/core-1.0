@@ -52,6 +52,8 @@ class Session
     QDateTime           m_accessTime;
     common::BasicUser   m_user;
 
+    QString             m_dbName;
+
   public:
 
     Session(const QString& token, const QDateTime& accessTime = QDateTime::currentDateTime(),
@@ -59,12 +61,14 @@ class Session
     Session(const Session& obj);
     Session();
     Session& operator=(const Session& obj);
+    bool operator==(const Session& obj);
 
     void setSessionToken(const QString& sessionToken);
     void setLastAccessTime(const QDateTime& lastAccessTime = QDateTime::currentDateTime());
     void setUser(const common::BasicUser& user);
 
     bool isValid() const { return !m_token.isEmpty(); }
+    bool isExpired() const;
 
     const QString& getSessionToken() const;
     const QDateTime& getLastAccessTime() const;
@@ -73,6 +77,9 @@ class Session
     static QString generateToken(const common::BasicUser& user);
 
     virtual ~Session();
+
+    QString getDbName() const;
+    void setDbName(const QString& dbName);
 };
 
 QDebug& operator<<(QDebug &dbg, Session const& session);

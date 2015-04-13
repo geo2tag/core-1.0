@@ -48,7 +48,7 @@ class FilterChannelRequestJSON: public JsonSerializer
 {
   private:
     QString m_channel;
-    int m_amount;
+    unsigned int m_amount;
 
   public:
     FilterChannelRequestJSON(QObject *parent = 0);
@@ -57,8 +57,11 @@ class FilterChannelRequestJSON: public JsonSerializer
 
     bool parseJson(const QByteArray&);
 
+    void setChannelName(const QString& name);
+    void setAmount(unsigned int amount);
+
     QString getChannelName();
 
-    int getAmount();
+    unsigned int getAmount();
 };
 #endif                                  //_FilterChannelRequestJSON_H_796EB5EC_74E0_4EA2_A43C_7F6F850122D5_INCLUDED_

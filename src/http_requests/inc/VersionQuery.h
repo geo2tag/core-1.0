@@ -66,7 +66,7 @@ class VersionQuery: public DefaultQuery
 
   public:
 
-    VersionQuery(QObject *parent = 0);
+    explicit VersionQuery(QObject *parent = 0);
 
     const QString& getVersion() const;
 

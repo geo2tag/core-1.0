@@ -53,9 +53,7 @@
 
 #include "MetaCache.h"
 
-QueryExecutor::QueryExecutor()
-{
-}
+QMap<QString, QueryExecutor*> QueryExecutor::s_executorsMap;
 
 
 qlonglong QueryExecutor::nextKey(const QString &sequence) const
@@ -66,6 +64,12 @@ qlonglong QueryExecutor::nextKey(const QString &sequence) const
     if ( query.next() )
         id = query.value(0).toLongLong();
     return id;
+}
+
+QueryExecutor::QueryExecutor(const QString &dbName): m_dbName(dbName)
+{
+    DEBUG() << "Calling QueryExecutor constructor for " << m_dbName;
+    initDatabase(dbName);
 }
 
 
@@ -124,13 +128,13 @@ bool QueryExecutor::insertNewTag(const Tag &tag)
     newTagQuery.bindValue(":url", tag.getUrl());
 
 
-    qlonglong userId = QueryExecutor::instance()->getUserIdByName(tag.getUser().getLogin());
-    qlonglong channelId = QueryExecutor::instance()->getChannelIdByName(tag.getChannel().getName());
+    qlonglong userId = getUserIdByName(tag.getUser().getLogin());
+    qlonglong channelId = getChannelIdByName(tag.getChannel().getName());
 
 
     newTagQuery.bindValue(":user_id", userId);
     newTagQuery.bindValue(":channel_id", channelId);
-    newTagQuery.bindValue(":time", tag.getTime().toUTC());
+    newTagQuery.bindValue(":time", tag.getTime()/*.toUTC()*/);
     newTagQuery.bindValue(":id", newId);
 
     transaction();
@@ -163,7 +167,7 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     newChannelQuery.bindValue(":description",channel.getDescription());
     newChannelQuery.bindValue(":url",channel.getUrl());
 
-    qlonglong owner = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    qlonglong owner = getUserIdByName(user.getLogin());
     newChannelQuery.bindValue(":owner_id",owner);
 
     DEBUG() << "Writing channel " << channel.getName() << " for user " << user << "(" << owner << ")";
@@ -176,14 +180,12 @@ bool QueryExecutor::insertNewChannel(const Channel &channel, const common::Basic
     {
         DEBUG() << "Rollback for NewChannel sql query";
         rollback();
-        return false;
-    }else
+    }else{
         DEBUG() << "Commit for NewChannel sql query - insert in table channel";
-
-    commit();
-
+        commit();
+    }
     //QSharedPointer<DbChannel> newChannel(new DbChannel(newId,channel.getName(),channel.getDescription(),channel.getUrl(),channel.getOwner()));
-    return true;
+    return result;
 }
 
 bool QueryExecutor::doesUserWithGivenEmailExist(const common::BasicUser &user)
@@ -241,11 +243,31 @@ bool QueryExecutor::insertNewUser(const common::BasicUser& user)
 
     DEBUG() << "inserting user " << user;
 
-    QString qry="insert into users (email,login,password) values('%1','%2','%3');";
+//   QString qry="insert into users (email,login,password) values('%1','%2','%3');";
+//    qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
+//    DEBUG() << "stmt=" << qry;
+    newUserQuery.prepare("insert into users (email,login,password) values(:email, :login, :password);");
+    newUserQuery.bindValue(":email", user.getEmail());
+    newUserQuery.bindValue(":login", user.getLogin());
+    newUserQuery.bindValue(":password", user.getPassword());
 
-    qry=qry.arg(user.getEmail()).arg(user.getLogin()).arg(user.getPassword());
-    DEBUG() << "stmt=" << qry;
-    return newUserQuery.exec(qry);
+    transaction();
+    bool result = newUserQuery.exec();
+
+    if  (result ){
+
+	commit();
+	DEBUG() << "insertNewUser commit";
+	return true;	
+    }else {
+
+	rollback();
+	DEBUG() << "insertNewUser rollback";
+	return false;	
+	
+    }	
+
+
 }
 
 
@@ -468,12 +490,53 @@ QList<common::BasicUser> QueryExecutor::loadUsers()
     return result;
 }
 
+
+bool QueryExecutor::checkEmail(const QString& email)
+{
+
+    QSqlQuery query=makeQuery();
+    //QString qry("select email from users where lower(email) = lower('%1');");
+    query.prepare("select email from users where lower(email) = lower(:email);");
+    query.bindValue(":email", email);
+
+    DEBUG() << "QueryExecutor::checkEmail " << email;
+
+    query.exec();
+    if (query.next())
+    {
+	return true;
+    }
+    return false;
+
+}
+
 common::BasicUser QueryExecutor::getUser(const QString &login)
 {
     QSqlQuery query=makeQuery();
-    QString qry("select id, login, password, email from users order by id where login='%1';");
+    query.prepare("select id, login, password, email from users where lower(login) = lower(:login);");
+    query.bindValue(":login", login);
 
-    query.exec(qry.arg(login));
+    DEBUG() << "QueryExecutor::getUser " << login;
+
+    query.exec();
+    if (query.next())
+    {
+        QString login = query.record().value("login").toString();
+        QString password = query.record().value("password").toString();
+        QString email = query.record().value("email").toString();
+        return common::BasicUser(login,password,email);
+    }
+    return common::BasicUser();
+}
+
+common::BasicUser QueryExecutor::getUserById(qlonglong id)
+{
+    QSqlQuery query=makeQuery();
+    query.prepare("select login, password, email from users where id=:Id ;");
+    query.bindValue(":Id", id);
+
+
+    query.exec();
     if (query.next())
     {
         QString login = query.record().value("login").toString();
@@ -489,9 +552,11 @@ QList<Channel> QueryExecutor::getChannelsByOwner(const common::BasicUser &user)
     QList<Channel> container;
 
     QSqlQuery query=makeQuery();
-    qlonglong owner_id = QueryExecutor::instance()->getUserIdByName(user.getLogin());
-    QString qry = QString(("select description, name, url from channel where owner_id='%1'")).arg(owner_id);
-    query.exec(qry);
+    qlonglong owner_id = getUserIdByName(user.getLogin());
+    query.prepare("select description, name, url from channel where owner_id=:ownerId;");
+    query.bindValue(":ownerId", owner_id);
+
+    query.exec();
 
     DEBUG() << "Found " << query.size() << " channels";
     while (query.next())
@@ -522,11 +587,12 @@ QList<Channel> QueryExecutor::getSubscribedChannels(const common::BasicUser &use
 {
     QSqlQuery query=makeQuery();
     QList<Channel> container;
-    qlonglong userId = QueryExecutor::instance()->getUserIdByName(user.getLogin());
+    qlonglong userId = getUserIdByName(user.getLogin());
 
-    QString qry("select channel.name, channel.description, channel.url from channel, users, subscribe where subscribe.channel_id=channel.id and users.id =%1;");
+    query.prepare("select channel.name, channel.id, channel.description, channel.url from channel inner join subscribe on channel.id = subscribe.channel_id inner join users on subscribe.user_id = users.id where users.id=:userId;");
+    query.bindValue(":userId", userId);
 
-    query.exec(qry.arg(userId));
+    query.exec();
 
     DEBUG() << "User " << user.getLogin() << " subscribed to " << query.size() << " channels";
 
@@ -575,55 +641,111 @@ QList<Channel> QueryExecutor::loadChannels()
 QList<Tag> QueryExecutor::loadTags()
 {
     QList<Tag> container;
-    QSqlQuery query=makeQuery();
-    query.exec("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id from tag order by time;");
+    QList<Channel> channels = loadChannels();
+
+    for ( int i = 0; i< channels.size(); i++)
+	loadTagsToContainerFromChannel(container, channels[i]);
+
+    return container;
+}
+
+void QueryExecutor::retrieveTagsToList(QList<Tag>& container, QSqlQuery& query, const Channel& channel)
+{
+    Channel channelToSet = channel;
     while (query.next())
     {
         QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
-        qreal latitude = query.record().value("latitude").toReal();
-        qreal altitude = query.record().value("altitude").toReal();
-        qreal longitude = query.record().value("longitude").toReal();
+        double latitude = query.record().value("latitude").toDouble();
+        double altitude = query.record().value("altitude").toDouble();
+        double longitude = query.record().value("longitude").toDouble();
         QString label = query.record().value("label").toString();
         QString description = query.record().value("description").toString();
         QString url = query.record().value("url").toString();
 
+        qlonglong userId = query.record().value("user_id").toLongLong();
+	common::BasicUser user = getUserById(userId);
+	
+	if (!channel.isValid()){
+
+        	qlonglong channelId = query.record().value("channel_id").toLongLong();
+		channelToSet = getChannelById(channelId); 
+	}
 
         Tag tag(altitude,latitude,longitude,label,description,url,time);
+	tag.setUser(user);
+	tag.setChannel(channelToSet);
+	
+	DEBUG() << "TAG lat="<< query.record().value("latitude").toString() << ", lon=" << query.record().value("longitude").toString(); 
+
         container.push_back(tag);
     }
-    return container;
+
 }
 
-QList<Tag> QueryExecutor::loadTags(const Channel &channel)
-{
-    QList<Tag> container;
+void QueryExecutor::loadTagsToContainerFromChannel(QList<Tag> & container, Channel channel){
+
     qlonglong channelId=getChannelIdByName(channel.getName());
 
     DEBUG() << "Loading tags for " << channel.getName();
 
     QSqlQuery query=makeQuery();
-    query.exec(QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
-                       "from tag where channel_id = %1 order by time;").arg(channelId));
-    while (query.next())
-    {
-        QDateTime time = query.record().value("time").toDateTime().toTimeSpec(Qt::LocalTime);
-        qreal latitude = query.record().value("latitude").toReal();
-        qreal altitude = query.record().value("altitude").toReal();
-        qreal longitude = query.record().value("longitude").toReal();
-        QString label = query.record().value("label").toString();
-        QString description = query.record().value("description").toString();
-        QString url = query.record().value("url").toString();
+    query.prepare("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
+                       "from tag where channel_id = :channelId order by time;");
+    query.bindValue(":channelId", channelId);
 
-        //        qlonglong userId = query.record().value("user_id").toLongLong();
-        //        qlonglong channelId = query.record().value("channel_id").toLongLong();
+    query.exec();
+    retrieveTagsToList(container, query, channel);
+}
 
-        Tag tag(altitude,latitude,longitude,label,description,url,time);
-        container.push_back(tag);
+QList<Tag> QueryExecutor::loadTags(const Channel &channel)
+{
+    QList<Tag> container;
+
+    loadTagsToContainerFromChannel(container, channel);
+
+    for (int i =0; i<container.size(); i++){
+	DEBUG() << "Tag "<< i <<" lat="<<container[i].getLatitude() << ", longitude" 
+		<< container[i].getLongitude();
     }
+
     DEBUG() << ".... done, amount = " << container.size();
     return container;
 }
 
+Channel QueryExecutor::getChannelById(qlonglong id)
+{
+    QSqlQuery query=makeQuery();
+    query.prepare("select name, description, url from channel where id=:channelId;");
+    query.bindValue(":channelId", id);
+
+
+    query.exec();
+    if (query.next())
+    {
+        QString name = query.record().value("name").toString();
+        QString description = query.record().value("description").toString();
+        QString url = query.record().value("url").toString();
+        return Channel(name, description, url);
+    }
+    return Channel();
+
+}
+
+QString QueryExecutor::getTagsChannelNameByGuid(const QString &uuid)
+{
+    QSqlQuery query = makeQuery();
+    query.prepare("select channel_id from tag where label = :uuid;");
+    query.bindValue(":uuid", uuid);
+    query.exec();
+    if (query.next())
+    {
+        qlonglong channelId = query.record().value("channel_id").toLongLong();
+        Channel ch;
+        ch = getChannelById(channelId);
+        return ch.getName();
+    }
+    return QString();
+}
 
 QList<Session> QueryExecutor::loadSessions()
 {
@@ -644,7 +766,7 @@ QList<Session> QueryExecutor::loadSessions()
         QDateTime lastAccessTime = query.record().value("last_access_time").toDateTime();
 
         common::BasicUser user(login,password,email);
-        if(Core::MetaCache::checkUser(user))
+        if(Core::MetaCache::getDefaultMetaCache()->checkUser(user))
         {
             Session session(token,lastAccessTime,user);
             result.push_back(session);
@@ -663,9 +785,9 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
     QSqlQuery query=makeQuery();
     DEBUG() << "getUserIdByName " << name;
 
-    QString qry=QString("select id from users where login='%1';").arg(name);
-    DEBUG() << "qry:" << qry;
-    query.exec(qry);
+    query.prepare("select id from users where lower(login)=lower(:login);");
+    query.bindValue(":login", name);
+    query.exec();
     qlonglong id =1;  //default value
 
     if(!query.next())
@@ -683,8 +805,10 @@ qlonglong QueryExecutor::getUserIdByName(const QString &name)
 qlonglong QueryExecutor::getChannelIdByName(const QString &name)
 {
     QSqlQuery query=makeQuery();
+    query.prepare("select id from channel where lower(name) = lower(:name);");
+    query.bindValue(":name", name);
+    query.exec();
 
-    query.exec(QString("select id from channel where name='%1';").arg(name));
     qlonglong id =-1;
 
     if(!query.next())
@@ -704,9 +828,13 @@ Channel QueryExecutor::getChannel(const QString &name)
     QSqlQuery query=makeQuery();
 
     DEBUG() << "Looking up channel " << name;
-    QString q=QString("select name, description, url from channel where name='%1';").arg(name);
+    //QString q=QString("select name, description, url from channel where lower(name) = lower('%1');").arg(name);
+    query.prepare("select name, description, url from channel where lower(name) = lower(:name);");
+    query.bindValue(":name", name);
 
-    query.exec(q);
+    DEBUG() << "Query = " << query.lastQuery();
+
+    query.exec();
 
     DEBUG() << " ... found " << query.size() << "results, take first if possibe";
 
@@ -734,9 +862,12 @@ bool QueryExecutor::isSubscribed(const common::BasicUser &user, const Channel &c
     qlonglong userId = getUserIdByName(user.getLogin());
     qlonglong channelId = getChannelIdByName(channel.getName());
 
-    QString qry("select * from subscribe where channel_id=%1 and user_id=%2;");
+    query.prepare("select * from subscribe where channel_id=:chanelId and user_id=:userId;");
+    query.bindValue(":chanelId", channelId);
+    query.bindValue(":userId", userId);
+    
 
-    query.exec(qry.arg(channelId).arg(userId));
+    query.exec();
 
 
     if(query.size()>0)
@@ -768,9 +899,9 @@ qlonglong QueryExecutor::getFactTransactionNumber()
     return 0;
 }
 
-QSqlQuery QueryExecutor::makeQuery()
+QSqlQuery QueryExecutor::makeQuery() const
 {
-    return QSqlQuery(QSqlDatabase::database());
+    return QSqlQuery(QSqlDatabase::database(m_dbName));
 }
 
 void QueryExecutor::transaction()
@@ -788,8 +919,171 @@ void QueryExecutor::commit()
     QSqlDatabase::database().commit();
 }
 
-QueryExecutor *QueryExecutor::instance()
+QueryExecutor *QueryExecutor::getInstance(const QString &dbName)
 {
-    static QueryExecutor instance;
-    return &instance;
+    QueryExecutor* result;
+    if (!s_executorsMap.contains(dbName)){
+        result = new QueryExecutor(dbName);
+        s_executorsMap.insert(dbName, result);
+    }else{
+        result = s_executorsMap.value(dbName);
+    }
+    return result;
+}
+
+
+bool QueryExecutor::checkDbExistance(const QString & dbName)
+{
+
+    bool connectionOpeningResult = initDatabase("postgres");
+    if (!connectionOpeningResult)
+    {
+      DEBUG() << "Unable to connect to postgres!";
+      return false;
+    }
+
+
+    QSqlQuery getDbNameQuery = QSqlQuery(QSqlDatabase::database("postgres"));
+    getDbNameQuery.prepare("select datname from pg_database where lower(datname) = lower(:dbName);");
+    getDbNameQuery.bindValue(":dbName", dbName);
+
+    getDbNameQuery.exec();
+
+    if (!getDbNameQuery.next())
+    {
+      DEBUG() << "Database " << dbName << " does not exist on this server";
+      return false;
+    }
+
+    DEBUG() << "Database " << dbName << " exists on this server";
+    return true;
+}
+
+bool QueryExecutor::initDatabase(const QString & dbName){
+    DEBUG() << "Initializing DB = " << dbName;
+
+    //GT-817 Now is only QPSQL base is supported
+
+    QSqlDatabase oldDatabase = QSqlDatabase::database(dbName);
+    if (oldDatabase.isOpen())
+    {
+        DEBUG() << dbName <<" is still opened, closing";
+        oldDatabase.close();
+    }
+
+    QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL", dbName);
+
+    QVariant defaultName("COULD_NOT_READ_CONFIG");
+    QString host=SettingsStorage::getValue("database/host",defaultName).toString();
+
+    QString user=SettingsStorage::getValue("database/user",defaultName).toString();
+    QString pass=SettingsStorage::getValue("database/password",defaultName).toString();
+
+    DEBUG() << host << user << pass;
+
+    database.setHostName(host);
+    database.setDatabaseName(dbName);
+    database.setUserName(user);
+    database.setPassword(pass);
+    database.setNumericalPrecisionPolicy(QSql::HighPrecision);
+    DEBUG() << "Connecting to " << database.databaseName() << ", options= " << database.connectOptions();
+    bool result = database.open();
+    DEBUG() << "database.open()=" << result;
+
+    return result;
+
+}
+
+bool QueryExecutor::alterChannel(const QString& name, const QString& field, const QString& value){
+
+    if ( !Channel::isFieldNameValid(field)) return false;
+
+    QSqlQuery query=makeQuery();
+
+    qlonglong channelId = getChannelIdByName(name);
+
+    QString queryString = QString("update channel set %1=:value where id=:chanelId;").arg(field);
+
+    query.prepare(queryString);
+    query.bindValue(":chanelId", channelId);
+    query.bindValue(":value", value);
+    
+
+    transaction();
+
+    bool result = query.exec();
+    if(result)
+    {
+    	commit();
+        DEBUG() <<  "Commit for AlterChannel sql query";
+    }else{
+	rollback();
+        DEBUG() <<  "Rollback for AlterChannel sql query";
+    }
+
+
+    return result;
+}
+
+bool QueryExecutor::isOwner(const QString& name, const QString& channel){
+
+    QSqlQuery query = makeQuery();
+    qlonglong userId = getUserIdByName(name);
+    qlonglong channelId = getChannelIdByName(channel);
+
+    query.prepare("select * from channel where owner_id=:userId and id=:channelId;");
+    query.bindValue(":userId", userId);
+    query.bindValue(":channelId", channelId);
+
+    query.exec();
+
+    return (query.size()>0);
+}
+
+
+bool QueryExecutor::changePassword(const QString& login, const QString& newPassword){
+
+  QSqlQuery query=makeQuery();
+
+  query.prepare("update users set password=:new_password where lower(login)=lower(:login);");
+  query.bindValue(":login", login);
+  query.bindValue(":new_password", newPassword);
+
+  transaction();
+
+  bool result = query.exec();
+  if(result)
+  {
+    commit();
+    DEBUG() <<  "Commit for ChangePassword sql query";
+  }else{
+    rollback();
+    DEBUG() <<  "Rollback for ChangePassword sql query";
+  }
+  return result;
+}
+
+
+QList<Tag> QueryExecutor::loadTagsWithSubstring(const QString& field, const QString& substring,
+ const Channel &channel){
+
+    QSqlQuery query=makeQuery();
+
+    qlonglong channelId = getChannelIdByName(channel.getName());
+
+    QString queryString = QString("select time, altitude, latitude, longitude, label, description, url, user_id, channel_id "
+                       "from tag where channel_id = :channelId and position( :substring in %1)>0 order by time;").arg(field);
+
+    query.prepare(queryString);
+    query.bindValue(":chanelId", channelId);
+    query.bindValue(":substring", substring);
+    
+    query.exec();
+    QList<Tag > container;
+
+    retrieveTagsToList(container, query, channel);
+
+    return container;
+    
+
 }

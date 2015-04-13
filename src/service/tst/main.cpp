@@ -40,8 +40,10 @@
 #include <QCoreApplication>
 
 // Test headers
-#include "Test_QueryExecutor.h"
-#include "UpdateThread_Test.h"
+//#include "Test_QueryExecutor.h"
+//#include "UpdateThread_Test.h"
+#include "Test_GetGuidDbObjectsCollection.h"
+#include "Test_RiakInteractor.h"
 
 int main(int argc, char **argv)
 {
@@ -50,7 +52,9 @@ int main(int argc, char **argv)
   QObject *tests[] =
   {
   //  new Test::Test_QueryExecutor(),
-    new Test::UpdateThread_Test()
+    //new Test::UpdateThread_Test()
+      new Test::Test_GetGuidDbObjectsCollection(),
+      new Test::Test_RiakInteractor()
   };
 
   for (unsigned int i = 0; i < sizeof(tests)/sizeof(QObject*); i++)

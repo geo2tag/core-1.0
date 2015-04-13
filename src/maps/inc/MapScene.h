@@ -45,9 +45,9 @@
 #include "MapsUploadThread.h"
 #include "Preloading.h"
 
-#include "DataChannel.h"
+#include "Channel.h"
+#include "DataMarks.h"
 
-#if 0
 class MapScene : public QGraphicsScene
 {
   Q_OBJECT
@@ -57,6 +57,8 @@ class MapScene : public QGraphicsScene
     QVector<QGraphicsPixmapItem *> m_marks;
     MapsUploader * m_uploader;
     Preloading * m_preloader;
+
+    QList<Tag> m_tags;
 
     int m_zoom;
     qreal m_latitude;
@@ -80,18 +82,25 @@ class MapScene : public QGraphicsScene
   public:
     virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
 
     void set_zoom();
     void update_state();
 
+    void setCenter(qreal latitude, qreal longitude);
+
+    int getZoom() const;
+
   private:
     void add_mark(QPointF pos,Tag mark,Channel channel);
     QPair<QPoint, QPoint> getBorders();
 
-    signals:
+  signals:
     void uploadTiles(QVector<TilePoint> & tiles_to_upload);
+    void mapDoubleClick(QGraphicsSceneMouseEvent *event);
+    void mapMiddleButtonPressed(QGraphicsSceneMouseEvent *event);
 
   public slots:
     void tileUploaded(const QPixmap & pixmap, const TilePoint & point);
@@ -99,5 +108,5 @@ class MapScene : public QGraphicsScene
 
 };
 // MAPSCENE_H
-#endif
+
 #endif

@@ -37,6 +37,7 @@
 #include "JsonChannel.h"
 #include "JsonDataMark.h"
 #include "JsonSession.h"
+#include "servicelogger.h"
 
 #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
@@ -52,39 +53,62 @@ WriteTagRequestJSON::WriteTagRequestJSON(QObject *parent) : JsonSerializer(paren
 
 
 WriteTagRequestJSON::WriteTagRequestJSON(const Session &session,
-const Channel &channel,
-const Tag &tag,
-QObject *parent)
-: JsonSerializer(parent)
+	const Tag &tag,QObject *parent): JsonSerializer(parent)
 {
   m_token = session.getSessionToken();
-  m_channels.push_back(channel);
+  m_channels.push_back(tag.getChannel());
   m_tags.push_back(tag);
 }
 
 
 bool WriteTagRequestJSON::parseJson(const QByteArray &data)
 {
+  DEBUG() << "Parsing tag: " << data;
+
   clearContainers();
   QJson::Parser parser;
   bool ok;
   QVariantMap result = parser.parse(data, &ok).toMap();
-  if (!ok) return false;
+  if (!ok){
+	DEBUG() << "General parsing error - invalid json." << data;
+	return false;
+  }
 
   QString auth_token = result["auth_token"].toString();
   QString channel_name = result["channel"].toString();
   QString title = result["title"].toString();
   QString link = result["link"].toString();
   QString description = result["description"].toString();
+
+  if (auth_token.isEmpty() || channel_name.isEmpty() 
+	|| title.isEmpty() || link.isEmpty() || description.isEmpty()) 
+  {
+	DEBUG() << "Some of the string fields are empty." << data;
+	return false;
+  }
+
   double altitude = result["altitude"].toDouble(&ok);
-  if (!ok) return false;
+  if (!ok) {
+	DEBUG() << "Altitude parsing error." << data;
+	return false;
+  }
   double longitude = result["longitude"].toDouble(&ok);
-  if (!ok) return false;
+  if (!ok){
+	DEBUG() << "Longitude parsing error." << data;
+	return false;
+  }
 
   double latitude = result["latitude"].toDouble(&ok);
-  if (!ok) return false;
+  if (!ok){ 
+        DEBUG() << "Latitude parsing error." << data;
+        return false;
+  }
 
   QDateTime time = QDateTime::fromString(result["time"].toString(), "dd MM yyyy HH:mm:ss.zzz");
+  if (!time.isValid()){
+	DEBUG() << "Time parsing error." << data;
+	return false;
+  }
 
   Session session(auth_token, QDateTime::currentDateTime(), common::BasicUser());
   Channel channel(channel_name, "unknown");

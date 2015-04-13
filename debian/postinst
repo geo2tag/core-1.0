@@ -59,6 +59,11 @@ make_default_config()
 `cat /opt/geo2tag/geo2tag.conf.template`
 EOF"
  eval "$CONFIG" > /opt/geo2tag/geo2tag.conf
+
+ # Log file creation and permission setting
+ touch /var/log/geo2tag.log
+ chown www-data /var/log/geo2tag.log
+ chmod 744 /var/log/geo2tag.log
 }
 
 
@@ -94,15 +99,20 @@ fi
 create_db
 make_default_config
 
-
+cp /etc/lighttpd/conf-available/15-fastcgi-php.conf /etc/lighttpd/conf-enabled/
 
 sudo /etc/init.d/lighttpd start;
+
+sudo riak start; 
 
 echo "======================================================================"
 echo "                      PLEASE READ AND UNDERSTAND  "
 echo "======================================================================"
-echo "Note: new instance of Geo2tag DB was created. Instance name ${DB_NAME}"
+echo "Note1 : new instance of Geo2tag DB was created. Instance name ${DB_NAME}"
 echo "Please check db name in /opt/geo2tag/geo2tag.conf file and restart"
 echo "lighttpd service if required:"
 echo "       sudo /etc/init.d/lighttpd restart"
 echo "   "
+echo "Note2 : for enabling Geo2Tag registration and user-managment scripts "
+echo "edit server_url parameter in /opt/geo2tag/geo2tag.conf and configure "
+echo "ssmtp for mail sending at /etc/ssmtp/ssmtp.conf"

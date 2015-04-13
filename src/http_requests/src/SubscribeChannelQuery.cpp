@@ -1,6 +1,6 @@
 #include "SubscribeChannelQuery.h"
 #include "defines.h"
-#include "SubscribeChannelJSON.h"
+#include "SubscribeChannelRequestJSON.h"
 #include "SubscribeChannelResponseJSON.h"
 
 SubscribeChannelQuery::SubscribeChannelQuery(const Channel &channel,
@@ -35,7 +35,7 @@ QByteArray SubscribeChannelQuery::getRequestBody() const
 {
   SubscribeChannelRequestJSON request;
   request.addChannel(m_channel);
-  //GT-834 request.setSessionToken(m_session);
+  request.setSessionToken(m_session.getSessionToken());
   return request.getJson();
 }
 

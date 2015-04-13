@@ -48,7 +48,8 @@ HEADERS += \
     inc/SettingsStorage.h \
     inc/Session.h \
     inc/EmailMessage.h \
-    inc/BasicUser.h
+    inc/BasicUser.h \ 
+    inc/servicelogger.h
 
 SOURCES += \
     src/Channel.cpp \
@@ -70,8 +71,8 @@ SOURCES += \
     src/SettingsStorage.cpp \
     src/Session.cpp \
     src/EmailMessage.cpp \
-    src/BasicUser.cpp \
-    ../json/src/AddChannelRequestJSON.cpp
+    src/BasicUser.cpp \ 
+    src/servicelogger.cpp
 
 linux: {
     HEADERS += inc/GpsModeller.h

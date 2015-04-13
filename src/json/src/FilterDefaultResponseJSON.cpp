@@ -43,6 +43,7 @@
 
 #include <QVariant>
 #include <QDebug>
+#include "servicelogger.h"
 
 #if !defined(Q_OS_SYMBIAN) && !defined(Q_WS_SIMULATOR)
 #include <qjson/parser.h>
@@ -51,6 +52,8 @@
 #include "parser.h"
 #include "serializer.h"
 #endif
+
+#include "defines.h"
 
 #include "User.h"
 #include "Channel.h"
@@ -72,13 +75,17 @@ FilterDefaultResponseJSON::~FilterDefaultResponseJSON()
 
 QList<Tag> FilterDefaultResponseJSON::getTags() const
 {
-  return m_tags;
+  return m_tagMap.values();
 }
 
 
 void FilterDefaultResponseJSON::setTags(const QList<Tag>& tags)
 {
-  m_tags = tags;
+  Tag t;
+  foreach(t, tags)
+  {
+	m_tagMap.insert(t.getChannel(),t);
+  }
 }
 
 
@@ -125,10 +132,12 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
       QString userName = markMap["user"].toString();
       QString timeStr =  markMap["pubDate"].toString();
       QDateTime time = QDateTime::fromString(timeStr, "dd MM yyyy HH:mm:ss.zzz");
-      time.setTimeSpec(Qt::UTC);
-
-
-      m_tags << Tag(altitude,  latitude, longitude, title, description, link, time);
+      //time.setTimeSpec(Qt::UTC);
+   
+      Tag tag = Tag(altitude,  latitude, longitude, title, description, link, time);
+      m_tagMap.insert(channel,tag);
+      //tag.setChannel(channel);      
+      //m_tags << tag;
     }
   }
   return true;
@@ -138,14 +147,18 @@ bool FilterDefaultResponseJSON::parseJson(const QByteArray& data)
 QByteArray FilterDefaultResponseJSON::getJson() const
 {
   QJson::Serializer serializer;
+  serializer.setDoublePrecision(DOUBLE_PRECISION_RESPONSE);
   QVariantMap obj;
 
 //  QList<QSharedPointer<Channel> > hashKeys = m_hashMap.uniqueKeys();
-//  QVariantList jchannels;
+  QVariantList jchannels;
+  QList<Channel> channels = m_tagMap.uniqueKeys();
+  DEBUG() << "Sizeof channels  " << channels.size();
 
-  for(int i=0; i<m_channels.size(); i++)
+  for(int i=0; i<channels.size(); i++)
   {
-    QList<Tag> tags = m_tags;
+    QList<Tag> tags = m_tagMap.values(channels.at(i));
+    qSort(tags);
     QVariantList jtags;
     QVariantMap jchannel;
     QVariantMap channel;
@@ -165,11 +178,11 @@ QByteArray FilterDefaultResponseJSON::getJson() const
       jtags.append(jtag);
     }
     channel["items"] = jtags;
-    channel["name"] = m_channels[i].getName();
+    channel["name"] = channels[i].getName();
     jchannel["channel"] = channel;
-//    jchannels.append(jchannel);
+    jchannels.append(jchannel);
   }
-//  obj["channels"] = jchannels;
+  obj["channels"] = jchannels;
   obj.insert("errno", getErrno());
   return serializer.serialize(obj);
 }
